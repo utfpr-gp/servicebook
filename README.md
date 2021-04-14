@@ -5,6 +5,9 @@
 O sistema foi desenvolvido pela turma do segundo semestre de 2020 da disciplina de Web IV do curso de TSI da UTFPR -
 Universidade Tecnológica Federal do Paraná - Brasil.
 
+## Protótipos de Tela
++ https://www.quant-ux.com/#/test.html?h=a2aa10aWvVbyyt2W12GChbmJ8PfLyarobqg2Jl7MKrTL8kOwRzypUppbyMna
+
 ## Tecnologias
 
 + Spring Boot
