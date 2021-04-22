@@ -23,7 +23,7 @@
                                 <div class="col s4 offset-s4 fomate-states-name">
                                     <select id="select-state" name="idState">
                                         <c:forEach var="state" items="${states}">
-                                            <option value="${state.id}"><p>${state.name} - ${state.uf}</p></option>
+                                            <option value="${state.id}"><p>${state.name}-${state.uf}</p></option>
                                         </c:forEach>
                                     </select>
                                 </div>
