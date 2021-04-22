@@ -17,4 +17,6 @@ public class StateDTO {
 
     @NotEmpty(message = "O nome do estado é obrigatório")
     private String name;
+
+    private String uf;
 }

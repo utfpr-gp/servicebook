@@ -50,7 +50,6 @@ public class CityRegisterController {
                 .collect(Collectors.toList());
         mv.addObject("states", stateDTOs);
 
-        mv.addObject("states", states);
         return mv;
     }
 
