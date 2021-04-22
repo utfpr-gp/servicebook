@@ -333,12 +333,8 @@ footer.page-footer {
   }
 }
 
-/*
-  GoHorse by @Guilhn
-*/
-
-ul:not(.browser-default) {
-  height: 425px !important;
+.fomate-states-name .select-wrapper .dropdown-content{
+  height: 300px;
 }
 
 @media only screen and (max-width : 600px) {

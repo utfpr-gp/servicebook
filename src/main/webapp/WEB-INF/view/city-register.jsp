@@ -21,7 +21,7 @@
                         <form action="cidades" method="post">
                             <div class="row center range-quantity">
                                 <div class="col s4 offset-s4 fomate-states-name">
-                                    <select id="select-state" name="idState">
+                                    <select id="select-state" name="idState" >
                                         <c:forEach var="state" items="${states}">
                                             <option value="${state.id}"><p>${state.name}-${state.uf}</p></option>
                                         </c:forEach>
