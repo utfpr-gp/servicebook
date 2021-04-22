@@ -18,10 +18,10 @@
                 <div class="section">
                     <div class="row">
                         <h3 class="center secondary-color-text range-quantity">Cadastro de Cidade</h3>
-                        <form action="cadastrar-cidade" method="post">
+                        <form action="cidades" method="post">
                             <div class="row center range-quantity">
                                 <div class="col s4 offset-s4">
-                                    <select name="id_state" id="select-state" class="white-text select-city">
+                                    <select name="idState" id="select-state" class="white-text select-city">
                                         <c:forEach var="state" items="${states}">
                                             <option value="${state.id}"><p>${state.name} - ${state.uf}</p></option>
                                         </c:forEach>
@@ -31,7 +31,7 @@
                                     <div class="row">
                                         <div class="input-field  col s12">
                                             <i class="material-icons prefix primary-color-text">location_city</i>
-                                                <input type="text" id="autocomplete-input" name="name_city" class="autocomplete">
+                                                <input type="text" id="autocomplete-input" name="name" class="autocomplete" value="${dto.name}">
                                             <label for="autocomplete-input">Cidade</label>
                                         </div>
 
@@ -56,6 +56,22 @@
                         </form>
                     </div>
                 </div>
+                <c:if test="${not empty msg}">
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="card-panel green lighten-1 msg-view center-align">
+                                <span class="white-text">${msg}</span>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
+                <c:if test="${not empty errors}">
+                    <div class="card-panel red">
+                        <c:forEach var="e" items="${errors}">
+                            <span class="white-text">${e.getDefaultMessage()}</span><br>
+                        </c:forEach>
+                    </div>
+                </c:if>
             </div>
         </main>
 

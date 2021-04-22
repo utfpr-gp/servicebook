@@ -17,4 +17,6 @@ $(document).ready(function (){
         $('#value-input-range').html( $(this).val() );
     });
 
+    $(".msg-view").fadeTo(4000, 0.0);
+
 });

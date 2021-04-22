@@ -15,7 +15,7 @@ public class State {
     private Long id;
 
     @NonNull
-    @Column
+    @Column(unique = true)
     private String name;
 
     @NonNull
