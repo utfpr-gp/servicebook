@@ -10,6 +10,7 @@ import br.edu.utfpr.servicebook.service.CityService;
 import br.edu.utfpr.servicebook.service.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +21,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.validation.Valid;
 
 @RequestMapping("/cidades")
 @Controller
@@ -55,7 +58,7 @@ public class CityRegisterController {
 
 
     @PostMapping
-    public ModelAndView save(@Validated CityDTO dto, Errors errors, RedirectAttributes redirectAttributes){
+    public ModelAndView save(@Valid CityDTO dto, BindingResult errors, RedirectAttributes redirectAttributes){
 
         for(FieldError e: errors.getFieldErrors()){
             log.info(e.getField() + " -> " + e.getCode());
