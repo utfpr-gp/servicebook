@@ -28,6 +28,7 @@ p {
 }
 
 
+
 /* text colors */
 
 .primary-color-text{
@@ -330,6 +331,13 @@ footer.page-footer {
   .text-detail-request{
     text-align: center;
   }
+}
+
+/*
+  GoHorse by @Guilhn
+*/
+ul:not(.browser-default) {
+  height: 425px !important;
 }
 
 @media only screen and (max-width : 600px) {

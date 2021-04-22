@@ -20,8 +20,8 @@
                         <h3 class="center secondary-color-text range-quantity">Cadastro de Cidade</h3>
                         <form action="cidades" method="post">
                             <div class="row center range-quantity">
-                                <div class="col s4 offset-s4">
-                                    <select name="idState" id="select-state" class="white-text select-city">
+                                <div class="col s4 offset-s4 fomate-states-name">
+                                    <select id="select-state" name="idState">
                                         <c:forEach var="state" items="${states}">
                                             <option value="${state.id}"><p>${state.name} - ${state.uf}</p></option>
                                         </c:forEach>
@@ -65,12 +65,18 @@
                         </div>
                     </div>
                 </c:if>
+
+                <p>${teste}</p>
                 <c:if test="${not empty errors}">
-                    <div class="card-panel red">
+                <div class="row">
+                    <div class="col s12">
+                        <div class="card-panel red msg-view center-align">
                         <c:forEach var="e" items="${errors}">
                             <span class="white-text">${e.getDefaultMessage()}</span><br>
                         </c:forEach>
+                        </div>
                     </div>
+                </div>
                 </c:if>
             </div>
         </main>

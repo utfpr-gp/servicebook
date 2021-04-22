@@ -68,11 +68,20 @@ public class CityRegisterController {
             ModelAndView mv = new ModelAndView("city-register");
             mv.addObject("dto", dto);
             mv.addObject("errors", errors.getAllErrors());
+
+            List<State> states = stateService.findAll();
+            List<StateDTO> stateDTOs = states.stream()
+                    .map(state -> stateMapper.toResponseDto(state))
+                    .collect(Collectors.toList());
+
+            mv.addObject("states", stateDTOs);
+
             return mv;
         }
 
         City city = cityMapper.toEntity(dto);
         cityService.save(city);
+
 
         redirectAttributes.addFlashAttribute("msg", "Cidade cadastrada com sucesso!");
         return new ModelAndView("redirect:cidades");

@@ -1,5 +1,6 @@
 package br.edu.utfpr.servicebook.model.entity;
 
+import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,13 +12,15 @@ import javax.persistence.*;
 public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotNull
     @Column
     private Long id;
 
+    @NotNull
     @Column(unique = true)
     private String name;
 
-    @NonNull
+    @NotNull
     @Column
     private Long idState;
 }
