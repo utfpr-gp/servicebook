@@ -11,12 +11,11 @@ import javax.persistence.*;
 public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private Long id;
 
     @Column(unique = true)
     private String name;
 
-    @Column
+    @Column(unique = true)
     private Long idState;
 }

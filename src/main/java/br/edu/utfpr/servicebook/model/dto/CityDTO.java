@@ -11,7 +11,6 @@ public class CityDTO {
     @NotEmpty(message = "O nome da cidade é obrigatório")
     private String name;
 
-//    @NotEmpty(message = "Selecionar um estado é obrigatório")
     private Long idState;
 
 }

@@ -12,13 +12,12 @@ public class State {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-    @Column
     private Long id;
 
     @Column(unique = true)
     private String name;
 
-    @Column
+    @Column(unique = true)
     private String uf;
 
 }
