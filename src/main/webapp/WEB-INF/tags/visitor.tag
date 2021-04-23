@@ -1,6 +1,5 @@
 <%@tag description="Template inicial" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <%@attribute name="title" %>
 
 <!DOCTYPE html>
@@ -8,9 +7,10 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
     <title>${title}</title>
 
-    <!-- CSS  -->
+    <link rel="shortcut icon" href="assets/resources/images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="assets/libraries/materialize/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
     <link href="assets/resources/styles/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
@@ -24,6 +24,7 @@
             </svg>
             <h4 class="left logo-text">ServiceBook</h4>
         </a>
+
         <ul class="right hide-on-med-and-down">
             <li><a class="menu-itens" href="#!">ENTRAR</a></li>
             <li><a class="menu-itens" href="#!">OFEREÇA SEUS SERVIÇOS</a></li>
@@ -33,6 +34,7 @@
             <li><a class="menu-itens" href="#!">ENTRAR</a></li>
             <li><a class="menu-itens" href="#!">OFEREÇA SEUS SERVIÇOS</a></li>
         </ul>
+
         <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
     </div>
 </nav>
@@ -40,7 +42,6 @@
 <jsp:doBody/>
 
 <footer class="page-footer">
-
     <div class="footer-copyright">
         <div class="container">
             <p class="center">© Copyright 2021 - ServiceBook - Todos os direitos</p>
@@ -52,7 +53,6 @@
 <script src="assets/libraries/materialize/js/materialize.min.js"></script>
 <script src="assets/resources/scripts/main.js"></script>
 <script src="assets/resources/scripts/init.js"></script>
-
 
 </body>
 </html>

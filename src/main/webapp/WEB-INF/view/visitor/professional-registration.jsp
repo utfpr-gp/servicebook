@@ -8,11 +8,8 @@
         <main>
             <div class="container">
                 <div class="section">
-
                     <div class="row">
                         <h3 class="center primary-color-text"><strong>Cadastre-se</strong></h3>
-
-
                         <div class="row center">
                             <div class="col s12 l6 offset-l3  input-field">
                                 <form action="#">
@@ -63,27 +60,21 @@
                                     </div>
                                     <div class="col s10 offset-s1 m6 spacing-buttons">
                                         <div class="center">
-                                            <a class="waves-effect waves-light btn btn-gray" href="">Voltar</a>
+                                            <a class="waves-effect waves-light btn btn-gray" href="#!">Voltar</a>
                                         </div>
                                     </div>
                                     <div class="col s10 offset-s1 m6 spacing-buttons">
                                         <div class="center">
-                                            <button class="waves-effect waves-light btn" href="">Cadastrar</button>
+                                            <button class="waves-effect waves-light btn" href="#!">Cadastrar</button>
                                         </div>
                                     </div>
-
-
                                 </form>
                             </div>
                         </div>
-
                     </div>
-
                 </div>
             </div>
         </main>
-
-
 
     </jsp:body>
 </t:visitor>

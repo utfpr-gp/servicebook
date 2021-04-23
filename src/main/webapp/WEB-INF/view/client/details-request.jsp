@@ -12,7 +12,6 @@
                         <div class="col s12">
                             <h2 class="secondary-color-text center spacing-standard tertiary-color-text">Escolha um Pedreiro!</h2>
                         </div>
-
                         <div class="col s12 m6 tertiary-color-text text-info-request">
                             <p>Preciso de um pedreiro para trocar o piso....</p>
                             <p>Pedido expedido em 08/04/2021</p>
@@ -50,7 +49,6 @@
                                         <div class="right">
                                             <span class="dark-color-text">17</span> <i class="material-icons icon-like-area-request dark-color-text">thumb_up</i>
                                         </div>
-
                                     </div>
                                     <div class="col s12 center">
                                         <svg style="width:150px;height:150px" viewBox="0 0 24 24">
@@ -88,7 +86,6 @@
                                         <div class="right">
                                             <span class="dark-color-text">17</span> <i class="material-icons icon-like-area-request dark-color-text">thumb_up</i>
                                         </div>
-
                                     </div>
                                     <div class="col s12 center">
                                         <svg style="width:150px;height:150px" viewBox="0 0 24 24">
@@ -108,7 +105,6 @@
                                 </div>
                             </div>
                         </div>
-
 
                         <div class="col s12 l4">
                             <div class="card-panel card-resquest">
@@ -127,7 +123,6 @@
                                         <div class="right">
                                             <span>17</span> <i class="material-icons icon-like-area-request dark-color-text">thumb_up</i>
                                         </div>
-
                                     </div>
                                     <div class="col s12 center">
                                         <svg style="width:150px;height:150px" viewBox="0 0 24 24">
@@ -147,8 +142,6 @@
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
             </div>

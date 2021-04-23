@@ -8,14 +8,9 @@
         <main>
             <div class="container">
                 <div class="section">
-
                     <div class="row">
                         <h3 class="center primary-color-text">Ordem de serviços</h3>
-
-
-
                     </div>
-
                 </div>
             </div>
         </main>

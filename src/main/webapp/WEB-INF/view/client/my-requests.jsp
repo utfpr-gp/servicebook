@@ -10,7 +10,6 @@
                 <div class="section">
                     <div class="row">
                         <h3 class="secondary-color-text center spacing-standard">Minhas solicitações</h3>
-
                         <div class="row card-request spacing-standard">
                             <div class="col s8 m10 l2 center">
                                 <svg style="width:120px;height:120px" viewBox="0 0 24 24">
@@ -22,7 +21,6 @@
                                     <div class="badge-requests no-margin right"><span>4</span></div>
                                 </div>
                             </div>
-
                             <div class="col s12 l8 text-detail-request">
                                 <p>Pedreiro</p>
                                 <p class="truncate">Preciso de um serviço para trocar o piso.....</p>
@@ -33,7 +31,6 @@
                                     <div class="badge-requests no-margin right"><span>4</span></div>
                                 </div>
                             </div>
-
                             <div class="col s12">
                                 <div class="row">
                                     <div class="col s6 m6 l2 offset-l8 spacing-buttons center">
@@ -49,8 +46,6 @@
                                 </div>
                             </div>
                         </div>
-
-
                         <div class="row card-request spacing-standard">
                             <div class="col s8 m10 l2 center">
                                 <svg style="width:120px;height:120px" viewBox="0 0 24 24">
@@ -62,7 +57,6 @@
                                     <div class="badge-requests no-margin right"><span>6</span></div>
                                 </div>
                             </div>
-
                             <div class="col s12 l8 text-detail-request">
                                 <p>Eletrecista</p>
                                 <p class="truncate">Preciso de um serviço para trocar o fios e tomada.....</p>
@@ -73,7 +67,6 @@
                                     <div class="badge-requests no-margin right"><span>6</span></div>
                                 </div>
                             </div>
-
                             <div class="col s12">
                                 <div class="row">
                                     <div class="col s6 m6 l2 offset-l8 spacing-buttons center">
@@ -89,7 +82,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

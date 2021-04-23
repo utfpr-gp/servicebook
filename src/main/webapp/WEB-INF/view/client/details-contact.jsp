@@ -27,7 +27,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                         <div class="col s12 center">
                             <svg style="width:200px;height:200px" viewBox="0 0 24 24">
@@ -74,7 +73,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

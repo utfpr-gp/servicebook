@@ -8,13 +8,8 @@
         <main>
             <div class="container">
                 <div class="section">
-
-                    <!--   Icon Section   -->
                     <div class="row">
-
                         <h3 class="center secondary-color-text range-quantity">Cadastro de Profisssão</h3>
-
-
                         <form action="profissao" method="post">
                             <div class="col s12 l4 offset-l4 input-field range-quantity">
                                 <div class="row">
@@ -37,13 +32,9 @@
                                     </div>
                                 </div>
                             </div>
-                    </form>
-
-
-
+                        </form>
+                    </div>
                 </div>
-
-            </div>
             </div>
         </main>
 

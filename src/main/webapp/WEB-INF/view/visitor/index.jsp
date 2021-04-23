@@ -10,7 +10,6 @@
                 <div class="container">
                     <br><br>
                     <h3 class="header center logo-text logo-text-parallax">ServiceBook</h3>
-
                     <div class="row center">
                     </div>
                     <div class="row center">
@@ -24,23 +23,16 @@
                     </div>
                     <h4 class="header center">O MELHOR PROFISSIONAL QUE VOCÊ PRECISA ESTÁ AQUI!</h4>
                     <h4 class="header center">São + de 3000 profissionais cadastrados!</h4>
-
-                    <br><br>
-
                 </div>
             </div>
-
             <div class="parallax"><img id="img-city" src="assets/resources/images/guarapuava.jpg" alt="img fundo"></div>
         </div>
 
-
         <div class="container">
             <div class="section">
-
                 <div class="row">
                     <div class="col s12">
                         <h4 class="center">Bora contratar um profissional para realizar o serviço!</h4>
-
                         <blockquote class="itens-list">
                             <p>Descreva o serviço que precisa;</p>
                             <p>Informe para quando precisa que o serviço seja realizado;</p>
@@ -51,14 +43,11 @@
                             <p>Pronto!</p>
                             <p>O pagamento do serviço é realizado diretamente ao profissional!</p>
                         </blockquote>
-
                         <div class="center">
-                            <a class="waves-effect waves-light btn" href="pages/request-job/01.html">Começar</a>
+                            <a class="waves-effect waves-light btn" href="#!">Começar</a>
                         </div>
-
                     </div>
                 </div>
-
             </div>
         </div>
 
