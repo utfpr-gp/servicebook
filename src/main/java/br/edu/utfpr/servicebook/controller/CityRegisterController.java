@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.sql.SQLException;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ public class CityRegisterController {
 
     @GetMapping
     public ModelAndView showForm(){
-        ModelAndView mv = new ModelAndView("city-register");
+        ModelAndView mv = new ModelAndView("admin/city-register");
         List<State> states = stateService.findAll();
 
         List<StateDTO> stateDTOs = states.stream()
@@ -58,14 +58,14 @@ public class CityRegisterController {
 
 
     @PostMapping
-    public ModelAndView save(@Valid CityDTO dto, BindingResult errors, RedirectAttributes redirectAttributes) {
+    public ModelAndView save(@Valid CityDTO dto, BindingResult errors, RedirectAttributes redirectAttributes){
 
         for(FieldError e: errors.getFieldErrors()){
             log.info(e.getField() + " -> " + e.getCode());
         }
 
         if(errors.hasErrors()){
-            ModelAndView mv = new ModelAndView("city-register");
+            ModelAndView mv = new ModelAndView("admin/city-register");
             mv.addObject("dto", dto);
             mv.addObject("errors", errors.getAllErrors());
 
@@ -83,6 +83,7 @@ public class CityRegisterController {
         cityService.save(city);
 
         redirectAttributes.addFlashAttribute("msg", "Cidade cadastrada com sucesso!");
+
         return new ModelAndView("redirect:cidades");
     }
 }
