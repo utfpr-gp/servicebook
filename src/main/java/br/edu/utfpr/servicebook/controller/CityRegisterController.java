@@ -11,12 +11,12 @@ import br.edu.utfpr.servicebook.service.StateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -58,7 +58,7 @@ public class CityRegisterController {
 
 
     @PostMapping
-    public ModelAndView save(@Valid CityDTO dto, BindingResult errors, RedirectAttributes redirectAttributes){
+    public ModelAndView save(@Valid CityDTO dto, BindingResult errors, RedirectAttributes redirectAttributes) {
 
         for(FieldError e: errors.getFieldErrors()){
             log.info(e.getField() + " -> " + e.getCode());
@@ -81,7 +81,6 @@ public class CityRegisterController {
 
         City city = cityMapper.toEntity(dto);
         cityService.save(city);
-
 
         redirectAttributes.addFlashAttribute("msg", "Cidade cadastrada com sucesso!");
         return new ModelAndView("redirect:cidades");
