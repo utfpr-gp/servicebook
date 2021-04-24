@@ -18,10 +18,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import javax.validation.Valid;
 
 @RequestMapping("/cidades")
@@ -59,7 +59,6 @@ public class CityRegisterController {
 
     @PostMapping
     public ModelAndView save(@Valid CityDTO dto, BindingResult errors, RedirectAttributes redirectAttributes){
-
         for(FieldError e: errors.getFieldErrors()){
             log.info(e.getField() + " -> " + e.getCode());
         }
@@ -79,10 +78,20 @@ public class CityRegisterController {
             return mv;
         }
 
-        City city = cityMapper.toEntity(dto);
-        cityService.save(city);
+        Optional<State> state = stateService.findById(dto.getIdState());
 
-        redirectAttributes.addFlashAttribute("msg", "Cidade cadastrada com sucesso!");
+        if(state.isPresent()){
+            Optional<City> cityIsExist = cityService.findByNameAndState(dto.getName(), state.get());
+
+            if(!cityIsExist.isPresent()){
+                City city = cityMapper.toEntity(dto);
+                city.setState(state.get());
+                cityService.save(city);
+
+                redirectAttributes.addFlashAttribute("msg", "Cidade cadastrada com sucesso!");
+            }
+
+        }
 
         return new ModelAndView("redirect:cidades");
     }

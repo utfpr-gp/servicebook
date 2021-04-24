@@ -15,6 +15,6 @@ public class City {
 
     private String name;
 
-    @Column(unique = true)
-    private Long idState;
+    @ManyToOne
+    private State state;
 }

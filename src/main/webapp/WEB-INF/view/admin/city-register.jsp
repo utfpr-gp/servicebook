@@ -84,8 +84,3 @@
     </jsp:body>
 </a:admin>
 <script src="assets/resources/scripts/cities.js"></script>
-
-
-
-
-

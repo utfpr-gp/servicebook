@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook.service;
 
 import br.edu.utfpr.servicebook.model.entity.City;
+import br.edu.utfpr.servicebook.model.entity.State;
 import br.edu.utfpr.servicebook.model.repository.CityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,4 +33,9 @@ public class CityService {
 
         return this.cityRepository.findById(id);
     }
+
+    public Optional<City> findByNameAndState(String name, State state){
+        return this.cityRepository.findByNameAndState(name, state);
+    }
+
 }
