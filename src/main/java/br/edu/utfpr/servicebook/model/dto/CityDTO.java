@@ -1,6 +1,5 @@
 package br.edu.utfpr.servicebook.model.dto;
 
-import br.edu.utfpr.servicebook.model.entity.State;
 import lombok.*;
 import javax.validation.constraints.*;
 
@@ -14,4 +13,5 @@ public class CityDTO {
     private String name;
 
     private Long idState;
+
 }

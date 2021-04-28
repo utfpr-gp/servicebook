@@ -17,6 +17,7 @@ $(document).ready(function (){
         $('#value-input-range').html( $(this).val() );
     });
 
+    //Tempo de exibição de mensagens
     $(".msg-view").fadeTo(4000, 0.0);
 
 });

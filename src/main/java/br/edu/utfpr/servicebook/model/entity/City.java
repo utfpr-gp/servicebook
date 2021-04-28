@@ -4,17 +4,20 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "cities")
 @Data
+@Table(name = "cities")
 @NoArgsConstructor
+@RequiredArgsConstructor
+@Entity
 public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NonNull
     private String name;
 
+    @NonNull
     @ManyToOne
     private State state;
 }

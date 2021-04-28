@@ -66,7 +66,6 @@
                     </div>
                 </c:if>
 
-                <p>${teste}</p>
                 <c:if test="${not empty errors}">
                 <div class="row">
                     <div class="col s12">

@@ -4,18 +4,21 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "states")
 @Data
+@Table(name = "states")
 @NoArgsConstructor
+@RequiredArgsConstructor
+@Entity
 public class State {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NonNull
     @Column(unique = true)
     private String name;
 
+    @NonNull
     @Column(unique = true)
     private String uf;
 
