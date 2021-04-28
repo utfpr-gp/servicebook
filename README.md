@@ -47,3 +47,6 @@ Universidade Tecnológica Federal do Paraná - Brasil.
 
 0.0.1 - Release de 13/04/2021
 
+## Modelo de dados
+
+<img src="/data-model/img/avaliacao2.png" alt="My cool logo"/>
