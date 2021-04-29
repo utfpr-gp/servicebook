@@ -18,5 +18,4 @@ public class ServicebookApplication {
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
-
 }
