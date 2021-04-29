@@ -1,7 +1,9 @@
 package br.edu.utfpr.servicebook.model.dto;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.*;
+
 
 @Data
 @NoArgsConstructor
@@ -11,6 +13,8 @@ public class CityDTO {
 
     @NotEmpty(message = "O nome da cidade é obrigatório")
     private String name;
+
+    private MultipartFile image;
 
     private Long idState;
 

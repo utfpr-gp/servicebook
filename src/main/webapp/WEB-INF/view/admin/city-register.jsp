@@ -18,35 +18,53 @@
                 <div class="section">
                     <div class="row">
                         <h3 class="center secondary-color-text range-quantity">Cadastro de Cidade</h3>
-                        <form action="cidades" method="post">
+                        <form action="cidades" method="post" enctype="multipart/form-data">
                             <div class="row center range-quantity">
-                                <div class="col s4 offset-s4 fomate-states-name">
+                                <div class="col s12 m4 offset-m4 fomate-states-name">
                                     <select id="select-state" name="idState" >
+                                        <c:if test="${not empty dto.idState}">
+                                            <c:forEach var="state" items="${states}">
+                                                <c:if test="${dto.idState == state.id}">
+                                                    <option value="${dto.idState}" selected>${state.name}-${state.uf}</option>
+                                                </c:if>
+                                            </c:forEach>
+                                        </c:if>
+
                                         <c:forEach var="state" items="${states}">
-                                            <option value="${state.id}"><p>${state.name}-${state.uf}</p></option>
+                                            <c:if test="${state.id != dto.idState}">
+                                                <option value="${state.id}">${state.name}-${state.uf}</option>
+                                            </c:if>
                                         </c:forEach>
                                     </select>
                                 </div>
-                                <div class="col s4 offset-s4 input-field">
+                                <div class="col s12 m4 offset-m4 input-field">
                                     <div class="row">
                                         <div class="input-field  col s12">
                                             <i class="material-icons prefix primary-color-text">location_city</i>
                                                 <input type="text" id="autocomplete-input" name="name" class="autocomplete" value="${dto.name}">
                                             <label for="autocomplete-input">Cidade</label>
                                         </div>
-
+                                        <div class="col s10 offset-s1 l12  spacing-standard">
+                                            <div class="file-field input-field">
+                                                <div class="btn">
+                                                    <span>Choose File</span>
+                                                    <input type="file" name="image" accept="image/*">
+                                                </div>
+                                                <div class="file-path-wrapper">
+                                                    <input class="file-path" placeholder="image.jpg"  type="text">
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="row">
-                                            <div class="col s6 m6 spacing-buttons">
+                                            <div class="col s6 spacing-buttons">
                                                 <div class="center">
                                                     <a class="waves-effect waves-light btn btn-gray"
                                                        href="javascript: alert('Voltou')">Voltar</a>
                                                 </div>
                                             </div>
-                                            <div class="col s6 m6 spacing-buttons">
+                                            <div class="col s6 spacing-buttons">
                                                 <div class="center">
-                                                    <div class="right">
-                                                        <button class="waves-effect waves-light btn" type="submit">Cadastrar</button>
-                                                    </div>
+                                                    <button class="waves-effect waves-light btn" type="submit">Cadastrar</button>
                                                 </div>
                                             </div>
                                         </div>

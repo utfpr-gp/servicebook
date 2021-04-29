@@ -17,6 +17,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -59,7 +63,7 @@ public class CityRegisterController {
     }
 
     @PostMapping
-    public ModelAndView save(@Valid CityDTO dto, BindingResult errors, RedirectAttributes redirectAttributes) {
+    public ModelAndView save(@Valid CityDTO dto, BindingResult errors, RedirectAttributes redirectAttributes) throws IOException {
         for (FieldError e : errors.getFieldErrors()) {
             log.info(e.getField() + " -> " + e.getCode());
         }
@@ -74,11 +78,17 @@ public class CityRegisterController {
             Optional<City> cityIsExist = cityService.findByNameAndState(dto.getName(), state.get());
 
             if (!cityIsExist.isPresent()) {
-                City city = cityMapper.toEntity(dto);
-                city.setState(state.get());
-                cityService.save(city);
+                if(dto.getImage().getSize() > 1){
+                    City city = cityMapper.toEntity(dto);
+                    city.setState(state.get());
+                    cityService.save(city);
 
-                redirectAttributes.addFlashAttribute("msg", "Cidade cadastrada com sucesso!");
+                    saveImageCity(dto, state.get().getUf());
+                    redirectAttributes.addFlashAttribute("msg", "Cidade cadastrada com sucesso!");
+                }else{
+                    errors.rejectValue("image", "error.dto", "Selecione uma imagem.");
+                    return errorFowarding(dto, errors);
+                }
             } else {
                 errors.rejectValue("name", "error.dto", "A cidade já está cadastrada.");
                 return errorFowarding(dto, errors);
@@ -105,6 +115,13 @@ public class CityRegisterController {
         mv.addObject("states", stateDTOs);
 
         return mv;
+    }
+
+    public void saveImageCity(CityDTO dto, String uf) throws IOException {
+        byte[] bytes = dto.getImage().getBytes();
+        String name = (dto.getName() +"-"+ uf).toLowerCase();
+        Path path = Paths.get("src/main/webapp/assets/resources/images/cities/" + name);
+        Files.write(path, bytes);
     }
 
 }
