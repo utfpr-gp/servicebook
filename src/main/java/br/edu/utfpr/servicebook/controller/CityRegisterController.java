@@ -8,6 +8,8 @@ import br.edu.utfpr.servicebook.model.mapper.CityMapper;
 import br.edu.utfpr.servicebook.model.mapper.StateMapper;
 import br.edu.utfpr.servicebook.service.CityService;
 import br.edu.utfpr.servicebook.service.StateService;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -16,8 +18,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -25,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.Valid;
+
 
 @RequestMapping("/cidades")
 @Controller
@@ -45,10 +51,14 @@ public class CityRegisterController {
     @Autowired
     private StateMapper stateMapper;
 
+    @Autowired
+    private Cloudinary cloudinary;
+
     @GetMapping
     public ModelAndView showForm() {
         ModelAndView mv = new ModelAndView("admin/city-register");
         List<State> states = stateService.findAll();
+
 
         List<StateDTO> stateDTOs = states.stream()
                 .map(state -> stateMapper.toResponseDto(state))
@@ -59,7 +69,7 @@ public class CityRegisterController {
     }
 
     @PostMapping
-    public ModelAndView save(@Valid CityDTO dto, BindingResult errors, RedirectAttributes redirectAttributes) {
+    public ModelAndView save(@Valid CityDTO dto, BindingResult errors, RedirectAttributes redirectAttributes) throws IOException {
         for (FieldError e : errors.getFieldErrors()) {
             log.info(e.getField() + " -> " + e.getCode());
         }
@@ -74,11 +84,23 @@ public class CityRegisterController {
             Optional<City> cityIsExist = cityService.findByNameAndState(dto.getName(), state.get());
 
             if (!cityIsExist.isPresent()) {
-                City city = cityMapper.toEntity(dto);
-                city.setState(state.get());
-                cityService.save(city);
 
-                redirectAttributes.addFlashAttribute("msg", "Cidade cadastrada com sucesso!");
+                if(!dto.getImage().isEmpty()){
+                    File city_image = Files.createTempFile("temp", dto.getImage().getOriginalFilename()).toFile();
+                    dto.getImage().transferTo(city_image);
+                    Map data = cloudinary.uploader().upload(city_image, ObjectUtils.asMap("folder", "cities"));
+
+                    City city = cityMapper.toEntity(dto);
+                    city.setState(state.get());
+                    city.setImage((String)data.get("url"));
+                    cityService.save(city);
+
+                    redirectAttributes.addFlashAttribute("msg", "Cidade cadastrada com sucesso!");
+                }else{
+                    errors.rejectValue("image", "error.dto", "Imagem é obrigatório!");
+                    return errorFowarding(dto, errors);
+                }
+
             } else {
                 errors.rejectValue("name", "error.dto", "A cidade já está cadastrada.");
                 return errorFowarding(dto, errors);

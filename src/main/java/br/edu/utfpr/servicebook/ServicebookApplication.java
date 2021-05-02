@@ -1,5 +1,7 @@
 package br.edu.utfpr.servicebook;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,5 +19,14 @@ public class ServicebookApplication {
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
+    }
+
+    @Bean
+    public Cloudinary cloudinary(){
+        return new Cloudinary(ObjectUtils.asMap(
+                "cloud_name","dgueb0wir",
+                "api_key", "546318655587864",
+                "api_secret", "UPEpuVA_PWlah9B5BrkZMx7E5VE"
+        ));
     }
 }
