@@ -50,7 +50,7 @@
                                             <div class="file-field input-field">
                                                 <div class="btn">
                                                     <span>Escolher imagem</span>
-                                                    <input type="file" name="image" accept="image/*">
+                                                    <input type="file" name="image" accept=".jpg, .jpeg, .png">
                                                 </div>
                                                 <div class="file-path-wrapper">
                                                     <input class="file-path validate" placeholder="image.jpg" type="text">

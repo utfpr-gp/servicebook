@@ -15,12 +15,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -86,16 +88,24 @@ public class CityRegisterController {
             if (!cityIsExist.isPresent()) {
 
                 if(!dto.getImage().isEmpty()){
-                    File city_image = Files.createTempFile("temp", dto.getImage().getOriginalFilename()).toFile();
-                    dto.getImage().transferTo(city_image);
-                    Map data = cloudinary.uploader().upload(city_image, ObjectUtils.asMap("folder", "cities"));
 
-                    City city = cityMapper.toEntity(dto);
-                    city.setState(state.get());
-                    city.setImage((String)data.get("url"));
-                    cityService.save(city);
+                    if(isValidateImage(dto.getImage())){
+                        File city_image = Files.createTempFile("temp", dto.getImage().getOriginalFilename()).toFile();
+                        dto.getImage().transferTo(city_image);
+                        Map data = cloudinary.uploader().upload(city_image, ObjectUtils.asMap("folder", "cities"));
 
-                    redirectAttributes.addFlashAttribute("msg", "Cidade cadastrada com sucesso!");
+                        City city = cityMapper.toEntity(dto);
+                        city.setState(state.get());
+                        city.setImage((String)data.get("url"));
+                        cityService.save(city);
+
+                        redirectAttributes.addFlashAttribute("msg", "Cidade cadastrada com sucesso!");
+
+                    }else{
+                        errors.rejectValue("image", "error.dto", "O arquivo deve ser uma imagem (.jpg, .jpeg ou .png)");
+                        return errorFowarding(dto, errors);
+                    }
+
                 }else{
                     errors.rejectValue("image", "error.dto", "Imagem é obrigatório!");
                     return errorFowarding(dto, errors);
@@ -127,6 +137,18 @@ public class CityRegisterController {
         mv.addObject("states", stateDTOs);
 
         return mv;
+    }
+
+    public boolean isValidateImage(MultipartFile image){
+        List<String> content_types = Arrays.asList("image/png", "image/jpg", "image/jpeg");
+
+        for(int i = 0; i < content_types.size(); i++){
+            if(image.getContentType().toLowerCase().startsWith(content_types.get(i))){
+               return true;
+            }
+        }
+
+        return false;
     }
 
 }
