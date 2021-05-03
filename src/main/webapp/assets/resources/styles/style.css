@@ -313,11 +313,6 @@ footer.page-footer {
   margin: 0;
 }
 
-.msg-view{
-  width: 30%;
-  margin-left: 35%;
-  margin-right: 35%;
-}
 
 @media only screen and (max-width : 992px) {
   .parallax-container .section {
