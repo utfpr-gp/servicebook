@@ -23,19 +23,38 @@
                             <div class="row center range-quantity">
                                 <div class="col s12 l4 offset-l4 fomate-states-name">
                                     <select id="select-state" name="idState" >
+                                        <c:if test="${empty dto.idState}">
+                                            <c:forEach var="state" items="${states}">
+                                                <option value="${state.id}">${state.name}-${state.uf}</option>
+                                            </c:forEach>
+                                        </c:if>
+
                                         <c:if test="${not empty dto.idState}">
                                             <c:forEach var="state" items="${states}">
                                                 <c:if test="${dto.idState == state.id}">
                                                     <option value="${state.id}" selected>${state.name}-${state.uf}</option>
                                                 </c:if>
+
+                                                <c:if test="${dto.idState != state.id}">
+                                                    <option value="${state.id}">${state.name}-${state.uf}</option>
+                                                </c:if>
+
                                             </c:forEach>
                                         </c:if>
 
-                                        <c:forEach var="state" items="${states}">
-                                            <c:if test="${state.id != idState}">
-                                                <option value="${state.id}">${state.name}-${state.uf}</option>
-                                            </c:if>
-                                        </c:forEach>
+<%--                                        <c:if test="${not empty dto.idState}">--%>
+<%--                                            <c:forEach var="state" items="${states}">--%>
+<%--                                                <c:if test="${dto.idState == state.id}">--%>
+<%--                                                    <option value="${state.id}" selected>${state.name}-${state.uf}</option>--%>
+<%--                                                </c:if>--%>
+<%--                                            </c:forEach>--%>
+<%--                                        </c:if>--%>
+
+<%--                                        <c:forEach var="state" items="${states}">--%>
+<%--                                            <c:if test="${state.id != idState}">--%>
+<%--                                                <option value="${state.id}">${state.name}-${state.uf}</option>--%>
+<%--                                            </c:if>--%>
+<%--                                        </c:forEach>--%>
                                     </select>
                                 </div>
                                 <div class="col s12 l4 offset-l4 input-field">
