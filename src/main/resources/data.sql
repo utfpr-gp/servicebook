@@ -25,3 +25,5 @@ INSERT INTO states (name, uf) VALUES ('Santa Catarina', 'SC');
 INSERT INTO states (name, uf) VALUES ('São Paulo ', 'SP');
 INSERT INTO states (name, uf) VALUES ('Sergipe', 'SE');
 INSERT INTO states (name, uf) VALUES ('Tocantins', 'TO');
+INSERT INTO cities (image, name, state_id) VALUES ('http://res.cloudinary.com/dgueb0wir/image/upload/v1620067165/cities/qba9nnjuklvusnmyptzj.png', 'Guarapuava', '16');
+INSERT INTO cities (image, name, state_id) VALUES ('http://res.cloudinary.com/dgueb0wir/image/upload/v1620067285/cities/ygoenr6qu5avjy8wykjc.jpg', 'Curitiba', '16');

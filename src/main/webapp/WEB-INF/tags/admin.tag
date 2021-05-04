@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>${title}</title>
 
+    <link rel="shortcut icon" href="assets/resources/images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="assets/libraries/materialize/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
     <link href="assets/resources/styles/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
