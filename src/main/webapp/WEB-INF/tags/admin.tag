@@ -16,13 +16,9 @@
     <link href="assets/resources/styles/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 <body>
-<ul id="drop-city" class="dropdown-content">
-    <li><a href="#!">Cadastrar</a></li>
-    <li><a href="#!">Listar</a></li>
-</ul>
-<ul id="drop-profession" class="dropdown-content">
-    <li><a href="#!">Cadastrar</a></li>
-    <li><a href="#!">Listar</a></li>
+<ul id="dropdown1" class="dropdown-content">
+    <li><a href="#!">Cidade</a></li>
+    <li><a href="#!">Profissão</a></li>
 </ul>
 <nav class="nav-main" role="navigation">
     <div class="nav-wrapper container">
@@ -33,17 +29,14 @@
             <h4 class="left logo-text">ServiceBook</h4>
         </a>
         <ul class="right hide-on-med-and-down">
-            <li><a class="menu-itens dropdown-trigger" href="#!" data-target="drop-city">CIDADE<i class="material-icons right">arrow_drop_down</i></a></li>
-            <li><a class="menu-itens dropdown-trigger" href="#!" data-target="drop-profession">PROFISSÃO<i class="material-icons right">arrow_drop_down</i></a></li>
-            <li><a class="menu-itens" href="javascript: alert('minha conta')">MINHA CONTA</a></li>
+            <li><a class="menu-itens dropdown-trigger" href="#!" data-target="dropdown1">CADASTRAR<i class="material-icons right">arrow_drop_down</i></a></li>
+            <li><a class="menu-itens" href="#!">MINHA CONTA</a></li>
             <li><a class="menu-itens" href="#!">SAIR</a></li>
         </ul>
 
         <ul id="nav-mobile" class="sidenav">
             <li><a class="menu-itens" href="#!">CADASTRAR CIDADE</a></li>
-            <li><a class="menu-itens" href="#!">LISTAR CIDADE</a></li>
             <li><a class="menu-itens" href="#!">CADASTRAR PROFISSÃO</a></li>
-            <li><a class="menu-itens" href="#!">LISTAR PROFISSÃO</a></li>
             <li><a class="menu-itens" href="#!">MINHA CONTA</a></li>
             <li><a class="menu-itens" href="#!">SAIR</a></li>
 
@@ -51,7 +44,6 @@
         <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
     </div>
 </nav>
-
 <jsp:doBody/>
 
 <footer class="page-footer">
