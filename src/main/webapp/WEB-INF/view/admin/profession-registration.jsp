@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
 <t:admin title="Cadastro de Profissão">
@@ -10,7 +11,7 @@
                 <div class="section">
                     <div class="row">
                         <h3 class="center secondary-color-text range-quantity">Cadastro de Profisssão</h3>
-                        <form action="profissao" method="post">
+                        <form action="profissoes" method="post">
                             <div class="col s12 l4 offset-l4 input-field range-quantity">
                                 <div class="row">
                                     <div class="input-field  col s12">
@@ -35,6 +36,27 @@
                         </form>
                     </div>
                 </div>
+                <c:if test="${not empty msg}">
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="card-panel green lighten-1 msg-view center-align">
+                                <span class="white-text">${msg}</span>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
+
+                <c:if test="${not empty errors}">
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="card-panel red msg-view center-align">
+                                <c:forEach var="e" items="${errors}">
+                                    <span class="white-text">${e.getDefaultMessage()}</span><br>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
             </div>
         </main>
 
