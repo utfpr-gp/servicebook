@@ -11,7 +11,7 @@
                 <div class="container">
                     <br><br>
                     <h3 class="header center logo-text logo-text-parallax">ServiceBook</h3>
-                    <c:if test="${not empty cities}">
+                    <c:if test="${cities.size() > 1}">
                         <div class="row center">
                             <div class="col s10 offset-s1 m4 offset-m4  input-field">
                                 <select id="select-city" class="white-text select-city">
