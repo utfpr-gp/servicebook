@@ -11,5 +11,8 @@ $(document).ready(function (){
 
     //Tempo de exibição de mensagens
     $(".msg-view").fadeTo(5000, 0.0);
+    setTimeout(function() {
+        $(".msg-view").addClass('hide');
+    }, 5001);
 
 });
