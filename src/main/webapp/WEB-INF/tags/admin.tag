@@ -15,29 +15,36 @@
     <link href="assets/resources/styles/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 <body>
-<ul id="dropdown1" class="dropdown-content">
-    <li><a href="city-registration.html">Cidade</a></li>
-    <li><a href="profession-registration.html">Profissão</a></li>
+<ul id="drop-city" class="dropdown-content">
+    <li><a href="#!">Cadastrar</a></li>
+    <li><a href="#!">Listar</a></li>
+</ul>
+<ul id="drop-profession" class="dropdown-content">
+    <li><a href="#!">Cadastrar</a></li>
+    <li><a href="#!">Listar</a></li>
 </ul>
 <nav class="nav-main" role="navigation">
     <div class="nav-wrapper container">
-        <a id="logo-container" href="city-registration.html" class="brand-logo">
+        <a id="logo-container" href="#!" class="brand-logo">
             <svg class="logo-icon left" style="width: 50px;height:50px" viewBox="0 0 24 24">
                 <path class="primary-color-icon" d="M21.71 20.29L20.29 21.71A1 1 0 0 1 18.88 21.71L7 9.85A3.81 3.81 0 0 1 6 10A4 4 0 0 1 2.22 4.7L4.76 7.24L5.29 6.71L6.71 5.29L7.24 4.76L4.7 2.22A4 4 0 0 1 10 6A3.81 3.81 0 0 1 9.85 7L21.71 18.88A1 1 0 0 1 21.71 20.29M2.29 18.88A1 1 0 0 0 2.29 20.29L3.71 21.71A1 1 0 0 0 5.12 21.71L10.59 16.25L7.76 13.42M20 2L16 4V6L13.83 8.17L15.83 10.17L18 8H20L22 4Z" />
             </svg>
             <h4 class="left logo-text">ServiceBook</h4>
         </a>
         <ul class="right hide-on-med-and-down">
-            <li><a class="menu-itens dropdown-trigger" href="#!" data-target="dropdown1">CADASTRAR<i class="material-icons right">arrow_drop_down</i></a></li>
+            <li><a class="menu-itens dropdown-trigger" href="#!" data-target="drop-city">CIDADE<i class="material-icons right">arrow_drop_down</i></a></li>
+            <li><a class="menu-itens dropdown-trigger" href="#!" data-target="drop-profession">PROFISSÃO<i class="material-icons right">arrow_drop_down</i></a></li>
             <li><a class="menu-itens" href="javascript: alert('minha conta')">MINHA CONTA</a></li>
-            <li><a class="menu-itens" href="../../index.html">SAIR</a></li>
+            <li><a class="menu-itens" href="#!">SAIR</a></li>
         </ul>
 
         <ul id="nav-mobile" class="sidenav">
-            <li><a class="menu-itens" href="city-registration.html">CADASTRAR CIDADE</a></li>
-            <li><a class="menu-itens" href="profession-registration.html">CADASTRAR PROFISSÃO</a></li>
-            <li><a class="menu-itens" href="javascript: alert('minha conta')">MINHA CONTA</a></li>
-            <li><a class="menu-itens" href="../../index.html">SAIR</a></li>
+            <li><a class="menu-itens" href="#!">CADASTRAR CIDADE</a></li>
+            <li><a class="menu-itens" href="#!">LISTAR CIDADE</a></li>
+            <li><a class="menu-itens" href="#!">CADASTRAR PROFISSÃO</a></li>
+            <li><a class="menu-itens" href="#!">LISTAR PROFISSÃO</a></li>
+            <li><a class="menu-itens" href="#!">MINHA CONTA</a></li>
+            <li><a class="menu-itens" href="#!">SAIR</a></li>
 
         </ul>
         <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
