@@ -18,6 +18,9 @@ public class City {
     private String name;
 
     @NonNull
+    private String image;
+
+    @NonNull
     @ManyToOne
     private State state;
 }
