@@ -20,7 +20,7 @@
                     <div class="row">
                         <h3 class="center secondary-color-text range-quantity">Cadastro de Cidade</h3>
                         <form action="cidades" method="post" enctype="multipart/form-data">
-                            <div class="row center range-quantity">
+                            <div class="row center range-quantity  spacing-buttons">
                                 <div class="col s12 l6 offset-l3 fomate-states-name">
                                     <select id="select-state" name="idState" >
                                         <c:if test="${empty dto.idState}">
@@ -108,7 +108,7 @@
                         <div class="col s12 l8 offset-l2">
                             <table class="striped">
                                 <thead>
-                                <tr>
+                                <tr><th>#</th>
                                     <th>NOME</th>
                                     <th>ESTADO</th>
                                     <th>EDITAR</th>
@@ -117,6 +117,7 @@
                                 </thead>
                                 <tbody>
                                 <tr>
+                                    <td>1</td>
                                     <td>Guarapuava</td>
                                     <td>Paraná</td>
                                     <td><a href="#!" class="btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">edit</i></a></td>
@@ -126,30 +127,8 @@
                                 </tbody>
                             </table>
                         </div>
-
                     </div>
                 </div>
-                <c:if test="${not empty msg}">
-                    <div class="row">
-                        <div class="col s12 l4 offset-l4">
-                            <div class="card-panel green lighten-1 msg-view center-align">
-                                <span class="white-text">${msg}</span>
-                            </div>
-                        </div>
-                    </div>
-                </c:if>
-
-                <c:if test="${not empty errors}">
-                <div class="row">
-                    <div class="col s12 l4 offset-l4">
-                        <div class="card-panel red  msg-view center-align">
-                        <c:forEach var="e" items="${errors}">
-                            <span class="white-text">${e.getDefaultMessage()}</span><br>
-                        </c:forEach>
-                        </div>
-                    </div>
-                </div>
-                </c:if>
             </div>
 
             <div id="modal-delete" class="modal">
