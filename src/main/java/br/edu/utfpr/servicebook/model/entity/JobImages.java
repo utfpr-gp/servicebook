@@ -26,7 +26,7 @@ public class JobImages {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 	
 	@ManyToOne
 	@JoinColumn(name = "job_request_id")

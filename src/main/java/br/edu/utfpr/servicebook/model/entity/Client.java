@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -17,22 +18,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Table(name = "clients")
 @NoArgsConstructor
 @Entity
-public class Client {
+@PrimaryKeyJoinColumn(name="usuario_id")
+public class Client extends User {
 
 	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
-	
-	@OneToOne
-	@JoinColumn(name = "user_id", referencedColumnName = "id")
-	@JsonIgnore
-	private User user;
+	private Long id;
 	
 	@OneToMany(mappedBy = "client")
 	@JsonIgnore

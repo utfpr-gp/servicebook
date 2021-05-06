@@ -1,5 +1,6 @@
 package br.edu.utfpr.servicebook.model.entity;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 import javax.persistence.Column;
@@ -7,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -22,13 +25,14 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
-public class User {
+@Inheritance(strategy = InheritanceType.JOINED)
+public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 	
 	@NonNull
 	@Column(unique = true)
@@ -59,12 +63,5 @@ public class User {
 	@OneToOne(mappedBy = "user")
 	@JsonIgnore
 	private UserToken userToken;
-	
-	@OneToOne(mappedBy = "user")
-	@JsonIgnore
-	private Professional professional;
-	
-	@OneToOne(mappedBy = "user")
-	private Client client;
 	
 }

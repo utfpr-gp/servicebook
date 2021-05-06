@@ -13,6 +13,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,23 +23,18 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-@Data
 @Table(name = "professionals")
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
-public class Professional {
+@PrimaryKeyJoinColumn(name="usuario_id")
+public class Professional extends User {
 
 	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
-	
-	@OneToOne
-	@JoinColumn(name = "user_id", referencedColumnName = "id")
-	@JsonIgnore
-	private User user;
+	private Long id;
 	
 	@ManyToMany
 	@JoinTable(name = "professional_categories",
