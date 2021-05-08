@@ -13,8 +13,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -35,7 +33,6 @@ public class User implements Serializable {
 	private Long id;
 	
 	@NonNull
-	@Column(unique = true)
 	private String name;
 	
 	@NonNull
@@ -48,20 +45,19 @@ public class User implements Serializable {
 	private String gender;
 	
 	@NonNull
-	private String profile_picture;
+	private String profilePicture;
 	
 	@NonNull
-	private Date birth_date;
+	private Date birthDate;
 	
 	@NonNull
-	private String phone_number;
+	private String phoneNumber;
 	
-	private boolean phone_verified;
+	private boolean phoneVerified;
 	
-	private boolean email_verified;
+	private boolean emailVerified;
 	
 	@OneToOne(mappedBy = "user")
-	@JsonIgnore
 	private UserToken userToken;
 	
 }

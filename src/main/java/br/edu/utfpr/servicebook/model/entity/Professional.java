@@ -16,9 +16,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -32,15 +29,11 @@ public class Professional extends User {
 
 	private static final long serialVersionUID = 1L;
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	
 	@ManyToMany
-	@JoinTable(name = "professional_categories",
+	@JoinTable(name = "professional_expertise",
 			  joinColumns = @JoinColumn(name = "professional_id"),
 			  inverseJoinColumns = @JoinColumn(name = "category_id"))
-	private Set<Category> categories = new HashSet<>();
+	private Set<Expertise> expertises = new HashSet<>();
 	
 	@NonNull
 	@Column(unique = true)
@@ -48,5 +41,8 @@ public class Professional extends User {
 	
 	@OneToMany(mappedBy = "professional")
 	private Set<Avaliation> avaliations = new HashSet<>();
+	
+	@OneToOne(mappedBy = "professional")
+	private JobContracted jobContracted;
 	
 }

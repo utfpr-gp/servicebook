@@ -1,8 +1,5 @@
 package br.edu.utfpr.servicebook.model.entity;
 
-import java.sql.Date;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,31 +14,33 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @Data
-@Table(name = "users_token")
+@Table(name = "job_contracted")
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
-public class UserToken {
+public class JobContracted {
 
-	private static final long serialVersionUID = 1L;
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@NonNull
+	private String status;
+	
+	@NonNull
+	private String comments;
+	
+	@NonNull
+	private int rating;
+	
+	@NonNull
 	@OneToOne
-	@JoinColumn(name = "userToken", referencedColumnName = "id")
-	private User user;
+	@JoinColumn(name = "jobRequest", referencedColumnName = "id")
+	private JobRequest jobRequest;
 	
 	@NonNull
-	@Column(unique = true)
-	private String token;
-	
-	@NonNull
-	private String type;
-	
-	@NonNull
-	private Date expired_date;
+	@OneToOne
+	@JoinColumn(name = "professional", referencedColumnName = "id")
+	private Professional professional;
 	
 }

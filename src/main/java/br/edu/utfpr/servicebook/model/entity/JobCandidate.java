@@ -31,10 +31,7 @@ public class JobCandidate {
 	private boolean isQuit;
 	
 	@NonNull
-	private boolean chosen;
-	
-	@NonNull
-	private boolean chosen_by_budget;
+	private boolean chosenByBudget;
 	
 	@NonNull
 	private Date date; 

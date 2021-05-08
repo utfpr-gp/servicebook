@@ -1,6 +1,5 @@
 package br.edu.utfpr.servicebook.model.entity;
 
-import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,19 +12,17 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @Data
-@Table(name = "categories")
+@Table(name = "expertises")
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
-public class Category {
+public class Expertise {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -37,11 +34,10 @@ public class Category {
 	@Column(unique = true)
 	private String name;
 	
-	@ManyToMany(mappedBy = "categories")
+	@ManyToMany(mappedBy = "expertises")
 	private Set<Professional> professionals = new HashSet<>();
 	
 	@OneToMany(mappedBy = "category")
-	@JsonIgnore
 	private Set<JobRequest> jobRequests = new HashSet<>();
 	
 }

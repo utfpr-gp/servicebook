@@ -8,8 +8,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -30,7 +28,6 @@ public class JobImages {
 	
 	@ManyToOne
 	@JoinColumn(name = "job_request_id")
-	@JsonIgnore
 	private JobRequest jobRequest;
 	
 	@NonNull

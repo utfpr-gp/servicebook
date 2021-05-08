@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -25,8 +26,6 @@ import lombok.RequiredArgsConstructor;
 @Entity
 public class JobRequest {
 
-	private static final long serialVersionUID = 1L;
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -37,7 +36,7 @@ public class JobRequest {
 	
 	@ManyToOne
 	@JoinColumn(name = "category_id")
-	private Category category;
+	private Expertise category;
 	
 	@NonNull
 	private String status;
@@ -65,5 +64,8 @@ public class JobRequest {
 	
 	@OneToMany(mappedBy = "jobRequest")
 	private Set<JobImages> jobImages = new HashSet<>();
+	
+	@OneToOne(mappedBy = "jobRequest")
+	private JobContracted jobContracted;
 	
 }
