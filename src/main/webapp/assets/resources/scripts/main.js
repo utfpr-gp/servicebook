@@ -15,4 +15,8 @@ $(document).ready(function (){
         $(".msg-view").addClass('hide');
     }, 5001);
 
+    $("#show-area-perfil").click(function(i){
+        $("#area-perfil").toggleClass('hide-on-med-and-down');
+    });
+
 });
