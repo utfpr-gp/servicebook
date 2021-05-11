@@ -9,9 +9,6 @@ import br.edu.utfpr.servicebook.service.ProfessionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -20,7 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -40,14 +36,13 @@ public class ProfessionController {
     private ProfessionMapper professionMapper;
 
     @GetMapping
-    public ModelAndView show(){
+    public ModelAndView showForm(){
         ModelAndView mv = new ModelAndView("admin/profession-registration");
         List<Profession> professions = professionService.findAll();
 
-        List<ProfessionDTO> professionsDTOs = professions.stream()
-                .map(s -> professionMapper.toDto(s))
-                .collect(Collectors.toList());
-        mv.addObject("professions", professionsDTOs);
+        List<ProfessionDTO> professionDTOs = professions.stream().map(s -> professionMapper.toDto(s)).collect(Collectors.toList());
+        mv.addObject("professions", professionDTOs);
+
         return mv;
     }
 
@@ -99,7 +94,7 @@ public class ProfessionController {
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        log.debug("Removendo um profissão com id {}", id);
+        log.debug("Removendo uma profissão com id {}", id);
         Optional <Profession> optionalProfession = this.professionService.findById(id);
 
         if(!optionalProfession.isPresent()){
