@@ -26,9 +26,6 @@ INSERT INTO states (name, uf) VALUES ('Acre', 'AC'),
                                      ('Sergipe', 'SE'),
                                      ('Tocantins', 'TO');
 
-INSERT INTO cities (image, name, state_id) VALUES ('http://res.cloudinary.com/dgueb0wir/image/upload/v1620067165/cities/qba9nnjuklvusnmyptzj.png', 'Guarapuava', '16'),
-                                                  ('http://res.cloudinary.com/dgueb0wir/image/upload/v1620067285/cities/ygoenr6qu5avjy8wykjc.jpg', 'Curitiba', '16');
-
 INSERT INTO professions (name) VALUES ('Pedreiro'),
                                       ('Encanador'),
                                       ('Eletricista'),

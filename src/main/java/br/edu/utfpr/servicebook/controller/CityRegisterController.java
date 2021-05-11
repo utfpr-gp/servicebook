@@ -72,10 +72,12 @@ public class CityRegisterController {
                 .collect(Collectors.toList());
         mv.addObject("states", stateDTOs);
 
+
         List<CityDTO2> cityDTOs = cities.stream()
                 .map(city -> cityMapper.toResponseDetail(city))
                 .collect(Collectors.toList());
         mv.addObject("cities", cityDTOs);
+
 
         return mv;
     }
@@ -95,15 +97,14 @@ public class CityRegisterController {
         if (state.isPresent()) {
             Optional<City> cityIsExist = cityService.findByNameAndState(dto.getName(), state.get());
 
-
             if (!cityIsExist.isPresent()) {
 
                 if(!dto.getImage().isEmpty()){
 
                     if(isValidateImage(dto.getImage())){
-                        File city_image = Files.createTempFile("temp", dto.getImage().getOriginalFilename()).toFile();
-                        dto.getImage().transferTo(city_image);
-                        Map data = cloudinary.uploader().upload(city_image, ObjectUtils.asMap("folder", "cities"));
+                        File cityImage = Files.createTempFile("temp", dto.getImage().getOriginalFilename()).toFile();
+                        dto.getImage().transferTo(cityImage);
+                        Map data = cloudinary.uploader().upload(cityImage, ObjectUtils.asMap("folder", "cities"));
 
                         City city = cityMapper.toEntity(dto);
                         city.setState(state.get());
@@ -119,12 +120,12 @@ public class CityRegisterController {
                 }else {
                     if(dto.getId() != null){
                         Optional<City> city = cityService.findById(dto.getId());
-                        String url_image = city.get().getImage();
+                        String urlImage = city.get().getImage();
 
                         City ct = cityMapper.toEntity(dto);
                         ct.setState(state.get());
                         ct.setName(dto.getName());
-                        ct.setImage(url_image);
+                        ct.setImage(urlImage);
                         cityService.save(ct);
 
                         redirectAttributes.addFlashAttribute("msg", "Dados da cidade atualizados!");
@@ -166,13 +167,13 @@ public class CityRegisterController {
             throw new EntityNotFoundException("A cidade não foi encontrada pelo id informado");
         }
 
-        String url_image = city.get().getImage();
-        mv.addObject("image_current", url_image);
+        String urlImage = city.get().getImage();
+        mv.addObject("imageCurrent", urlImage);
 
-        String[] url_explode = url_image.split("/");
+        String[] urlExplode = urlImage.split("/");
 
-        String id_image = url_explode[8];
-        mv.addObject("id_image", id_image);
+        String id_image = urlExplode[8];
+        mv.addObject("idImage", id_image);
 
 
         CityDTO cityDTO = cityMapper.toResponseDto(city.get());
@@ -201,10 +202,10 @@ public class CityRegisterController {
     }
 
     public boolean isValidateImage(MultipartFile image){
-        List<String> content_types = Arrays.asList("image/png", "image/jpg", "image/jpeg");
+        List<String> contentTypes = Arrays.asList("image/png", "image/jpg", "image/jpeg");
 
-        for(int i = 0; i < content_types.size(); i++){
-            if(image.getContentType().toLowerCase().startsWith(content_types.get(i))){
+        for(int i = 0; i < contentTypes.size(); i++){
+            if(image.getContentType().toLowerCase().startsWith(contentTypes.get(i))){
                 return true;
             }
         }
@@ -212,26 +213,26 @@ public class CityRegisterController {
         return false;
     }
 
-    public String recoverIdImage(String url_image){
-        String[] url_explode = url_image.split("/");
-        String file_name = url_explode[8];
-        String[] file_name_explode = file_name.split("\\.");
-        String id_image = file_name_explode[0];
+    public String recoverIdImage(String urlImage){
+        String[] urlExplode = urlImage.split("/");
+        String fileName = urlExplode[urlExplode.length-1];
+        String[] fileNameExplode = fileName.split("\\.");
+        String idImage = fileNameExplode[0];
 
-        return id_image;
+        return idImage;
     }
 
     public void deleteImage(Optional<City> city) throws IOException {
-        String url_image = city.get().getImage();
-        cloudinary.uploader().destroy("cities/"+recoverIdImage(url_image), ObjectUtils.emptyMap());
+        String urlImage = city.get().getImage();
+        cloudinary.uploader().destroy("cities/"+recoverIdImage(urlImage), ObjectUtils.emptyMap());
     }
 
     public void uploadImage(CityDTO dto) throws IOException {
         Optional<City> city = cityService.findById(dto.getId());
 
-        File city_image = Files.createTempFile("temp", dto.getImage().getOriginalFilename()).toFile();
-        dto.getImage().transferTo(city_image);
-        Map data = cloudinary.uploader().upload(city_image, ObjectUtils.asMap("folder", "cities"));
+        File cityImage = Files.createTempFile("temp", dto.getImage().getOriginalFilename()).toFile();
+        dto.getImage().transferTo(cityImage);
+        Map data = cloudinary.uploader().upload(cityImage, ObjectUtils.asMap("folder", "cities"));
 
         City ct = cityMapper.toEntity(dto);
         ct.setImage((String)data.get("url"));

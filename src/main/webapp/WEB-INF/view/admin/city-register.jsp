@@ -55,26 +55,33 @@
                                             <div class="file-field input-field">
                                                 <div class="btn">
                                                     <span>Escolher imagem</span>
-                                                    <input type="file" name="image" accept=".jpg, .jpeg, .png" value="${image_current}">
+                                                    <input type="file" name="image" accept=".jpg, .jpeg, .png" value="${imageCurrent}">
                                                 </div>
                                                 <div class="file-path-wrapper">
-                                                    <input class="file-path validate" placeholder="image.jpg" type="text" value="${id_image}">
+                                                    <input class="file-path validate" placeholder="image.jpg" type="text" value="${idImage}">
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="col s10 offset-s1 spacing-buttons">
-                                            <img src="${image_current}" width="100%" class="materialboxed">
+                                            <img src="${imageCurrent}" width="100%" class="materialboxed">
                                         </div>
-
-                                        ${teste}
 
                                         <div class="row">
                                             <div class="col s6  spacing-buttons">
-                                                <div class="center">
-                                                    <a class="waves-effect waves-light btn btn-gray"
-                                                       href="javascript: alert('Voltou')">Voltar</a>
-                                                </div>
+                                                <c:if test="${empty id}">
+                                                    <div class="center">
+                                                        <a class="waves-effect waves-light btn btn-gray disabled"
+                                                           href="#!">Voltar</a>
+                                                    </div>
+                                                </c:if>
+
+                                                <c:if test="${not empty id}">
+                                                    <div class="center">
+                                                        <a class="waves-effect waves-light btn btn-gray"
+                                                           href="cidades">Voltar</a>
+                                                    </div>
+                                                </c:if>
                                             </div>
                                             <div class="col s6 spacing-buttons">
                                                 <div class="center">

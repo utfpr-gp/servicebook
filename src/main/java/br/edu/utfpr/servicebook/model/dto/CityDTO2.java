@@ -1,6 +1,5 @@
 package br.edu.utfpr.servicebook.model.dto;
 
-import br.edu.utfpr.servicebook.model.entity.State;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +12,6 @@ public class CityDTO2 {
 
     private String name;
 
-    private State state;
+    private StateDTO state;
 
 }
