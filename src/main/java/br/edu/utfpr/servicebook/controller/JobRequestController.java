@@ -114,7 +114,7 @@ public class JobRequestController {
             log.debug("Proximo Mês: {}", sessionDTO);
             sessionDTO.setRequest_expiration(DateUtil.getNextMonth());
         }
-
+        sessionDTO.setCreated_date(DateUtil.getToday());
         log.debug("Passo 2 {}", sessionDTO);
         return "redirect:/requisicoes?passo=3";
 
