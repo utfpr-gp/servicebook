@@ -10,24 +10,24 @@
             <div class="container">
                 <div class="section">
                     <div class="row">
-                        <h3 class="center secondary-color-text range-quantity">Cadastro de Profisssão</h3>
+                        <h3 class="center secondary-color-text range-quantity">Especialidades</h3>
+                        <div class="col s6 l4 offset-l2 spacing-buttons">
+                            <div class="center">
+                                <a class="waves-effect waves-light btn" href="profissoes">Novo</a>
+                            </div>
+                        </div>
                         <form action="profissoes" method="post">
                             <input name="id" type="hidden" value="${dto.id}">
                             <div class="col s12 l4 offset-l4 input-field range-quantity">
-                                <div class="row">
+
                                     <div class="input-field  col s12">
                                         <i class="material-icons prefix primary-color-text">work</i>
                                         <input placeholder="Pedreiro" type="text" id="autocomplete-input" name="name" class="autocomplete" value="${dto.name}">
                                         <label for="autocomplete-input">Profissão</label>
                                     </div>
-                                </div>
+
                             </div>
-                            <div class="col s6 l4 offset-l2 spacing-buttons">
-                                <div class="center">
-                                    <a class="waves-effect waves-light btn btn-gray" href="#!">Voltar</a>
-                                </div>
-                            </div>
-                            <div class="col s6 m4 spacing-buttons">
+                            <div class="col s6 offset-m6 spacing-buttons">
                                 <div class="center">
                                     <button class="waves-effect waves-light btn" type="submit">Salvar</button>
                                 </div>
@@ -53,6 +53,22 @@
                                 </div>
                             </c:if>
                         </form>
+                        <div id="modal-delete" class="modal">
+                            <div class="modal-content">
+                                <form action="" method="post">
+
+                                    <input type="hidden" name="_method" value="DELETE"/>
+
+                                    <div class="modal-content">
+                                        <h4>Você tem certeza que deseja excluir <strong id="strong-name"></strong>?</h4>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
+                                        <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                         <div class="col s12 l8 offset-l2 spacing-buttons">
                             <c:if test="${not empty professions}">
                                 <table class="striped">
@@ -78,24 +94,6 @@
                             </c:if>
                         </div>
                     </div>
-                </div>
-            </div>
-
-
-            <div id="modal-delete" class="modal">
-                <div class="modal-content">
-                    <form action="" method="post">
-
-                        <input type="hidden" name="_method" value="DELETE"/>
-
-                        <div class="modal-content">
-                            <h4>Você tem certeza que deseja excluir <strong id="strong-name"></strong>?</h4>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
-                            <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </main>

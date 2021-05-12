@@ -38,10 +38,8 @@ public class ProfessionController {
     @GetMapping
     public ModelAndView showForm(){
         ModelAndView mv = new ModelAndView("admin/profession-registration");
-        List<Profession> professions = professionService.findAll();
 
-        List<ProfessionDTO> professionDTOs = professions.stream().map(s -> professionMapper.toDto(s)).collect(Collectors.toList());
-        mv.addObject("professions", professionDTOs);
+        mv.addObject("professions", listProfessionDTO());
 
         return mv;
     }
@@ -88,6 +86,8 @@ public class ProfessionController {
         }
 
         ProfessionDTO professionDTO = professionMapper.toDto(optionalProfession.get());
+
+        mv.addObject("professions", listProfessionDTO());
         mv.addObject("dto", professionDTO);
         return mv;
     }
@@ -112,5 +112,12 @@ public class ProfessionController {
         mv.addObject("errors", errors.getAllErrors());
 
         return mv;
+    }
+
+    public List<ProfessionDTO> listProfessionDTO (){
+        List<Profession> professions = professionService.findAll();
+
+        List<ProfessionDTO> professionDTOs = professions.stream().map(s -> professionMapper.toDto(s)).collect(Collectors.toList());
+        return professionDTOs;
     }
 }
