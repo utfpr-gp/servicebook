@@ -6,9 +6,7 @@ $(document).ready(function () {
 
             modal = $(modal);
             var form = modal.find('form');
-            //var action = form.attr('action');
             form.attr('action', url);
-
             modal.find('#strong-name').text(name);
         }
     });
