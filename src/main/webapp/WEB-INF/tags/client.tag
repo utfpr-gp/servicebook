@@ -10,10 +10,10 @@
 
     <title>${title}</title>
 
-    <link rel="shortcut icon" href="assets/resources/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/assets/resources/images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="assets/libraries/materialize/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-    <link href="assets/resources/styles/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="${pageContext.request.contextPath}/assets/libraries/materialize/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="${pageContext.request.contextPath}/assets/resources/styles/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 
 <body>
@@ -55,9 +55,9 @@
 </footer>
 
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script src="assets/libraries/materialize/js/materialize.min.js"></script>
-<script src="assets/resources/scripts/main.js"></script>
-<script src="assets/resources/scripts/init.js"></script>
+<script src="${pageContext.request.contextPath}/assets/libraries/materialize/js/materialize.min.js"></script>
+<script src="${pageContext.request.contextPath}/assets/resources/scripts/main.js"></script>
+<script src="${pageContext.request.contextPath}/assets/resources/scripts/init.js"></script>
 
 </body>
 </html>

@@ -1,16 +1,8 @@
 $(document).ready(function (){
 
     $('#select-city').change(function(i){
-        var selectedCountry = $(this).children("option:selected").val();
-        if (selectedCountry == 1) {
-            $('#img-city').attr("src", "assets/resources/images/guarapuava.jpg")
-        }
-        if (selectedCountry == 2) {
-            $('#img-city').attr("src", "assets/resources/images/curitiba.jpg")
-        }
-        if (selectedCountry == 3) {
-            $('#img-city').attr("src", "assets/resources/images/saoPaulo.jpg")
-        }
+        let selectedCountry = $(this).children("option:selected").val();
+        $('#img-city').attr("src", selectedCountry);
     });
 
     $(document).on('input change', '#input-range', function() {
@@ -19,5 +11,12 @@ $(document).ready(function (){
 
     //Tempo de exibição de mensagens
     $(".msg-view").fadeTo(5000, 0.0);
+    setTimeout(function() {
+        $(".msg-view").addClass('hide');
+    }, 5001);
+
+    $("#show-area-perfil").click(function(i){
+        $("#area-perfil").toggleClass('hide-on-med-and-down');
+    });
 
 });
