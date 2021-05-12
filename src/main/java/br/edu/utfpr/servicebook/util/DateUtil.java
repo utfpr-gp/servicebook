@@ -22,12 +22,16 @@ public class DateUtil {
     private static final String[] weekDays = {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
     public static final String DATETIME_PATTERN="yyyy-MM-dd HH:mm:ss";
     public static final String DATE_PATTERN="yyyy-MM-dd";
+
     public static LocalDate getToday(){
         return LocalDate.now();
     }
+
     public static LocalDate getTomorrow() {
+
         return LocalDate.now().plusDays(1);
     }
+
     public static LocalDate getThisWeek(){
         LocalDate today = LocalDate.now();
 
@@ -40,7 +44,6 @@ public class DateUtil {
 
         LocalDate sunday = today.with(nextOrSame(SUNDAY));
         LocalDate nextSunday = sunday.plusWeeks(1);
-
         return nextSunday;
     }
 
