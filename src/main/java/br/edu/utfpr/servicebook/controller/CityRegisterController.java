@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.dto.CityDTO;
+import br.edu.utfpr.servicebook.model.dto.CityDTO2;
 import br.edu.utfpr.servicebook.model.dto.StateDTO;
 import br.edu.utfpr.servicebook.model.entity.City;
 import br.edu.utfpr.servicebook.model.entity.State;
@@ -8,8 +9,10 @@ import br.edu.utfpr.servicebook.model.mapper.CityMapper;
 import br.edu.utfpr.servicebook.model.mapper.StateMapper;
 import br.edu.utfpr.servicebook.service.CityService;
 import br.edu.utfpr.servicebook.service.StateService;
+
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -19,9 +22,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +36,8 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
-
 
 @RequestMapping("/cidades")
 @Controller
@@ -60,12 +65,19 @@ public class CityRegisterController {
     public ModelAndView showForm() {
         ModelAndView mv = new ModelAndView("admin/city-register");
         List<State> states = stateService.findAll();
-
+        List<City> cities = cityService.findAll();
 
         List<StateDTO> stateDTOs = states.stream()
                 .map(state -> stateMapper.toResponseDto(state))
                 .collect(Collectors.toList());
         mv.addObject("states", stateDTOs);
+
+
+        List<CityDTO2> cityDTOs = cities.stream()
+                .map(city -> cityMapper.toResponseDetail(city))
+                .collect(Collectors.toList());
+        mv.addObject("cities", cityDTOs);
+
 
         return mv;
     }
@@ -90,9 +102,9 @@ public class CityRegisterController {
                 if(!dto.getImage().isEmpty()){
 
                     if(isValidateImage(dto.getImage())){
-                        File city_image = Files.createTempFile("temp", dto.getImage().getOriginalFilename()).toFile();
-                        dto.getImage().transferTo(city_image);
-                        Map data = cloudinary.uploader().upload(city_image, ObjectUtils.asMap("folder", "cities"));
+                        File cityImage = Files.createTempFile("temp", dto.getImage().getOriginalFilename()).toFile();
+                        dto.getImage().transferTo(cityImage);
+                        Map data = cloudinary.uploader().upload(cityImage, ObjectUtils.asMap("folder", "cities"));
 
                         City city = cityMapper.toEntity(dto);
                         city.setState(state.get());
@@ -105,15 +117,33 @@ public class CityRegisterController {
                         errors.rejectValue("image", "error.dto", "O arquivo deve ser uma imagem (.jpg, .jpeg ou .png)");
                         return errorFowarding(dto, errors);
                     }
+                }else {
+                    if(dto.getId() != null){
+                        Optional<City> city = cityService.findById(dto.getId());
+                        String urlImage = city.get().getImage();
 
+                        City ct = cityMapper.toEntity(dto);
+                        ct.setState(state.get());
+                        ct.setName(dto.getName());
+                        ct.setImage(urlImage);
+                        cityService.save(ct);
+
+                        redirectAttributes.addFlashAttribute("msg", "Dados da cidade atualizados!");
+                    }else{
+                        errors.rejectValue("image", "error.dto", "Imagem é obrigatório!");
+                        return errorFowarding(dto, errors);
+                    }
+                }
+            } else {
+                if(isValidateImage(dto.getImage())){
+                    deleteImage(cityIsExist);
+                    uploadImage(dto);
+
+                    redirectAttributes.addFlashAttribute("msg", "Imagem atualizada!");
                 }else{
-                    errors.rejectValue("image", "error.dto", "Imagem é obrigatório!");
+                    errors.rejectValue("name", "error.dto", "A cidade já está cadastrada.");
                     return errorFowarding(dto, errors);
                 }
-
-            } else {
-                errors.rejectValue("name", "error.dto", "A cidade já está cadastrada.");
-                return errorFowarding(dto, errors);
             }
         } else {
             errors.rejectValue("idState", "error.dto", "Estado inválido...!");
@@ -121,6 +151,92 @@ public class CityRegisterController {
         }
 
         return new ModelAndView("redirect:cidades");
+    }
+
+    @GetMapping("/{id}")
+    public ModelAndView showFormUpdate(@PathVariable("id") Long id) throws Exception {
+        ModelAndView mv = new ModelAndView("admin/city-register");
+
+        if(id < 0){
+            throw new InvalidParameterException("O identificador não pode ser null");
+        }
+
+        Optional<City> city = cityService.findById(id);
+
+        if(!city.isPresent()){
+            throw new EntityNotFoundException("A cidade não foi encontrada pelo id informado");
+        }
+
+        String urlImage = city.get().getImage();
+        mv.addObject("imageCurrent", urlImage);
+
+        String[] urlExplode = urlImage.split("/");
+
+        String id_image = urlExplode[8];
+        mv.addObject("idImage", id_image);
+
+
+        CityDTO cityDTO = cityMapper.toResponseDto(city.get());
+        mv.addObject("dto", cityDTO);
+
+        List<State> states = stateService.findAll();
+        List<StateDTO> stateDTOs = states.stream()
+                .map(st -> stateMapper.toResponseDto(st))
+                .collect(Collectors.toList());
+
+        mv.addObject("states", stateDTOs);
+
+        return mv;
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
+        Optional<City> city = cityService.findById(id);
+
+        deleteImage(city);
+        cityService.delete(id);
+        redirectAttributes.addFlashAttribute("msg", "Cidade deletada!");
+
+        return "redirect:/cidades";
+
+    }
+
+    public boolean isValidateImage(MultipartFile image){
+        List<String> contentTypes = Arrays.asList("image/png", "image/jpg", "image/jpeg");
+
+        for(int i = 0; i < contentTypes.size(); i++){
+            if(image.getContentType().toLowerCase().startsWith(contentTypes.get(i))){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public String recoverIdImage(String urlImage){
+        String[] urlExplode = urlImage.split("/");
+        String fileName = urlExplode[urlExplode.length-1];
+        String[] fileNameExplode = fileName.split("\\.");
+        String idImage = fileNameExplode[0];
+
+        return idImage;
+    }
+
+    public void deleteImage(Optional<City> city) throws IOException {
+        String urlImage = city.get().getImage();
+        cloudinary.uploader().destroy("cities/"+recoverIdImage(urlImage), ObjectUtils.emptyMap());
+    }
+
+    public void uploadImage(CityDTO dto) throws IOException {
+        Optional<City> city = cityService.findById(dto.getId());
+
+        File cityImage = Files.createTempFile("temp", dto.getImage().getOriginalFilename()).toFile();
+        dto.getImage().transferTo(cityImage);
+        Map data = cloudinary.uploader().upload(cityImage, ObjectUtils.asMap("folder", "cities"));
+
+        City ct = cityMapper.toEntity(dto);
+        ct.setImage((String)data.get("url"));
+        cityService.save(ct);
     }
 
     public ModelAndView errorFowarding(CityDTO dto, BindingResult errors) {
@@ -136,19 +252,13 @@ public class CityRegisterController {
 
         mv.addObject("states", stateDTOs);
 
+        List<City> cities = cityService.findAll();
+        List<CityDTO2> cityDTOs = cities.stream()
+                .map(city -> cityMapper.toResponseDetail(city))
+                .collect(Collectors.toList());
+        mv.addObject("cities", cityDTOs);
+
         return mv;
-    }
-
-    public boolean isValidateImage(MultipartFile image){
-        List<String> content_types = Arrays.asList("image/png", "image/jpg", "image/jpeg");
-
-        for(int i = 0; i < content_types.size(); i++){
-            if(image.getContentType().toLowerCase().startsWith(content_types.get(i))){
-               return true;
-            }
-        }
-
-        return false;
     }
 
 }

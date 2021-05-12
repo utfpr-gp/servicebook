@@ -9,6 +9,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>${title}</title>
+    <base href="${pageContext.request.contextPath}/">
 
     <link rel="shortcut icon" href="assets/resources/images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -17,8 +18,8 @@
 </head>
 <body>
 <ul id="dropdown1" class="dropdown-content">
-    <li><a href="#!">Cidade</a></li>
-    <li><a href="#!">Profissão</a></li>
+    <li><a href="cidades">Cidade</a></li>
+    <li><a href="profissoes">Profissão</a></li>
 </ul>
 <nav class="nav-main" role="navigation">
     <div class="nav-wrapper container">
@@ -35,8 +36,8 @@
         </ul>
 
         <ul id="nav-mobile" class="sidenav">
-            <li><a class="menu-itens" href="#!">CADASTRAR CIDADE</a></li>
-            <li><a class="menu-itens" href="#!">CADASTRAR PROFISSÃO</a></li>
+            <li><a class="menu-itens" href="cidades">CADASTRAR CIDADE</a></li>
+            <li><a class="menu-itens" href="profissoes">CADASTRAR PROFISSÃO</a></li>
             <li><a class="menu-itens" href="#!">MINHA CONTA</a></li>
             <li><a class="menu-itens" href="#!">SAIR</a></li>
 
