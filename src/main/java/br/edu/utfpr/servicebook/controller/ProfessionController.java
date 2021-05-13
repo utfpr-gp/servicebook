@@ -6,9 +6,14 @@ import br.edu.utfpr.servicebook.model.entity.Profession;
 import br.edu.utfpr.servicebook.model.mapper.ProfessionMapper;
 import br.edu.utfpr.servicebook.service.ProfessionService;
 
+import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
+import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -17,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -36,11 +42,24 @@ public class ProfessionController {
     private ProfessionMapper professionMapper;
 
     @GetMapping
-    public ModelAndView showForm(){
+    public ModelAndView showForm(HttpServletRequest request,
+                                 @RequestParam(value = "pag", defaultValue = "1") int page,
+                                 @RequestParam(value = "siz", defaultValue = "3") int size,
+                                 @RequestParam(value = "ord", defaultValue = "registration") String order,
+                                 @RequestParam(value = "dir", defaultValue = "ASC") String direction){
         ModelAndView mv = new ModelAndView("admin/profession-registration");
+        PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(order).ascending().and(Sort.by("name")));
+        Page<Profession> professionPage = professionService.findAll(pageRequest);
 
-        mv.addObject("professions", listProfessionDTO());
+        //lista de alunos
+        List<ProfessionDTO> professionsDtos = professionPage.stream()
+                .map(s -> professionMapper.toDto(s))
+                .collect(Collectors.toList());
+        mv.addObject("professions", professionsDtos);
 
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(professionPage, "/alunos");
+        mv.addObject("pagination", paginationDTO);
+        mv.addObject("professions", professionsDtos);
         return mv;
     }
 

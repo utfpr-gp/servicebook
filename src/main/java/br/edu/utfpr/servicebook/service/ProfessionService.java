@@ -19,6 +19,8 @@ public class ProfessionService {
 
     public List<Profession> findAll() { return professionRepository.findAll(); }
 
+    public Page<Profession> findAll(PageRequest pageRequest) { return this.professionRepository.findAll(pageRequest); }
+
     public Optional<Profession> findByName(String name){
         return this.professionRepository.findByName(name);
     }
