@@ -41,6 +41,21 @@ public class JobRequestController {
     @Autowired
     private SmartValidator validator;
 
+    public enum RequestDateSelect{
+        today(0), tomorrow(1) , thisweek(2), nextweek(3), thismonth(4), nextmonth(5);
+
+        private int value;
+
+        RequestDateSelect(int value){
+            this.value = value;
+        }
+
+        public int getValue(){
+            return value;
+        }
+
+    }
+
     @GetMapping
     public String showWizard(@RequestParam(value = "passo", required = false, defaultValue = "1") Long step,
                              HttpSession httpSession,
@@ -79,37 +94,45 @@ public class JobRequestController {
 
     }
     @PostMapping("/passo-2")
-    public String saveFormDateJob(HttpSession httpSession,RedirectAttributes redirectAttributess, JobRequestDTO dto, Model model) throws ParseException {
+    public String saveFormDateJob(HttpSession httpSession, @Validated(JobRequestDTO.RequestExpirationGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model){
 
+        if(errors.hasErrors()){
+            model.addAttribute("dto", dto);
+            model.addAttribute("errors", errors.getAllErrors());
+            log.debug("Passo 2 {}", dto);
+            log.debug("Errors 2 {}", errors);
+            return "client/job-request/wizard-step-02";
 
+        }
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
 
-        if(dto.getDate_proximidade() == 0){
+
+        if(dto.getDate_proximidade() == RequestDateSelect.today.value){
             //Hoje
             log.debug("HOJE: {}", sessionDTO);
             sessionDTO.setRequest_expiration(DateUtil.getToday());
         }
-        if(dto.getDate_proximidade() == 1){
+        if(dto.getDate_proximidade() == RequestDateSelect.tomorrow.value){
             //Amanhã
             log.debug("Amanhã: {}", sessionDTO);
             sessionDTO.setRequest_expiration(DateUtil.getTomorrow());
         }
-        if(dto.getDate_proximidade() == 2){
+        if(dto.getDate_proximidade() == RequestDateSelect.thisweek.value){
             //Esta Semana
             log.debug("Esta Semana: {}", sessionDTO);
             sessionDTO.setRequest_expiration(DateUtil.getThisWeek());
         }
-        if(dto.getDate_proximidade() == 3){
+        if(dto.getDate_proximidade() == RequestDateSelect.nextweek.value){
             //Proxima Semana
             log.debug("Proxima Semana: {}", sessionDTO);
             sessionDTO.setRequest_expiration(DateUtil.getNextWeek());
         }
-        if(dto.getDate_proximidade() == 4){
+        if(dto.getDate_proximidade() == RequestDateSelect.thismonth.value){
             //Este Mês
             log.debug("Este Mês: {}", sessionDTO);
             sessionDTO.setRequest_expiration(DateUtil.getThisMonth());
         }
-        if(dto.getDate_proximidade() == 5){
+        if(dto.getDate_proximidade() == RequestDateSelect.nextmonth.value){
             //Proximo Mes
             log.debug("Proximo Mês: {}", sessionDTO);
             sessionDTO.setRequest_expiration(DateUtil.getNextMonth());
@@ -120,8 +143,15 @@ public class JobRequestController {
 
     }
     @PostMapping("/passo-3")
-    public String saveFormMaxCandidates(HttpSession httpSession,RedirectAttributes redirectAttributess, JobRequestDTO dto, Model model){
+    public String saveFormMaxCandidates(HttpSession httpSession, @Validated(JobRequestDTO.RequestMaxCandidatesGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model){
+        if(errors.hasErrors()){
+            model.addAttribute("dto", dto);
+            model.addAttribute("errors", errors.getAllErrors());
+            log.debug("Passo 3 {}", dto);
+            log.debug("Errors 3 {}", errors);
+            return "client/job-request/wizard-step-03+9";
 
+        }
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
         sessionDTO.setQuantity_candidators_max(dto.getQuantity_candidators_max());
 
@@ -168,8 +198,8 @@ public class JobRequestController {
         if(errors.hasErrors()){
             model.addAttribute("dto", dto);
             model.addAttribute("errors", errors.getAllErrors());
-            log.debug("Passo 5 {}", errors.getAllErrors());
-            return "redirect:/requisicoes?passo=6";
+            log.debug("Passo 6 {}", errors.getAllErrors());
+            return "client/job-request/wizard-step-06";
 
         }
         //persiste na sessão

@@ -7,9 +7,9 @@
 
         <main>
             <div class="container">
-                <c:if test="${not empty message}">
+                <c:if test="${not empty errors}">
                     <div class="card-panel red">
-                        <c:forEach var="e" items="${message}">
+                        <c:forEach var="e" items="${errors}">
                             <span class="white-text">${e.getDefaultMessage()}</span><br>
                         </c:forEach>
                     </div>
