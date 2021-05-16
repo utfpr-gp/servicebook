@@ -18,7 +18,7 @@ $(document).ready(function (){
     $("#show-area-perfil").click(function(i){
         $("#area-perfil").toggleClass('hide-on-med-and-down');
     });
-    
+  
     $('.modal').modal({
         onOpenEnd: function (modal, trigger) {
             var url = $(trigger).data('url');
