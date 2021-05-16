@@ -92,6 +92,7 @@
                                     </tbody>
                                 </table>
                             </c:if>
+                            <div class="center"><t:pagination pagination="${pagination}" relativePath="/profissoes"></t:pagination></div>
                         </div>
                     </div>
                 </div>

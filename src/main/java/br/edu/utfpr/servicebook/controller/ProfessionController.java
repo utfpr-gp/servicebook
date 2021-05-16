@@ -44,22 +44,20 @@ public class ProfessionController {
     @GetMapping
     public ModelAndView showForm(HttpServletRequest request,
                                  @RequestParam(value = "pag", defaultValue = "1") int page,
-                                 @RequestParam(value = "siz", defaultValue = "3") int size,
-                                 @RequestParam(value = "ord", defaultValue = "registration") String order,
+                                 @RequestParam(value = "siz", defaultValue = "5") int size,
+                                 @RequestParam(value = "ord", defaultValue = "name") String order,
                                  @RequestParam(value = "dir", defaultValue = "ASC") String direction){
         ModelAndView mv = new ModelAndView("admin/profession-registration");
-        PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by(order).ascending().and(Sort.by("name")));
+        PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
         Page<Profession> professionPage = professionService.findAll(pageRequest);
 
-        //lista de alunos
-        List<ProfessionDTO> professionsDtos = professionPage.stream()
+        List<ProfessionDTO> professionDTOs = professionPage.stream()
                 .map(s -> professionMapper.toDto(s))
                 .collect(Collectors.toList());
-        mv.addObject("professions", professionsDtos);
+        mv.addObject("professions", professionDTOs);
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(professionPage, "/alunos");
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(professionPage);
         mv.addObject("pagination", paginationDTO);
-        mv.addObject("professions", professionsDtos);
         return mv;
     }
 
