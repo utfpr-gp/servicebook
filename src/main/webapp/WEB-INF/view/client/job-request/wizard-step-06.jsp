@@ -23,7 +23,7 @@
                                 <form method="post" action="requisicoes/passo-6">
                                     <div class="row">
                                         <div class="input-field col s12">
-                                            <input placeholder="00000-000" id="cep" name="cep" type="text" class="validate">
+                                            <input placeholder="00000-000"  value="${dto.cep}" id="cep" data-mask="00000-000" name="cep" type="text" class="validate">
                                             <label for="cep">CEP</label>
                                             <span id="error-cep" class="hide helper-text red-text darken-3"></span>
                                         </div>
@@ -33,26 +33,26 @@
                                     </div>
                                     <div class="row">
                                         <div class="input-field col s12">
-                                            <input placeholder="João da Silva" id="name" name="name" type="text" class="validate">
+                                            <input placeholder="João da Silva" id="name" value="${dto.name}" name="name" type="text" class="validate">
                                             <label for="name">Nome</label>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="input-field col s12">
-                                            <input placeholder="joao@email.com" name="email" id="email" type="text" class="validate">
+                                            <input placeholder="joao@email.com"  value="${dto.email}" name="email" id="email" type="text" class="validate">
                                             <label for="email">Email</label>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="input-field col s12">
-                                            <input name="phone" id="phone" placeholder="(00) 00000-0000)" type="text" class="validate">
+                                            <input name="phone" id="phone" value="${dto.phone}" data-mask="(00) 00000-0000" placeholder="(00) 0000-0000" type="text" class="validate">
                                             <label for="phone">DDD + Celular</label>
                                             <span class="helper-text"> Vamos confirmar seu celular através de uma mensagem de texto</span>
                                         </div>
                                     </div>
                                     <div class="col s6 m6 spacing-buttons">
                                         <div class="center">
-                                            <a href="javascript:history.back()" class="waves-effect waves-light btn btn-gray" href="#!">Voltar</a>
+                                            <a href="requisicoes?passo=5" class="waves-effect waves-light btn btn-gray" href="#!">Voltar</a>
                                         </div>
                                     </div>
                                     <div class="col s6 m6 spacing-buttons">

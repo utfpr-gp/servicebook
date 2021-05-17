@@ -36,7 +36,7 @@
                                     </div>
                                     <div class="col s6 m6 spacing-buttons">
                                         <div class="center">
-                                            <a href="javascript:history.back()" class="waves-effect waves-light btn btn-gray" href="#!">Voltar</a>
+                                            <a href="requisicoes?passo=4" class="waves-effect waves-light btn btn-gray" href="#!">Voltar</a>
                                         </div>
                                     </div>
                                     <div class="col s6 m6 spacing-buttons">
