@@ -10,10 +10,15 @@ import br.edu.utfpr.servicebook.model.mapper.StateMapper;
 import br.edu.utfpr.servicebook.service.CityService;
 import br.edu.utfpr.servicebook.service.StateService;
 
+import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
+import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -37,14 +42,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RequestMapping("/cidades")
 @Controller
-public class CityRegisterController {
+public class CityController {
 
     public static final Logger log =
-            LoggerFactory.getLogger(CityRegisterController.class);
+            LoggerFactory.getLogger(CityController.class);
 
     @Autowired
     private CityService cityService;
@@ -62,22 +68,22 @@ public class CityRegisterController {
     private Cloudinary cloudinary;
 
     @GetMapping
-    public ModelAndView showForm() {
+    public ModelAndView showForm(HttpServletRequest request,
+                                 @RequestParam(value = "pag", defaultValue = "1") int page,
+                                 @RequestParam(value = "siz", defaultValue = "3") int size,
+                                 @RequestParam(value = "ord", defaultValue = "state")String order,
+                                 @RequestParam(value = "dir", defaultValue = "ASC") String direction) {
+
         ModelAndView mv = new ModelAndView("admin/city-register");
-        List<State> states = stateService.findAll();
-        List<City> cities = cityService.findAll();
 
-        List<StateDTO> stateDTOs = states.stream()
-                .map(state -> stateMapper.toResponseDto(state))
-                .collect(Collectors.toList());
-        mv.addObject("states", stateDTOs);
+        PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
+        Page<City> cityPage = cityService.findAll(pageRequest);
 
+        mv.addObject("states", listStateDTO());
+        mv.addObject("cities", listCityDTO(cityPage));
 
-        List<CityDTO2> cityDTOs = cities.stream()
-                .map(city -> cityMapper.toResponseDetail(city))
-                .collect(Collectors.toList());
-        mv.addObject("cities", cityDTOs);
-
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(cityPage);
+        mv.addObject("pagination", paginationDTO);
 
         return mv;
     }
@@ -155,6 +161,7 @@ public class CityRegisterController {
 
     @GetMapping("/{id}")
     public ModelAndView showFormUpdate(@PathVariable("id") Long id) throws Exception {
+
         ModelAndView mv = new ModelAndView("admin/city-register");
 
         if(id < 0){
@@ -179,12 +186,16 @@ public class CityRegisterController {
         CityDTO cityDTO = cityMapper.toResponseDto(city.get());
         mv.addObject("dto", cityDTO);
 
-        List<State> states = stateService.findAll();
-        List<StateDTO> stateDTOs = states.stream()
-                .map(st -> stateMapper.toResponseDto(st))
-                .collect(Collectors.toList());
+        mv.addObject("states", listStateDTO());
 
-        mv.addObject("states", stateDTOs);
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.Direction.valueOf("ASC"), "state");
+
+        Page<City> cityPage = cityService.findAll(pageRequest);
+
+        mv.addObject("cities", listCityDTO(cityPage));
+
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(cityPage);
+        mv.addObject("pagination", paginationDTO);
 
         return mv;
     }
@@ -193,12 +204,15 @@ public class CityRegisterController {
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
         Optional<City> city = cityService.findById(id);
 
-        deleteImage(city);
-        cityService.delete(id);
-        redirectAttributes.addFlashAttribute("msg", "Cidade deletada!");
+        if(city.isPresent()){
+            deleteImage(city);
+            cityService.delete(id);
+            redirectAttributes.addFlashAttribute("msg", "Cidade deletada!");
 
-        return "redirect:/cidades";
+            return "redirect:/cidades";
+        }
 
+        throw new EntityNotFoundException("A cidade não foi encontrada pelo id informado");
     }
 
     public boolean isValidateImage(MultipartFile image){
@@ -239,26 +253,43 @@ public class CityRegisterController {
         cityService.save(ct);
     }
 
-    public ModelAndView errorFowarding(CityDTO dto, BindingResult errors) {
+    public ModelAndView errorFowarding(CityDTO dto,BindingResult errors) {
+
         ModelAndView mv = new ModelAndView("admin/city-register");
 
         mv.addObject("dto", dto);
         mv.addObject("errors", errors.getAllErrors());
 
+        mv.addObject("states", listStateDTO());
+
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.Direction.valueOf("ASC"), "state");
+        Page<City> cityPage = cityService.findAll(pageRequest);
+
+        mv.addObject("cities", listCityDTO(cityPage));
+
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(cityPage);
+        mv.addObject("pagination", paginationDTO);
+
+        return mv;
+    }
+
+    private List<StateDTO> listStateDTO(){
         List<State> states = stateService.findAll();
+
         List<StateDTO> stateDTOs = states.stream()
                 .map(st -> stateMapper.toResponseDto(st))
                 .collect(Collectors.toList());
 
-        mv.addObject("states", stateDTOs);
+        return stateDTOs;
+    }
 
-        List<City> cities = cityService.findAll();
-        List<CityDTO2> cityDTOs = cities.stream()
+    private List<CityDTO2> listCityDTO(Page<City> cityPage){
+
+        List<CityDTO2> cityDTOs = cityPage.stream()
                 .map(city -> cityMapper.toResponseDetail(city))
                 .collect(Collectors.toList());
-        mv.addObject("cities", cityDTOs);
 
-        return mv;
+        return cityDTOs;
     }
 
 }
