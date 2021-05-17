@@ -11,6 +11,7 @@
     <title>${title}</title>
     <base href="${pageContext.request.contextPath}/">
 
+    <base href="${pageContext.request.contextPath}/">
     <link rel="shortcut icon" href="assets/resources/images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="assets/libraries/materialize/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
@@ -58,10 +59,7 @@
 
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="assets/libraries/materialize/js/materialize.min.js"></script>
-<script src="assets/resources/scripts/main.js"></script>
 <script src="assets/resources/scripts/init.js"></script>
-
-
-
+<script src="assets/resources/scripts/main.js"></script>
 </body>
 </html>
