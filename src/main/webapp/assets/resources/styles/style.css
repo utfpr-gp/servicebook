@@ -489,6 +489,10 @@ a.middle-indicator-text{
   height: 300px;
 }
 
+.pagination li.active {
+  background-color: #0d47a1;
+}
+
 @media only screen and (max-width : 600px) {
   #index-banner .section {
     top: 0;

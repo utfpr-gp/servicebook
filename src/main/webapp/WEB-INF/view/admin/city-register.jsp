@@ -9,7 +9,6 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="a" tagdir="/WEB-INF/tags" %>
-<%@ taglib prefix="C" uri="http://java.sun.com/jsp/jstl/core" %>
 
 
 <a:admin title="Cadastro de Cidade">
@@ -79,7 +78,7 @@
                                                 <c:if test="${not empty id}">
                                                     <div class="center">
                                                         <a class="waves-effect waves-light btn btn-gray"
-                                                           href="cidades">Voltar</a>
+                                                           href="cidades">Novo</a>
                                                     </div>
                                                 </c:if>
                                             </div>
@@ -162,6 +161,8 @@
             </div>
 
         </main>
+
+            <a:pagination pagination="${pagination}" relativePath="/cidades"></a:pagination>
 
     </jsp:body>
 </a:admin>

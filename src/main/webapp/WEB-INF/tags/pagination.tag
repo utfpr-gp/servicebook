@@ -7,7 +7,7 @@
 <!-- Se tem rota no DTO, usa. Caso contrário, usa a qual foi configurada como entrada na tag-->
 <c:set var="relativePath" value="${pagination.route != null ? pagination.route:relativePath}"></c:set>
 
-<div>
+<div class="center">
     <br>
 
     <c:if test="${pagination.totalPages > 1}">
