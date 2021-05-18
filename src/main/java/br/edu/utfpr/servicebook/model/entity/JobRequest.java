@@ -35,8 +35,8 @@ public class JobRequest {
 	private Client client;
 	
 	@ManyToOne
-	@JoinColumn(name = "category_id")
-	private Expertise category;
+	@JoinColumn(name = "expertise_id")
+	private Expertise expertise;
 	
 	@NonNull
 	private String status;

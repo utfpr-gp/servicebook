@@ -30,9 +30,9 @@ public class Professional extends User {
 	private static final long serialVersionUID = 1L;
 	
 	@ManyToMany
-	@JoinTable(name = "professional_expertise",
+	@JoinTable(name = "professional_expertises",
 			  joinColumns = @JoinColumn(name = "professional_id"),
-			  inverseJoinColumns = @JoinColumn(name = "category_id"))
+			  inverseJoinColumns = @JoinColumn(name = "expertise_id"))
 	private Set<Expertise> expertises = new HashSet<>();
 	
 	@NonNull
@@ -40,9 +40,11 @@ public class Professional extends User {
 	private String cpf;
 	
 	@OneToMany(mappedBy = "professional")
-	private Set<Avaliation> avaliations = new HashSet<>();
-	
-	@OneToOne(mappedBy = "professional")
-	private JobContracted jobContracted;
-	
+	private Set<JobContracted> jobContracted = new HashSet<>();
+
+	@NonNull
+	private int rating;
+
+	private int denounceAmount;
+
 }

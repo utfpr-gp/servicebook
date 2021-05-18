@@ -37,7 +37,7 @@ public class Expertise {
 	@ManyToMany(mappedBy = "expertises")
 	private Set<Professional> professionals = new HashSet<>();
 	
-	@OneToMany(mappedBy = "category")
+	@OneToMany(mappedBy = "expertise")
 	private Set<JobRequest> jobRequests = new HashSet<>();
 	
 }
