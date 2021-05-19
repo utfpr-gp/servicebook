@@ -4,9 +4,9 @@
 
 <t:error title="Erro!!">
     <jsp:body>
-        <h2>Ooops!!!</h2>
+        <h2 class="center">Ooops!!!</h2>
 
-        <p>O método requisitado não é permitido!</p>
+        <p class="center">O método requisitado não é permitido!</p>
 
         <div class="row">
             <div class="col s12 center">

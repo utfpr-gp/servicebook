@@ -23,24 +23,24 @@ public class JobContracted {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NonNull
 	private String status;
-	
+
 	@NonNull
 	private String comments;
-	
+
 	@NonNull
 	private int rating;
 	
 	@NonNull
 	@OneToOne
-	@JoinColumn(name = "jobRequest", referencedColumnName = "id")
+	@JoinColumn(name = "job_request", referencedColumnName = "id")
 	private JobRequest jobRequest;
 	
 	@NonNull
 	@OneToOne
 	@JoinColumn(name = "professional", referencedColumnName = "id")
 	private Professional professional;
-	
+
 }
