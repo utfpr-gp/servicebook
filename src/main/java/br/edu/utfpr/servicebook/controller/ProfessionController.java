@@ -142,11 +142,4 @@ public class ProfessionController {
 
         return mv;
     }
-
-    public List<ProfessionDTO> listProfessionDTO (){
-        List<Profession> professions = professionService.findAll();
-
-        List<ProfessionDTO> professionDTOs = professions.stream().map(s -> professionMapper.toDto(s)).collect(Collectors.toList());
-        return professionDTOs;
-    }
 }
