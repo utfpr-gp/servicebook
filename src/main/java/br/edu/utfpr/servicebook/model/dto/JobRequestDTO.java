@@ -19,17 +19,17 @@ public class JobRequestDTO implements Serializable {
 
     private Long category_id;
 
-    private Integer date_proximidade; //Usar date para definir até quando fica em aberto
+    private Integer dateProximity; //Usar date para definir até quando fica em aberto
 
-    private LocalDate created_date;
+    private LocalDate dateCreated;
 
     @Future(message = "Valor inválido para a requisição", groups = RequestExpirationGroupValidation.class)
-    private LocalDate request_expiration;
+    private LocalDate dateExpired;
 
     @DecimalMin(value = "1", message = "", groups = RequestMaxCandidatesGroupValidation.class)
     @DecimalMax(value = "20.00", message = "", groups = RequestMaxCandidatesGroupValidation.class)
     @Positive
-    private Integer quantity_candidators_max;
+    private Integer quantityCandidatorsMax;
 
     @NotBlank(message = "A Descrição não pode ser vazia.", groups = RequestDescriptionGroupValidation.class)
     private String description;

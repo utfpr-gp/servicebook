@@ -21,7 +21,7 @@
                             <div class="row center">
                                 <h3 id="value-input-range" class="grey-text center">10</h3>
                                 <div class="col s8 offset-s2 range-field  spacing-standard ">
-                                    <input id="quantity_candidators_max" name="quantity_candidators_max" type="range" min="1" max="20" value="10">
+                                    <input id="quantityCandidatorsMax" name="quantityCandidatorsMax" type="range" min="1" max="20" value="10">
                                 </div>
                             </div>
                             <div class="col s6 m6 spacing-buttons">

@@ -1,49 +1,93 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <t:client title="Detalhes de Contato">
     <jsp:body>
 
-        <main>
+    <main>
             <div class="section no-padding">
                 <div class="row">
-                    <div class="row no-margin col s12 area-detail-contact">
+                    <div class="row no-margin col s12  blue lighten-4">
                         <div class="col s12 icons-area-request">
                             <div class="row">
                                 <div class="col s4 star-icons dark-color-text">
-                                    <i class="material-icons ">star</i>
-                                    <i class="material-icons">star</i>
-                                    <i class="material-icons">star</i>
-                                    <i class="material-icons">star_border</i>
-                                    <i class="material-icons">star_border</i>
+                                   <span class="tooltipped"  data-position="right" data-tooltip="avaliação - ${professional.rating} estrela ">
+                                        <c:forEach var="professional.rating" begin="1" end="${professional.rating}">
+                                            <i class="material-icons yellow-text small">star</i>
+                                        </c:forEach>
+                                   </span>
                                 </div>
                                 <div class="col s4 center">
-                                    <i class="material-icons dark-color-text">check_circle</i>
+                                    <div class="center">
+                                        <c:if test="${professional.emailVerified == true}">
+                                            <i class="spacing-buttons material-icons small green-text tooltipped" data-position="bottom" data-tooltip="Email verificado">email</i>
+                                        </c:if>
+                                        <c:if test="${professional.emailVerified == false}">
+                                            <i class="spacing-buttons material-icons small grey-text tooltipped" data-position="bottom" data-tooltip="Email não verificado">email</i>
+                                        </c:if>
+                                    </div>
                                 </div>
                                 <div class="col s4 right">
                                     <div class="right">
-                                        <span>17</span> <i class="material-icons icon-like-area-request dark-color-text">thumb_up</i>
+                                        <c:if test="${professional.phoneVerified == true}">
+                                            <i class="spacing-buttons material-icons small green-text tooltipped"  data-position="left" data-tooltip="Telefone verificado">phone</i>
+                                        </c:if>
+                                        <c:if test="${professional.phoneVerified == false}">
+                                            <i class="spacing-buttons material-icons small grey-text tooltipped" data-position="left" data-tooltip="Telefone não verificado">phone</i>
+                                        </c:if>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col s12 center">
-                            <svg style="width:200px;height:200px" viewBox="0 0 24 24">
-                                <path class="dark-color-icon" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
-                            </svg>
+                            <c:if test="${professional.profilePicture == ''}">
+                                <svg style="width:200px;height:200px" viewBox="0 0 24 24">
+                                    <path class="dark-color-icon" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+                                </svg>
+                            </c:if>
+                            <c:if test="${professional.profilePicture != ''}">
+                                <div width="200px" height="200px">
+                                    <img src="${professional.profilePicture}" width="200px" alt="">
+                                </div>
+                            </c:if>
                         </div>
                     </div>
                     <div class="col s12 no-padding">
                         <div class="center title-card-resquest">
-                            <P class="no-margin">PEDRO DE SOUZA</P>
+                            <P class="no-margin">${professional.name}</P>
                         </div>
                     </div>
                     <div class="col s12 m6  text-info-request">
-                        <p class="contact-item center"><i class="material-icons dark-color-text">email</i> pedro.pedreiro@mail.com</p>
+                        <p class="contact-item center"><i class="material-icons dark-color-text">email</i>
+                            <c:if test="${professional.email == ''}">
+                                Sem email
+                            </c:if>
+                            <c:if test="${professional.email != ''}">
+                                ${professional.email}
+                            </c:if>
+                        </p>
                     </div>
                     <div class="col s12 m6  text-info-request">
-                        <p class="contact-item center"><i class="material-icons dark-color-text">phone</i> (42) 9 9999-9090</p>
+                        <p class="contact-item center"><i class="material-icons dark-color-text">phone</i>
+                            <c:if test="${professional.phoneNumber == ''}">
+                                Sem telefone
+                            </c:if>
+                            <c:if test="${professional.phoneNumber != ''}">
+                                ${professional.phoneNumber}
+                            </c:if>
+
+                        </p>
+                    </div>
+                    <div class="col s12 text-info-request">
+                        <h4 class="center primary-color-text">Anúncio</h4>
+                        <c:if test="${professional.description == ''}">
+                            <p class="contact-item center grey-text">Sem anúncio</p>
+                        </c:if>
+                        <c:if test="${professional.description != ''}">
+                            <p class="contact-item center dark-color-text">${professional.description}</p>
+                        </c:if>
                     </div>
                     <div class="col s12">
                         <div class="container secondary-color-text  text-info-request">
@@ -52,21 +96,32 @@
                     </div>
                     <div class="col s12">
                         <div class="container">
-                            <h4>18 avaliações</h4>
-                            <blockquote class="cyan lighten-5"><p>Muito bom profissional</p></blockquote>
-                            <blockquote class="cyan lighten-5"><p>Muito bom profissional</p></blockquote>
-                            <blockquote class="red lighten-4"><p>pèssimo</p></blockquote>
+                            <c:if test="${not empty jobContracted}">
+                                <h4>${jobContracted.size()} avaliações</h4>
+                                <c:forEach var="jobContracted" items="${jobContracted}">
+                                    <c:if test="${jobContracted.rating <= 2}">
+                                        <blockquote class="red lighten-5"><p>${jobContracted.comments}</p></blockquote>
+                                    </c:if>
+                                    <c:if test="${jobContracted.rating > 2}">
+                                        <blockquote class="cyan lighten-5"><p>${jobContracted.comments}</p></blockquote>
+                                    </c:if>
+                                </c:forEach>
+                            </c:if>
+                            <c:if test="${empty jobContracted}">
+                                <h4>0 avaliações</h4>
+                                <p>Não possui comentários</p>
+                            </c:if>
                         </div>
                     </div>
-                    <div class="col s4 offset-s4  spacing-standard">
+                    <div class="col s12 l4 offset-l4  spacing-standard">
                         <div class="container">
                             <div class="row">
-                                <div class="col s10 offset-s1 m6 spacing-buttons">
+                                <div class="col s6 spacing-buttons">
                                     <div class="center">
                                         <a class="waves-effect waves-light btn btn-gray" href="#!">Voltar</a>
                                     </div>
                                 </div>
-                                <div class="col s10 offset-s1 m6 spacing-buttons">
+                                <div class="col s6 spacing-buttons">
                                     <div class="center">
                                         <a class="waves-effect waves-light btn" href="#!">Contratar</a>
                                     </div>

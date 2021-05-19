@@ -4,15 +4,17 @@
 
 <t:error title="Erro!!">
     <jsp:body>
-        <h2>Ooops!!! Estamos com problemas!</h2>
+        <h2 class="center">Ooops!!! Estamos com problemas!</h2>
 
-        <p>Pedimos desculpas! Em breve iremos corrigir este erro!</p>
+        <p class="center">Pedimos desculpas! Em breve iremos corrigir este erro!</p>
         <c:if test="${message != null}">
-            <p>
-                <h4>Detalhes sobre o erro: </h4>
-                <strong>Mensagem: </strong> ${message}<br>
-                <strong>URL: </strong> ${url}
-            </p>
+         <div class="center">
+             <p>
+             <h4>Detalhes sobre o erro: </h4>
+             <strong>Mensagem: </strong> ${message}<br>
+             <strong>URL: </strong> ${url}
+             </p>
+         </div>
         </c:if>
 
         <div class="row">

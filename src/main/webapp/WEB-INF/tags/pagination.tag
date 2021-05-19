@@ -2,12 +2,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%-- The list of normal or fragment attributes can be specified here: --%>
-<%@attribute name="pagination" type="br.edu.utfpr.crudmvcspring.util.pagination.PaginationDTO" %>
+<%@attribute name="pagination" type="br.edu.utfpr.servicebook.util.pagination.PaginationDTO" %>
 <%@attribute name="relativePath" %>
 <!-- Se tem rota no DTO, usa. Caso contrário, usa a qual foi configurada como entrada na tag-->
 <c:set var="relativePath" value="${pagination.route != null ? pagination.route:relativePath}"></c:set>
 
-<div>
+<div class="center">
     <br>
 
     <c:if test="${pagination.totalPages > 1}">

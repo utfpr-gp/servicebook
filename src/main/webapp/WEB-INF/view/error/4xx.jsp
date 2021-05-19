@@ -4,9 +4,9 @@
 
 <t:error title="Erro!!">
     <jsp:body>
-        <h2>Ooops!!!</h2>
+        <h2 class="center">Ooops!!!</h2>
 
-        <p>Os parâmetros são inválidos.</p>
+        <p class="center">Os parâmetros são inválidos.</p>
 
 
         <div class="row">

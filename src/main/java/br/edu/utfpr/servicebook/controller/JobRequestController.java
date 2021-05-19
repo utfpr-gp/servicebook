@@ -107,37 +107,37 @@ public class JobRequestController {
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
 
 
-        if(dto.getDate_proximidade() == RequestDateSelect.today.value){
+        if(dto.getDateProximity() == RequestDateSelect.today.value){
             //Hoje
             log.debug("HOJE: {}", sessionDTO);
-            sessionDTO.setRequest_expiration(DateUtil.getToday());
+            sessionDTO.setDateExpired(DateUtil.getToday());
         }
-        if(dto.getDate_proximidade() == RequestDateSelect.tomorrow.value){
+        if(dto.getDateProximity() == RequestDateSelect.tomorrow.value){
             //Amanhã
             log.debug("Amanhã: {}", sessionDTO);
-            sessionDTO.setRequest_expiration(DateUtil.getTomorrow());
+            sessionDTO.setDateExpired(DateUtil.getTomorrow());
         }
-        if(dto.getDate_proximidade() == RequestDateSelect.thisweek.value){
+        if(dto.getDateProximity() == RequestDateSelect.thisweek.value){
             //Esta Semana
             log.debug("Esta Semana: {}", sessionDTO);
-            sessionDTO.setRequest_expiration(DateUtil.getThisWeek());
+            sessionDTO.setDateExpired(DateUtil.getThisWeek());
         }
-        if(dto.getDate_proximidade() == RequestDateSelect.nextweek.value){
+        if(dto.getDateProximity() == RequestDateSelect.nextweek.value){
             //Proxima Semana
             log.debug("Proxima Semana: {}", sessionDTO);
-            sessionDTO.setRequest_expiration(DateUtil.getNextWeek());
+            sessionDTO.setDateExpired(DateUtil.getNextWeek());
         }
-        if(dto.getDate_proximidade() == RequestDateSelect.thismonth.value){
+        if(dto.getDateProximity() == RequestDateSelect.thismonth.value){
             //Este Mês
             log.debug("Este Mês: {}", sessionDTO);
-            sessionDTO.setRequest_expiration(DateUtil.getThisMonth());
+            sessionDTO.setDateExpired(DateUtil.getThisMonth());
         }
-        if(dto.getDate_proximidade() == RequestDateSelect.nextmonth.value){
+        if(dto.getDateProximity() == RequestDateSelect.nextmonth.value){
             //Proximo Mes
             log.debug("Proximo Mês: {}", sessionDTO);
-            sessionDTO.setRequest_expiration(DateUtil.getNextMonth());
+            sessionDTO.setDateExpired(DateUtil.getNextMonth());
         }
-        sessionDTO.setCreated_date(DateUtil.getToday());
+        sessionDTO.setDateCreated(DateUtil.getToday());
         log.debug("Passo 2 {}", sessionDTO);
         return "redirect:/requisicoes?passo=3";
 
@@ -153,7 +153,7 @@ public class JobRequestController {
 
         }
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
-        sessionDTO.setQuantity_candidators_max(dto.getQuantity_candidators_max());
+        sessionDTO.setQuantityCandidatorsMax(dto.getQuantityCandidatorsMax());
 
         log.debug("Passo 3 {}", sessionDTO);
         return "redirect:/requisicoes?passo=4";
@@ -219,7 +219,7 @@ public class JobRequestController {
 
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
         sessionDTO.setClient_confirmation(true);
-        sessionDTO.setCreated_date(DateUtil.getToday());
+        sessionDTO.setDateCreated(DateUtil.getToday());
         log.debug("Passo 7 {}", sessionDTO);
         JobRequest jobRequest = jobRequestMapper.toEntity(sessionDTO);
         log.debug("Valor: {}", jobRequest);

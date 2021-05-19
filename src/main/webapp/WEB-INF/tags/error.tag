@@ -28,7 +28,9 @@
     </div>
 </nav>
 
-<jsp:doBody/>
+<main>
+    <jsp:doBody/>
+</main>
 
 <footer class="page-footer">
     <div class="footer-copyright">
