@@ -3,8 +3,8 @@
 
 <t:error title="Erro!!">
     <jsp:body>
-        <h2>Ooops!!</h2>
-        <p>O recurso solicitado não foi encontrado!</p>
+        <h2 class="center">Ooops!!</h2>
+        <p class="center">O recurso solicitado não foi encontrado!</p>
 
         <div class="row">
             <div class="col s12 center">

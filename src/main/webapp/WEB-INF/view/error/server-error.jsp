@@ -4,9 +4,9 @@
 
 <t:error title="Erro!!">
     <jsp:body>
-        <h2>Ooops!!!</h2>
+        <h2 class="center">Ooops!!!</h2>
 
-        <p>Ocorreu um erro desconhecido no servidor.</p>
+        <p class="center">Ocorreu um erro desconhecido no servidor.</p>
 
         <div class="row">
             <div class="col s12 center">

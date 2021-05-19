@@ -4,8 +4,8 @@
 
 <t:error title="Erro!!">
     <jsp:body>
-        <h2>Ooops!! Estamos com problemas!</h2>
-        <p>Pedimos desculpas! Houve um erro ao persistir os seus dados!</p>
+        <h2 class="center">Ooops!! Estamos com problemas!</h2>
+        <p class="center">Pedimos desculpas! Houve um erro ao persistir os seus dados!</p>
 
         <div class="row">
             <div class="col s12 center">

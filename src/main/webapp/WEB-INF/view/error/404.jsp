@@ -4,9 +4,9 @@
 
 <t:error title="Erro!!">
     <jsp:body>
-        <h2>Ooops!!!</h2>
+        <h2 class="center">Ooops!!!</h2>
 
-        <p>A página requisitada não foi encontrada!</p>
+        <p class="center">A página requisitada não foi encontrada!</p>
 
         <div class="row">
             <div class="col s12 center">
