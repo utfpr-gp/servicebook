@@ -89,7 +89,11 @@ public class ProfessionController {
     }
 
     @GetMapping("/{id}")
-    public ModelAndView showFormForUpdate(@PathVariable("id") Long id){
+    public ModelAndView showFormForUpdate(@PathVariable("id") Long id, HttpServletRequest request,
+                                          @RequestParam(value = "pag", defaultValue = "1") int page,
+                                          @RequestParam(value = "siz", defaultValue = "4") int size,
+                                          @RequestParam(value = "ord", defaultValue = "name") String order,
+                                          @RequestParam(value = "dir", defaultValue = "ASC") String direction){
         ModelAndView mv = new ModelAndView("admin/profession-registration");
 
         if(id < 0){
@@ -101,11 +105,19 @@ public class ProfessionController {
         if(!optionalProfession.isPresent()){
             throw new EntityNotFoundException("O aluno não foi encontrado pelo id informado.");
         }
-
         ProfessionDTO professionDTO = professionMapper.toDto(optionalProfession.get());
-
-        mv.addObject("professions", listProfessionDTO());
         mv.addObject("dto", professionDTO);
+
+        PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
+        Page<Profession> professionPage = professionService.findAll(pageRequest);
+
+        List<ProfessionDTO> professionDTOs = professionPage.stream()
+                .map(s -> professionMapper.toDto(s))
+                .collect(Collectors.toList());
+        mv.addObject("professions", professionDTOs);
+
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(professionPage, "/profissoes/" + id);
+        mv.addObject("pagination", paginationDTO);
         return mv;
     }
 
