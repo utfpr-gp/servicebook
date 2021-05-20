@@ -46,7 +46,7 @@
                                     <div class="row">
                                         <div class="input-field  col s12">
                                             <i class="material-icons prefix primary-color-text">location_city</i>
-                                                <input type="text" id="autocomplete-input" name="name" class="autocomplete" value="${dto.name}">
+                                            <input type="text" id="autocomplete-input" name="name" class="autocomplete" value="${dto.name}">
                                             <label for="autocomplete-input">Cidade</label>
                                         </div>
 

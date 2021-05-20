@@ -1,19 +1,26 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <t:client title="Etapa 07">
     <jsp:body>
 
         <main>
             <div class="container">
+                <c:if test="${not empty errors}">
+                    <div class="card-panel red">
+                        <c:forEach var="e" items="${errors}">
+                            <span class="white-text">${e.getDefaultMessage()}</span><br>
+                        </c:forEach>
+                    </div>
+                </c:if>
                 <div class="section">
                     <div class="row">
                         <h3 class="center grey-text"><strong>Enviamos um código para (42) 99999-1234</strong></h3>
                         <h4 class="center grey-text">Digite este código para validar seu pedido</h4>
                         <div class="row center spacing-standard">
                             <div class="col s10  offset-s1 m6 offset-m3  input-field">
-                                <form>
+                                <form method="post" action="requisicoes/passo-7">
                                     <div class="row">
                                         <div class="input-field col s12">
                                             <div class="col s12 m8">
@@ -36,7 +43,7 @@
 
                         <div class="col s12 center spacing-standard">
                             <h4 class="grey-text">Digitou um número de telefone errado?</h4>
-                            <a class="text-center text-form-dados modal-trigger" href="#modal1">Troque o número</a>
+                            <a  class="text-center text-form-dados modal-trigger" href="#modal1">Troque o número</a>
                         </div>
 
                         <div id="modal1" class="modal">

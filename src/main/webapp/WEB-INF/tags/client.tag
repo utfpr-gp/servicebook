@@ -5,6 +5,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+    <base href="${pageContext.request.contextPath}/">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
@@ -59,6 +60,8 @@
 <script src="assets/libraries/materialize/js/materialize.min.js"></script>
 <script src="assets/resources/scripts/main.js"></script>
 <script src="assets/resources/scripts/init.js"></script>
+<script src="assets/resources/scripts/jquery.mask.js"></script>
+
 
 </body>
 </html>

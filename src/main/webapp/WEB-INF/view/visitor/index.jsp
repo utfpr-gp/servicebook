@@ -1,7 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <t:visitor title="Inicio">
     <jsp:body>
@@ -11,29 +10,22 @@
                 <div class="container">
                     <br><br>
                     <h3 class="header center logo-text logo-text-parallax">ServiceBook</h3>
-                    <c:if test="${cities.size() > 1}">
-                        <div class="row center">
-                            <div class="col s10 offset-s1 m4 offset-m4  input-field">
-                                <select id="select-city" class="white-text select-city">
-                                    <c:forEach var="city" items="${cities}">
-                                        <option  value="${city.image}">${city.name} - ${city.state.uf}</option>
-                                    </c:forEach>
-                                </select>
-                            </div>
+                    <div class="row center">
+                    </div>
+                    <div class="row center">
+                        <div class="col s10 offset-s1 m4 offset-m4  input-field">
+                            <select id="select-city" class="white-text select-city">
+                                <option value="1" selected><p class="white-text">GUARAPUAVA - PR </p></option>
+                                <option value="2"><p>CURITIBA - PR</p></option>
+                                <option value="3"><p>SÃO PAULO - SP</p></option>
+                            </select>
                         </div>
-                    </c:if>
+                    </div>
                     <h4 class="header center">O MELHOR PROFISSIONAL QUE VOCÊ PRECISA ESTÁ AQUI!</h4>
                     <h4 class="header center">São + de 3000 profissionais cadastrados!</h4>
                 </div>
             </div>
-            <div class="parallax">
-                <c:if test="${not empty cities}">
-                    <img id="img-city" src="${cities[0].image}" alt="img fundo">
-                </c:if>
-                <c:if test="${empty cities}">
-                    <img id="img-city" src="assets/resources/images/default.jpeg" alt="img fundo">
-                </c:if>
-            </div>
+            <div class="parallax"><img id="img-city" src="assets/resources/images/guarapuava.jpg" alt="img fundo"></div>
         </div>
 
         <div class="container">

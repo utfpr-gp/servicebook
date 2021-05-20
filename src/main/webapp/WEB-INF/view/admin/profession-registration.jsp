@@ -1,6 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
 <t:admin title="Cadastro de Profissão">
@@ -51,7 +50,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </c:if>
+                            </div>
                         </form>
                         <div id="modal-delete" class="modal">
                             <div class="modal-content">
