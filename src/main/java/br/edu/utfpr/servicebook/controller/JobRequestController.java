@@ -85,7 +85,7 @@ public class JobRequestController {
 
 
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
-        sessionDTO.setCategory_id(dto.getCategory_id());
+        sessionDTO.setExpertiseId(dto.getExpertiseId());
 
 
         log.debug("Passo 1 {}", sessionDTO);
@@ -220,6 +220,7 @@ public class JobRequestController {
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
         sessionDTO.setClient_confirmation(true);
         sessionDTO.setDateCreated(DateUtil.getToday());
+        sessionDTO.setClientId(2L);
         log.debug("Passo 7 {}", sessionDTO);
         JobRequest jobRequest = jobRequestMapper.toEntity(sessionDTO);
         log.debug("Valor: {}", jobRequest);

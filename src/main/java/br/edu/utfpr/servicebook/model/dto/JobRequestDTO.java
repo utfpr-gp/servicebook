@@ -17,10 +17,10 @@ import java.util.Date;
 
 public class JobRequestDTO implements Serializable {
 
-    private Long category_id;
 
-    private Integer dateProximity; //Usar date para definir até quando fica em aberto
-
+    private Long expertiseId;
+    private Long clientId;
+    private Integer dateProximity;
     private LocalDate dateCreated;
 
     @Future(message = "Valor inválido para a requisição", groups = RequestExpirationGroupValidation.class)

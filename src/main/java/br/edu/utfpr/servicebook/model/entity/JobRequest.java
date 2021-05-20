@@ -39,9 +39,6 @@ public class JobRequest {
     private String description;
 
     @NonNull
-    private Long category_id;
-
-    @NonNull
     private Integer quantityCandidatorsMax;
 
     @NonNull
