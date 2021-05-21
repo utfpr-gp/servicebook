@@ -2,8 +2,13 @@ package br.edu.utfpr.servicebook.controller;
 
 
 import br.edu.utfpr.servicebook.model.dto.JobRequestDTO;
+import br.edu.utfpr.servicebook.model.entity.Client;
+import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
+import br.edu.utfpr.servicebook.model.repository.ExpertiseRepository;
+import br.edu.utfpr.servicebook.service.ClientService;
+import br.edu.utfpr.servicebook.service.ExpertiseService;
 import br.edu.utfpr.servicebook.service.JobRequestService;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import br.edu.utfpr.servicebook.util.DateUtil;
@@ -31,6 +36,12 @@ public class JobRequestController {
 
     @Autowired
     private JobRequestService jobRequestService;
+
+    @Autowired
+    private ClientService clientService;
+
+    @Autowired
+    private ExpertiseService expertiseService;
 
     @Autowired
     JobRequestMapper jobRequestMapper;
@@ -217,13 +228,22 @@ public class JobRequestController {
     @PostMapping("/passo-7")
     public String saveFormVerification(HttpSession httpSession, JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
 
+
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
+        Client client = clientService.save(new Client());
+        //dto.getExpertiseId()
+        Expertise expertise = expertiseService.save(new Expertise());
         sessionDTO.setClient_confirmation(true);
         sessionDTO.setDateCreated(DateUtil.getToday());
-        sessionDTO.setClientId(2L);
+        sessionDTO.setStatus("Requerido");
         log.debug("Passo 7 {}", sessionDTO);
         JobRequest jobRequest = jobRequestMapper.toEntity(sessionDTO);
+        jobRequest.setClient(client);
+        jobRequest.setExpertise(expertise);
+
+
         log.debug("Valor: {}", jobRequest);
+
         jobRequestService.save(jobRequest);
         redirectAttributes.addFlashAttribute("msg", "Requisição confirmada!");
         status.setComplete();
