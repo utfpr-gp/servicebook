@@ -33,14 +33,14 @@
                                     </div>
                                     <div class="row">
                                         <div class="input-field col s12">
-                                            <input placeholder="João da Silva" id="name" value="${dto.name}" name="name" type="text" class="validate">
-                                            <label for="name">Nome</label>
+                                            <input placeholder="João da Silva" id="nameClient" value="${dto.nameClient}" name="nameClient" type="text" class="validate">
+                                            <label for="nameClient">Nome</label>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="input-field col s12">
-                                            <input placeholder="joao@email.com"  value="${dto.email}" name="email" id="email" type="text" class="validate">
-                                            <label for="email">Email</label>
+                                            <input placeholder="joao@email.com"  value="${dto.emailClient}" name="emailClient" id="emailClient" type="text" class="validate">
+                                            <label for="emailClient">Email</label>
                                         </div>
                                     </div>
                                     <div class="row">

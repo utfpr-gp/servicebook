@@ -42,15 +42,17 @@ public class JobRequestDTO implements Serializable {
     private String cep;
 
     @NotBlank(message = "Preencha o nome", groups = RequestClientInfoGroupValidation.class)
-    private String name;
+    private String nameClient;
 
     @Email(message = "O Email é inválido", groups = RequestClientInfoGroupValidation.class)
-    private String email;
+    private String emailClient;
 
     @NotBlank(message = "Preencha o celular", groups = RequestClientInfoGroupValidation.class)
     @Pattern(regexp="\\(\\d{2}\\)\\s9?\\d{4}-\\d{4}",message="Celular Inválido", groups = RequestClientInfoGroupValidation.class)
     private String phone;
     private Boolean clientConfirmation;
+
+
 
     public interface RequestMaxCandidatesGroupValidation{
 

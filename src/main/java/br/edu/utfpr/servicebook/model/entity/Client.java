@@ -26,13 +26,14 @@ public class Client extends User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NonNull
-	@Column
-	private String name;
 
 	@NonNull
 	@Column
-	private String email;
+	private String nameClient;
+
+	@NonNull
+	@Column
+	private String emailClient;
 
 	@NonNull
 	@Column

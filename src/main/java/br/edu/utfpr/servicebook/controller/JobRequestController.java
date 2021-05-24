@@ -238,9 +238,9 @@ public class JobRequestController {
         }
         //persiste na sessão
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
+        sessionDTO.setNameClient(dto.getNameClient());
         sessionDTO.setCep(dto.getCep());
-        sessionDTO.setName(dto.getName());
-        sessionDTO.setEmail(dto.getEmail());
+        sessionDTO.setEmailClient(dto.getEmailClient());
         sessionDTO.setPhone(dto.getPhone());
 
         log.debug("Passo 6 {}", sessionDTO);
@@ -254,7 +254,8 @@ public class JobRequestController {
 
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
         Expertise exp = null;
-        Client client = clientService.save(new Client(sessionDTO.getName(), sessionDTO.getEmail(), sessionDTO.getPhone(), sessionDTO.getCep()));
+        log.debug("Passo Name {}", sessionDTO.getNameClient());
+        Client client = clientService.save(new Client(sessionDTO.getNameClient(), sessionDTO.getEmailClient(), sessionDTO.getPhone(), sessionDTO.getCep()));
         Optional<Expertise> oExpertise = expertiseService.findByID(sessionDTO.getExpertiseId());
 
         if(oExpertise.isPresent()){
