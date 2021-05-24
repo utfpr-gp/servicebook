@@ -10,5 +10,6 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 public class ExpertiseDTO {
     private Long id;
+    private String name;
 
 }

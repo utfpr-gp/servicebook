@@ -1,7 +1,9 @@
 package br.edu.utfpr.servicebook.controller;
 
+import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
 import br.edu.utfpr.servicebook.model.dto.JobRequestDTO;
 import br.edu.utfpr.servicebook.model.entity.*;
+import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
 import br.edu.utfpr.servicebook.service.ClientService;
 import br.edu.utfpr.servicebook.service.ExpertiseService;
@@ -31,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -51,6 +54,8 @@ public class JobRequestController {
     @Autowired
     JobRequestMapper jobRequestMapper;
 
+    @Autowired
+    ExpertiseMapper expertiseMapper;
     @Autowired
     private WizardSessionUtil<JobRequestDTO> wizardSessionUtil;
 
@@ -87,14 +92,15 @@ public class JobRequestController {
         JobRequestDTO dto = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
         model.addAttribute("dto", dto);
 
-        /*
-        if(step == 6L){
-            List<JobRequest> jobRequests = jobRequestService.findAll();
-            List<JobRequestDTO> jobRequestDTOs = jobRequests.stream()
-                    .map(u -> jobRequestMapper.toDto(u))
+        if(step == 1L){
+            List<Expertise> expertise = expertiseService.findAll();
+            List<ExpertiseDTO> expertiseDTOs = expertise.stream()
+                    .map(u -> expertiseMapper.toDto(u))
                     .collect(Collectors.toList());
-            model.addAttribute("jobRequestDTOs", jobRequestDTOs);
-        }*/
+            model.addAttribute("expertiseDTOs", expertiseDTOs);
+
+
+        }
 
         return "client/job-request/wizard-step-0" + step;
     }
@@ -115,6 +121,7 @@ public class JobRequestController {
     }
     @PostMapping("/passo-2")
     public String saveFormDateJob(HttpSession httpSession, @Validated(JobRequestDTO.RequestExpirationGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model){
+
 
         if(errors.hasErrors()){
             model.addAttribute("dto", dto);

@@ -21,9 +21,14 @@
                             <div class="row center">
                                 <div class="col s12 m6 offset-m3 l4 offset-l4  input-field">
                                     <select id="expertiseId" name="expertiseId" class="white-text select-city">
-                                        <option value="0" selected><p class="white-text">Pedreiro </p></option>
-                                        <option value="1"><p>Encanador</p></option>
-                                        <option value="2"><p>Eletricista</p></option>
+                                            <option value="" disabled selected>Escolha a Profissão</option>
+                                            <c:forEach var="u" items="${expertiseDTOs}">
+                                                <option value="${u.id}">${u.name}</option>
+                                            </c:forEach>
+
+                                    </select>
+
+
                                     </select>
                                 </div>
                             </div>
