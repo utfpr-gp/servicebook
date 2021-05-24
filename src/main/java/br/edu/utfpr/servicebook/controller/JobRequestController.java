@@ -1,17 +1,17 @@
 package br.edu.utfpr.servicebook.controller;
 
-
 import br.edu.utfpr.servicebook.model.dto.JobRequestDTO;
-import br.edu.utfpr.servicebook.model.entity.Client;
-import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.JobRequest;
+import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
-import br.edu.utfpr.servicebook.model.repository.ExpertiseRepository;
 import br.edu.utfpr.servicebook.service.ClientService;
 import br.edu.utfpr.servicebook.service.ExpertiseService;
 import br.edu.utfpr.servicebook.service.JobRequestService;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import br.edu.utfpr.servicebook.util.DateUtil;
+import lombok.NonNull;
+import org.springframework.web.multipart.MultipartFile;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,11 +22,16 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.support.SessionStatus;
-
 import javax.servlet.http.HttpSession;
-import java.text.ParseException;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.*;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.Optional;
+
 
 @Controller
 @Slf4j
@@ -51,6 +56,10 @@ public class JobRequestController {
 
     @Autowired
     private SmartValidator validator;
+
+    @Autowired
+    private Cloudinary cloudinary;
+
 
     public enum RequestDateSelect{
         today(0), tomorrow(1) , thisweek(2), nextweek(3), thismonth(4), nextmonth(5);
@@ -193,14 +202,28 @@ public class JobRequestController {
 
     }
     @PostMapping("/passo-5")
-    public String saveFormImagePath(HttpSession httpSession, RedirectAttributes redirectAttributes, JobRequestDTO dto, Model model){
+    public String saveFormImagePath(HttpSession httpSession, RedirectAttributes redirectAttributes, JobRequestDTO dto, Model model) throws IOException {
+
+
         //persiste na sessão
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
-        sessionDTO.setImage(dto.getImage());
+        sessionDTO.setImageFile(dto.getImageFile());
 
-        log.debug("Passo 5 {}", sessionDTO);
 
-        return "redirect:/requisicoes?passo=6";
+        if(isValidateImage(dto.getImageFile())){
+            File jobImage = Files.createTempFile("temp", dto.getImageFile().getOriginalFilename()).toFile();
+            dto.getImageFile().transferTo(jobImage);
+            Map data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "jobs"));
+
+
+            sessionDTO.setImageSession((String)data.get("url"));
+            log.debug("Passo 5 {}", sessionDTO);
+
+            return "redirect:/requisicoes?passo=6";
+        } else {
+            return "client/job-request/wizard-step-06";
+        }
+
 
     }
     @PostMapping("/passo-6")
@@ -230,24 +253,27 @@ public class JobRequestController {
 
 
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
-        Client client = clientService.save(new Client());
-        //dto.getExpertiseId()
-        Expertise expertise = expertiseService.save(new Expertise());
-        sessionDTO.setClient_confirmation(true);
+        Expertise exp = null;
+        Client client = clientService.save(new Client(sessionDTO.getName(), sessionDTO.getEmail(), sessionDTO.getPhone(), sessionDTO.getCep()));
+        Optional<Expertise> oExpertise = expertiseService.findByID(sessionDTO.getExpertiseId());
+
+        if(oExpertise.isPresent()){
+            exp = oExpertise.get();
+        }
+
+        sessionDTO.setClientConfirmation(true);
         sessionDTO.setDateCreated(DateUtil.getToday());
         sessionDTO.setStatus("Requerido");
         log.debug("Passo 7 {}", sessionDTO);
         JobRequest jobRequest = jobRequestMapper.toEntity(sessionDTO);
         jobRequest.setClient(client);
-        jobRequest.setExpertise(expertise);
-
-
-        log.debug("Valor: {}", jobRequest);
-
+        jobRequest.setExpertise(exp);
+        jobRequest.setImage(sessionDTO.getImageSession());
         jobRequestService.save(jobRequest);
         redirectAttributes.addFlashAttribute("msg", "Requisição confirmada!");
         status.setComplete();
         return "redirect:/requisicoes?passo=8";
+
 
     }
     @PostMapping("/passo-8")
@@ -256,6 +282,19 @@ public class JobRequestController {
 
         return "redirect:/requisicoes";
 
+    }
+
+
+    public boolean isValidateImage(MultipartFile image){
+        List<String> contentTypes = Arrays.asList("image/png", "image/jpg", "image/jpeg");
+
+        for(int i = 0; i < contentTypes.size(); i++){
+            if(image.getContentType().toLowerCase().startsWith(contentTypes.get(i))){
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

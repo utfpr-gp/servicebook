@@ -4,9 +4,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.*;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -52,13 +50,12 @@ public class JobRequest {
     private LocalDate dateExpired;
 
     @NonNull
-    private Boolean client_confirmation;
+    private Boolean clientConfirmation = false;
 
     @NonNull
     private boolean professionalConfirmation = false;
 
-    @OneToMany(mappedBy = "jobRequest")
-    private Set<JobImages> jobImages = new HashSet<>();
+    private String image;
 
     @OneToOne(mappedBy = "jobRequest")
     private JobContracted jobContracted;

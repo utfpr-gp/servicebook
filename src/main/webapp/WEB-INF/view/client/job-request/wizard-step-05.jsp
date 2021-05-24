@@ -22,12 +22,12 @@
 
                         <div class="row center">
                             <div class="rowspacing-standard">
-                                <form method="post" action="requisicoes/passo-5">
+                                <form method="post" action="requisicoes/passo-5" enctype="multipart/form-data">
                                     <div class="col s12 m6 offset-m3 l4 offset-l4 ">
                                         <div class="file-field input-field">
                                             <div class="btn">
                                                 <span>Choose File</span>
-                                                <input type="file" id="image" name="image" multiple>
+                                                <input type="file" value="${dto.imageFile}" name="imageFile" accept=".jpg, .jpeg, .png">
                                             </div>
                                             <div class="file-path-wrapper">
                                                 <input class="file-path validate" placeholder="image.jpg"  type="text">

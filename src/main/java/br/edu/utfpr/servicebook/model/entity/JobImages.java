@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
-public class JobImages {
+public class JobImages{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -28,7 +28,7 @@ public class JobImages {
 	
 	@ManyToOne
 	@JoinColumn(name = "job_request_id")
-	private JobRequest jobRequest;
+	private JobRequest jobImages;
 	
 	@NonNull
 	private String path;

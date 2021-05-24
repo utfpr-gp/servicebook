@@ -26,12 +26,6 @@ INSERT INTO states (name, uf) VALUES ('Acre', 'AC'),
                                      ('Sergipe', 'SE'),
                                      ('Tocantins', 'TO');
 
-INSERT INTO professions (name) VALUES ('Pedreiro'),
-                                      ('Encanador'),
-                                      ('Eletricista'),
-                                      ('Pintor'),
-                                      ('Jardineiro');
-
 INSERT INTO users (birth_date, email, email_verified, gender, name, phone_number, phone_verified, profile_picture, type) VALUES ('2018-12-03', 'darth_vader@gmail.com', 'true', 'Masculino', 'Darth Vader', '(42)9 9999-9999', 'true', 'https://i.imgur.com/owhNAKK.png', 'profissional'),
                                                                                                                                 ('2018-12-03', 'chewbacca@gmail.com', 'false', 'Masculino', 'Chewbacca', '', 'false', '', 'profissional');
 
@@ -41,7 +35,11 @@ INSERT INTO professionals (cpf, description, rating, denounce_amount, id) VALUES
 INSERT INTO clients (usuario_id) VALUES ('1'),
                                         ('2');
 
-INSERT INTO expertises (name) VALUES ('Encanador');
+INSERT INTO expertises (name) VALUES ('Pedreiro'),
+                                     ('Encanador'),
+                                     ('Eletricista'),
+                                     ('Pintor'),
+                                     ('Jardineiro');
 
 INSERT INTO job_requests (client_confirmation, date_created, date_expired,  date_proximity, description, professional_confirmation, quantity_candidators_max, status, client_id, expertise_id) VALUES ('true', '2018-12-03', '2018-12-03', '2018-12-03', 'Lorem ipsum dolor', 'true', '3', 'Finalizado', '2', '1'),
                                                                                                                                                                                                       ('true', '2018-12-03', '2018-12-03', '2018-12-03', 'Lorem ipsum dolor', 'true', '4', 'Finalizado', '2', '1'),
