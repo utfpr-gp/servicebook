@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook.model.entity;
 
-import java.sql.Date;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -51,10 +52,10 @@ public class JobRequest {
 	private Date dateProximity;
 	
 	@NonNull
-	private Date dateCreated;
+	private LocalDate dateCreated;
 	
 	@NonNull
-	private Date dateExpired;
+	private LocalDate dateExpired;
 	
 	@NonNull
 	private boolean clientConfirmation;
