@@ -35,13 +35,15 @@ public class JobRequestDTO implements Serializable {
     private String imageSession;
 
     @NotBlank(message = "O CEP não pode ser vazio", groups = RequestClientInfoGroupValidation.class)
-    @Pattern(regexp="\\d{5}-?\\d{3}",message="CEP Inválido")
+    @Pattern(regexp="^[0-9]{2}[0-9]{3}-[0-9]{3}$",message="CEP Inválido", groups = RequestClientInfoGroupValidation.class)
     private String cep;
 
     @NotBlank(message = "Preencha o nome", groups = RequestClientInfoGroupValidation.class)
+    @Pattern(regexp="^(?![ ])(?!.*[ ]{2})((?:e|de|da|do|das|dos)\\s*?|(?:[A-Z][^\\s]*\\s*?)(?!.*[ ]$))+$",message="Nome Inválido", groups = RequestClientInfoGroupValidation.class)
     private String nameClient;
 
     @Email(message = "O Email é inválido", groups = RequestClientInfoGroupValidation.class)
+    @Pattern(regexp="^\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$",message="E-mail Inválido", groups = RequestClientInfoGroupValidation.class)
     private String emailClient;
 
     @NotBlank(message = "Preencha o celular", groups = RequestClientInfoGroupValidation.class)
