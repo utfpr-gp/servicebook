@@ -15,7 +15,10 @@ import java.time.LocalDate;
 public class JobRequestDTO implements Serializable {
 
     private Long id;
+
+    @NotNull(message = "Especialidade inválida! Por favor, selecione uma especialidade profissional.", groups = RequestExpertiseGroupValidation.class)
     private Long expertiseId;
+
     private Long clientId;
     private Integer dateProximity;
     private LocalDate dateCreated;
@@ -49,7 +52,9 @@ public class JobRequestDTO implements Serializable {
     private String phone;
     private Boolean clientConfirmation;
 
+    public interface RequestExpertiseGroupValidation {
 
+    }
 
     public interface RequestMaxCandidatesGroupValidation{
 
