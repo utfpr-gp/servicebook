@@ -104,20 +104,39 @@ public class JobRequestController {
         return "client/job-request/wizard-step-0" + step;
     }
 
-
     @PostMapping("/passo-1")
-    public String saveFormRequestedJob(HttpSession httpSession, RedirectAttributes redirectAttributes, JobRequestDTO dto, Model model){
+    public String saveFormRequestedJob(HttpSession httpSession, @Validated(JobRequestDTO.RequestExpertiseGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model){
+        Optional<Expertise> oExpertise = null;
 
+        if(dto.getExpertiseId() != null) {
+            oExpertise = expertiseService.findById(dto.getExpertiseId());
+            if (!oExpertise.isPresent()) {
+                errors.rejectValue("expertiseId","error.dto","Especialidade não encontrada! Por favor, selecione uma especialidade profissional.");
+            }
+        }
+
+        if(errors.hasErrors()){
+            model.addAttribute("dto", dto);
+            model.addAttribute("errors", errors.getAllErrors());
+
+            List<Expertise> expertises = expertiseService.findAll();
+            List<ExpertiseDTO> expertiseDTOs = expertises.stream()
+                    .map(u -> expertiseMapper.toDto(u))
+                    .collect(Collectors.toList());
+
+            model.addAttribute("expertiseDTOs", expertiseDTOs);
+
+            return "client/job-request/wizard-step-01";
+        }
 
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
         sessionDTO.setExpertiseId(dto.getExpertiseId());
 
-
         log.debug("Passo 1 {}", sessionDTO);
 
         return "redirect:/requisicoes?passo=2";
-
     }
+
     @PostMapping("/passo-2")
     public String saveFormDateJob(HttpSession httpSession, @Validated(JobRequestDTO.RequestExpirationGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model){
 
