@@ -34,24 +34,22 @@ public class JobRequestDTO implements Serializable {
     private MultipartFile imageFile;
     private String imageSession;
 
-    @NotBlank(message = "O CEP não pode ser vazio", groups = RequestClientInfoGroupValidation.class)
-    @Pattern(regexp="^[0-9]{2}[0-9]{3}-[0-9]{3}$",message="CEP Inválido", groups = RequestClientInfoGroupValidation.class)
+    @NotBlank(message = "O campo CEP é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
+    @Pattern(regexp="^[0-9]{2}[0-9]{3}-[0-9]{3}$",message="*Por favor, preencha um CEP válido", groups = RequestClientInfoGroupValidation.class)
     private String cep;
 
-    @NotBlank(message = "Preencha o nome", groups = RequestClientInfoGroupValidation.class)
-    @Pattern(regexp="^(?![ ])(?!.*[ ]{2})((?:e|de|da|do|das|dos)\\s*?|(?:[A-Z][^\\s]*\\s*?)(?!.*[ ]$))+$",message="Nome Inválido", groups = RequestClientInfoGroupValidation.class)
+    @NotBlank(message = "O campo Nome é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
+    @Pattern(regexp="^(?![ ])(?!.*[ ]{2})((?:e|de|da|do|das|dos)\\s*?|(?:[A-Z][^\\s]*\\s*?)(?!.*[ ]$))+$",message="*Por favor, preencha um nome válido", groups = RequestClientInfoGroupValidation.class)
     private String nameClient;
 
-    @Email(message = "O Email é inválido", groups = RequestClientInfoGroupValidation.class)
-    @Pattern(regexp="^\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$",message="E-mail Inválido", groups = RequestClientInfoGroupValidation.class)
+    @Email(message = "O campo E-mail é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
+    @Pattern(regexp="^\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$",message="*Por favor, preencha um e-mail válido", groups = RequestClientInfoGroupValidation.class)
     private String emailClient;
 
-    @NotBlank(message = "Preencha o celular", groups = RequestClientInfoGroupValidation.class)
-    @Pattern(regexp="\\(\\d{2}\\)\\s9?\\d{4}-\\d{4}",message="Celular Inválido", groups = RequestClientInfoGroupValidation.class)
+    @NotBlank(message = "O campo Celular é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
+    @Pattern(regexp="\\(\\d{2}\\)\\s9?\\d{4}-\\d{4}",message="*Por favor, preencha um celular válido", groups = RequestClientInfoGroupValidation.class)
     private String phone;
     private Boolean clientConfirmation;
-
-
 
     public interface RequestMaxCandidatesGroupValidation{
 
