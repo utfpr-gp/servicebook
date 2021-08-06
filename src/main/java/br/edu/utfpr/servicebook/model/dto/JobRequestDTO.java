@@ -35,19 +35,19 @@ public class JobRequestDTO implements Serializable {
     private String imageSession;
 
     @NotBlank(message = "O campo CEP é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
-    @Pattern(regexp="\\d{5}-?\\d{3}",message="*Por favor, preencha um CEP válido", groups = RequestClientInfoGroupValidation.class)
+    @Pattern(regexp="\\d{5}-?\\d{3}",message="Por favor, preencha um CEP válido", groups = RequestClientInfoGroupValidation.class)
     private String cep;
 
     @NotBlank(message = "O campo Nome é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
-    @Pattern(regexp="^(\\s?[A-ZÀ-Ú][a-zà-ú]*)+(\\s[a-zà-ú]*)?(\\s[A-ZÀ-Ú][a-zà-ú]*)+",message="*Por favor, preencha um nome válido", groups = RequestClientInfoGroupValidation.class)
+    @Pattern(regexp="^(\\s?[A-ZÀ-Ú][a-zà-ú]*)+(\\s[a-zà-ú]*)?(\\s[A-ZÀ-Ú][a-zà-ú]*)+",message="Por favor, preencha um nome válido", groups = RequestClientInfoGroupValidation.class)
     private String nameClient;
 
     @Email(message = "O campo E-mail é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
-    @Pattern(regexp="\\w+@\\w+\\.\\w{3}(\\.\\w{2})?",message="*Por favor, preencha um e-mail válido", groups = RequestClientInfoGroupValidation.class)
+    @Pattern(regexp="\\w+@\\w+\\.\\w{3}(\\.\\w{2})?",message="Por favor, preencha um e-mail válido", groups = RequestClientInfoGroupValidation.class)
     private String emailClient;
 
     @NotBlank(message = "O campo Celular é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
-    @Pattern(regexp="\\(\\d{2}\\)\\s\\d{4,6}-\\d{3,4}$",message="*Por favor, preencha um celular válido", groups = RequestClientInfoGroupValidation.class)
+    @Pattern(regexp="^\\(?\\d{2}\\)?\\s?(\\d{4,5})-?(\\d{4})",message="Por favor, preencha um celular válido", groups = RequestClientInfoGroupValidation.class)
     private String phone;
 
     private Boolean clientConfirmation;
