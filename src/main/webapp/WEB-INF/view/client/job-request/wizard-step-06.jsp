@@ -57,7 +57,7 @@
                                     </div>
                                     <div class="col s6 m6 spacing-buttons">
                                         <div class="center">
-                                            <button class="waves-effect waves-light btn">Próximo</button>
+                                            <button class="waves-effect waves-light btn">Finalizar</button>
                                         </div>
                                     </div>
                                 </form>
