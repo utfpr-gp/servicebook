@@ -15,7 +15,10 @@ import java.time.LocalDate;
 public class JobRequestDTO implements Serializable {
 
     private Long id;
+
+    @NotNull(message = "Especialidade inválida! Por favor, selecione uma especialidade profissional.", groups = RequestExpertiseGroupValidation.class)
     private Long expertiseId;
+
     private Long clientId;
     private Integer dateProximity;
     private LocalDate dateCreated;
@@ -49,8 +52,11 @@ public class JobRequestDTO implements Serializable {
     @NotBlank(message = "O campo Celular é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
     @Pattern(regexp="^\\(?\\d{2}\\)?\\s?(\\d{4,5})-?(\\d{4})",message="Por favor, preencha um celular válido", groups = RequestClientInfoGroupValidation.class)
     private String phone;
-
     private Boolean clientConfirmation;
+
+    public interface RequestExpertiseGroupValidation {
+
+    }
 
     public interface RequestMaxCandidatesGroupValidation{
 

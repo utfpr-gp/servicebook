@@ -20,14 +20,12 @@
                         <form method="post" action="requisicoes/passo-1">
                             <div class="row center">
                                 <div class="col s12 m6 offset-m3 l4 offset-l4  input-field">
-                                    <select id="expertiseId" name="expertiseId" class="white-text select-city">
-                                            <option value="" disabled selected>Escolha a Profissão</option>
-                                            <c:forEach var="u" items="${expertiseDTOs}">
-                                                <option value="${u.id}">${u.name}</option>
-                                            </c:forEach>
+                                    <select id="expertiseId" name="expertiseId" class="white-text">
+                                        <option value="" disabled selected>Selecione a Especialidade</option>
 
-                                    </select>
-
+                                        <c:forEach var="e" items="${expertiseDTOs}">
+                                            <option value="${e.id}">${e.name}</option>
+                                        </c:forEach>
 
                                     </select>
                                 </div>
