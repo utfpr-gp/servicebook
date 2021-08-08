@@ -52,7 +52,7 @@
                             <p>O pagamento do serviço é realizado diretamente ao profissional!</p>
                         </blockquote>
                         <div class="center">
-                            <a class="waves-effect waves-light btn" href="#!">Começar</a>
+                            <a class="waves-effect waves-light btn" href="requisicoes">Começar</a>
                         </div>
                     </div>
                 </div>
