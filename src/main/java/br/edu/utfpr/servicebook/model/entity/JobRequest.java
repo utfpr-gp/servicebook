@@ -20,11 +20,15 @@ import lombok.RequiredArgsConstructor;
 @Entity
 public class JobRequest {
 
+	/**
+	 * AVAILABLE: disponível para candidaturas e permanece neste estado também durante o recebimento de candidaturas
+	 * BUDGET: passa para este estado quando alcançado o total de candidaturas esperado ou quando o cliente encerra o recebimento de candidaturas
+	 * TO_DO: o profissional foi escolhido para fazer o serviço e o serviço ainda não foi realizado
+	 * CLOSED: o serviço foi realizado
+	 */
 	public enum Status {
-		AVAILABLE, DISPUTE, TO_DO, CLOSED
+		AVAILABLE, BUDGET, TO_DO, CLOSED
 	};
-
-
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,6 +66,9 @@ public class JobRequest {
 	
 	@OneToOne(mappedBy = "jobRequest")
 	private JobContracted jobContracted;
+
+	@OneToMany(mappedBy = "jobRequest")
+	Set<JobCandidate> jobCandidates;
 
 	@PrePersist
 	public void onPersist(){

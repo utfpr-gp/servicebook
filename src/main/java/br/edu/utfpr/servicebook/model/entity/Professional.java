@@ -43,6 +43,8 @@ public class Professional extends User {
 	@OneToMany(mappedBy = "professional")
 	private Set<JobContracted> jobContracted = new HashSet<>();
 
+	@OneToMany(mappedBy = "professional")
+	Set<JobCandidate> candidatures;
 
 	private String description;
 
