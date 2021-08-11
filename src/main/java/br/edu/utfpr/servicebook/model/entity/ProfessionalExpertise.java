@@ -5,9 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Date;
 
 /**
@@ -27,4 +25,14 @@ public class ProfessionalExpertise {
 	private ProfessionalExpertisePK id;
 
 	private Integer rating;
+
+	@ManyToOne
+	@MapsId("expertiseId")
+	@JoinColumn(name = "expertise_id")
+	private Expertise expertise;
+
+	@ManyToOne
+	@MapsId("professionalId")
+	@JoinColumn(name = "professional_id")
+	private Professional professional;
 }

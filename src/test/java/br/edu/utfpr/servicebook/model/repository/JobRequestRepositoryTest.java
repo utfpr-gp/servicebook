@@ -74,8 +74,8 @@ class JobRequestRepositoryTest {
 
         //Maria Desenvolvedora
         Professional maria = new Professional("Maria", "maria@mail.com", "", "", CPFUtil.geraCPF());
-        maria = professionalRepository.save(joao);
-        joao.getExpertises().add(developerExpertise);
+        maria = professionalRepository.save(maria);
+        maria.getExpertises().add(developerExpertise);
         maria = professionalRepository.save(maria);
 
         JobCandidatePK candidatePK1 = new JobCandidatePK(jb2.getId(), joao.getId());
