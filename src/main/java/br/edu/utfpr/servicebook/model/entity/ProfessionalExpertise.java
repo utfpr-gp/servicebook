@@ -20,11 +20,11 @@ import java.sql.Date;
 @Entity
 public class ProfessionalExpertise {
 
-	private static final long serialVersionUID = 1L; 
-	
+	private static final long serialVersionUID = 1L;
+
+	@NonNull
 	@EmbeddedId
 	private ProfessionalExpertisePK id;
-	
-	@NonNull
-	private int rating;
+
+	private Integer rating;
 }

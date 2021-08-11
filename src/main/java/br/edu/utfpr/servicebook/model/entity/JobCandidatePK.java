@@ -29,6 +29,12 @@ public class JobCandidatePK implements Serializable {
 	@JoinColumn(name = "professional_id")
 	@NonNull
 	private Professional professional;
-	
-	
+
+	@Override
+	public String toString() {
+		return "JobCandidatePK{" +
+				"jobRequest=" + jobRequest +
+				", professional=" + professional +
+				'}';
+	}
 }

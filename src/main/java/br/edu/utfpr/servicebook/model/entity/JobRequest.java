@@ -5,16 +5,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import br.edu.utfpr.servicebook.util.DateUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -26,6 +19,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Entity
 public class JobRequest {
+
+	public enum Status {
+		AVAILABLE, DISPUTE, TO_DO, CLOSED
+	};
+
+
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,27 +39,22 @@ public class JobRequest {
 	private Expertise expertise;
 	
 	@NonNull
-	private String status;
+	@Enumerated(EnumType.STRING)
+	private Status status;
 	
 	@NonNull
 	private String description;
 	
 	@NonNull
 	private int quantityCandidatorsMax;
-	
-	@NonNull
-	private Date dateProximity;
-	
-	@NonNull
+
 	private LocalDate dateCreated;
 	
 	@NonNull
 	private LocalDate dateExpired;
-	
-	@NonNull
+
 	private boolean clientConfirmation;
 	
-	@NonNull
 	private boolean professionalConfirmation;
 	
 	@OneToMany(mappedBy = "jobRequest")
@@ -68,5 +62,16 @@ public class JobRequest {
 	
 	@OneToOne(mappedBy = "jobRequest")
 	private JobContracted jobContracted;
+
+	@PrePersist
+	public void onPersist(){
+		this.dateCreated = DateUtil.getToday();
+		this.status = Status.AVAILABLE;
+	}
+
+	@PreUpdate
+	public void onUpdate(){
+
+	}
 	
 }
