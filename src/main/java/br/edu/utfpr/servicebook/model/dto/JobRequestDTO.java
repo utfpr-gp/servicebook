@@ -22,6 +22,7 @@ public class JobRequestDTO implements Serializable {
     private Long clientId;
     private Integer dateProximity;
     private LocalDate dateCreated;
+
     public String status;
     @Future(message = "Valor inválido para a requisição", groups = RequestExpirationGroupValidation.class)
     private LocalDate dateExpired;

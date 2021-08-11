@@ -25,7 +25,7 @@ INSERT INTO states (name, uf) VALUES ('Acre', 'AC'),
                                      ('São Paulo ', 'SP'),
                                      ('Sergipe', 'SE'),
                                      ('Tocantins', 'TO');
-
+/**
 INSERT INTO professions (name) VALUES ('Pedreiro'),
                                       ('Encanador'),
                                       ('Eletricista'),
@@ -50,3 +50,7 @@ INSERT INTO job_requests (client_confirmation, date_created, date_expired,  date
 INSERT INTO job_contracted (comments, rating, status,  job_request, professional) VALUES ('Muito bom profissional', '5', 'Finalizado', '1', '1'),
                                                                                          ('Péssimo', '1', 'Finalizado', '2', '1'),
                                                                                          ('Gostei do trabalho!', '4', 'Finalizado', '3', '1');
+
+ */
+
+

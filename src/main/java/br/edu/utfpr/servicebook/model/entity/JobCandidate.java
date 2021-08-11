@@ -1,16 +1,16 @@
 package br.edu.utfpr.servicebook.model.entity;
 
-import java.sql.Date;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
+import javax.persistence.*;
+
+import br.edu.utfpr.servicebook.util.DateUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Date;
 
 /**
  * Classe para armazenar as informações necessárias para a classe auxiliar n x n
@@ -23,17 +23,21 @@ import lombok.RequiredArgsConstructor;
 public class JobCandidate {
 
 	private static final long serialVersionUID = 1L; 
-	
+
+	@NonNull
 	@EmbeddedId
 	private JobCandidatePK id;
-	
-	@NonNull
+
 	private boolean isQuit;
-	
-	@NonNull
+
 	private boolean chosenByBudget;
-	
-	@NonNull
-	private Date date; 
-	
+
+	private Date date;
+
+	@PrePersist
+	public void onPersist(){
+		this.date = new Date();
+	}
+
+
 }

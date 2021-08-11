@@ -41,13 +41,10 @@ public class User implements Serializable {
 	@NonNull
 	private String type;
 	
-	@NonNull
 	private String gender;
 	
-	@NonNull
 	private String profilePicture;
 	
-	@NonNull
 	private Date birthDate;
 	
 	@NonNull

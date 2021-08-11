@@ -24,6 +24,11 @@ import lombok.RequiredArgsConstructor;
 public class Professional extends User {
 
 	private static final long serialVersionUID = 1L;
+
+	public Professional(String name, String email, String type, String phoneNumber, String cpf){
+		super(name,email, type, phoneNumber);
+		this.cpf =  cpf;
+	}
 	
 	@ManyToMany
 	@JoinTable(name = "professional_expertises",
@@ -38,10 +43,9 @@ public class Professional extends User {
 	@OneToMany(mappedBy = "professional")
 	private Set<JobContracted> jobContracted = new HashSet<>();
 
-	@NonNull
+
 	private String description;
 
-	@NonNull
 	private int rating;
 
 	private int denounceAmount;

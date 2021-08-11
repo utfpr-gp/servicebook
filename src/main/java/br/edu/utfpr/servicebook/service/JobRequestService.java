@@ -1,9 +1,11 @@
 package br.edu.utfpr.servicebook.service;
 
+import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.repository.JobRequestRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.batch.BatchProperties;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +32,10 @@ public class JobRequestService {
 
     public Optional<JobRequest> findById(Long id){
         return this.jobRequestRepository.findById(id);
+    }
+
+    public List<JobRequest> findByStatusAndExpertise(JobRequest.Status status, Expertise expertise){
+        return this.jobRequestRepository.findByStatusAndExpertise(status, expertise);
     }
 
     public void init() {
