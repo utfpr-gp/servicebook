@@ -34,6 +34,18 @@ public class JobCandidate {
 
 	private Date date;
 
+	@NonNull
+	@ManyToOne
+	@MapsId("jobRequestId")
+	@JoinColumn(name = "job_id")
+	private JobRequest jobRequest;
+
+	@NonNull
+	@ManyToOne
+	@MapsId("professionalId")
+	@JoinColumn(name = "professional_id")
+	private Professional professional;
+
 	@PrePersist
 	public void onPersist(){
 		this.date = new Date();

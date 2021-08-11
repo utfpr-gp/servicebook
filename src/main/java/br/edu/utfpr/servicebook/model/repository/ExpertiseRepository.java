@@ -8,5 +8,10 @@ import java.util.Optional;
 
 public interface ExpertiseRepository extends JpaRepository<Expertise, Long> {
 
+    /**
+     * Busca uma especialidade pelo nome
+     * @param name
+     * @return
+     */
     Optional<Expertise> findByName(String name);
 }

@@ -8,33 +8,17 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 /**
  * Classe auxiliar para chave composta em um relacionamento n x n
  */
+@Data
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Embeddable
 public class JobCandidatePK implements Serializable {
 
-	@ManyToOne
-	@JoinColumn(name = "job_id")
-	@NonNull
-	private JobRequest jobRequest;
-	
-	@ManyToOne
-	@JoinColumn(name = "professional_id")
-	@NonNull
-	private Professional professional;
-
-	@Override
-	public String toString() {
-		return "JobCandidatePK{" +
-				"jobRequest=" + jobRequest +
-				", professional=" + professional +
-				'}';
-	}
+	Long jobRequestId;
+	Long professionalId;
 }
