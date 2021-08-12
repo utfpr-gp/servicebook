@@ -14,14 +14,14 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
      * @param id
      * @return
      */
-    //List<JobCandidate> findById_Professional_Id(Long id);
+    List<JobCandidate> findByProfessional_Id(Long id);
 
     /**
      * Retorna uma lista de candidaturas de um dado profissional
      * @param professional
      * @return
      */
-    //List<JobCandidate> findById_Professional(Professional professional);
+    List<JobCandidate> findByProfessional(Professional professional);
 
     /**
      * Retorna uma lista de candidaturas de um profissional que foram escolhidas para orçamento
@@ -29,7 +29,7 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
      * @param chosen
      * @return
      */
-    //List<JobCandidate> findById_ProfessionalAndChosenByBudget(Professional professional, boolean chosen);
+    List<JobCandidate> findByProfessionalAndChosenByBudget(Professional professional, boolean chosen);
 
     /**
      * Retorna uma lista de candidaturas de um profissional para requisições de um certo estado.
@@ -37,22 +37,7 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
      * @param professional
      * @return
      */
-    //List<JobCandidate> findById_JobRequestStatusAndId_Professional(JobRequest.Status status, Professional professional);
+    List<JobCandidate> findByJobRequest_StatusAndProfessional(JobRequest.Status status, Professional professional);
 
-    /**
-     * Busca por uma lista de candidaturas para uma requisição em um certo estado para uma certa especialidade, indiferente do profissional
-     * @param status
-     * @param expertise
-     * @return
-     */
-   // List<JobCandidate> findById_JobRequest_StatusAndAndId_JobRequest_Expertise(JobRequest.Status status, Expertise expertise);
 
-    /**
-     * Busca por uma lista de candidaturas de um profissional para uma requisição em um certo estado referente a uma especialidade
-     * @param status
-     * @param expertise
-     * @param professional
-     * @return
-     */
-   // List<JobCandidate> findById_JobRequest_StatusAndAndId_JobRequest_ExpertiseAndId_Professional(JobRequest.Status status, Expertise expertise, Professional professional);
 }

@@ -23,5 +23,5 @@ public interface ExpertiseRepository extends JpaRepository<Expertise, Long> {
      * @param professional
      * @return
      */
-    List<Expertise> findByProfessionals(Professional professional);
+    List<Expertise> findByProfessionals_Professional(Professional professional);
 }

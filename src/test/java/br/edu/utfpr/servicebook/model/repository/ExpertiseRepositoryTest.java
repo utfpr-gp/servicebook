@@ -3,6 +3,7 @@ package br.edu.utfpr.servicebook.model.repository;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.entity.Professional;
+import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
 import br.edu.utfpr.servicebook.util.CPFUtil;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
@@ -30,6 +31,9 @@ class ExpertiseRepositoryTest {
     @Autowired
     ProfessionalRepository professionalRepository;
 
+    @Autowired
+    ProfessionalExpertiseRepository professionalExpertiseRepository;
+
     @BeforeEach
     void setUp() {
         Expertise developerExpertise = new Expertise("Desenvolvedor de Software");
@@ -41,14 +45,16 @@ class ExpertiseRepositoryTest {
         //João Mecânico
         Professional joao = new Professional("Roberto Carlos", "joao@mail.com", "", "", CPFUtil.geraCPF());
         joao = professionalRepository.save(joao);
-        joao.getExpertises().add(mechanicExpertise);
-        joao = professionalRepository.save(joao);
+
+        ProfessionalExpertise professionalExpertise1 = new ProfessionalExpertise(joao, mechanicExpertise);
+        professionalExpertiseRepository.save(professionalExpertise1);
 
         //Maria Desenvolvedora
         Professional maria = new Professional("Maria", "maria@mail.com", "", "", CPFUtil.geraCPF());
         maria = professionalRepository.save(maria);
-        maria.getExpertises().add(developerExpertise);
-        maria = professionalRepository.save(maria);
+
+        ProfessionalExpertise professionalExpertise2 = new ProfessionalExpertise(maria, developerExpertise);
+        professionalExpertiseRepository.save(professionalExpertise2);
     }
 
     @Test
@@ -56,7 +62,7 @@ class ExpertiseRepositoryTest {
     @DisplayName("Deve retornar uma lista com UMA especialidade do profissional João")
     public void findByProfessionals() {
         Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
-        List<Expertise> expertises = expertiseRepository.findByProfessionals(joao);
+        List<Expertise> expertises = expertiseRepository.findByProfessionals_Professional(joao);
         log.debug(expertises.toString());
         Assertions.assertFalse(expertises.isEmpty());
         Assertions.assertEquals(expertises.size(), 1);
