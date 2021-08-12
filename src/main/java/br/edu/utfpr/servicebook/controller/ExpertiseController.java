@@ -1,10 +1,10 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
-import br.edu.utfpr.servicebook.model.dto.ProfessionDTO;
-import br.edu.utfpr.servicebook.model.entity.Profession;
-import br.edu.utfpr.servicebook.model.mapper.ProfessionMapper;
-import br.edu.utfpr.servicebook.service.ProfessionService;
+import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
+import br.edu.utfpr.servicebook.model.entity.Expertise;
+import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
+import br.edu.utfpr.servicebook.service.ExpertiseService;
 
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
@@ -28,18 +28,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RequestMapping("/profissoes")
+@RequestMapping("/especialidades")
 @Controller
-public class ProfessionController {
+public class ExpertiseController {
 
     public static final Logger log =
-            LoggerFactory.getLogger(ProfessionController.class);
+            LoggerFactory.getLogger(ExpertiseController.class);
 
     @Autowired
-    private ProfessionService professionService;
+    private ExpertiseService expertiseService;
 
     @Autowired
-    private ProfessionMapper professionMapper;
+    private ExpertiseMapper expertiseMapper;
 
     @GetMapping
     public ModelAndView showForm(HttpServletRequest request,
@@ -49,20 +49,20 @@ public class ProfessionController {
                                  @RequestParam(value = "dir", defaultValue = "ASC") String direction){
         ModelAndView mv = new ModelAndView("admin/profession-registration");
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
-        Page<Profession> professionPage = professionService.findAll(pageRequest);
+        Page<Expertise> expertisePage = expertiseService.findAll(pageRequest);
 
-        List<ProfessionDTO> professionDTOs = professionPage.stream()
-                .map(s -> professionMapper.toDto(s))
+        List<ExpertiseDTO> professionDTOs = expertisePage.stream()
+                .map(s -> expertiseMapper.toDto(s))
                 .collect(Collectors.toList());
         mv.addObject("professions", professionDTOs);
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(professionPage);
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(expertisePage);
         mv.addObject("pagination", paginationDTO);
         return mv;
     }
 
     @PostMapping
-    public ModelAndView save(@Valid ProfessionDTO dto, BindingResult errors, RedirectAttributes redirectAttributes){
+    public ModelAndView save(@Valid ExpertiseDTO dto, BindingResult errors, RedirectAttributes redirectAttributes){
         for(FieldError e: errors.getFieldErrors()){
             log.info(e.getField() + " -> " + e.getCode());
         }
@@ -71,21 +71,21 @@ public class ProfessionController {
             return errorFowarding(dto, errors);
         }
 
-        Optional<Profession> optionalProfession = professionService.findByName(dto.getName());
+        Optional<Expertise> optionalProfession = expertiseService.findByName(dto.getName());
 
         if (!optionalProfession.isPresent()) {
-            Profession profession = professionMapper.toEntity(dto);
-            professionService.save(profession);
-            List<Profession> professions = professionService.findAll();
-            List<ProfessionDTO> professionDTOs = professions.stream()
-                    .map(s -> professionMapper.toDto(s))
+            Expertise profession = expertiseMapper.toEntity(dto);
+            expertiseService.save(profession);
+            List<Expertise> professions = expertiseService.findAll();
+            List<ExpertiseDTO> professionDTOs = professions.stream()
+                    .map(s -> expertiseMapper.toDto(s))
                     .collect(Collectors.toList());
             redirectAttributes.addFlashAttribute("msg", "Profissão salva com sucesso!");
         } else {
             errors.rejectValue("name", "error.dto", "A profissão já está cadastrada.");
             return errorFowarding(dto, errors);
         }
-        return new ModelAndView("redirect:profissoes");
+        return new ModelAndView("redirect:especialidades");
     }
 
     @GetMapping("/{id}")
@@ -100,23 +100,23 @@ public class ProfessionController {
             throw new InvalidParamsException("O identificador não pode ser negativo.");
         }
 
-        Optional<Profession> optionalProfession = professionService.findById(id);
+        Optional<Expertise> optionalProfession = expertiseService.findById(id);
 
         if(!optionalProfession.isPresent()){
             throw new EntityNotFoundException("O aluno não foi encontrado pelo id informado.");
         }
-        ProfessionDTO professionDTO = professionMapper.toDto(optionalProfession.get());
+        ExpertiseDTO professionDTO = expertiseMapper.toDto(optionalProfession.get());
         mv.addObject("dto", professionDTO);
 
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
-        Page<Profession> professionPage = professionService.findAll(pageRequest);
+        Page<Expertise> professionPage = expertiseService.findAll(pageRequest);
 
-        List<ProfessionDTO> professionDTOs = professionPage.stream()
-                .map(s -> professionMapper.toDto(s))
+        List<ExpertiseDTO> professionDTOs = professionPage.stream()
+                .map(s -> expertiseMapper.toDto(s))
                 .collect(Collectors.toList());
         mv.addObject("professions", professionDTOs);
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(professionPage, "/profissoes/" + id);
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(professionPage, "/especialidades/" + id);
         mv.addObject("pagination", paginationDTO);
         return mv;
     }
@@ -124,18 +124,18 @@ public class ProfessionController {
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         log.debug("Removendo uma profissão com id {}", id);
-        Optional <Profession> optionalProfession = this.professionService.findById(id);
+        Optional <Expertise> optionalProfession = this.expertiseService.findById(id);
 
         if(!optionalProfession.isPresent()){
             throw new EntityNotFoundException("Erro ao remover, registro não encontrado para o id " + id);
         }
 
-        this.professionService.delete(id);
+        this.expertiseService.delete(id);
         redirectAttributes.addFlashAttribute("msg", "Profissão removida com sucesso!");
-        return "redirect:/profissoes";
+        return "redirect:/especialidades";
     }
 
-    public ModelAndView errorFowarding(ProfessionDTO dto, BindingResult errors) {
+    public ModelAndView errorFowarding(ExpertiseDTO dto, BindingResult errors) {
         ModelAndView mv = new ModelAndView("admin/profession-registration");
         mv.addObject("dto", dto);
         mv.addObject("errors", errors.getAllErrors());

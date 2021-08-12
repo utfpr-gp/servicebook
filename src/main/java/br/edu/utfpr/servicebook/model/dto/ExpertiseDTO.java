@@ -1,15 +1,16 @@
 package br.edu.utfpr.servicebook.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ExpertiseDTO {
     private Long id;
-    private String name;
 
+    @NotBlank(message = "O nome da especialidade é obrigatório")
+    private String name;
 }

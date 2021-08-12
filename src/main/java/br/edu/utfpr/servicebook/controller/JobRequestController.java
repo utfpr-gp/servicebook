@@ -57,6 +57,7 @@ public class JobRequestController {
 
     @Autowired
     ExpertiseMapper expertiseMapper;
+
     @Autowired
     private WizardSessionUtil<JobRequestDTO> wizardSessionUtil;
 
