@@ -7,7 +7,9 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
     <title>${title}</title>
+    <base href="${pageContext.request.contextPath}/">
 
     <link rel="shortcut icon" href="assets/resources/images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
