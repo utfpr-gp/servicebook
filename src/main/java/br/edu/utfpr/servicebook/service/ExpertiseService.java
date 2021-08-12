@@ -2,35 +2,34 @@ package br.edu.utfpr.servicebook.service;
 
 import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.repository.ExpertiseRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Slf4j
 @Service
 public class ExpertiseService {
-
-
     @Autowired
     private ExpertiseRepository expertiseRepository;
 
-    public Expertise save(Expertise entity){
-        return expertiseRepository.save(entity);
+    public Expertise save(Expertise entity){ return expertiseRepository.save(entity); }
+
+    public List<Expertise> findAll() { return expertiseRepository.findAll(); }
+
+    public Page<Expertise> findAll(PageRequest pageRequest) { return this.expertiseRepository.findAll(pageRequest); }
+
+    public Optional<Expertise> findByName(String name){
+        return this.expertiseRepository.findByName(name);
     }
 
-    public void delete(Long id){
-        expertiseRepository.deleteById(id);
+    public Optional<Expertise> findById(Long id) {
+        return this.expertiseRepository.findById(id);
     }
 
-    public List<Expertise> findAll(){
-        return this.expertiseRepository.findAll();
+    public void delete(Long id) {
+        this.expertiseRepository.deleteById(id);
     }
-
-    public Optional<Expertise> findById(Long id){
-        return  expertiseRepository.findById(id);
-    }
-
 }

@@ -18,11 +18,6 @@ public class ProfessionalMapper {
 
     public ProfessionalDTO toResponseDto(Professional entity) {
         ProfessionalDTO dto = mapper.map(entity, ProfessionalDTO.class);
-        dto.setId(dto.getId());
-        dto.setCpf(dto.getCpf());
-        dto.setDescription(dto.getDescription());
-        dto.setRating(dto.getRating());
-        dto.setDenounceAmount(dto.getDenounceAmount());
         return dto;
     }
 

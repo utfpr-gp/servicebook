@@ -56,10 +56,29 @@
                                 <option value="5"><p class="white-text">Jardineiro</p></option>
                             </select>
                             <div class="center spacing-buttons">
-                                <form action="profissionais/especialidades">
-                                    <button class="waves-effect waves-light btn">Ver minhas especialidades</button>
-                                </form>
+                                <button class="waves-effect waves-light btn">
+                                    <a style="color: white" href="#modal-expertises" class="modal-trigger">
+                                        Adicionar nova especialidade
+                                    </a>
+                                </button>
                             </div>
+
+                            <div id="modal-expertises" class="modal">
+                                <div class="modal-content">
+                                    <form id="form-expertises" action="profissionais/especialidades" method="post">
+                                        <c:forEach var="expertise" items="${expertises}">
+                                            <label class="card-expertise card col s12 m4">
+                                                <input name="ids" type="checkbox" class="reset-checkbox" value="${expertise.id}">
+                                                <span>${expertise.name}</span>
+                                            </label>
+                                        </c:forEach>
+                                        <div class="input-field col s8">
+                                            <button class="btn waves-effect waves-light left">Salvar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                     <div class="row no-margin">
@@ -97,93 +116,12 @@
                 </div>
                 <div class="col m10 offset-m1 l9">
                     <a id="show-area-perfil" class="hide-on-large-only show-area-perfil waves-effect waves-light btn btn-floating grey darken-3 z-depth-A" ><i class="material-icons">compare_arrows</i></a>
-                    <div class="row">
-                        <div class="col s12">
-                            <h2 class="secondary-color-text">Anúncios de serviços</h2>
-                            <blockquote class="light-blue lighten-5 info-headers">
-                                <p>Abaixo você encontra os pedidos disponíveis no momento. Clique nos quadros para ver is detalhes.</p>
-                            </blockquote>
+                    <div class="row expertises">
+                        <c:forEach var="professionalExpertises" items="${professionalExpertises}">
+                        <div class="col s5 card card-expertise-list">
+                            <p class="center">${professionalExpertises.name}</p>
                         </div>
-                        <div class="col s12">
-                            <div class="row">
-                                <ul class="tabs center">
-                                    <li class="tab"><a class="active" href="#disponiveis">DISPONÍVEIS</a></li>
-                                    <li class="tab"><a href="#emDisputa">EM DISPUTA</a></li>
-                                    <li class="tab"><a href="#paraFazer">PARA FAZER</a></li>
-                                    <li class="tab"><a href="#executados">EXECUTADOS</a></li>
-                                </ul>
-                            </div>
-                            <div id="disponiveis" class="col s12">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col s12 spacing-buttons">
-                                            <div style="border: solid 1px black">
-                                                <div class="secondary-background-color">
-                                                    <div class="row">
-                                                        <div class="col s8 offset-s2">
-                                                            <h5 class="center white-text">PEDREIRO</h5>
-                                                        </div>
-                                                        <div class="col s2">
-                                                            <h5 class="right white-text badge-service">4/10</h5>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div class="row">
-                                                        <div class="col s4"><p class="center text-form-dados primary-color-text"><i class="material-icons small dark-color-text">person</i> Maria</p></div>
-                                                        <div class="col s4"><p class="center text-form-dados primary-color-text"><i class="material-icons small dark-color-text">location_on</i> Santana, Guarapuava-PR</p></div>
-                                                        <div class="col s4"><p class="center text-form-dados primary-color-text"><i class="material-icons small dark-color-text">access_time</i> Próxima semana</p></div>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <blockquote class="light-blue lighten-5 info-headers">
-                                                        <p>Descrição do serviço ...</p>
-                                                    </blockquote>
-                                                </div>
-                                                <div>
-                                                    <div class="center">
-                                                        <a class="waves-effect waves-light btn spacing-buttons" href="#!">Detalhes</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="emDisputa" class="col s12">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col s12 spacing-buttons">
-                                            <div class="none-profission">
-                                                <p class="center text-form-dados">Você ainda não tem pedidos, mas um novo pedido pode chegar aqui a qualquer momento.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="paraFazer" class="col s12">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col s12 spacing-buttons">
-                                            <div class="none-profission">
-                                                <p class="center text-form-dados">Você ainda não tem pedidos, mas um novo pedido pode chegar aqui a qualquer momento.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="executados" class="col s12">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col s12 spacing-buttons">
-                                            <div class="none-profission">
-                                                <p class="center text-form-dados">Você ainda não tem pedidos, mas um novo pedido pode chegar aqui a qualquer momento.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        </c:forEach>
                     </div>
                 </div>
             </div>

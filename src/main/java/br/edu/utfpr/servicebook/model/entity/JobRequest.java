@@ -5,16 +5,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import br.edu.utfpr.servicebook.util.DateUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -27,46 +20,65 @@ import lombok.RequiredArgsConstructor;
 @Entity
 public class JobRequest {
 
+	/**
+	 * AVAILABLE: disponível para candidaturas e permanece neste estado também durante o recebimento de candidaturas
+	 * BUDGET: passa para este estado quando alcançado o total de candidaturas esperado ou quando o cliente encerra o recebimento de candidaturas
+	 * TO_DO: o profissional foi escolhido para fazer o serviço e o serviço ainda não foi realizado
+	 * CLOSED: o serviço foi realizado
+	 */
+	public enum Status {
+		AVAILABLE, BUDGET, TO_DO, CLOSED
+	};
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "client_id")
 	private Client client;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "expertise_id")
 	private Expertise expertise;
-	
+
 	@NonNull
-	private String status;
-	
+	@Enumerated(EnumType.STRING)
+	private Status status;
+
 	@NonNull
 	private String description;
-	
+
 	@NonNull
 	private int quantityCandidatorsMax;
-	
-	@NonNull
-	private Date dateProximity;
-	
-	@NonNull
+
 	private LocalDate dateCreated;
-	
+
 	@NonNull
 	private LocalDate dateExpired;
-	
-	@NonNull
+
 	private boolean clientConfirmation;
-	
-	@NonNull
+
 	private boolean professionalConfirmation;
-	
+
 	@OneToMany(mappedBy = "jobRequest")
 	private Set<JobImages> jobImages = new HashSet<>();
-	
-	@OneToOne(mappedBy = "jobRequest")
+
+	@OneToOne(mappedBy = "jobRequest", cascade = CascadeType.PERSIST)
 	private JobContracted jobContracted;
-	
+
+	@OneToMany(mappedBy = "jobRequest")
+	Set<JobCandidate> jobCandidates = new HashSet<>();
+
+	@PrePersist
+	public void onPersist(){
+		this.dateCreated = DateUtil.getToday();
+		this.status = Status.AVAILABLE;
+	}
+
+	@PreUpdate
+	public void onUpdate(){
+
+	}
+
 }

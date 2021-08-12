@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>${title}</title>
 
+    <base href="${pageContext.request.contextPath}/">
     <link rel="shortcut icon" href="assets/resources/images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="assets/libraries/materialize/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
@@ -33,7 +34,7 @@
 
         <ul class="right hide-on-med-and-down">
             <li><a class="menu-itens dropdown-trigger" href="#!" data-target="dropdown1">ORDEM DE SERVIÇOS<i class="material-icons right">arrow_drop_down</i></a></li>
-            <li><a class="menu-itens" href="#!">MINHA CONTA</a></li>
+            <li><a class="menu-itens" href="profissionais">MINHA CONTA</a></li>
             <li><a class="menu-itens" href="#!">SAIR</a></li>
         </ul>
 

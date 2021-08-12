@@ -27,37 +27,34 @@ import lombok.RequiredArgsConstructor;
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NonNull
 	private String name;
-	
+
 	@NonNull
 	private String email;
-	
+
 	@NonNull
 	private String type;
-	
-	@NonNull
+
 	private String gender;
-	
-	@NonNull
+
 	private String profilePicture;
-	
-	@NonNull
+
 	private Date birthDate;
-	
+
 	@NonNull
 	private String phoneNumber;
-	
+
 	private boolean phoneVerified;
-	
+
 	private boolean emailVerified;
-	
+
 	@OneToOne(mappedBy = "user")
 	private UserToken userToken;
-	
+
 }

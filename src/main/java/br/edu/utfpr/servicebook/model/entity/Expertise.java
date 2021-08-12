@@ -25,19 +25,22 @@ import lombok.RequiredArgsConstructor;
 public class Expertise {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NonNull
 	@Column(unique = true)
 	private String name;
-	
-	@ManyToMany(mappedBy = "expertises")
-	private Set<Professional> professionals = new HashSet<>();
-	
-	@OneToMany(mappedBy = "expertise")
-	private Set<JobRequest> jobRequests = new HashSet<>();
-	
+
+//	@ManyToMany(mappedBy = "expertises")
+//	private Set<Professional> professionals = new HashSet<>();
+
+//	@OneToMany(mappedBy = "expertise")
+//	private Set<JobRequest> jobRequests = new HashSet<>();
+
+//	@OneToMany(mappedBy = "expertise")
+//	Set<ProfessionalExpertise> professionals;
+
 }

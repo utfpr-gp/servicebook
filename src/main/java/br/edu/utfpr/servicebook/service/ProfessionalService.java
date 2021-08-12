@@ -34,6 +34,6 @@ public class ProfessionalService {
 
     public Professional findByEmailAddress(String email){
 
-        return this.professionalRepository.findByEmailAddress(email);
+        return this.professionalRepository.findByEmail(email);
     }
 }
