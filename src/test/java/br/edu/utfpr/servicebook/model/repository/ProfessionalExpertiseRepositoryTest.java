@@ -1,7 +1,6 @@
 package br.edu.utfpr.servicebook.model.repository;
 
 import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.entity.Professional;
 import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
 import br.edu.utfpr.servicebook.util.CPFUtil;
@@ -14,16 +13,15 @@ import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class ExpertiseRepositoryTest {
+class ProfessionalExpertiseRepositoryTest {
 
     public static final Logger log =
-            LoggerFactory.getLogger(ExpertiseRepositoryTest.class);
+            LoggerFactory.getLogger(ProfessionalExpertiseRepositoryTest.class);
 
     @Autowired
     ExpertiseRepository expertiseRepository;
@@ -57,11 +55,18 @@ class ExpertiseRepositoryTest {
         professionalExpertiseRepository.save(professionalExpertise2);
     }
 
-
+    @Test
+    @Transactional
+    @DisplayName("Deve retornar uma lista com UMA especialidade do profissional João")
+    public void findByProfessionals() {
+        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
+        List<ProfessionalExpertise> expertises = professionalExpertiseRepository.findByProfessional(joao);
+        log.debug(expertises.toString());
+        Assertions.assertFalse(expertises.isEmpty());
+        Assertions.assertEquals(expertises.size(), 1);
+    }
 
     @AfterEach
     void tearDown() {
-        expertiseRepository.deleteAll();
-        professionalRepository.deleteAll();
     }
 }

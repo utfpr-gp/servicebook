@@ -4,6 +4,8 @@ import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.entity.Professional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,10 +20,8 @@ public interface ExpertiseRepository extends JpaRepository<Expertise, Long> {
      */
     Optional<Expertise> findByName(String name);
 
-     /**
-     * Retorna uma lista de especialidades de um profissional l
-     * @param professional
-     * @return
-     */
-    List<Expertise> findByProfessionals(Professional professional);
+//    @Query("SELECT p FROM Expertise p WHERE p.name = :name")
+//    Optional<Expertise> findByName(@Param("name") String name);
+
+
 }

@@ -64,11 +64,11 @@ public class JobRequest {
 	@OneToMany(mappedBy = "jobRequest")
 	private Set<JobImages> jobImages = new HashSet<>();
 	
-	@OneToOne(mappedBy = "jobRequest")
+	@OneToOne(mappedBy = "jobRequest", cascade = CascadeType.PERSIST)
 	private JobContracted jobContracted;
 
 	@OneToMany(mappedBy = "jobRequest")
-	Set<JobCandidate> jobCandidates;
+	Set<JobCandidate> jobCandidates = new HashSet<>();
 
 	@PrePersist
 	public void onPersist(){

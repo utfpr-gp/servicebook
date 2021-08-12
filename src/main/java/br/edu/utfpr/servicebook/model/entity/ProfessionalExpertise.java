@@ -14,13 +14,12 @@ import java.sql.Date;
 @Data
 @Table(name = "professional_expertises")
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Entity
 public class ProfessionalExpertise {
 
 	private static final long serialVersionUID = 1L;
 
-	@NonNull
+
 	@EmbeddedId
 	private ProfessionalExpertisePK id;
 
@@ -35,4 +34,10 @@ public class ProfessionalExpertise {
 	@MapsId("professionalId")
 	@JoinColumn(name = "professional_id")
 	private Professional professional;
+
+	public ProfessionalExpertise(Professional professional, Expertise expertise){
+		this.expertise = expertise;
+		this.professional = professional;
+		this.id = new ProfessionalExpertisePK(expertise.getId(), professional.getId());
+	}
 }
