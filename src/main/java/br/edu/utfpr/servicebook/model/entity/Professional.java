@@ -24,20 +24,14 @@ public class Professional extends User {
 		this.cpf =  cpf;
 	}
 	
-//	@ManyToMany
-//	@JoinTable(name = "professional_expertises",
-//			  joinColumns = @JoinColumn(name = "professional_id"),
-//			  inverseJoinColumns = @JoinColumn(name = "expertise_id"))
-//	private Set<Expertise> expertises = new HashSet<>();
-	
 	@NonNull
 	@Column(unique = true)
 	private String cpf;
 	
 //	@OneToMany(mappedBy = "professional")
 //	private Set<JobContracted> jobContracted = new HashSet<>();
-	@OneToMany(mappedBy = "professional")
-	Set<ProfessionalExpertise> expertises;
+//	@OneToMany(mappedBy = "professional")
+//	Set<ProfessionalExpertise> expertises;
 
 	@OneToMany(mappedBy = "professional")
 	Set<JobCandidate> candidatures;

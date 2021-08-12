@@ -99,7 +99,7 @@ class JobCandidateRepositoryTest {
         List<JobCandidate> jobs = jobCandidateRepository.findByProfessionalAndChosenByBudget(joao, true);
         log.debug(jobs.toString());
         Assertions.assertFalse(jobs.isEmpty());
-        Assertions.assertEquals(jobs.size(), 2);
+        Assertions.assertEquals(jobs.size(), 1);
     }
 
     @Test

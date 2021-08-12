@@ -18,10 +18,5 @@ public interface ExpertiseRepository extends JpaRepository<Expertise, Long> {
      */
     Optional<Expertise> findByName(String name);
 
-     /**
-     * Retorna uma lista de especialidades de um profissional l
-     * @param professional
-     * @return
-     */
-    List<Expertise> findByProfessionals_Professional(Professional professional);
+
 }
