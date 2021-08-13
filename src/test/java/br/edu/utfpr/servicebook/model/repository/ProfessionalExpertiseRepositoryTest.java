@@ -59,7 +59,7 @@ class ProfessionalExpertiseRepositoryTest {
     @Transactional
     @DisplayName("Deve retornar uma lista com UMA especialidade do profissional João")
     public void findByProfessionals() {
-        Professional joao = professionalRepository.findByEmail("joao@mail.com");
+        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
         List<ProfessionalExpertise> expertises = professionalExpertiseRepository.findByProfessional(joao);
         log.debug(expertises.toString());
         Assertions.assertFalse(expertises.isEmpty());

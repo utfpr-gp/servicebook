@@ -16,6 +16,6 @@ import java.io.Serializable;
 @Embeddable
 public class ProfessionalExpertisePK implements Serializable {
 
-	Long expertiseId;
-	Long professionalId;
+    Long expertiseId;
+    Long professionalId;
 }

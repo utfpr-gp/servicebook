@@ -57,6 +57,7 @@ public class JobRequestController {
 
     @Autowired
     ExpertiseMapper expertiseMapper;
+
     @Autowired
     private WizardSessionUtil<JobRequestDTO> wizardSessionUtil;
 
@@ -267,7 +268,6 @@ public class JobRequestController {
         sessionDTO.setCep(dto.getCep());
         sessionDTO.setEmailClient(dto.getEmailClient());
         sessionDTO.setPhone(dto.getPhone());
-
         log.debug("Passo 6 {}", sessionDTO);
 
         return "redirect:/requisicoes?passo=7";

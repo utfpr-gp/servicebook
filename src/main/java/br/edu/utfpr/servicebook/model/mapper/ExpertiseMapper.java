@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ExpertiseMapper {
+
     @Autowired
     private ModelMapper mapper;
 
@@ -16,13 +17,7 @@ public class ExpertiseMapper {
         return dto;
     }
 
-    public ExpertiseDTO toResponseDto(Expertise entity) {
-        ExpertiseDTO dto = mapper.map(entity, ExpertiseDTO.class);
-        dto.setId(dto.getId());
-        return dto;
-    }
-
-    public Expertise toEntity(ExpertiseDTO dto) {
+    public Expertise toEntity(ExpertiseDTO dto){
         Expertise entity = mapper.map(dto, Expertise.class);
         return entity;
     }

@@ -21,7 +21,7 @@ import java.util.Date;
 @Entity
 public class JobCandidate {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L; 
 
 	@EmbeddedId
 	private JobCandidatePK id;

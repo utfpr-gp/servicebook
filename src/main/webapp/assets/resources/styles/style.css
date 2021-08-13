@@ -209,6 +209,7 @@ blockquote{
 .text-form-dados{
   font-size: 130%;
 }
+
 input[type=text]:focus{
   border-bottom: 1px solid #53b1ed !important;
 }

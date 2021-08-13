@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
-<t:admin title="Cadastro de Profissão">
+<t:admin title="Cadastro de Especialidades">
     <jsp:body>
 
         <main>
@@ -13,17 +13,17 @@
                         <h3 class="center secondary-color-text range-quantity">Especialidades</h3>
                         <div class="col s6 l4 offset-l2 spacing-buttons">
                             <div class="center">
-                                <a class="waves-effect waves-light btn" href="profissoes">Novo</a>
+                                <a class="waves-effect waves-light btn" href="especialidades">Novo</a>
                             </div>
                         </div>
-                        <form action="profissoes" method="post">
+                        <form action="especialidades" method="post">
                             <input name="id" type="hidden" value="${dto.id}">
                             <div class="col s12 l4 offset-l4 input-field range-quantity">
 
                                     <div class="input-field  col s12">
                                         <i class="material-icons prefix primary-color-text">work</i>
                                         <input placeholder="Pedreiro" type="text" id="autocomplete-input" name="name" class="autocomplete" value="${dto.name}">
-                                        <label for="autocomplete-input">Profissão</label>
+                                        <label for="autocomplete-input">Especialidade</label>
                                     </div>
 
                             </div>
@@ -85,14 +85,14 @@
                                         <tr>
                                             <td>${p.id}</td>
                                             <td>${p.name}</td>
-                                            <td><a href="profissoes/${p.id}" class="btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">edit</i></a></td>
-                                            <td><a href="#modal-delete" class="btn-floating btn-small waves-effect waves-light red modal-trigger" data-url="${pageContext.request.contextPath}/profissoes/${p.id}" data-name="${p.name}"><i class="material-icons">delete_forever</i></a></td>
+                                            <td><a href="especialidades/${p.id}" class="btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">edit</i></a></td>
+                                            <td><a href="#modal-delete" class="btn-floating btn-small waves-effect waves-light red modal-trigger" data-url="${pageContext.request.contextPath}/especialidades/${p.id}" data-name="${p.name}"><i class="material-icons">delete_forever</i></a></td>
                                         </tr>
                                     </c:forEach>
                                     </tbody>
                                 </table>
                             </c:if>
-                            <div class="center"><t:pagination pagination="${pagination}" relativePath="/profissoes"></t:pagination></div>
+                            <div class="center"><t:pagination pagination="${pagination}" relativePath="/especialidades"></t:pagination></div>
                         </div>
                     </div>
                 </div>

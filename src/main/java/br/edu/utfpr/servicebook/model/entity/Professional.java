@@ -23,11 +23,11 @@ public class Professional extends User {
 		super(name,email, type, phoneNumber);
 		this.cpf =  cpf;
 	}
-
+	
 	@NonNull
 	@Column(unique = true)
 	private String cpf;
-
+	
 //	@OneToMany(mappedBy = "professional")
 //	private Set<JobContracted> jobContracted = new HashSet<>();
 //	@OneToMany(mappedBy = "professional")

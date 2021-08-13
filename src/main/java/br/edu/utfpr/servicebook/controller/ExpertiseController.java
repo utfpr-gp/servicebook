@@ -2,13 +2,9 @@ package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
-import br.edu.utfpr.servicebook.model.dto.ProfessionDTO;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.Profession;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
-import br.edu.utfpr.servicebook.model.mapper.ProfessionMapper;
 import br.edu.utfpr.servicebook.service.ExpertiseService;
-import br.edu.utfpr.servicebook.service.ProfessionService;
 
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
@@ -32,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RequestMapping("/profissoes")
+@RequestMapping("/especialidades")
 @Controller
 public class ExpertiseController {
 

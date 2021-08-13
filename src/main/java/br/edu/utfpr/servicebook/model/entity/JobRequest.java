@@ -45,7 +45,7 @@ public class JobRequest {
 	@NonNull
 	@Enumerated(EnumType.STRING)
 	private Status status;
-
+	
 	@NonNull
 	private String description;
 
@@ -58,12 +58,12 @@ public class JobRequest {
 	private LocalDate dateExpired;
 
 	private boolean clientConfirmation;
-
+	
 	private boolean professionalConfirmation;
 
 	@OneToMany(mappedBy = "jobRequest")
 	private Set<JobImages> jobImages = new HashSet<>();
-
+	
 	@OneToOne(mappedBy = "jobRequest", cascade = CascadeType.PERSIST)
 	private JobContracted jobContracted;
 
@@ -80,5 +80,5 @@ public class JobRequest {
 	public void onUpdate(){
 
 	}
-
+	
 }
