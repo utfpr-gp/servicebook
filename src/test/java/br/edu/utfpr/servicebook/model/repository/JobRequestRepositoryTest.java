@@ -131,7 +131,7 @@ class JobRequestRepositoryTest {
     @DisplayName("Deve retornar uma lista de requisições disponíveis para uma especialidade que um profissional se candidatou")
     public void findByStatusAndExpertiseAndJobCandidates_Professional() {
         Optional<Expertise> mecanico = expertiseRepository.findByName("Mecânico");
-        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
+        Professional joao = professionalRepository.findByEmail("joao@mail.com");
         List<JobRequest> jobs = jobRequestRepository.findByStatusAndExpertiseAndJobCandidates_Professional(JobRequest.Status.AVAILABLE, mecanico.get(), joao);
         log.debug(jobs.toString());
         Assertions.assertFalse(jobs.isEmpty());
@@ -143,7 +143,7 @@ class JobRequestRepositoryTest {
     @DisplayName("Deve retornar uma lista de requisições disponíveis para uma especialidade, mas apenas aquelas que não tiveram candidaturas")
     public void findByStatusAndExpertiseAndJobCandidatesIsNull() {
         Optional<Expertise> mecanico = expertiseRepository.findByName("Mecânico");
-        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
+        Professional joao = professionalRepository.findByEmail("joao@mail.com");
         List<JobRequest> jobs = jobRequestRepository.findByStatusAndExpertiseAndJobCandidatesIsNull(JobRequest.Status.AVAILABLE, mecanico.get());
         log.debug(jobs.toString());
         Assertions.assertFalse(jobs.isEmpty());
@@ -155,7 +155,7 @@ class JobRequestRepositoryTest {
     @DisplayName("Deve retornar uma lista de requisições disponíveis para uma especialidade, mas apenas aquelas que um certo profissional ainda não se candidatou")
     public void findByStatusAndExpertiseAndJobCandidates_ProfessionalNot() {
         Optional<Expertise> mecanico = expertiseRepository.findByName("Desenvolvedor de Software");
-        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
+        Professional joao = professionalRepository.findByEmail("joao@mail.com");
         List<JobRequest> jobs = jobRequestRepository.findByStatusAndExpertiseAndJobCandidates_ProfessionalNot(JobRequest.Status.AVAILABLE, mecanico.get(), joao);
         log.debug(jobs.toString());
         Assertions.assertFalse(jobs.isEmpty());
@@ -167,7 +167,7 @@ class JobRequestRepositoryTest {
     @DisplayName("Deve retornar uma lista de requisições disponíveis para uma especialidade, mas apenas aquelas que um certo profissional ainda não se candidatou")
     public void findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot() {
         Optional<Expertise> mecanico = expertiseRepository.findByName("Desenvolvedor de Software");
-        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
+        Professional joao = professionalRepository.findByEmail("joao@mail.com");
         List<JobRequest> jobs = jobRequestRepository.findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status.AVAILABLE, mecanico.get(), joao);
         log.debug(jobs.toString());
         Assertions.assertFalse(jobs.isEmpty());

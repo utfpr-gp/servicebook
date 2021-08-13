@@ -43,7 +43,8 @@
                         <div class="col s4 center no-padding"> <i class="medium material-icons ${professional.emailVerified ? 'green' : 'white'}-text">email</i></div>
                         <div class="col s4 center no-padding"> <i class="medium material-icons ${professional.phoneVerified ? 'green' : 'white'}-text">phone</i></div>
                     </div>
-                    <div class="row">
+                    <div class="center">
+                        <p class="no-margin header-verification tertiary-color-text">FILTRAR POR ESPECIALIDADE</p>
                     </div>
                     <div class="row no-margin">
                         <div class="col s12 no-margin no-padding input-field area-profission-select">
@@ -55,11 +56,6 @@
                                 <option value="4"><p class="white-text">Pintor</p></option>
                                 <option value="5"><p class="white-text">Jardineiro</p></option>
                             </select>
-                            <div class="center spacing-buttons">
-                                <form action="profissionais/especialidades">
-                                    <button class="waves-effect waves-light btn">Ver minhas especialidades</button>
-                                </form>
-                            </div>
                         </div>
                     </div>
                     <div class="row no-margin">

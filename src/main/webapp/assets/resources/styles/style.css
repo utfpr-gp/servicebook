@@ -22,7 +22,6 @@ p {
 }
 
 .menu-itens{
-  font-size: 110%;
   margin-top: 15px;
   color: #53b1ed;
 }
@@ -578,6 +577,10 @@ a.middle-indicator-text{
   background: #81c5f3;
   font-size: 20px;
   margin: 10px;
+}
+
+.modal-trigger {
+  color: white;
 }
 
 

@@ -80,7 +80,7 @@ class JobCandidateRepositoryTest {
     @DisplayName("Deve retornar uma lista de candidaturas de um profissional")
     public void findByProfessional() {
 
-        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
+        Professional joao = professionalRepository.findByEmail("joao@mail.com");
         List<JobCandidate> jobs = jobCandidateRepository.findByProfessional(joao);
         log.debug(jobs.toString());
         for(JobCandidate job : jobs){
@@ -95,7 +95,7 @@ class JobCandidateRepositoryTest {
     @DisplayName("Deve retornar uma lista de candidaturas de um profissional escolhidas para fazer orçamento")
     public void findByProfessionalAndChosenByBudget() {
 
-        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
+        Professional joao = professionalRepository.findByEmail("joao@mail.com");
         List<JobCandidate> jobs = jobCandidateRepository.findByProfessionalAndChosenByBudget(joao, true);
         log.debug(jobs.toString());
         Assertions.assertFalse(jobs.isEmpty());
@@ -109,7 +109,7 @@ class JobCandidateRepositoryTest {
         JobRequest jb1 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, DateUtil.getNextWeek());
         jobRequestRepository.save(jb1);
 
-        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
+        Professional joao = professionalRepository.findByEmail("joao@mail.com");
 
         JobCandidate candidate1 = new JobCandidate(jb1, joao);
         jobCandidateRepository.save(candidate1);

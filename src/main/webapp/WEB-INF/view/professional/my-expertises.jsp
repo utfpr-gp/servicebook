@@ -47,22 +47,6 @@
                     </div>
                     <div class="row no-margin">
                         <div class="col s12 no-margin no-padding input-field area-profission-select">
-                            <select class="white-text select-city no-padding">
-                                <option value="0" selected><p class="white-text">Todas</p></option>
-                                <option value="1"><p class="white-text">Pedreiro</p></option>
-                                <option value="2"><p class="white-text">Encanador</p></option>
-                                <option value="3"><p class="white-text">Eletrecista</p></option>
-                                <option value="4"><p class="white-text">Pintor</p></option>
-                                <option value="5"><p class="white-text">Jardineiro</p></option>
-                            </select>
-                            <div class="center spacing-buttons">
-                                <button class="waves-effect waves-light btn">
-                                    <a style="color: white" href="#modal-expertises" class="modal-trigger">
-                                        Adicionar nova especialidade
-                                    </a>
-                                </button>
-                            </div>
-
                             <div id="modal-expertises" class="modal">
                                 <div class="modal-content">
                                     <form id="form-expertises" action="profissionais/especialidades" method="post">
@@ -116,12 +100,30 @@
                 </div>
                 <div class="col m10 offset-m1 l9">
                     <a id="show-area-perfil" class="hide-on-large-only show-area-perfil waves-effect waves-light btn btn-floating grey darken-3 z-depth-A" ><i class="material-icons">compare_arrows</i></a>
-                    <div class="row expertises">
-                        <c:forEach var="professionalExpertises" items="${professionalExpertises}">
-                        <div class="col s5 card card-expertise-list">
-                            <p class="center">${professionalExpertises.name}</p>
+                    <div class="row">
+                        <div class="col s12">
+                            <h2 class="secondary-color-text">Minhas especialidades</h2>
+                            <blockquote class="light-blue lighten-5 info-headers">
+                                <p>Aqui você verifica as suas especialidades e pode cadastrar uma nova.</p>
+                            </blockquote>
                         </div>
-                        </c:forEach>
+                    </div>
+                    <div class="col s12">
+
+                        <div class="row expertises">
+                            <c:forEach var="professionalExpertises" items="${professionalExpertises}">
+                            <div class="col s5 card card-expertise-list">
+                                <p class="center">${professionalExpertises.name}</p>
+                            </div>
+                            </c:forEach>
+                        </div>
+                        <div class="center spacing-buttons">
+                            <button  class="waves-effect waves-light btn">
+                                <a href="#modal-expertises" class="modal-trigger">
+                                    Adicionar nova especialidade
+                                </a>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

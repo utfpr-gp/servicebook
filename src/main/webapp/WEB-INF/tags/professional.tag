@@ -35,6 +35,7 @@
         <ul class="right hide-on-med-and-down">
             <li><a class="menu-itens dropdown-trigger" href="#!" data-target="dropdown1">ORDEM DE SERVIÇOS<i class="material-icons right">arrow_drop_down</i></a></li>
             <li><a class="menu-itens" href="profissionais">MINHA CONTA</a></li>
+            <li><a class="menu-itens" href="profissionais/especialidades">MINHAS ESPECIALIDADES</a></li>
             <li><a class="menu-itens" href="#!">SAIR</a></li>
         </ul>
 

@@ -87,13 +87,18 @@ public class ProfessionalController {
 
     @PostMapping("/especialidades")
     public ModelAndView saveExpertises(@Valid ProfessionalExpertiseDTO dto, BindingResult errors, RedirectAttributes redirectAttributes) throws Exception {
-        int[] ids = this.stringToArray(dto.getIds());
+        List<Integer> ids = dto.getIds();
 
         Professional professional = this.getProfessional();
 
         for (int id : ids) {
-            Expertise e = expertiseService.findById((long) id).get();
-            ProfessionalExpertise p = professionalExpertiseService.save(new ProfessionalExpertise(professional, e));
+            Optional<Expertise> e = expertiseService.findById((long) id);
+
+            if (!e.isPresent()) {
+                throw new Exception("Não existe essa especialidade!");
+            }
+
+            ProfessionalExpertise p = professionalExpertiseService.save(new ProfessionalExpertise(professional, e.get()));
         }
 
         ModelAndView mv = new ModelAndView("redirect:especialidades");
@@ -118,20 +123,5 @@ public class ProfessionalController {
         return oProfessional.get();
     }
 
-    private int[] stringToArray(String ids) {
-        if (ids == null) {
-            int[] ints = {};
-            return ints;
-        }
-
-        String[] idsString = ids.split(",");
-        int[] ints = new int[idsString.length];
-
-        for (int i = 0; i < ints.length; i++) {
-            ints[i] = Integer.parseInt(idsString[i]);
-        }
-
-        return ints;
-    }
 
 }
