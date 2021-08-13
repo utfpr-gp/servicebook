@@ -87,7 +87,13 @@ public class ProfessionalController {
 
     @PostMapping("/especialidades")
     public ModelAndView saveExpertises(@Valid ProfessionalExpertiseDTO dto, BindingResult errors, RedirectAttributes redirectAttributes) throws Exception {
+        ModelAndView mv = new ModelAndView("redirect:especialidades");
+
         List<Integer> ids = dto.getIds();
+
+        if (ids == null) {
+            return mv;
+        }
 
         Professional professional = this.getProfessional();
 
@@ -101,7 +107,6 @@ public class ProfessionalController {
             ProfessionalExpertise p = professionalExpertiseService.save(new ProfessionalExpertise(professional, e.get()));
         }
 
-        ModelAndView mv = new ModelAndView("redirect:especialidades");
 
         return mv;
     }

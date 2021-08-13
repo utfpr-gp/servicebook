@@ -546,18 +546,19 @@ a.middle-indicator-text{
 }
 
 #form-expertises input:checked + span {
-  background: #00b0ff;
+  background: #81c5f3;
 }
 
-#form-expertises button {
-  background: #00b0ff;
+#form-expertises i {
+  position: relative;
+  top: 5px;
 }
 
 .card-expertise {
   padding: 0 !important;
-  margin: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #81c5f3;
   height: 50px;
-  background: #81c5f3;
 }
 
 .card-expertise span,
@@ -569,14 +570,22 @@ a.middle-indicator-text{
   color: #333333;
 }
 
-.expertises {
-  padding: 20px;
-}
-
 .card-expertise-list {
-  background: #81c5f3;
   font-size: 20px;
   margin: 10px;
+  border: 1px solid #81c5f3;
+}
+
+.card-expertise-list strong {
+  text-transform: uppercase;
+}
+
+.expertise-icon {
+  font-size: 80px;
+}
+
+.expertise-icon i {
+  font-size: 45px;
 }
 
 .modal-trigger {
