@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -28,6 +29,9 @@ public class ClientService {
         return this.clientRepository.findAll();
     }
 
+    public Optional<Client> findById(Long id){
+        return this.clientRepository.findById(id);
+    }
     public void init() {
 
     }
