@@ -1,8 +1,11 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.dto.JobRequestDTO;
+import br.edu.utfpr.servicebook.model.dto.JobRequestMinDTO;
+import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.mapper.ClientMapper;
+import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
@@ -16,11 +19,12 @@ import br.edu.utfpr.servicebook.model.entity.Client;
 import org.springframework.web.servlet.ModelAndView;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RequestMapping("/minha-conta/requisicoes")
+@RequestMapping("/minha-conta/meus-pedidos")
 @Controller
 public class ClientController {
 
@@ -29,9 +33,6 @@ public class ClientController {
 
     @Autowired
     private ClientService clientService;
-
-    @Autowired
-    private ClientMapper clientMapper;
 
     @Autowired
     private JobRequestService jobRequestService;
@@ -44,13 +45,17 @@ public class ClientController {
         ModelAndView mv = new ModelAndView("client/my-requests");
 
         Optional<Client> client =  clientService.findById(CurrentUserUtil.getCurrentUserId());
-        List<JobRequest> jobs = jobRequestService.findByClient(client.get());
-        List<JobRequestDTO> jobRequestDTOs = jobs.stream()
-                .map(s -> jobRequestMapper.toDto(s))
+
+        List<JobRequest> jobRequests = jobRequestService.findByClient(client.get());
+        List<JobRequestMinDTO> jobRequestDTOs = jobRequests.stream()
+                .map(job -> jobRequestMapper.toMinDto(job))
                 .collect(Collectors.toList());
-        mv.addObject("jobRequest", jobRequestDTOs);
+
+        mv.addObject("jobRequests", jobRequestDTOs);
 
         return mv;
     }
 
 }
+
+
