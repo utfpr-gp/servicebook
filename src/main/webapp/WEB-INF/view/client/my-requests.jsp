@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <t:client title="Minhas Solicitações">
     <jsp:body>
@@ -10,6 +11,7 @@
                 <div class="section">
                     <div class="row">
                         <h3 class="secondary-color-text center spacing-standard">Minhas solicitações</h3>
+                        <c:forEach var="jobRequest" items="${jobRequests}">
                         <div class="row card-request spacing-standard">
                             <div class="col s8 m10 l2 center">
                                 <svg style="width:120px;height:120px" viewBox="0 0 24 24">
@@ -22,9 +24,9 @@
                                 </div>
                             </div>
                             <div class="col s12 l8 text-detail-request">
-                                <p>Pedreiro</p>
-                                <p class="truncate">Preciso de um serviço para trocar o piso.....</p>
-                                <p>Solicitado: 08/04/2021</p>
+                                <p>${jobRequest.expertise.name}</p>
+                                <p class="truncate">${jobRequest.description}</p>
+                                <p>Solicitado: ${jobRequest.dateCreated}</p>
                             </div>
                             <div class="col s4 l2 hide-on-med-and-down">
                                 <div class="center">
@@ -46,42 +48,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row card-request spacing-standard">
-                            <div class="col s8 m10 l2 center">
-                                <svg style="width:120px;height:120px" viewBox="0 0 24 24">
-                                    <path class="dark-color-icon" d="M11 9.47V11H14.76L13 14.53V13H9.24L11 9.47M13 1L6 15H11V23L18 9H13V1Z" />
-                                </svg>
-                            </div>
-                            <div class="col s4 m2 hide-on-large-only">
-                                <div class="center">
-                                    <div class="badge-requests no-margin right"><span>6</span></div>
-                                </div>
-                            </div>
-                            <div class="col s12 l8 text-detail-request">
-                                <p>Eletrecista</p>
-                                <p class="truncate">Preciso de um serviço para trocar o fios e tomada.....</p>
-                                <p>Solicitado: 08/04/2021</p>
-                            </div>
-                            <div class="col s4 l2 hide-on-med-and-down">
-                                <div class="center">
-                                    <div class="badge-requests no-margin right"><span>6</span></div>
-                                </div>
-                            </div>
-                            <div class="col s12">
-                                <div class="row">
-                                    <div class="col s6 m6 l2 offset-l8 spacing-buttons center">
-                                        <div class="center">
-                                            <a class="waves-effect waves-light btn" href="#!">Excluir</a>
-                                        </div>
-                                    </div>
-                                    <div class="col s6 m6  l2 spacing-buttons center">
-                                        <div class="center">
-                                            <a class="waves-effect waves-light btn" href="#!">Ver</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        </c:forEach>
+
+
                     </div>
                 </div>
             </div>
