@@ -35,14 +35,14 @@
 
         <ul class="right hide-on-med-and-down">
             <li><a class="menu-itens dropdown-trigger" href="#!" data-target="dropdown1">ORDEM DE SERVIÇOS<i class="material-icons right">arrow_drop_down</i></a></li>
-            <li><a class="menu-itens" href="#!">MINHA CONTA</a></li>
+            <li><a class="menu-itens" href="minha-conta">MINHA CONTA</a></li>
             <li><a class="menu-itens" href="#!">SAIR</a></li>
         </ul>
 
         <ul id="nav-mobile" class="sidenav">
             <li><a class="menu-itens" href="#!">ORDEM DE SERVIÇO</a></li>
             <li><a class="menu-itens" href="#!">MINHAS ORDEM</a></li>
-            <li><a class="menu-itens" href="#!">MINHA CONTA</a></li>
+            <li><a class="menu-itens" href="minha-conta">MINHA CONTA</a></li>
             <li><a class="menu-itens" href="#!">SAIR</a></li>
         </ul>
 
