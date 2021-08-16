@@ -13,7 +13,7 @@
                             <div class="row center">
                                 <div class="col s12 dark-color-text">
                                     <div class="row tooltipped" data-position="bottom"
-                                         data-tooltip="${professional.rating} estrelas">
+                                         data-tooltip="${professional.rating} estrela (s).">
 
                                         <c:forEach var="star" begin="1" end="5">
                                             <c:if test="${star <= professional.rating}">
@@ -39,15 +39,14 @@
 
                             <c:if test="${professional.profilePicture != null}">
                                 <div class="row">
-                                    <img src="${professional.profilePicture}" alt="Profissional - Imagem de perfil"
+                                    <img src="${professional.profilePicture}" alt="Profissional - Imagem de perfil."
                                          style="width:250px;height:250px">
                                 </div>
                             </c:if>
 
                             <div class="row">
-                                <p>${professional.description}</p>
+                                <p>${professional.description != null ? professional.description : 'Perfil sem descrição.'}</p>
                             </div>
-
                             <h5 class="edit-link tertiary-color-text">
                                 <a class="tertiary-color-text" href="">Editar perfil</a>
                             </h5>
@@ -68,13 +67,13 @@
                     <div class="row secondary-background-color no-margin">
                         <div class="col s4 center no-padding">
 
-                            <c:if test="${professional.emailVerified && professional.phoneVerified}">
+                            <c:if test="${professional.profileVerified}">
                                 <i class="medium material-icons green-text tooltipped" data-position="top"
-                                   data-tooltip="Perfil verificado">person</i>
+                                   data-tooltip="Perfil verificado.">person</i>
                             </c:if>
-                            <c:if test="${!professional.emailVerified || !professional.phoneVerified}">
+                            <c:if test="${!professional.profileVerified}">
                                 <i class="medium material-icons gray-text tooltipped" data-position="top"
-                                   data-tooltip="Perfil não verificado">person</i>
+                                   data-tooltip="Perfil não verificado.">person</i>
                             </c:if>
 
                         </div>
@@ -82,11 +81,11 @@
 
                             <c:if test="${professional.emailVerified}">
                                 <i class="medium material-icons green-text tooltipped" data-position="top"
-                                   data-tooltip="Email verificado">email</i>
+                                   data-tooltip="Email verificado.">email</i>
                             </c:if>
                             <c:if test="${!professional.emailVerified}">
                                 <i class="medium material-icons gray-text tooltipped" data-position="top"
-                                   data-tooltip="Email não verificado">email</i>
+                                   data-tooltip="Email não verificado.">email</i>
                             </c:if>
 
                         </div>
@@ -94,43 +93,34 @@
 
                             <c:if test="${professional.phoneVerified}">
                                 <i class="medium material-icons green-text tooltipped" data-position="top"
-                                   data-tooltip="Telefone verificado">phone</i>
+                                   data-tooltip="Telefone verificado.">phone</i>
                             </c:if>
                             <c:if test="${!professional.phoneVerified}">
                                 <i class="medium material-icons gray-text tooltipped" data-position="top"
-                                   data-tooltip="Telefone não verificado">phone</i>
+                                   data-tooltip="Telefone não verificado.">phone</i>
                             </c:if>
 
                         </div>
                     </div>
-                    <div class="row no-margin">
+                    <div class="row no-margin center">
                         <div class="col s12 no-margin no-padding input-field area-profission-select">
-                            <p class="header-verification tertiary-color-text center">
+                            <p class="header-verification tertiary-color-text">
                                 ESPECIALIDADES
                             </p>
 
-                            <!-- Fix! -->
-                            <form id="form-expertises" method="get" action="minha-conta/filtros">
-                                <select name="expertise" id="expertise" class="white-text no-padding">
-                                    <option value="0" selected><p class="white-text">Todas</p></option>
+                            <form method="get" action="minha-conta" id="form-expertise">
+                                <div class="input-field col s12 no-padding white-text">
+                                    <select name="id" id="select-expertise">
+                                        <option value="0">Todas as Especialidades</option>
 
-                                    <c:forEach var="expertise" items="${expertises}">
-                                        <option value="${expertise.id}"><p>${expertise.name}</p></option>
-                                    </c:forEach>
+                                        <c:forEach var="expertise" items="${expertises}">
+                                            <option value="${expertise.id}" ${expertise.id == id ? 'selected' : ''}><p>${expertise.name}</p></option>
+                                        </c:forEach>
 
-                                </select>
-
+                                    </select>
+                                </div>
                                 <button type="submit" hidden></button>
                             </form>
-
-                            <script>
-                                window.onload = function () {
-                                    $('#expertise').change(function () {
-                                        $('#form-expertises').submit();
-                                    });
-                                }
-                            </script>
-                            <!-- -->
 
                             <div class="center spacing-buttons">
                                 <button class="waves-effect waves-light btn">
@@ -146,16 +136,29 @@
                             <div class="row secondary-background-color no-margin">
                                 <div class="col s12 white-text center">
                                     <div class="row tooltipped" data-position="bottom"
-                                         data-tooltip="${professional.rating} estrelas">
+                                         data-tooltip="${professionalExpertiseRating != null ? professionalExpertiseRating : professional.rating} estrela (s).">
 
-                                        <c:forEach var="star" begin="1" end="5">
-                                            <c:if test="${star <= professional.rating}">
-                                                <i class="material-icons yellow-text small">star</i>
-                                            </c:if>
-                                            <c:if test="${star > professional.rating}">
-                                                <i class="material-icons yellow-text small">star_border</i>
-                                            </c:if>
-                                        </c:forEach>
+                                        <c:if test="${professionalExpertiseRating == null}">
+                                            <c:forEach var="star" begin="1" end="5">
+                                                <c:if test="${star <= professional.rating}">
+                                                    <i class="material-icons yellow-text small">star</i>
+                                                </c:if>
+                                                <c:if test="${star > professional.rating}">
+                                                    <i class="material-icons yellow-text small">star_border</i>
+                                                </c:if>
+                                            </c:forEach>
+                                        </c:if>
+
+                                        <c:if test="${professionalExpertiseRating != null}">
+                                            <c:forEach var="star" begin="1" end="5">
+                                                <c:if test="${star <= professionalExpertiseRating}">
+                                                    <i class="material-icons yellow-text small">star</i>
+                                                </c:if>
+                                                <c:if test="${star > professionalExpertiseRating}">
+                                                    <i class="material-icons yellow-text small">star_border</i>
+                                                </c:if>
+                                            </c:forEach>
+                                        </c:if>
 
                                     </div>
                                 </div>
@@ -315,3 +318,13 @@
 
     </jsp:body>
 </t:professional>
+
+<script>
+    window.onload = function () {
+        $('#select-expertise').formSelect();
+
+        $('#select-expertise').change(function () {
+            $('#form-expertise').submit();
+        });
+    }
+</script>
