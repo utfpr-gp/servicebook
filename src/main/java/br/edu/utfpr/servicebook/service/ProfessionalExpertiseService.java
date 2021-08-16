@@ -1,5 +1,6 @@
 package br.edu.utfpr.servicebook.service;
 
+import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.Professional;
 import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
 import br.edu.utfpr.servicebook.model.repository.ProfessionalExpertiseRepository;
@@ -17,6 +18,10 @@ public class ProfessionalExpertiseService {
 
     public Optional<Integer> selectRatingByProfessionalAndExpertise(Long professional_id, Long expertise_id) {
         return this.professionalExpertiseRepository.selectRatingByProfessionalAndExpertise(professional_id, expertise_id);
+    }
+
+    public Optional<ProfessionalExpertise> findByProfessionalAndExpertise(Professional professional, Expertise expertise) {
+        return this.professionalExpertiseRepository.findByProfessionalAndExpertise(professional, expertise);
     }
 
     public List<ProfessionalExpertise> findByProfessional(Professional professional) {
