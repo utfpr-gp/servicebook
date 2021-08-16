@@ -56,10 +56,15 @@ public class MyAccountProfessionalController {
     private JobContractedMapper jobContractedMapper;
 
     @GetMapping
-    public ModelAndView showMyAccount(@RequestParam Optional<Long> id) {
+    public ModelAndView showMyAccount(@RequestParam Optional<Long> id) throws Exception {
         log.debug("ServiceBook: Minha conta.");
 
         Optional<Professional> oProfessional = Optional.ofNullable(professionalService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+
+        if (!oProfessional.isPresent()) {
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
         ProfessionalMinDTO professionalMinDTO = professionalMapper.toMinDto(oProfessional.get());
 
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
@@ -83,20 +88,26 @@ public class MyAccountProfessionalController {
             mv.addObject("id", 0L);
         } else {
             if (id.get() < 0) {
-                throw new InvalidParamsException("O id informado não pode ser negativo.");
+                throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
             }
 
-            Optional<Expertise> expertise = expertiseService.findById(id.get());
+            Optional<Expertise> oExpertise = expertiseService.findById(id.get());
 
-            if (!expertise.isPresent()) {
-                throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado.");
+            if (!oExpertise.isPresent()) {
+                throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
             }
 
-            Optional<Integer> professionalExpertiseRating = professionalExpertiseService.selectRatingByProfessionalAndExpertise(oProfessional.get().getId(), expertise.get().getId());
+            Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oProfessional.get(), oExpertise.get());
 
-            jobs = jobContractedService.countByProfessionalAndJobRequest_Expertise(oProfessional.get(), expertise.get());
-            comments = jobContractedService.countCommentsByProfessionalAndJobRequest_Expertise(oProfessional.get(), expertise.get());
-            ratings = jobContractedService.countRatingByProfessionalAndJobRequest_Expertise(oProfessional.get(), expertise.get());
+            if (!oProfessionalExpertise.isPresent()) {
+                throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
+            }
+
+            Optional<Integer> professionalExpertiseRating = professionalExpertiseService.selectRatingByProfessionalAndExpertise(oProfessional.get().getId(), oExpertise.get().getId());
+
+            jobs = jobContractedService.countByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get());
+            comments = jobContractedService.countCommentsByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get());
+            ratings = jobContractedService.countRatingByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get());
 
             mv.addObject("id", id.get());
             mv.addObject("professionalExpertiseRating", professionalExpertiseRating.get());
