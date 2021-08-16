@@ -7,12 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProfessionalExpertiseService {
 
     @Autowired
     private ProfessionalExpertiseRepository professionalExpertiseRepository;
+
+    public Optional<Integer> selectRatingByProfessionalAndExpertise(Long professional_id, Long expertise_id) {
+        return this.professionalExpertiseRepository.selectRatingByProfessionalAndExpertise(professional_id, expertise_id);
+    }
 
     public List<ProfessionalExpertise> findByProfessional(Professional professional) {
         return this.professionalExpertiseRepository.findByProfessional(professional);
