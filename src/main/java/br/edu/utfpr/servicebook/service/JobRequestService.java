@@ -43,7 +43,7 @@ public class JobRequestService {
     }
 
     public List<JobRequest> findByClient(Client client){
-        return this.jobRequestRepository.findByClient(client);
+        return this.jobRequestRepository.findByClientOrderByDateCreatedDesc(client);
     }
     public void init() {
 
