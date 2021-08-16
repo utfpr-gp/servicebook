@@ -2,6 +2,7 @@ package br.edu.utfpr.servicebook.model.mapper;
 
 
 import br.edu.utfpr.servicebook.model.dto.JobRequestDTO;
+import br.edu.utfpr.servicebook.model.dto.JobRequestMinDTO;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -24,5 +25,11 @@ public class JobRequestMapper {
         JobRequest entity = mapper.map(dto, JobRequest.class);
         return entity;
     }
+
+    public JobRequestMinDTO toMinDto(JobRequest entity){
+        JobRequestMinDTO dto = mapper.map(entity, JobRequestMinDTO.class);
+        return dto;
+    }
+
 
 }
