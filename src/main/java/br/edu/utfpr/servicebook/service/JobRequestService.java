@@ -1,8 +1,6 @@
 package br.edu.utfpr.servicebook.service;
 
-import br.edu.utfpr.servicebook.model.entity.Client;
-import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.JobRequest;
+import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.repository.JobRequestRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +42,10 @@ public class JobRequestService {
 
     public List<JobRequest> findByClient(Client client){
         return this.jobRequestRepository.findByClientOrderByDateCreatedDesc(client);
+    }
+
+    public Optional<Long> countByJobCandidates(JobRequest JobRequest) {
+        return this.jobRequestRepository.countByJobCandidates(JobRequest);
     }
     public void init() {
 

@@ -11,6 +11,8 @@
                 <div class="section">
                     <div class="row">
                         <h3 class="secondary-color-text center spacing-standard">Minhas solicitações</h3>
+                        <h3 >${teste}</h3>
+
                         <c:forEach var="jobRequest" items="${jobRequests}">
                         <div class="row card-request spacing-standard">
                             <div class="col s8 m10 l2 center">
