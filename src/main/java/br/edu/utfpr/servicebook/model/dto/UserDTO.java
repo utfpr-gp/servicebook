@@ -29,4 +29,7 @@ public class UserDTO {
     private boolean phoneVerified;
 
     private boolean emailVerified;
+
+    private boolean profileVerified;
+
 }

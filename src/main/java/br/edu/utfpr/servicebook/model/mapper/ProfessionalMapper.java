@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook.model.mapper;
 
 import br.edu.utfpr.servicebook.model.dto.ProfessionalDTO;
+import br.edu.utfpr.servicebook.model.dto.ProfessionalMinDTO;
 import br.edu.utfpr.servicebook.model.entity.Professional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,11 @@ public class ProfessionalMapper {
 
     public ProfessionalDTO toDto(Professional entity){
         ProfessionalDTO dto = mapper.map(entity, ProfessionalDTO.class);
+        return dto;
+    }
+
+    public ProfessionalMinDTO toMinDto(Professional entity){
+        ProfessionalMinDTO dto = mapper.map(entity, ProfessionalMinDTO.class);
         return dto;
     }
 
