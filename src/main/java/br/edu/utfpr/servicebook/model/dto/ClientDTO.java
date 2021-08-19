@@ -10,5 +10,10 @@ import lombok.NoArgsConstructor;
 public class ClientDTO extends UserDTO {
     private Long id;
 
+    private String name;
+
+    private String email;
+
+    private String phone;
 
 }

@@ -111,5 +111,4 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
 
     List<JobRequest> findByClientOrderByDateCreatedDesc(Client client);
 
-    Optional<Long> countByJobCandidates(JobRequest jobRequest);
 }
