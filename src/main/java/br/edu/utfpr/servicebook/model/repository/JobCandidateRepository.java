@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobCandidatePK> {
 
@@ -39,5 +40,6 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
      */
     List<JobCandidate> findByJobRequest_StatusAndProfessional(JobRequest.Status status, Professional professional);
 
+    Optional<Long> countByJobRequest(JobRequest jobRequest);
 
 }
