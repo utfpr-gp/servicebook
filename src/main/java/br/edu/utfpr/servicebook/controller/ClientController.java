@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import br.edu.utfpr.servicebook.model.entity.Client;
 import org.springframework.web.servlet.ModelAndView;
-
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,20 +31,27 @@ public class ClientController {
     private JobRequestService jobRequestService;
 
     @Autowired
+    private JobCandidateService jobCandidateService;
+
+    @Autowired
     private JobRequestMapper jobRequestMapper;
 
     @GetMapping
     public ModelAndView show() {
         ModelAndView mv = new ModelAndView("client/my-requests");
 
-        Optional<Client> client =  clientService.findById(CurrentUserUtil.getCurrentUserId());
+        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
 
-        List<JobRequest> jobRequests = jobRequestService.findByClient(client.get());
+        List<JobRequest> jobRequests = jobRequestService.findByClientOrderByDateCreatedDesc(client.get());
+
         List<JobRequestMinDTO> jobRequestDTOs = jobRequests.stream()
                 .map(job -> {
-                   Optional teste = jobRequestService.countByJobCandidates(job);
-                    mv.addObject("teste", teste);
-                   return jobRequestMapper.toMinDto(job);
+                    Optional <Long> amountOfCandidates = jobCandidateService.countByJobRequest(job);
+
+                    if(amountOfCandidates.isPresent()){
+                        return jobRequestMapper.toMinDto(job, amountOfCandidates);
+                    }
+                       return jobRequestMapper.toMinDto(job, Optional.ofNullable(0L));
                 })
                 .collect(Collectors.toList());
 
@@ -54,6 +59,7 @@ public class ClientController {
 
         return mv;
     }
+
 
 }
 
