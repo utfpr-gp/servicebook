@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RequestMapping("/profissionais")
+@RequestMapping("/minha-conta/especialidades")
 @Controller
-public class ProfessionalController {
+public class ProfessionalExpertiseController {
 
     @Autowired
     private ProfessionalService professionalService;
@@ -49,17 +49,7 @@ public class ProfessionalController {
     @Autowired
     private ProfessionalExpertiseMapper professionalExpertiseMapper;
 
-    @GetMapping
-    public ModelAndView showProfessionalAccount() throws Exception {
-        ModelAndView mv = new ModelAndView("professional/my-account");
-
-        ProfessionalDTO professionalDTO = professionalMapper.toDto(this.getProfessional());
-        mv.addObject("professional", professionalDTO);
-
-        return mv;
-    }
-
-    @GetMapping("/especialidades")
+    @GetMapping()
     public ModelAndView showExpertises() throws Exception {
         ModelAndView mv = new ModelAndView("professional/my-expertises");
 
@@ -85,7 +75,7 @@ public class ProfessionalController {
         return mv;
     }
 
-    @PostMapping("/especialidades")
+    @PostMapping()
     public ModelAndView saveExpertises(@Valid ProfessionalExpertiseDTO dto, BindingResult errors, RedirectAttributes redirectAttributes) throws Exception {
         ModelAndView mv = new ModelAndView("redirect:especialidades");
 
@@ -98,7 +88,7 @@ public class ProfessionalController {
         Professional professional = this.getProfessional();
 
         for (int id : ids) {
-            Optional<Expertise> e = expertiseService.findById((long) id);
+            Optional<Expertise> e = expertiseService.findById((Long.valueOf(id)));
 
             if (!e.isPresent()) {
                 throw new Exception("Não existe essa especialidade!");
@@ -107,13 +97,6 @@ public class ProfessionalController {
             ProfessionalExpertise p = professionalExpertiseService.save(new ProfessionalExpertise(professional, e.get()));
         }
 
-
-        return mv;
-    }
-
-    @GetMapping("/editar")
-    public ModelAndView showFormEditProfessional() {
-        ModelAndView mv = new ModelAndView("professional/edit-account");
 
         return mv;
     }

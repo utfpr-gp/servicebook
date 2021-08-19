@@ -121,13 +121,6 @@
                                 </div>
                                 <button type="submit" hidden></button>
                             </form>
-
-                            <div class="center spacing-buttons">
-                                <button class="waves-effect waves-light btn">
-                                    <i class="material-icons left">add</i>
-                                    Adicionar especialidade
-                                </button>
-                            </div>
                         </div>
                     </div>
                     <div class="row no-margin">

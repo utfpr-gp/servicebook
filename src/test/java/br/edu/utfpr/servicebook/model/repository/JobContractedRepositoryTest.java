@@ -68,7 +68,7 @@ class JobContractedRepositoryTest {
     @Transactional
     @DisplayName("Deve retornar o total de trabalhos contratados de um profissional")
     public void countByProfessional() {
-        Professional professional = professionalRepository.findByEmailAddress("professional@mail.com");
+        Professional professional = professionalRepository.findByEmail("professional@mail.com");
         Optional<Long> jobs = jobContractedRepository.countByProfessional(professional);
 
         Assertions.assertFalse(jobs.get() == 0);
@@ -79,7 +79,7 @@ class JobContractedRepositoryTest {
     @Transactional
     @DisplayName("Deve retornar o total de avaliações dos trabalhos contratados de um profissional")
     public void countRatingByProfessional() {
-        Professional professional = professionalRepository.findByEmailAddress("professional@mail.com");
+        Professional professional = professionalRepository.findByEmail("professional@mail.com");
         Optional<Long> ratings = jobContractedRepository.countRatingByProfessional(professional);
 
         Assertions.assertFalse(ratings.get() == 0);
@@ -90,7 +90,7 @@ class JobContractedRepositoryTest {
     @Transactional
     @DisplayName("Deve retornar o total de comentários dos trabalhos contratados de um profissional")
     public void countCommentsByProfessional() {
-        Professional professional = professionalRepository.findByEmailAddress("professional@mail.com");
+        Professional professional = professionalRepository.findByEmail("professional@mail.com");
         Optional<Long> comments = jobContractedRepository.countCommentsByProfessional(professional);
 
         Assertions.assertFalse(comments.get() == 0);
@@ -101,7 +101,7 @@ class JobContractedRepositoryTest {
     @Transactional
     @DisplayName("Deve retornar o total de trabalhos contratados de um profissional para uma dada especialidade")
     public void countByProfessionalAndJobRequest_Expertise() {
-        Professional professional = professionalRepository.findByEmailAddress("professional@mail.com");
+        Professional professional = professionalRepository.findByEmail("professional@mail.com");
         Optional<Expertise> expertise = expertiseRepository.findByName("Expertise");
 
         Optional<Long> jobs = jobContractedRepository.countByProfessionalAndJobRequest_Expertise(professional, expertise.get());
@@ -114,7 +114,7 @@ class JobContractedRepositoryTest {
     @Transactional
     @DisplayName("Deve retornar o total de avaliações dos trabalhos contratados de um profissional para uma dada especialidade")
     public void countRatingByProfessionalAndJobRequest_Expertise() {
-        Professional professional = professionalRepository.findByEmailAddress("professional@mail.com");
+        Professional professional = professionalRepository.findByEmail("professional@mail.com");
         Optional<Expertise> expertise = expertiseRepository.findByName("Expertise");
 
         Optional<Long> ratings = jobContractedRepository.countRatingByProfessionalAndJobRequest_Expertise(professional, expertise.get());
@@ -127,7 +127,7 @@ class JobContractedRepositoryTest {
     @Transactional
     @DisplayName("Deve retornar o total de comentários dos trabalhos contratados de um profissional para uma dada especialidade")
     public void countCommentsByProfessionalAndJobRequest_Expertise() {
-        Professional professional = professionalRepository.findByEmailAddress("professional@mail.com");
+        Professional professional = professionalRepository.findByEmail("professional@mail.com");
         Optional<Expertise> expertise = expertiseRepository.findByName("Expertise");
 
         Optional<Long> comments = jobContractedRepository.countCommentsByProfessionalAndJobRequest_Expertise(professional, expertise.get());
