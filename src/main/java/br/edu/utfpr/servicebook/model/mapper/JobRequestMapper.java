@@ -9,10 +9,15 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class JobRequestMapper {
     @Autowired
     private ModelMapper mapper;
+
+    @Autowired
+    private ExpertiseMapper expertiseMapper;
 
     public JobRequestDTO toDto(JobRequest entity){
         JobRequestDTO dto = mapper.map(entity, JobRequestDTO.class);
@@ -26,8 +31,11 @@ public class JobRequestMapper {
         return entity;
     }
 
-    public JobRequestMinDTO toMinDto(JobRequest entity){
+    public JobRequestMinDTO toMinDto(JobRequest entity, Optional <Long> amountOfCandidates){
         JobRequestMinDTO dto = mapper.map(entity, JobRequestMinDTO.class);
+        dto.setAmountOfCandidates(amountOfCandidates.get());
+        dto.setExpertiseDTO(expertiseMapper.toDto(entity.getExpertise()));
+
         return dto;
     }
 
