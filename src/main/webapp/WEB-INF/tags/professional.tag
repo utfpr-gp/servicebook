@@ -7,7 +7,9 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
     <title>${title}</title>
+    <base href="${pageContext.request.contextPath}/">
 
     <base href="${pageContext.request.contextPath}/">
     <link rel="shortcut icon" href="assets/resources/images/favicon.ico" type="image/x-icon">
@@ -42,7 +44,7 @@
         <ul id="nav-mobile" class="sidenav">
             <li><a class="menu-itens" href="#!">ORDEM DE SERVIÇO</a></li>
             <li><a class="menu-itens" href="#!">MINHAS ORDEM</a></li>
-            <li><a class="menu-itens" href="#!">MINHA CONTA</a></li>
+            <li><a class="menu-itens" href="minha-conta">MINHA CONTA</a></li>
             <li><a class="menu-itens" href="#!">SAIR</a></li>
         </ul>
 

@@ -30,5 +30,6 @@ public class UserDTO {
 
     private boolean emailVerified;
 
-    private boolean identityVerified;
+    private boolean profileVerified;
+
 }

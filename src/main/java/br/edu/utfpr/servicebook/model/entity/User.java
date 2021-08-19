@@ -54,6 +54,8 @@ public class User implements Serializable {
 
 	private boolean emailVerified;
 
+	private boolean profileVerified;
+
 	@OneToOne(mappedBy = "user")
 	private UserToken userToken;
 
