@@ -40,13 +40,10 @@ public class JobRequestService {
         return this.jobRequestRepository.findByStatus(status);
     }
 
-    public List<JobRequest> findByClient(Client client){
+    public List<JobRequest> findByClientOrderByDateCreatedDesc(Client client){
         return this.jobRequestRepository.findByClientOrderByDateCreatedDesc(client);
     }
 
-    public Optional<Long> countByJobCandidates(JobRequest JobRequest) {
-        return this.jobRequestRepository.countByJobCandidates(JobRequest);
-    }
     public void init() {
 
     }

@@ -9,11 +9,4 @@ public class CurrentUserUtil {
 
         return user1;
     }
-
-    public static Long getCurrentUserId(){
-
-        Long user1 = 2L;
-
-        return user1;
-    }
 }

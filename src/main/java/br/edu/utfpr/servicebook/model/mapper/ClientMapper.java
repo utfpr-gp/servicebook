@@ -18,7 +18,6 @@ public class ClientMapper {
 
     public ClientDTO toResponseDto(Client entity) {
         ClientDTO dto = mapper.map(entity, ClientDTO.class);
-        dto.setId(dto.getId());
         return dto;
     }
 
