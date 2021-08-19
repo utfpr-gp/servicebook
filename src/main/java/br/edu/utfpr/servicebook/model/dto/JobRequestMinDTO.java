@@ -1,29 +1,30 @@
 
 package br.edu.utfpr.servicebook.model.dto;
 
-        import br.edu.utfpr.servicebook.model.entity.Expertise;
-        import br.edu.utfpr.servicebook.model.entity.JobCandidate;
-        import br.edu.utfpr.servicebook.model.entity.JobContracted;
-        import lombok.AllArgsConstructor;
-        import lombok.Data;
-        import lombok.NoArgsConstructor;
-        import org.springframework.web.multipart.MultipartFile;
-        import java.io.Serializable;
-        import java.time.LocalDate;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.io.Serializable;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class JobRequestMinDTO implements Serializable {
 
     private Long id;
 
-    private Expertise expertise;
+    private ExpertiseDTO expertiseDTO;
 
     private LocalDate dateCreated;
 
     public String status;
 
     private String description;
+
+    private Long amountOfCandidates;
 
 }
