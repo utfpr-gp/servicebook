@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook.service;
 
 import br.edu.utfpr.servicebook.model.entity.Client;
+import br.edu.utfpr.servicebook.model.entity.Professional;
 import br.edu.utfpr.servicebook.model.repository.ClientRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,11 @@ public class ClientService {
 
     public Optional<Client> findById(Long id){
         return this.clientRepository.findById(id);
+    }
+
+    public Client findByEmailAddress(String email){
+
+        return this.clientRepository.findByEmailAddress(email);
     }
     public void init() {
 
