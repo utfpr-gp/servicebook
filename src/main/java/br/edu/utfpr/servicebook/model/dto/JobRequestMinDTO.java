@@ -19,7 +19,7 @@ public class JobRequestMinDTO implements Serializable {
 
     private ExpertiseDTO expertiseDTO;
 
-    private LocalDate dateCreated;
+    private String dateCreated;
 
     public String status;
 
