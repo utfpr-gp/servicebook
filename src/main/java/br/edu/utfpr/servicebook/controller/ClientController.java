@@ -1,7 +1,10 @@
 package br.edu.utfpr.servicebook.controller;
 
+import br.edu.utfpr.servicebook.model.dto.CityDTO;
+import br.edu.utfpr.servicebook.model.dto.ClientDTO;
 import br.edu.utfpr.servicebook.model.dto.JobRequestMinDTO;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
+import br.edu.utfpr.servicebook.model.mapper.ClientMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
@@ -28,6 +31,10 @@ public class ClientController {
     private ClientService clientService;
 
     @Autowired
+    private ClientMapper clientMapper;
+
+
+    @Autowired
     private JobRequestService jobRequestService;
 
     @Autowired
@@ -41,6 +48,9 @@ public class ClientController {
         ModelAndView mv = new ModelAndView("client/my-requests");
 
         Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+
+        ClientDTO clientDTO = clientMapper.toDto(client.get());
+        mv.addObject("client", clientDTO);
 
         List<JobRequest> jobRequests = jobRequestService.findByClientOrderByDateCreatedDesc(client.get());
 
