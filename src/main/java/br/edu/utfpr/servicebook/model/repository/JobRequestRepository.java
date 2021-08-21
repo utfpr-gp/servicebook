@@ -1,6 +1,11 @@
 package br.edu.utfpr.servicebook.model.repository;
 
-import br.edu.utfpr.servicebook.model.entity.*;
+import br.edu.utfpr.servicebook.model.entity.Expertise;
+import br.edu.utfpr.servicebook.model.entity.JobCandidate;
+import br.edu.utfpr.servicebook.model.entity.JobRequest;
+import br.edu.utfpr.servicebook.model.entity.Professional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -98,6 +103,16 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
      * @return
      */
     List<JobRequest> findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status status, Professional professional);
+
+    /**
+     * Retorna uma lista de requisições de um determinado Status e todas especialidades que ainda não tiveram candidaturas ou
+     * que um determinado profissional ainda não se candidatou.
+     * Retorna com paginação.
+     * @param status
+     * @param professional
+     * @return
+     */
+    Page<JobRequest> findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status status, Professional professional, Pageable pageable);
 
     /**
      * Retorna uma lista de requisições em certo Status e Especialidade cujo o profissional foi contratado para realizar
