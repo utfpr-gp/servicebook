@@ -1,7 +1,7 @@
 package br.edu.utfpr.servicebook.model.repository;
 
 import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.JobCandidate;
+import br.edu.utfpr.servicebook.model.entity.Client;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.entity.Professional;
 import org.springframework.data.domain.Page;
