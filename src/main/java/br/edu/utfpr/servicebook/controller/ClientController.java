@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import br.edu.utfpr.servicebook.model.entity.Client;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,10 +46,14 @@ public class ClientController {
     private JobRequestMapper jobRequestMapper;
 
     @GetMapping
-    public ModelAndView show() {
+    public ModelAndView show() throws Exception {
         ModelAndView mv = new ModelAndView("client/my-requests");
 
         Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+
+        if (!client.isPresent()) {
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
 
         ClientDTO clientDTO = clientMapper.toDto(client.get());
         mv.addObject("client", clientDTO);
