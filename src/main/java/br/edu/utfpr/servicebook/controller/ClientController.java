@@ -12,12 +12,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import br.edu.utfpr.servicebook.model.entity.Client;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -67,7 +71,7 @@ public class ClientController {
                     if(amountOfCandidates.isPresent()){
                         return jobRequestMapper.toMinDto(job, amountOfCandidates);
                     }
-                       return jobRequestMapper.toMinDto(job, Optional.ofNullable(0L));
+                    return jobRequestMapper.toMinDto(job, Optional.ofNullable(0L));
                 })
                 .collect(Collectors.toList());
 
@@ -76,6 +80,26 @@ public class ClientController {
         return mv;
     }
 
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
+
+        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+
+        if (!client.isPresent()) {
+            throw new IOException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        Optional<JobRequest> jobRequest = this.jobRequestService.findById(id);
+
+        if(jobRequest.isPresent()){
+            this.jobRequestService.delete(id);
+            redirectAttributes.addFlashAttribute("msg", "Solicitação deletada!");
+
+            return "redirect:/minha-conta/meus-pedidos";
+        }
+
+        throw new EntityNotFoundException("Solicitação não foi encontrada pelo id informado");
+    }
 
 }
 
