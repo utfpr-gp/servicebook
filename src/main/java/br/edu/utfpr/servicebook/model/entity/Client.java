@@ -33,5 +33,11 @@ public class Client extends User {
 	
 	@OneToMany(mappedBy = "client")
 	private Set<JobRequest> jobRequest = new HashSet<>();
+
+	private String name;
+
+	private String email;
+
+	private String phone;
 	
 }

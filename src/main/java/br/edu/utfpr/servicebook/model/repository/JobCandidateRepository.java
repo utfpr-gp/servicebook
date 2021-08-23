@@ -39,4 +39,7 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
      * @return
      */
     List<JobCandidate> findByJobRequest_StatusAndProfessional(JobRequest.Status status, Professional professional);
+
+    Optional<Long> countByJobRequest(JobRequest jobRequest);
+
 }

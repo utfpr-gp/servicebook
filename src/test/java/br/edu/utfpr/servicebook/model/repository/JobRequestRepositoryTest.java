@@ -47,6 +47,7 @@ class JobRequestRepositoryTest {
     public static final Logger log =
             LoggerFactory.getLogger(JobRequestRepositoryTest.class);
 
+    final Date dateOfNow = new Date();
 
     private static final String MECHANIC = "Mecânico de moto";
     private static final String DEVELOPER = "Desenvolvedor de Sistemas";
@@ -58,20 +59,20 @@ class JobRequestRepositoryTest {
         Expertise mechanicExpertise = new Expertise(MECHANIC);
         mechanicExpertise = expertiseRepository.save(mechanicExpertise);
 
-        JobRequest jb1 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, DateUtil.getNextWeek());
+        JobRequest jb1 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, dateOfNow);
         jb1.setExpertise(developerExpertise);
 
-        JobRequest jb2 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, DateUtil.getNextWeek());
+        JobRequest jb2 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, dateOfNow);
         jb2.setExpertise(mechanicExpertise);
 
         //ninguém se candidatou a este
-        JobRequest jb3 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, DateUtil.getNextWeek());
+        JobRequest jb3 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, dateOfNow);
         jb3.setExpertise(mechanicExpertise);
 
-        JobRequest jb4 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, DateUtil.getNextWeek());
+        JobRequest jb4 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, dateOfNow);
         jb4.setExpertise(mechanicExpertise);
 
-        JobRequest jb5 = new JobRequest(JobRequest.Status.CLOSED, "", 10, DateUtil.getNextWeek());
+        JobRequest jb5 = new JobRequest(JobRequest.Status.CLOSED, "", 10, dateOfNow);
         jb5.setExpertise(mechanicExpertise);
 
         jobRequestRepository.save(jb1);
