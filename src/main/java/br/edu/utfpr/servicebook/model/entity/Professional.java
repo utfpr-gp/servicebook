@@ -12,7 +12,7 @@ import lombok.*;
 @Table(name = "professionals")
 @NoArgsConstructor
 @RequiredArgsConstructor
-@EqualsAndHashCode(exclude={"candidatures"})
+//@EqualsAndHashCode(exclude={"candidatures"})
 @ToString(exclude={"candidatures"})
 @Entity
 public class Professional extends User {
