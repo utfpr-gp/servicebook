@@ -5,12 +5,10 @@ import java.util.Set;
 
 import javax.persistence.*;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Data
+@EqualsAndHashCode(exclude={"professional"})
 @Table(name = "professionals")
 @NoArgsConstructor
 @RequiredArgsConstructor
