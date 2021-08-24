@@ -42,7 +42,7 @@ class JobContractedRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        Professional professional = new Professional("Professional", "professional@mail.com", "", "", CPFUtil.geraCPF());
+        Professional professional = new Professional("Professional", "professional@mail.com", "", CPFUtil.geraCPF());
         professional = professionalRepository.save(professional);
 
         Expertise expertise = new Expertise("Expertise");
