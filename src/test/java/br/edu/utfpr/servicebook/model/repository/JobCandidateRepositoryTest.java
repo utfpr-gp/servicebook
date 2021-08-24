@@ -64,7 +64,7 @@ class JobCandidateRepositoryTest {
         jobRequestRepository.save(jb3);
         jobRequestRepository.save(jb4);
 
-        Professional joao = new Professional("Roberto Carlos", "joao@mail.com", "", "", CPFUtil.geraCPF());
+        Professional joao = new Professional("Roberto Carlos", "joao@mail.com", "", CPFUtil.geraCPF());
         joao = professionalRepository.save(joao);
 
         ProfessionalExpertise professionalExpertise1 = new ProfessionalExpertise(joao, mechanicExpertise);

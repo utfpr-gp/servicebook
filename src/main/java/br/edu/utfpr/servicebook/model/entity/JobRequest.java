@@ -9,14 +9,13 @@ import javax.persistence.*;
 
 import br.edu.utfpr.servicebook.util.DateUtil;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 @Data
 @Table(name = "job_requests")
 @NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(exclude={"client", "jobCandidates", "jobContracted", "expertise", "jobImages"})
+@ToString(exclude={"client", "jobCandidates", "jobContracted", "expertise", "jobImages"})
 @Entity
 public class JobRequest {
 	/**
@@ -32,7 +31,8 @@ public class JobRequest {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
+
 	@ManyToOne
 	@JoinColumn(name = "client_id")
 	private Client client;

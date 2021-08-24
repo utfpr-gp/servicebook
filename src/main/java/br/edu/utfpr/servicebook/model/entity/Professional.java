@@ -12,13 +12,15 @@ import lombok.*;
 @Table(name = "professionals")
 @NoArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode(exclude={"candidatures"})
+@ToString(exclude={"candidatures"})
 @Entity
 public class Professional extends User {
 
 	private static final long serialVersionUID = 1L;
 
-	public Professional(String name, String email, String type, String phoneNumber, String cpf){
-		super(name,email, type, phoneNumber);
+	public Professional(String name, String email, String phoneNumber, String cpf){
+		super(name,email, phoneNumber);
 		this.cpf =  cpf;
 	}
 	
