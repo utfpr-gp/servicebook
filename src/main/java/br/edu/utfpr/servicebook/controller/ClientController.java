@@ -1,10 +1,10 @@
 package br.edu.utfpr.servicebook.controller;
 
-import br.edu.utfpr.servicebook.model.dto.CityDTO;
-import br.edu.utfpr.servicebook.model.dto.ClientDTO;
-import br.edu.utfpr.servicebook.model.dto.JobRequestMinDTO;
+import br.edu.utfpr.servicebook.model.dto.*;
+import br.edu.utfpr.servicebook.model.entity.JobCandidate;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.mapper.ClientMapper;
+import br.edu.utfpr.servicebook.model.mapper.JobCandidateMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import br.edu.utfpr.servicebook.model.entity.Client;
 import org.springframework.web.servlet.ModelAndView;
@@ -35,12 +36,14 @@ public class ClientController {
     @Autowired
     private ClientMapper clientMapper;
 
+    @Autowired
+    private JobCandidateService jobCandidateService;
 
     @Autowired
     private JobRequestService jobRequestService;
 
     @Autowired
-    private JobCandidateService jobCandidateService;
+    private JobCandidateMapper jobCandidateMapper;
 
     @Autowired
     private JobRequestMapper jobRequestMapper;
@@ -77,6 +80,53 @@ public class ClientController {
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @GetMapping("/{id}")
+    public ModelAndView showDetailsRequest(@PathVariable Optional<Long> id) throws Exception {
+        ModelAndView mv = new ModelAndView("client/details-request");
+
+        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+
+        if (!client.isPresent()) {
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        Optional<JobRequest> job = jobRequestService.findById(id.get());
+        JobRequestDTO jobDTO = jobRequestMapper.toDto(job.get());
+
+        List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequest(job.get());
+        log.debug(jobCandidates.toString());
+
+        List<JobCandidateDTO> jobCandidatesDTOs = jobCandidates.stream()
+                .map(u -> jobCandidateMapper.toDto(u) )
+                .collect(Collectors.toList());
+
+        mv.addObject("candidatos", jobCandidatesDTOs);
+
+
+        return mv;
+    }
 }
 
 
