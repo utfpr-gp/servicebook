@@ -8,18 +8,17 @@ import java.util.Set;
 import javax.persistence.*;
 
 import br.edu.utfpr.servicebook.util.DateUtil;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Data
 @Table(name = "job_requests")
 @NoArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode(exclude={"client", "jobCandidates", "jobContracted", "expertise", "jobImages"})
 @Entity
 public class JobRequest {
-
 	/**
 	 * AVAILABLE: disponível para candidaturas e permanece neste estado também durante o recebimento de candidaturas
 	 * BUDGET: passa para este estado quando alcançado o total de candidaturas esperado ou quando o cliente encerra o recebimento de candidaturas
@@ -63,13 +62,13 @@ public class JobRequest {
 	
 	private boolean professionalConfirmation;
 	
-	@OneToMany(mappedBy = "jobRequest")
+	@OneToMany(mappedBy = "jobRequest", cascade = CascadeType.REMOVE)
 	private Set<JobImages> jobImages = new HashSet<>();
 	
-	@OneToOne(mappedBy = "jobRequest", cascade = CascadeType.PERSIST)
+	@OneToOne(mappedBy = "jobRequest", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
 	private JobContracted jobContracted;
 
-	@OneToMany(mappedBy = "jobRequest")
+	@OneToMany(mappedBy = "jobRequest", cascade = CascadeType.REMOVE)
 	Set<JobCandidate> jobCandidates = new HashSet<>();
 
 	@PrePersist
