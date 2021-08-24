@@ -28,4 +28,9 @@ public class JobCandidateService {
     public void init() {
 
     }
+
+    public List<JobCandidate> findByJobRequest(JobRequest jobRequest) {
+        return this.jobCandidateRepository.findByJobRequest(jobRequest);
+    }
+
 }
