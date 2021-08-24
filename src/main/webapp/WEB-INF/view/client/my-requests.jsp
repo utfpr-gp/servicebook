@@ -131,8 +131,10 @@
                            <div class="col s12">
                                    <div class="row">
                                        <h2 class="secondary-color-text ">Minhas solicitações</h2>
+                                       <h2 class="secondary-color-text center spacing-standard tertiary-color-text">${candidatos}</h2>
 
-                                      <c:forEach var="jobRequest" items="${jobRequests}">
+
+                                       <c:forEach var="jobRequest" items="${jobRequests}">
                                        <div class="col s12">
 
                                        <div class="row card-request spacing-standard">
@@ -165,7 +167,7 @@
                                                     </div>
                                                     <div class="col s6 m6  l2 spacing-buttons center">
                                                         <div class="center">
-                                                            <a class="waves-effect waves-light btn" href="#!">Ver</a>
+                                                            <a class="waves-effect waves-light btn" href="minha-conta/meus-pedidos/${jobRequest.id}">Ver</a>
                                                         </div>
                                                     </div>
                                                 </div>
