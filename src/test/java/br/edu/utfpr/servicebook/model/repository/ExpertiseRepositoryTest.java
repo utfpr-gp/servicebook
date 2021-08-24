@@ -43,14 +43,14 @@ class ExpertiseRepositoryTest {
         mechanicExpertise = expertiseRepository.save(mechanicExpertise);
 
         //João Mecânico
-        Professional joao = new Professional("Roberto Carlos", "joao@mail.com", "", "", CPFUtil.geraCPF());
+        Professional joao = new Professional("Roberto Carlos", "joao@mail.com", "", CPFUtil.geraCPF());
         joao = professionalRepository.save(joao);
 
         ProfessionalExpertise professionalExpertise1 = new ProfessionalExpertise(joao, mechanicExpertise);
         professionalExpertiseRepository.save(professionalExpertise1);
 
         //Maria Desenvolvedora
-        Professional maria = new Professional("Maria", "maria@mail.com", "", "", CPFUtil.geraCPF());
+        Professional maria = new Professional("Maria", "maria@mail.com", "", CPFUtil.geraCPF());
         maria = professionalRepository.save(maria);
 
         ProfessionalExpertise professionalExpertise2 = new ProfessionalExpertise(maria, developerExpertise);
