@@ -1,13 +1,16 @@
 package br.edu.utfpr.servicebook.model.repository;
 
 import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.JobCandidate;
+import br.edu.utfpr.servicebook.model.entity.Client;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.entity.Professional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
@@ -102,6 +105,16 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
     List<JobRequest> findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status status, Professional professional);
 
     /**
+     * Retorna uma lista de requisições de um determinado Status e todas especialidades que ainda não tiveram candidaturas ou
+     * que um determinado profissional ainda não se candidatou.
+     * Retorna com paginação.
+     * @param status
+     * @param professional
+     * @return
+     */
+    Page<JobRequest> findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status status, Professional professional, Pageable pageable);
+
+    /**
      * Retorna uma lista de requisições em certo Status e Especialidade cujo o profissional foi contratado para realizar
      * Neste caso, o Status pode ser CLOSED ou TO_DO, quando um JobContracted é criado após um orçamento.
      * @param status
@@ -110,4 +123,7 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
      * @return
      */
     List<JobRequest> findByStatusAndExpertiseAndJobContracted_Professional(JobRequest.Status status, Expertise expertise, Professional professional);
+
+    List<JobRequest> findByClientOrderByDateCreatedDesc(Client client);
+
 }

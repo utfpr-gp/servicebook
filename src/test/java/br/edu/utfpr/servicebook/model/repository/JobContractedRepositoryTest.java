@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.Optional;
 
 @SpringBootTest
@@ -37,6 +38,8 @@ class JobContractedRepositoryTest {
     @Autowired
     JobContractedRepository jobContractedRepository;
 
+    final Date dateOfNow = new Date();
+
     @BeforeEach
     void setUp() {
         Professional professional = new Professional("Professional", "professional@mail.com", "", "", CPFUtil.geraCPF());
@@ -48,7 +51,7 @@ class JobContractedRepositoryTest {
         ProfessionalExpertise professionalExpertise = new ProfessionalExpertise(professional, expertise);
         professionalExpertiseRepository.save(professionalExpertise);
 
-        JobRequest jobRequest = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, DateUtil.getNextWeek());
+        JobRequest jobRequest = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, dateOfNow);
         jobRequest.setExpertise(expertise);
         jobRequestRepository.save(jobRequest);
 

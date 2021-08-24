@@ -59,4 +59,9 @@ public class User implements Serializable {
 	@OneToOne(mappedBy = "user")
 	private UserToken userToken;
 
+	@OneToOne
+	private Address address;
+	
+}
+
 }

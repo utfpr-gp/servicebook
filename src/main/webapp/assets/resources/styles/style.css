@@ -251,7 +251,7 @@ input[type=range]::-webkit-slider-runnable-track{
 }
 
 .badge-requests{
-  width: 40%;
+  width: 75%;
   margin-bottom: 60px;
   margin-left: auto;
   margin-right: auto;
@@ -259,9 +259,11 @@ input[type=range]::-webkit-slider-runnable-track{
   font-size: 2rem;
   border-radius: 15px;
   background-color: #1c2231;
-  border: solid white 2px;
+  border: solid white 4px;
 }
-
+.text-detail-request p{
+  line-height: 1rem;
+}
 .text-info-request{
   font-weight: 600;
   font-size: 130%;

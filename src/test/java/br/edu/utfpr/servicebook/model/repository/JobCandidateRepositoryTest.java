@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +37,8 @@ class JobCandidateRepositoryTest {
     public static final Logger log =
             LoggerFactory.getLogger(JobCandidateRepositoryTest.class);
 
+    final Date dateOfNow = new Date();
+
     @BeforeEach
     void setUp() {
         Expertise developerExpertise = new Expertise("Desenvolvedor de Software");
@@ -44,16 +47,16 @@ class JobCandidateRepositoryTest {
         Expertise mechanicExpertise = new Expertise("Mecânico");
         mechanicExpertise = expertiseRepository.save(mechanicExpertise);
 
-        JobRequest jb1 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, DateUtil.getNextWeek());
+        JobRequest jb1 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, dateOfNow);
         jb1.setExpertise(developerExpertise);
 
-        JobRequest jb2 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, DateUtil.getNextWeek());
+        JobRequest jb2 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, dateOfNow);
         jb2.setExpertise(mechanicExpertise);
 
-        JobRequest jb3 = new JobRequest(JobRequest.Status.CLOSED, "", 10, DateUtil.getNextWeek());
+        JobRequest jb3 = new JobRequest(JobRequest.Status.CLOSED, "", 10, dateOfNow);
         jb3.setExpertise(developerExpertise);
 
-        JobRequest jb4 = new JobRequest(JobRequest.Status.CLOSED, "", 10, DateUtil.getNextWeek());
+        JobRequest jb4 = new JobRequest(JobRequest.Status.CLOSED, "", 10, dateOfNow);
         jb4.setExpertise(mechanicExpertise);
 
         jb1 = jobRequestRepository.save(jb1);
@@ -106,7 +109,7 @@ class JobCandidateRepositoryTest {
     @Transactional
     @DisplayName("Deve retornar uma lista de candidaturas para serviços em aberto de um profissional para qualquer especialidade")
     public void findByJobRequest_StatusAndProfessional() {
-        JobRequest jb1 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, DateUtil.getNextWeek());
+        JobRequest jb1 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, dateOfNow);
         jobRequestRepository.save(jb1);
 
         Professional joao = professionalRepository.findByEmail("joao@mail.com");

@@ -62,9 +62,16 @@ INSERT INTO job_requests (client_confirmation, date_created, date_expired, descr
                           quantity_candidators_max, status, client_id, expertise_id)
 VALUES ('true', '2018-12-03', '2018-12-03', 'Lorem ipsum dolor', 'true', '3', 'CLOSED', '2', '1'),
        ('true', '2018-12-03', '2018-12-03', 'Lorem ipsum dolor', 'true', '4', 'CLOSED', '2', '1'),
-       ('true', '2018-12-03', '2018-12-03', 'Lorem ipsum dolor', 'true', '3', 'CLOSED', '2', '2');
+       ('true', '2018-12-03', '2018-12-03', 'Lorem ipsum dolor', 'true', '3', 'CLOSED', '2', '2'),
+       ('true', '2018-12-03', '2018-12-03', 'Lorem ipsum dolor', 'true', '3', 'CLOSED', '1', '2'),
+       ('true', '2018-12-03', '2018-12-03', 'Lorem ipsum dolor', 'true', '3', 'CLOSED', '1', '2');
 
 INSERT INTO job_contracted (comments, rating, job_request, professional)
 VALUES ('Muito bom profissional', '5', '1', '1'),
        ('Péssimo', '1', '2', '1'),
        ('Gostei do trabalho!', '4', '3', '1');
+
+INSERT INTO job_candidates (job_id, professional_id, chosen_by_budget, date, is_quit)
+VALUES (1,  1, 'false', '2018-12-03', 'false' ),
+       (1,  2, 'false', '2018-12-03', 'false' ),
+       (4,  2, 'false', '2018-12-03', 'false' );

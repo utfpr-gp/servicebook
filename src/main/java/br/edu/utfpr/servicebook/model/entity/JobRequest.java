@@ -52,10 +52,12 @@ public class JobRequest {
 	@NonNull
 	private int quantityCandidatorsMax;
 
-	private LocalDate dateCreated;
+	@Temporal(TemporalType.DATE)
+	private Date dateCreated;
 
+	@Temporal(TemporalType.DATE)
 	@NonNull
-	private LocalDate dateExpired;
+	private Date dateExpired;
 
 	private boolean clientConfirmation;
 	
@@ -72,7 +74,8 @@ public class JobRequest {
 
 	@PrePersist
 	public void onPersist(){
-		this.dateCreated = DateUtil.getToday();
+		final Date now = new Date();
+		this.dateCreated = now;
 		this.status = Status.AVAILABLE;
 	}
 

@@ -1,11 +1,9 @@
 package br.edu.utfpr.servicebook.service;
 
-import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.JobRequest;
+import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.repository.JobRequestRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.batch.BatchProperties;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,6 +34,14 @@ public class JobRequestService {
 
     public List<JobRequest> findByStatusAndExpertise(JobRequest.Status status, Expertise expertise){
         return this.jobRequestRepository.findByStatusAndExpertise(status, expertise);
+    }
+    public List<JobRequest> findByStatus(JobRequest.Status status){
+
+        return this.jobRequestRepository.findByStatus(status);
+    }
+
+    public List<JobRequest> findByClientOrderByDateCreatedDesc(Client client){
+        return this.jobRequestRepository.findByClientOrderByDateCreatedDesc(client);
     }
 
     public void init() {
