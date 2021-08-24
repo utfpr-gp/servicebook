@@ -8,15 +8,14 @@ import java.util.Set;
 import javax.persistence.*;
 
 import br.edu.utfpr.servicebook.util.DateUtil;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Data
 @Table(name = "job_requests")
 @NoArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode(exclude={"client", "jobCandidates", "jobContracted", "expertise", "jobImages"})
+@ToString(exclude={"client", "jobCandidates", "jobContracted", "expertise", "jobImages"})
 @Entity
 public class JobRequest {
 
@@ -33,7 +32,8 @@ public class JobRequest {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
+
 	@ManyToOne
 	@JoinColumn(name = "client_id")
 	private Client client;

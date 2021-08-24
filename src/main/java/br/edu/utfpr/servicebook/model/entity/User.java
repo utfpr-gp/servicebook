@@ -1,17 +1,9 @@
 package br.edu.utfpr.servicebook.model.entity;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +19,10 @@ import lombok.RequiredArgsConstructor;
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	public enum Gender {
+		MASCULINE, FEMININE
+	};
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,11 +33,9 @@ public class User implements Serializable {
 	
 	@NonNull
 	private String email;
-	
-	@NonNull
-	private String type;
-	
-	private String gender;
+
+	@Enumerated(EnumType.STRING)
+	private Gender gender;
 	
 	private String profilePicture;
 	
