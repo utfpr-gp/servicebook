@@ -53,7 +53,7 @@ public class User implements Serializable {
 	@OneToOne(mappedBy = "user")
 	private UserToken userToken;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.PERSIST)
 	private Address address;
 	
 }
