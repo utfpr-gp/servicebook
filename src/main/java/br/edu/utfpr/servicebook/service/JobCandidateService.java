@@ -9,6 +9,8 @@ package br.edu.utfpr.servicebook.service;
         import br.edu.utfpr.servicebook.model.repository.JobCandidateRepository;
         import lombok.extern.slf4j.Slf4j;
         import org.springframework.beans.factory.annotation.Autowired;
+        import org.springframework.data.domain.Page;
+        import org.springframework.data.domain.Pageable;
         import org.springframework.stereotype.Service;
 
         import java.util.List;
@@ -25,6 +27,11 @@ public class JobCandidateService {
     public Optional<Long> countByJobRequest(JobRequest jobRequest) {
         return this.jobCandidateRepository.countByJobRequest(jobRequest);
     }
+
+    public Page<JobCandidate> findByProfessional(Professional professional, Pageable pageable){
+        return this.jobCandidateRepository.findByProfessional(professional, pageable);
+    }
+
     public void init() {
 
     }
