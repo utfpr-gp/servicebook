@@ -82,26 +82,6 @@ public class ClientController {
         return mv;
     }
 
-    @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
-
-        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
-
-        if (!client.isPresent()) {
-            throw new IOException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
-        }
-
-        Optional<JobRequest> jobRequest = this.jobRequestService.findById(id);
-
-        if(jobRequest.isPresent()){
-            this.jobRequestService.delete(id);
-            redirectAttributes.addFlashAttribute("msg", "Solicitação deletada!");
-
-            return "redirect:/minha-conta/meus-pedidos";
-        }
-
-        throw new EntityNotFoundException("Solicitação não foi encontrada pelo id informado");
-    }
 
 
 
@@ -142,10 +122,10 @@ public class ClientController {
         log.debug(jobCandidates.toString());
 
         List<JobCandidateDTO> jobCandidatesDTOs = jobCandidates.stream()
-                .map(u -> jobCandidateMapper.toDto(u) )
+                .map(candidate -> jobCandidateMapper.toDto(candidate) )
                 .collect(Collectors.toList());
 
-        mv.addObject("candidatos", jobCandidatesDTOs);
+        mv.addObject("candidates", jobCandidatesDTOs);
 
 
         return mv;
