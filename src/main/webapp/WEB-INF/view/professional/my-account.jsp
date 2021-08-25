@@ -108,7 +108,7 @@
                                 ESPECIALIDADES
                             </p>
 
-                            <form method="get" action="minha-conta" id="form-expertise">
+                            <form method="get" action="minha-conta/profissional" id="form-expertise">
                                 <div class="input-field col s12 no-padding white-text">
                                     <select name="id" id="select-expertise">
                                         <option value="0">Todas as Especialidades</option>
@@ -122,12 +122,6 @@
                                 <button type="submit" hidden></button>
                             </form>
 
-                            <div class="center spacing-buttons">
-                                <button class="waves-effect waves-light btn">
-                                    <i class="material-icons left">add</i>
-                                    Adicionar especialidade
-                                </button>
-                            </div>
                         </div>
                     </div>
                     <div class="row no-margin">
@@ -207,108 +201,45 @@
                         </div>
                         <div class="col s12">
                             <div class="row">
+                                <div class="container center">
+                                    <a href="minha-conta/profissional" class="waves-effect waves-light btn"><i class="material-icons right">sync</i>ATUALIZAR</a>
+                                </div>
+
                                 <ul class="tabs center">
-                                    <li class="tab"><a class="active" href="#disponiveis">DISPONÍVEIS</a></li>
-                                    <li class="tab"><a href="#emDisputa">EM DISPUTA</a></li>
-                                    <li class="tab"><a href="#paraFazer">PARA FAZER</a></li>
-                                    <li class="tab"><a href="#executados">EXECUTADOS</a></li>
+                                    <li class="tab">
+                                        <a id="tab-default" data-url="minha-conta/profissional/disponiveis"
+                                           href="#disponiveis">
+                                            DISPONÍVEIS
+                                        </a>
+                                    </li>
+                                    <li class="tab">
+                                        <a data-url="minha-conta/profissional/em-disputa" href="#emDisputa">
+                                            EM DISPUTA
+                                        </a>
+                                    </li>
+                                    <li class="tab">
+                                        <a data-url="minha-conta/profissional/para-fazer" href="#paraFazer">
+                                            PARA FAZER
+                                        </a>
+                                    </li>
+                                    <li class="tab">
+                                        <a data-url="minha-conta/profissional/executados" href="#executados">
+                                            EXECUTADOS
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                             <div id="disponiveis" class="col s12">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col s12 spacing-buttons">
-                                            <div style="border: solid 1px black">
-                                                <div class="secondary-background-color">
-                                                    <div class="row">
-                                                        <div class="col s8 offset-s2">
-                                                            <h5 class="center white-text">
-                                                                PEDREIRO
-                                                            </h5>
-                                                        </div>
-                                                        <div class="col s2">
-                                                            <h5 class="right white-text badge-service">
-                                                                4/10
-                                                            </h5>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col s4">
-                                                        <p class="center text-form-dados primary-color-text">
-                                                            <i class="material-icons small dark-color-text">person</i>
-                                                            Maria
-                                                        </p>
-                                                    </div>
-                                                    <div class="col s4">
-                                                        <p class="center text-form-dados primary-color-text">
-                                                            <i class="material-icons small dark-color-text">location_on</i>
-                                                            Santana, Guarapuava-PR
-                                                        </p>
-                                                    </div>
-                                                    <div class="col s4">
-                                                        <p class="center text-form-dados primary-color-text">
-                                                            <i class="material-icons small dark-color-text">access_time</i>
-                                                            Próxima semana
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <blockquote class="light-blue lighten-5 info-headers">
-                                                    <p>Descrição do serviço ...</p>
-                                                </blockquote>
-                                                <div>
-                                                    <div class="center">
-                                                        <a href="" class="waves-effect waves-light btn spacing-buttons">
-                                                            Detalhes
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                             </div>
                             <div id="emDisputa" class="col s12">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col s12 spacing-buttons">
-                                            <div class="none-profission">
-                                                <p class="center text-form-dados">
-                                                    Você ainda não tem pedidos, mas um novo pedido pode chegar aqui a
-                                                    qualquer momento.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                             </div>
                             <div id="paraFazer" class="col s12">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col s12 spacing-buttons">
-                                            <div class="none-profission">
-                                                <p class="center text-form-dados">
-                                                    Você ainda não tem pedidos, mas um novo pedido pode chegar aqui a
-                                                    qualquer momento.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                             </div>
                             <div id="executados" class="col s12">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col s12 spacing-buttons">
-                                            <div class="none-profission">
-                                                <p class="center text-form-dados">
-                                                    Você ainda não tem pedidos, mas um novo pedido pode chegar aqui a
-                                                    qualquer momento.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -320,11 +251,31 @@
 </t:professional>
 
 <script>
-    window.onload = function () {
-        $('#select-expertise').formSelect();
-
-        $('#select-expertise').change(function () {
-            $('#form-expertise').submit();
+    $(document).ready(function () {
+        $('#disponiveis').load($('.tab .active').attr("data-url"), function (result) {
+            window.location.hash = "#disponiveis";
+            $('#tab-default').click();
         });
-    }
+    });
+
+    $('#select-expertise').formSelect();
+
+    $('#select-expertise').change(function () {
+        $('#form-expertise').submit();
+    });
+
+    $('.tab a').click(function (e) {
+        e.preventDefault();
+
+        let url = $(this).attr("data-url");
+        let href = this.hash;
+        window.location.hash = href;
+
+        let urlParams = new URLSearchParams(window.location.search);
+        let id = (urlParams.has('id')) ? urlParams.get('id') : 0;
+        url += '?id=' + id;
+
+        $(href).load(url, function (result) {
+        });
+    });
 </script>
