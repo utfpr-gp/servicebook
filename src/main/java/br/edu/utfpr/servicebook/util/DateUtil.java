@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
 
 import static java.time.DayOfWeek.SUNDAY;
 import static java.time.temporal.TemporalAdjusters.nextOrSame;
@@ -18,6 +19,20 @@ public class DateUtil {
     private static final String[] weekDays = {"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
     public static final String DATETIME_PATTERN="yyyy-MM-dd HH:mm:ss";
     public static final String DATE_PATTERN="yyyy-MM-dd";
+
+    private static final SimpleDateFormat dateFormatDefault = new SimpleDateFormat("yyyy/MM/dd");
+
+    public static Long getDifferenceInDays (Date firstDate, Date secondDate){
+         firstDate = new Date(dateFormatDefault.format(firstDate));
+         secondDate = new Date(dateFormatDefault.format(secondDate));
+
+        long diff = secondDate.getTime() - firstDate.getTime();
+        TimeUnit timeUnit = TimeUnit.DAYS;
+
+        long differenceInDays = timeUnit.convert(diff, TimeUnit.MILLISECONDS);
+
+        return differenceInDays;
+    }
 
     public static LocalDate getToday(){
         return LocalDate.now();
