@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <t:client title="Detalhes da Solicitação">
     <jsp:body>
@@ -10,7 +11,7 @@
                 <div class="section">
                     <div class="row">
                         <div class="col s12">
-                            <h2 class="secondary-color-text center spacing-standard tertiary-color-text">Escolha um Pedreiro!</h2>
+                            <h2 class="secondary-color-text center spacing-standard tertiary-color-text">Escolha um Pedreiro!${candidates}</h2>
                         </div>
                         <div class="col s12 m6 tertiary-color-text text-info-request">
                             <p>Preciso de um pedreiro para trocar o piso....</p>
