@@ -23,14 +23,14 @@ public class ServicebookApplication {
         SpringApplication.run(ServicebookApplication.class, args);
     }
 
-    @Bean
-    public CommandLineRunner commandLineRunner() {
-        return args -> {
-
-            // inicializa a base de dados
-            indexService.initialize();
-        };
-    }
+//    @Bean
+//    public CommandLineRunner commandLineRunner() {
+//        return args -> {
+//
+//            // inicializa a base de dados
+//            indexService.initialize();
+//        };
+//    }
 
     @Bean
     public ModelMapper modelMapper() {

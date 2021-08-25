@@ -5,10 +5,7 @@ package br.edu.utfpr.servicebook.model.entity;
 import javax.persistence.*;
 
 import br.edu.utfpr.servicebook.util.DateUtil;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
@@ -16,6 +13,7 @@ import java.util.Date;
  * Classe para armazenar as informações necessárias para a classe auxiliar n x n
  */
 @Data
+@EqualsAndHashCode(exclude={"jobRequest","professional"})
 @Table(name = "job_candidates")
 @NoArgsConstructor
 @Entity
