@@ -9,12 +9,10 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class JobCandidateDTO implements Serializable {
+public class JobCandidateMinDTO implements Serializable {
 
     private Long id;
-    private boolean isQuit;
-    private boolean chosenByBudget;
+    private String date;
     private JobRequestFullDTO jobRequest;
-    private ProfessionalMinDTO professional;
 
 }
