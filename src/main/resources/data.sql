@@ -107,9 +107,9 @@ VALUES ('Ótimo Encanador!', '5', '4', '1'),
 
 INSERT INTO job_candidates (job_id, professional_id, chosen_by_budget, date, is_quit)
 VALUES ('1', '1', 'false', '2021-01-01', 'false'),
-       ('2', '1', 'false', '2021-01-01', 'false'),
-       ('3', '2', 'false', '2021-01-01', 'false'),
-       ('4', '2', 'false', '2021-01-01', 'false'),
-       ('5', '2', 'false', '2021-01-01', 'false');
+       ('2', '1', 'false', '2021-01-02', 'false'),
+       ('5', '1', 'false', '2021-01-29', 'false'),
+       ('6', '1', 'false', '2021-01-02', 'false'),
+       ('9', '1', 'false', '2021-01-01', 'false');
 
 
