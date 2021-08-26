@@ -192,7 +192,6 @@ public class MyAccountProfessionalController {
         return mv;
     }
 
-    ////// --->
     @GetMapping("/em-disputa")
     public ModelAndView showDisputedJobs(
             HttpServletRequest request,
@@ -209,19 +208,44 @@ public class MyAccountProfessionalController {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("id").ascending());
-        Page<JobCandidate> jobRequestPage = null;
-        List<JobCandidateDTO> jobCandidateDTOs = null;
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
+        Page<JobCandidate> jobCandidatePage = null;
+        List<JobCandidateMinDTO> jobCandidateDTOs = null;
 
         if (id == 0) {
-            jobRequestPage = jobCandidateService.findByProfessional(oProfessional.get(), pageRequest);
+            jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndProfessional(JobRequest.Status.AVAILABLE, oProfessional.get(), pageRequest);
+        } else {
+            if (id < 0) {
+                throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
+            }
 
-            jobCandidateDTOs = jobRequestPage.stream()
-                    .map(jobCandidate -> jobCandidateMapper.toDto(jobCandidate))
-                    .collect(Collectors.toList());
+            Optional<Expertise> oExpertise = expertiseService.findById(id);
+
+            if (!oExpertise.isPresent()) {
+                throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
+            }
+
+            Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oProfessional.get(), oExpertise.get());
+
+            if (!oProfessionalExpertise.isPresent()) {
+                throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
+            }
+
+            jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status.AVAILABLE, oExpertise.get(), oProfessional.get(), pageRequest);
         }
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/profissional/disponiveis");
+        jobCandidateDTOs = jobCandidatePage.stream()
+                .map(jobCandidate -> {
+                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobCandidate.getJobRequest());
+
+                    if (totalCandidates.isPresent()) {
+                        return jobCandidateMapper.toMinDto(jobCandidate, totalCandidates);
+                    }
+
+                    return jobCandidateMapper.toMinDto(jobCandidate, Optional.ofNullable(0L));
+                }).collect(Collectors.toList());
+
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/profissional/em-disputa");
 
         ModelAndView mv = new ModelAndView("professional/disputed-jobs-report");
         mv.addObject("pagination", paginationDTO);
@@ -230,6 +254,7 @@ public class MyAccountProfessionalController {
         return mv;
     }
 
+    ///// --->
     @GetMapping("/para-fazer")
     public ModelAndView showJobsTodo() {
         ModelAndView mv = new ModelAndView("available-jobs-report");
