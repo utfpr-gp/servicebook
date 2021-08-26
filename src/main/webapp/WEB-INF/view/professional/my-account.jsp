@@ -205,7 +205,7 @@
                                     <a href="minha-conta/profissional" class="waves-effect waves-light btn"><i class="material-icons right">sync</i>ATUALIZAR</a>
                                 </div>
 
-                                <ul class="tabs center">
+                                <ul class="tabs tabs-fixed-width center">
                                     <li class="tab">
                                         <a id="tab-default" data-url="minha-conta/profissional/disponiveis"
                                            href="#disponiveis">
