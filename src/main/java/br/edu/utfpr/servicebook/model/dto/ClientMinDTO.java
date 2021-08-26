@@ -12,7 +12,6 @@ import java.io.Serializable;
 public class ClientMinDTO implements Serializable {
 
     private String name;
-    private String profilePicture;
     private AddressMinDTO address;
 
 }
