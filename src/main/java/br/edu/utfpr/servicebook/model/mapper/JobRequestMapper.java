@@ -56,7 +56,7 @@ public class JobRequestMapper {
         Long intervalOfDays = DateUtil.getDifferenceInDays(entity.getDateCreated(), entity.getDateExpired());
         dto.setIntervalOfDays(intervalOfDays);
 
-        dto.setTextualDate(DateUtil.getTextualDate(new java.sql.Date(entity.getDateExpired().getTime()).toLocalDate()));
+        dto.setTextualDate(DateUtil.getTextualDate(DateUtil.toLocalDate(entity.getDateExpired())));
 
         return dto;
     }
