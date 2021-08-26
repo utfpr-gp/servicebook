@@ -52,10 +52,6 @@ public class JobRequestMapper {
         dto.setTotalCandidates(totalCandidates.get());
         dto.setDateCreated(this.dateFormat.format(entity.getDateCreated()));
         dto.setDateExpired(this.dateFormat.format(entity.getDateExpired()));
-
-        Long intervalOfDays = DateUtil.getDifferenceInDays(entity.getDateCreated(), entity.getDateExpired());
-        dto.setIntervalOfDays(intervalOfDays);
-
         dto.setTextualDate(DateUtil.getTextualDate(DateUtil.toLocalDate(entity.getDateExpired())));
 
         return dto;
