@@ -12,5 +12,4 @@ public class ProfessionalMinDTO extends UserDTO {
     private Long id;
     private String description;
     private Integer rating;
-
 }
