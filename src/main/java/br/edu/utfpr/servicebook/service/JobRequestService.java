@@ -58,6 +58,14 @@ public class JobRequestService {
         return this.jobRequestRepository.findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(status, expertise, professional, pageable);
     }
 
+    public Page<JobRequest> findByStatusAndJobContracted_Professional(JobRequest.Status status, Professional professional, Pageable pageable) {
+        return this.jobRequestRepository.findByStatusAndJobContracted_Professional(status, professional, pageable);
+    }
+
+    public Page<JobRequest> findByStatusAndExpertiseAndJobContracted_Professional(JobRequest.Status status, Expertise expertise, Professional professional, Pageable pageable) {
+        return this.jobRequestRepository.findByStatusAndExpertiseAndJobContracted_Professional(status, expertise, professional, pageable);
+    }
+
     public void init() {
 
     }
