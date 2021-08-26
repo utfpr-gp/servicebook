@@ -76,6 +76,7 @@ public class JobRequest {
 	public void onPersist(){
 		final Date now = new Date();
 		this.dateCreated = now;
+		this.dateExpired = now;
 		this.status = Status.AVAILABLE;
 	}
 
