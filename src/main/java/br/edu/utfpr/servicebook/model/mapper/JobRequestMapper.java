@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.Optional;
 
 @Component
@@ -54,6 +55,8 @@ public class JobRequestMapper {
 
         Long intervalOfDays = DateUtil.getDifferenceInDays(entity.getDateCreated(), entity.getDateExpired());
         dto.setIntervalOfDays(intervalOfDays);
+
+        dto.setTextualDate(DateUtil.getTextualDate(new java.sql.Date(entity.getDateExpired().getTime()).toLocalDate()));
 
         return dto;
     }
