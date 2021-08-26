@@ -5,10 +5,7 @@ package br.edu.utfpr.servicebook.model.entity;
 import javax.persistence.*;
 
 import br.edu.utfpr.servicebook.util.DateUtil;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
@@ -17,9 +14,10 @@ import java.util.Date;
  */
 @Data
 @Table(name = "job_candidates")
+@EqualsAndHashCode(exclude={"professional","jobRequest"})
 @NoArgsConstructor
 @Entity
-public class JobCandidate {
+public class JobCandidate  {
 
 	private static final long serialVersionUID = 1L; 
 
