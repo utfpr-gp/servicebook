@@ -130,6 +130,10 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
      */
     List<JobRequest> findByStatusAndExpertiseAndJobContracted_Professional(JobRequest.Status status, Expertise expertise, Professional professional);
 
+    Page<JobRequest> findByStatusAndJobContracted_Professional(JobRequest.Status status, Professional professional, Pageable pageable);
+
+    Page<JobRequest> findByStatusAndExpertiseAndJobContracted_Professional(JobRequest.Status status, Expertise expertise, Professional professional, Pageable pageable);
+
     List<JobRequest> findByClientOrderByDateCreatedDesc(Client client);
 
 }
