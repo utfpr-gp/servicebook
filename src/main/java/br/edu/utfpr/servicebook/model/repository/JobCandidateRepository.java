@@ -27,14 +27,6 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
     List<JobCandidate> findByProfessional(Professional professional);
 
     /**
-     * Retorna uma lista de candidaturas de um dado profissional com paginação
-     *
-     * @param professional
-     * @return Page<JobCandidate>
-     */
-    Page<JobCandidate> findByProfessional(Professional professional, Pageable pageable);
-
-    /**
      * Retorna uma lista de candidaturas de um profissional que foram escolhidas para orçamento
      * @param professional
      * @param chosen
@@ -49,6 +41,31 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
      * @return
      */
     List<JobCandidate> findByJobRequest_StatusAndProfessional(JobRequest.Status status, Professional professional);
+
+    /**
+     * Retorna uma lista de candidaturas de um profissional para requisições de um certo estado.
+     * Retorna com paginação.
+     *
+     * @param status
+     * @param professional
+     * @param pageable
+     *
+     * @returnPage<JobCandidate>
+     */
+    Page<JobCandidate> findByJobRequest_StatusAndProfessional(JobRequest.Status status, Professional professional, Pageable pageable);
+
+    /**
+     * Retorna uma lista de candidaturas de um profissional para requisições de um certo estado.
+     * Retorna com paginação.
+     *
+     * @param status
+     * @param expertise
+     * @param professional
+     * @param pageable
+     *
+     * @returnPage<JobCandidate>
+     */
+    Page<JobCandidate> findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status status, Expertise expertise, Professional professional, Pageable pageable);
 
     Optional<Long> countByJobRequest(JobRequest jobRequest);
 
