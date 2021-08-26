@@ -275,7 +275,7 @@ public class MyAccountProfessionalController {
         List<JobRequestFullDTO> jobRequestFullDTOs = null;
 
         if (id == 0) {
-            jobRequestPage = jobRequestService.findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status.TO_DO, oProfessional.get(), pageRequest);
+            jobRequestPage = jobRequestService.findByStatusAndJobContracted_Professional(JobRequest.Status.TO_DO, oProfessional.get(), pageRequest);
         } else {
             if (id < 0) {
                 throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
@@ -293,7 +293,7 @@ public class MyAccountProfessionalController {
                 throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
             }
 
-            jobRequestPage = jobRequestService.findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status.TO_DO, oExpertise.get(), oProfessional.get(), pageRequest);
+            jobRequestPage = jobRequestService.findByStatusAndExpertiseAndJobContracted_Professional(JobRequest.Status.TO_DO, oExpertise.get(), oProfessional.get(), pageRequest);
         }
 
         jobRequestFullDTOs = jobRequestPage.stream()
@@ -317,8 +317,65 @@ public class MyAccountProfessionalController {
     }
 
     @GetMapping("/executados")
-    public ModelAndView showJobsPerformed() {
-        ModelAndView mv = new ModelAndView("available-jobs-report");
+    public ModelAndView showJobsPerformed(
+            HttpServletRequest request,
+            @RequestParam(required = false, defaultValue = "0") Long id,
+            @RequestParam(value = "pag", defaultValue = "1") int page,
+            @RequestParam(value = "siz", defaultValue = "3") int size,
+            @RequestParam(value = "ord", defaultValue = "id") String order,
+            @RequestParam(value = "dir", defaultValue = "ASC") String direction
+    ) throws Exception {
+
+        Optional<Professional> oProfessional = Optional.ofNullable(professionalService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+
+        if (!oProfessional.isPresent()) {
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("id").descending());
+        Page<JobContracted> jobContractedPage = null;
+        List<JobContractedFullDTO> jobContractedDTOs = null;
+
+        if (id == 0) {
+            jobContractedPage = jobContractedService.findByJobRequest_StatusAndProfessional(JobRequest.Status.CLOSED, oProfessional.get(), pageRequest);
+        } else {
+            if (id < 0) {
+                throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
+            }
+
+            Optional<Expertise> oExpertise = expertiseService.findById(id);
+
+            if (!oExpertise.isPresent()) {
+                throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
+            }
+
+            Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oProfessional.get(), oExpertise.get());
+
+            if (!oProfessionalExpertise.isPresent()) {
+                throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
+            }
+
+            jobContractedPage = jobContractedService.findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status.CLOSED, oExpertise.get(), oProfessional.get(), pageRequest);
+        }
+
+        jobContractedDTOs = jobContractedPage.stream()
+                .map(jobContracted -> {
+                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobContracted.getJobRequest());
+
+                    if (totalCandidates.isPresent()) {
+                        return jobContractedMapper.toFullDto(jobContracted, totalCandidates);
+                    }
+
+                    return jobContractedMapper.toFullDto(jobContracted, Optional.ofNullable(0L));
+                })
+                .collect(Collectors.toList());
+
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobContractedPage, "/minha-conta/profissional/executados");
+
+        ModelAndView mv = new ModelAndView("professional/jobs-performed-report");
+        mv.addObject("pagination", paginationDTO);
+        mv.addObject("jobs", jobContractedDTOs);
+
         return mv;
     }
 
