@@ -262,12 +262,27 @@ input[type=range]::-webkit-slider-runnable-track{
   background-color: #1c2231;
   border: solid white 4px;
 }
-.text-detail-request p{
-  line-height: 1rem;
+.text-detail-request p, .text-info-request.description-orcamento p, .text-info-request.description-job p{
+  line-height: 1.4rem;
 }
 .text-info-request{
   font-weight: 600;
   font-size: 130%;
+}
+
+.text-info-request.description-orcamento p{
+  font-weight: 500;
+
+}
+.text-info-request.description-job p{
+  font-weight: 400;
+}
+.star-icons.candidate {
+  margin: 0;
+  padding: 0;
+}
+.check-circle-candidate i{
+  font-size: 2em;
 }
 .hr-request-area{
   height: 7px;
@@ -296,6 +311,11 @@ input[type=range]::-webkit-slider-runnable-track{
   color: white;
 }
 
+.card-candidate {
+  padding: 0;
+  border: #3f51b5 10px solid;
+  color: white;
+}
 .card-resquest{
   padding: 0;
   border: #3f51b5 10px solid;
@@ -438,6 +458,12 @@ footer.page-footer {
   direction: ltr;
   -moz-font-feature-settings: 'liga';
   -moz-osx-font-smoothing: grayscale;
+}
+
+.material-icons.middle {
+  vertical-align: middle;
+  padding-right: 4px;
+  font-size: 3rem;
 }
 
 .middle-indicator{
