@@ -88,10 +88,16 @@ public class ClientController {
 
         return mv;
     }
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
+        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
 
+        if (!client.isPresent()) {
+            throw new IOException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
 
-
+        Optional<JobRequest> jobRequest = this.jobRequestService.findById(id);
 
         if(!jobRequest.isPresent()) {
             throw new EntityNotFoundException("Solicitação não foi encontrada pelo id informado.");
@@ -110,22 +116,6 @@ public class ClientController {
         return "redirect:/minha-conta/meus-pedidos";
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     @GetMapping("/{id}")
     public ModelAndView showDetailsRequest(@PathVariable Optional<Long> id) throws Exception {

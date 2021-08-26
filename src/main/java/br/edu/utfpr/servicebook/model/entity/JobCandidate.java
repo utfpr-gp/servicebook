@@ -15,7 +15,6 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(exclude={"jobRequest","professional"})
 @Table(name = "job_candidates")
-@EqualsAndHashCode(exclude={"professional","jobRequest"})
 @NoArgsConstructor
 @Entity
 public class JobCandidate  {
