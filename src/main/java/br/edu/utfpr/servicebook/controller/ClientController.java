@@ -1,11 +1,8 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.dto.*;
-import br.edu.utfpr.servicebook.model.entity.JobCandidate;
-import br.edu.utfpr.servicebook.model.entity.JobRequest;
-import br.edu.utfpr.servicebook.model.mapper.ClientMapper;
-import br.edu.utfpr.servicebook.model.mapper.JobCandidateMapper;
-import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
+import br.edu.utfpr.servicebook.model.entity.*;
+import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import org.slf4j.Logger;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import br.edu.utfpr.servicebook.model.entity.Client;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -51,6 +47,17 @@ public class ClientController {
     @Autowired
     private JobRequestMapper jobRequestMapper;
 
+    @Autowired
+    private ExpertiseService expertiseService;
+
+    @Autowired
+    private ExpertiseMapper expertiseMapper;
+
+    @Autowired
+    private ProfessionalService professionalService;
+
+    @Autowired
+    private ProfessionalMapper professionalMapper;
     @GetMapping
     public ModelAndView show() throws Exception {
         ModelAndView mv = new ModelAndView("client/my-requests");
@@ -116,13 +123,29 @@ public class ClientController {
         }
 
         Optional<JobRequest> job = jobRequestService.findById(id.get());
-        JobRequestDTO jobDTO = jobRequestMapper.toDto(job.get());
+
+        if (!job.isPresent()) {
+            throw new EntityNotFoundException("Solicitação de serviço não encontrado. Por favor, tente novamente.");
+        }
+
+        JobRequestFullDTO jobDTO = jobRequestMapper.toFullDto(job.get());
+        mv.addObject("jobRequest", jobDTO);
+
+        Long expertiseId = job.get().getExpertise().getId();
+
+        Optional<Expertise> Expertise = expertiseService.findById(expertiseId);
+
+        if (!Expertise.isPresent()) {
+            throw new EntityNotFoundException("A especialidade não foi encontrada. Por favor, tente novamente.");
+        }
+
+        ExpertiseMinDTO expertiseDTO = expertiseMapper.toMinDto(Expertise.get());
+        mv.addObject("expertise", expertiseDTO);
 
         List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequest(job.get());
-        log.debug(jobCandidates.toString());
 
         List<JobCandidateDTO> jobCandidatesDTOs = jobCandidates.stream()
-                .map(candidate -> jobCandidateMapper.toDto(candidate) )
+                .map(candidate -> jobCandidateMapper.toDto(candidate))
                 .collect(Collectors.toList());
 
         mv.addObject("candidates", jobCandidatesDTOs);
