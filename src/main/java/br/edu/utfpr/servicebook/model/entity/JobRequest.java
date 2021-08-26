@@ -18,7 +18,6 @@ import lombok.*;
 @ToString(exclude={"client", "jobCandidates", "jobContracted", "expertise", "jobImages"})
 @Entity
 public class JobRequest {
-
 	/**
 	 * AVAILABLE: disponível para candidaturas e permanece neste estado também durante o recebimento de candidaturas
 	 * BUDGET: passa para este estado quando alcançado o total de candidaturas esperado ou quando o cliente encerra o recebimento de candidaturas
@@ -63,13 +62,13 @@ public class JobRequest {
 	
 	private boolean professionalConfirmation;
 	
-	@OneToMany(mappedBy = "jobRequest")
+	@OneToMany(mappedBy = "jobRequest", cascade = CascadeType.REMOVE)
 	private Set<JobImages> jobImages = new HashSet<>();
 	
-	@OneToOne(mappedBy = "jobRequest", cascade = CascadeType.PERSIST)
+	@OneToOne(mappedBy = "jobRequest", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
 	private JobContracted jobContracted;
 
-	@OneToMany(mappedBy = "jobRequest")
+	@OneToMany(mappedBy = "jobRequest", cascade = CascadeType.REMOVE)
 	Set<JobCandidate> jobCandidates = new HashSet<>();
 
 	@PrePersist

@@ -93,8 +93,23 @@ public class ClientController {
 
 
 
+        if(!jobRequest.isPresent()) {
+            throw new EntityNotFoundException("Solicitação não foi encontrada pelo id informado.");
+        }
 
+        Long jobRequestClientId = jobRequest.get().getClient().getId();
+        Long clientId = client.get().getId();
 
+        if(jobRequestClientId != clientId){
+            throw new EntityNotFoundException("Você não ter permissão para deletar essa solicitação.");
+        }
+
+        this.jobRequestService.delete(id);
+        redirectAttributes.addFlashAttribute("msg", "Solicitação deletada!");
+
+        return "redirect:/minha-conta/meus-pedidos";
+
+    }
 
 
 

@@ -13,6 +13,7 @@ import java.util.Date;
  * Classe para armazenar as informações necessárias para a classe auxiliar n x n
  */
 @Data
+@EqualsAndHashCode(exclude={"jobRequest","professional"})
 @Table(name = "job_candidates")
 @EqualsAndHashCode(exclude={"professional","jobRequest"})
 @NoArgsConstructor
