@@ -69,4 +69,6 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
 
     Optional<Long> countByJobRequest(JobRequest jobRequest);
 
+    List<JobCandidate> findByJobRequest(JobRequest jobRequest);
+
 }

@@ -28,6 +28,11 @@ public class JobCandidateService {
         return this.jobCandidateRepository.findByJobRequest_StatusAndProfessional(status, professional, pageable);
     }
 
+    public List<JobCandidate> findByJobRequest(JobRequest jobRequest) {
+        return this.jobCandidateRepository.findByJobRequest(jobRequest);
+    }
+
+
     public Page<JobCandidate> findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status status, Expertise expertise, Professional professional, Pageable pageable) {
         return this.jobCandidateRepository.findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(status, expertise, professional, pageable);
     }

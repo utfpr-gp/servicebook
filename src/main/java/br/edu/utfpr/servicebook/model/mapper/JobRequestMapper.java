@@ -43,7 +43,14 @@ public class JobRequestMapper {
         dto.setAmountOfCandidates(amountOfCandidates.get());
         dto.setExpertiseDTO(expertiseMapper.toDto(entity.getExpertise()));
         dto.setDateCreated(this.dateFormat.format(entity.getDateCreated()));
+        dto.setDateExpired(this.dateFormat.format(entity.getDateExpired()));
 
+        return dto;
+    }
+    public JobRequestFullDTO toFullDto(JobRequest entity){
+        JobRequestFullDTO dto = mapper.map(entity, JobRequestFullDTO.class);
+        dto.setDateCreated(this.dateFormat.format(entity.getDateCreated()));
+        dto.setDateExpired(this.dateFormat.format(entity.getDateExpired()));
         return dto;
     }
 

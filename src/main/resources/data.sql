@@ -49,13 +49,19 @@ VALUES ('2021-01-01', 'profissional1@gmail.com', 'true', 'MASCULINE', 'Profissio
        ('2021-01-01', 'cliente1@gmail.com', 'true', 'MASCULINE', 'Cliente 1', '(42)9 9999-9999', 'true',
         'https://i.imgur.com/y9dH2bJ.jpeg', 'true', '1'),
        ('2021-01-01', 'cliente2@gmail.com', 'true', 'MASCULINE', 'Cliente 2', '(42)9 9999-9999', 'true',
-        'https://i.imgur.com/dA6qCJO.png', 'true', '1');
+        'https://i.imgur.com/owhNAKK.png', 'true', '1'),
+       ('2021-01-01', 'profissional3@gmail.com', 'true', 'MASCULINE', 'Profissional 3', '(42)9 9999-9999', 'false',
+        null, 'false', '1'),
+       ('2021-01-01', 'profissional4@gmail.com', 'true', 'MASCULINE', 'Profissional 4', '(42)9 9999-9999', 'true',
+        'https://i.imgur.com/owhNAKK.png', 'true', '1');
 
 
 
 INSERT INTO professionals (cpf, description, rating, denounce_amount, id)
-VALUES ('111111111', 'Descrição do profissional 1', '5', '1', '1'),
-       ('222222222', 'Descrição do profissional 2', '5', '1', '2');
+VALUES ('111111111', 'Descrição profissional 1', '5', '1', '1'),
+       ('222222222', 'Descrição profissional 2', '5', '1', '2'),
+       ('222222233', 'Descrição profissional 3', '5', '1', '5'),
+       ('222222211', 'Descrição profissional 4', '4', '1', '6');
 
 
 
@@ -77,7 +83,9 @@ INSERT INTO professional_expertises (expertise_id, professional_id, rating)
 VALUES (1, 1, 1),
        (2, 1, 2),
        (3, 1, 3),
-       (4, 1, 4);
+       (4, 1, 4),
+       (2, 5, 4),
+       (2, 6, 4);
 
 
 

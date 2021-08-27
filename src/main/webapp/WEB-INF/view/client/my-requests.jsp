@@ -164,7 +164,7 @@
                                                         </div>
                                                         <div class="col s6 m6  l2 spacing-buttons center">
                                                             <div class="center">
-                                                                <a class="waves-effect waves-light btn" href="#!">Ver</a>
+                                                                <a class="waves-effect waves-light btn" href="minha-conta/meus-pedidos/${jobRequest.id}">Ver</a>
                                                             </div>
                                                         </div>
                                                     </div>

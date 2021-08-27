@@ -19,6 +19,15 @@ public class JobCandidateMapper {
     @Autowired
     private ModelMapper mapper;
 
+    public JobCandidateDTO toDto(JobCandidate entity){
+        JobCandidateDTO dto = mapper.map(entity, JobCandidateDTO.class);
+        return dto;
+    }
+
+    public JobCandidate toEntity(JobCandidateDTO dto){
+        JobCandidate entity = mapper.map(dto, JobCandidate.class);
+        return entity;
+    }
     public JobCandidateMinDTO toMinDto(JobCandidate entity, Optional<Long> totalCandidates) {
         JobCandidateMinDTO dto = mapper.map(entity, JobCandidateMinDTO.class);
         dto.getJobRequest().setDateCreated(this.dateFormat.format(entity.getJobRequest().getDateCreated()));
