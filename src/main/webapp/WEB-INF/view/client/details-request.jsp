@@ -7,11 +7,119 @@
     <jsp:body>
 
         <main>
-            <div class="container">
+            <div class="row">
+                <div class="col s12 l3 hide-on-med-and-down no-padding" id="area-perfil">
+                    <div class="row primary-background-color area-perfil no-margin">
+                        <div class="col s12 icons-area-request">
+                            <div class="row center">
+                                <div class="col s12 dark-color-text">
+                                    <div class="row tooltipped" data-position="bottom"
+                                         data-tooltip="${client} estrela (s).">
+                                        <i class="material-icons yellow-text small">star_border</i>
+                                        <i class="material-icons yellow-text small">star_border</i>
+                                        <i class="material-icons yellow-text small">star</i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s12 center">
+
+                            <c:if test="${client.profilePicture == null}">
+                                <svg class="icon-person" style="width:250px;height:250px" viewBox="0 0 24 24">
+                                    <path class="dark-color-icon"
+                                          d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+                                </svg>
+                            </c:if>
+
+                            <c:if test="${client.profilePicture != null}">
+                                <div class="row">
+                                    <img src="${client.profilePicture}" alt="Cliente - Imagem de perfil."
+                                         style="width:250px;height:250px">
+                                </div>
+                            </c:if>
+                            <div class="row">
+                                <p>Perfil sem descrição.</p>
+                            </div>
+
+                            <h5 class="edit-link tertiary-color-text">
+                                <a class="tertiary-color-text" href="">Editar perfil</a>
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="row secondary-background-color no-margin">
+                        <div class="col s12">
+                            <h5 class="name-header no-margin center white-text">
+                                <strong>${client.name}</strong>
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="row primary-background-color no-margin">
+                        <div class="col s12">
+                            <p class="header-verification tertiary-color-text center">VERIFICAÇÃO DO PERFIL</p>
+                        </div>
+                    </div>
+                    <div class="row secondary-background-color no-margin">
+                        <div class="col s4 center no-padding">
+
+                            <c:if test="${client.profileVerified}">
+                                <i class="medium material-icons green-text tooltipped" data-position="top"
+                                   data-tooltip="Perfil verificado.">person</i>
+                            </c:if>
+                            <c:if test="${!client.profileVerified}">
+                                <i class="medium material-icons gray-text tooltipped" data-position="top"
+                                   data-tooltip="Perfil não verificado.">person</i>
+                            </c:if>
+
+                        </div>
+                        <div class="col s4 center no-padding">
+
+                            <c:if test="${client.emailVerified}">
+                                <i class="medium material-icons green-text tooltipped" data-position="top"
+                                   data-tooltip="Email verificado.">email</i>
+                            </c:if>
+                            <c:if test="${!client.emailVerified}">
+                                <i class="medium material-icons gray-text tooltipped" data-position="top"
+                                   data-tooltip="Email não verificado.">email</i>
+                            </c:if>
+
+                        </div>
+                        <div class="col s4 center no-padding">
+
+                            <c:if test="${client.phoneVerified}">
+                                <i class="medium material-icons green-text tooltipped" data-position="top"
+                                   data-tooltip="Telefone verificado.">phone</i>
+                            </c:if>
+                            <c:if test="${!client.phoneVerified}">
+                                <i class="medium material-icons gray-text tooltipped" data-position="top"
+                                   data-tooltip="Telefone não verificado.">phone</i>
+                            </c:if>
+
+                        </div>
+                    </div>
+                    <div class="row no-margin center">
+                        <div class="col s12 no-margin no-padding input-field area-profission-select">
+
+                            <div class="center spacing-buttons">
+                                <button class="waves-effect waves-light btn">
+                                    Acessar como profissional
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col m10 offset-m1 l9">
+                    <a id="show-area-perfil"
+                       class="hide-on-large-only show-area-perfil waves-effect waves-light btn btn-floating grey darken-3 z-depth-A">
+                        <i class="material-icons">compare_arrows</i>
+                    </a>
+                <div class="row">
+                    <div class="container">
+                        <div class="col s12">
                 <div class="section">
                     <div class="row">
-
-                            <c:if test="${empty candidates}">
+                        <c:if test="${empty candidates}">
                                 <div class="col s12 center">
                                     <i class="material-icons large"> sentiment_dissatisfied </i>
                                     <h2 class="secondary-color-text"> Não há nenhum candidato.</h2>
@@ -41,7 +149,12 @@
                         <div class="col s12 tertiary-color-text description-orcamento text-info-request">
                             <hr class="hr-request-area">
                             <p>Entre em contato com um ou mais profissionais que se interessaram em realizar o serviço para marcar um orçamento.</p>
-                            <p>${candidates.size()} profissionais responderam a sua solicitação:</p>
+                            <c:if test="${candidates.size() > 1}">
+                                <p>${candidates.size()} profissionais responderam a sua solicitação:</p>
+                            </c:if>
+                            <c:if test="${candidates.size() == 1}">
+                                <p>${candidates.size()} profissional respondeu a sua solicitação:</p>
+                            </c:if>
                         </div>
                             <c:forEach var="jobCandidate" items="${candidates}">
 
@@ -92,11 +205,11 @@
                                         </div>
                                         <div class="col s12">
                                             <div class="center title-card-resquest">
-                                                <P>${jobCandidate.professional.description}</P>
+                                                <P class="truncate">${jobCandidate.professional.name}</P>
                                             </div>
                                             <p class="contact-item center-block dark-color-text">
                                                 <c:if test="${jobCandidate.professional.emailVerified}">
-                                                    <i class="medium material-icons green-text tooltipped middle" data-position="top"
+                                                    <i class="medium material-icons green-text tooltipped middle truncate" data-position="top"
                                                        data-tooltip="Email verificado.">email </i>${jobCandidate.professional.email}
                                                 </c:if>
                                                 <c:if test="${!jobCandidate.professional.emailVerified}">
@@ -128,7 +241,10 @@
                         </c:if>
 
                     </div>
-
+                </div>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </div>
         </main>

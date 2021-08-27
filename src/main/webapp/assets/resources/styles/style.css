@@ -316,6 +316,12 @@ input[type=range]::-webkit-slider-runnable-track{
   border: #3f51b5 10px solid;
   color: white;
 }
+
+.card-candidate  .title-card-resquest p{
+  padding: 0 15px;
+  text-transform: uppercase;
+}
+
 .card-resquest{
   padding: 0;
   border: #3f51b5 10px solid;
