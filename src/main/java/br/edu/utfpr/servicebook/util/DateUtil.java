@@ -4,14 +4,13 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.Period;
+import java.time.*;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
 
 import static java.time.DayOfWeek.SUNDAY;
 import static java.time.temporal.TemporalAdjusters.nextOrSame;
@@ -23,10 +22,24 @@ public class DateUtil {
     public static final String DATETIME_PATTERN="yyyy-MM-dd HH:mm:ss";
     public static final String DATE_PATTERN="yyyy-MM-dd";
 
-    /**
-     * Retorna o dia de hoje
-     * @return
-     */
+    private static final SimpleDateFormat dateFormatDefault = new SimpleDateFormat("yyyy/MM/dd");
+
+    public static LocalDate toLocalDate(Date date){
+        return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    public static Long getDifferenceInDays (Date firstDate, Date secondDate){
+         firstDate = new Date(dateFormatDefault.format(firstDate));
+         secondDate = new Date(dateFormatDefault.format(secondDate));
+
+        long diff = secondDate.getTime() - firstDate.getTime();
+        TimeUnit timeUnit = TimeUnit.DAYS;
+
+        long differenceInDays = timeUnit.convert(diff, TimeUnit.MILLISECONDS);
+
+        return differenceInDays;
+    }
+
     public static LocalDate getToday(){
         return LocalDate.now();
     }

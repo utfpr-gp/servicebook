@@ -1,30 +1,25 @@
 package br.edu.utfpr.servicebook.model.dto;
 
-        import br.edu.utfpr.servicebook.model.entity.JobRequest;
-        import br.edu.utfpr.servicebook.model.entity.Professional;
-        import lombok.AllArgsConstructor;
-        import lombok.Data;
-        import lombok.NoArgsConstructor;
-        import lombok.ToString;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-        import java.io.Serializable;
+import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class JobRequestFullDTO implements Serializable {
+
     private Long id;
-
+    private ExpertiseMinDTO expertise;
     private String dateCreated;
-
+    private ClientMinDTO client;
     private String dateExpired;
-
-    public String status;
-
+    private Integer quantityCandidatorsMax;
     private String description;
-
+    private Long totalCandidates;
+    private String textualDate;
     private Long amountOfCandidates;
-
 
 }

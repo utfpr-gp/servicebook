@@ -9,8 +9,9 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExpertiseMinDTO implements Serializable {
+public class AddressMinDTO implements Serializable {
 
-    private String name;
+    private String neighborhood;
+    private CityMinDTO city;
 
 }

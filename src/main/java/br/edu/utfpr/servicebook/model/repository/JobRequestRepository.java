@@ -1,16 +1,12 @@
 package br.edu.utfpr.servicebook.model.repository;
 
-import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.Client;
-import br.edu.utfpr.servicebook.model.entity.JobRequest;
-import br.edu.utfpr.servicebook.model.entity.Professional;
+import br.edu.utfpr.servicebook.model.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
@@ -96,6 +92,16 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
     List<JobRequest> findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status status, Expertise expertise, Professional professional);
 
     /**
+     * Retorna uma lista de requisições de um determinado Status e Especialidade que ainda não tiveram candidaturas ou
+     * que um determinado profissional ainda não se candidatou.
+     * @param status
+     * @param expertise
+     * @param professional
+     * @return
+     */
+    Page<JobRequest> findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status status, Expertise expertise, Professional professional, Pageable pageable);
+
+    /**
      * Retorna uma lista de requisições de um determinado Status e todas especialidades que ainda não tiveram candidaturas ou
      * que um determinado profissional ainda não se candidatou.
      * @param status
@@ -123,6 +129,10 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
      * @return
      */
     List<JobRequest> findByStatusAndExpertiseAndJobContracted_Professional(JobRequest.Status status, Expertise expertise, Professional professional);
+
+    Page<JobRequest> findByStatusAndJobContracted_Professional(JobRequest.Status status, Professional professional, Pageable pageable);
+
+    Page<JobRequest> findByStatusAndExpertiseAndJobContracted_Professional(JobRequest.Status status, Expertise expertise, Professional professional, Pageable pageable);
 
     List<JobRequest> findByClientOrderByDateCreatedDesc(Client client);
 

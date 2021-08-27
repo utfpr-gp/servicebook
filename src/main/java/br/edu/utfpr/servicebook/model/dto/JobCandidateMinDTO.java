@@ -9,8 +9,10 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExpertiseMinDTO implements Serializable {
+public class JobCandidateMinDTO implements Serializable {
 
-    private String name;
+    private Long id;
+    private String date;
+    private JobRequestFullDTO jobRequest;
 
 }

@@ -2,7 +2,10 @@ package br.edu.utfpr.servicebook.model.repository;
 
 import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.JobContracted;
+import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.entity.Professional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -65,5 +68,9 @@ public interface JobContractedRepository extends JpaRepository<JobContracted, Lo
      * @return Optional<Long>
      */
     Optional<Long> countCommentsByProfessionalAndJobRequest_Expertise(Professional professional, Expertise expertise);
+
+    Page<JobContracted> findByJobRequest_StatusAndProfessional(JobRequest.Status status, Professional professional, Pageable pageable);
+
+    Page<JobContracted> findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status status, Expertise expertise, Professional professional, Pageable pageable);
 
 }
