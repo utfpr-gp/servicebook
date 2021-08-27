@@ -1,11 +1,8 @@
 package br.edu.utfpr.servicebook.controller;
 
-import br.edu.utfpr.servicebook.model.dto.CityDTO;
-import br.edu.utfpr.servicebook.model.dto.ClientDTO;
-import br.edu.utfpr.servicebook.model.dto.JobRequestMinDTO;
-import br.edu.utfpr.servicebook.model.entity.JobRequest;
-import br.edu.utfpr.servicebook.model.mapper.ClientMapper;
-import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
+import br.edu.utfpr.servicebook.model.dto.*;
+import br.edu.utfpr.servicebook.model.entity.*;
+import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import org.slf4j.Logger;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import br.edu.utfpr.servicebook.model.entity.Client;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -39,16 +35,29 @@ public class ClientController {
     @Autowired
     private ClientMapper clientMapper;
 
+    @Autowired
+    private JobCandidateService jobCandidateService;
 
     @Autowired
     private JobRequestService jobRequestService;
 
     @Autowired
-    private JobCandidateService jobCandidateService;
+    private JobCandidateMapper jobCandidateMapper;
 
     @Autowired
     private JobRequestMapper jobRequestMapper;
 
+    @Autowired
+    private ExpertiseService expertiseService;
+
+    @Autowired
+    private ExpertiseMapper expertiseMapper;
+
+    @Autowired
+    private ProfessionalService professionalService;
+
+    @Autowired
+    private ProfessionalMapper professionalMapper;
     @GetMapping
     public ModelAndView show() throws Exception {
         ModelAndView mv = new ModelAndView("client/my-requests");
@@ -79,7 +88,6 @@ public class ClientController {
 
         return mv;
     }
-
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
@@ -109,6 +117,49 @@ public class ClientController {
 
     }
 
+    @GetMapping("/{id}")
+    public ModelAndView showDetailsRequest(@PathVariable Optional<Long> id) throws Exception {
+        ModelAndView mv = new ModelAndView("client/details-request");
+
+        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+
+        if (!client.isPresent()) {
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+        ClientDTO clientDTO = clientMapper.toDto(client.get());
+        mv.addObject("client", clientDTO);
+
+        Optional<JobRequest> job = jobRequestService.findById(id.get());
+
+        if (!job.isPresent()) {
+            throw new EntityNotFoundException("Solicitação de serviço não encontrado. Por favor, tente novamente.");
+        }
+
+        JobRequestFullDTO jobDTO = jobRequestMapper.toFullDto(job.get());
+        mv.addObject("jobRequest", jobDTO);
+
+        Long expertiseId = job.get().getExpertise().getId();
+
+        Optional<Expertise> expertise = expertiseService.findById(expertiseId);
+
+        if (!expertise.isPresent()) {
+            throw new EntityNotFoundException("A especialidade não foi encontrada. Por favor, tente novamente.");
+        }
+
+        ExpertiseMinDTO expertiseDTO = expertiseMapper.toMinDto(expertise.get());
+        mv.addObject("expertise", expertiseDTO);
+
+        List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequest(job.get());
+
+        List<JobCandidateDTO> jobCandidatesDTOs = jobCandidates.stream()
+                .map(candidate -> jobCandidateMapper.toDto(candidate))
+                .collect(Collectors.toList());
+
+        mv.addObject("candidates", jobCandidatesDTOs);
+
+
+        return mv;
+    }
 }
 
 

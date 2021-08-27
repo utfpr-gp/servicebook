@@ -17,7 +17,7 @@ import java.util.Date;
 @Table(name = "job_candidates")
 @NoArgsConstructor
 @Entity
-public class JobCandidate {
+public class JobCandidate  {
 
 	private static final long serialVersionUID = 1L; 
 

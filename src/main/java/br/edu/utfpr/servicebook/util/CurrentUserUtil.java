@@ -9,4 +9,12 @@ public class CurrentUserUtil {
 
         return user1;
     }
+
+    public static String getCurrentClientUser(){
+
+        String clientUser = "cliente1@gmail.com";
+
+        return clientUser;
+    }
+
 }
