@@ -121,11 +121,13 @@ public class ClientController {
     public ModelAndView showDetailsRequest(@PathVariable Optional<Long> id) throws Exception {
         ModelAndView mv = new ModelAndView("client/details-request");
 
-        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
 
         if (!client.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
+        ClientDTO clientDTO = clientMapper.toDto(client.get());
+        mv.addObject("client", clientDTO);
 
         Optional<JobRequest> job = jobRequestService.findById(id.get());
 
@@ -138,13 +140,13 @@ public class ClientController {
 
         Long expertiseId = job.get().getExpertise().getId();
 
-        Optional<Expertise> Expertise = expertiseService.findById(expertiseId);
+        Optional<Expertise> expertise = expertiseService.findById(expertiseId);
 
-        if (!Expertise.isPresent()) {
+        if (!expertise.isPresent()) {
             throw new EntityNotFoundException("A especialidade não foi encontrada. Por favor, tente novamente.");
         }
 
-        ExpertiseMinDTO expertiseDTO = expertiseMapper.toMinDto(Expertise.get());
+        ExpertiseMinDTO expertiseDTO = expertiseMapper.toMinDto(expertise.get());
         mv.addObject("expertise", expertiseDTO);
 
         List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequest(job.get());
