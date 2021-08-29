@@ -9,11 +9,10 @@
                 <div class="none-profission center">
                     <i class="material-icons large"> sentiment_dissatisfied </i>
                     <p class="center text-form-dados">
-                        Nenhum pedido para fazer encontrado!
+                        Nenhuma solicitação para fazer encontrada!
+
                     </p>
-                    <p class="center">
-                        Um novo pedido pode chegar aqui a qualquer momento.
-                    </p>
+
                 </div>
             </div>
         </div>
