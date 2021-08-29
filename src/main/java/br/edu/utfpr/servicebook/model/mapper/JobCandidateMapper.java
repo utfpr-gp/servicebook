@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook.model.mapper;
 
 
+import br.edu.utfpr.servicebook.model.dto.JobCandidateDTO;
 import br.edu.utfpr.servicebook.model.dto.JobCandidateMinDTO;
 import br.edu.utfpr.servicebook.model.entity.JobCandidate;
 import br.edu.utfpr.servicebook.util.DateUtil;
