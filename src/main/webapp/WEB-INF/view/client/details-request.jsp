@@ -15,9 +15,9 @@
                                 <div class="col s12 dark-color-text">
                                     <div class="row tooltipped" data-position="bottom"
                                          data-tooltip="${client} estrela (s).">
-                                        <i class="material-icons yellow-text small">star_border</i>
-                                        <i class="material-icons yellow-text small">star_border</i>
-                                        <i class="material-icons yellow-text small">star</i>
+                                        <i class="material-icons dark-color-icon-text small">star</i>
+                                        <i class="material-icons dark-color-icon-text small">star_border</i>
+                                        <i class="material-icons dark-color-icon-text small">star_border</i>
                                     </div>
                                 </div>
                             </div>
@@ -48,7 +48,7 @@
                     </div>
                     <div class="row secondary-background-color no-margin">
                         <div class="col s12">
-                            <h5 class="name-header no-margin center white-text">
+                            <h5 class="name-header client no-margin center white-text">
                                 <strong>${client.name}</strong>
                             </h5>
                         </div>
