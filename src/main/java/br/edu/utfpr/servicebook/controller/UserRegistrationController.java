@@ -7,8 +7,8 @@ import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.model.entity.UserCode;
 import br.edu.utfpr.servicebook.model.mapper.UserCodeMapper;
 import br.edu.utfpr.servicebook.model.mapper.UserMapper;
+import br.edu.utfpr.servicebook.service.AuthenticationCodeGeneratorService;
 import br.edu.utfpr.servicebook.service.EmailSenderService;
-import br.edu.utfpr.servicebook.service.GeneratorUUIDService;
 import br.edu.utfpr.servicebook.service.UserCodeService;
 import br.edu.utfpr.servicebook.service.UserService;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
@@ -52,7 +52,7 @@ public class UserRegistrationController {
     private EmailSenderService emailSenderService;
 
     @Autowired
-    private GeneratorUUIDService generatorUUIDService;
+    private AuthenticationCodeGeneratorService authenticationCodeGeneratorService;
 
     @GetMapping
     public String showUserRegistrationWizard(
@@ -93,8 +93,6 @@ public class UserRegistrationController {
             if (oUser.isPresent()) {
                 errors.rejectValue("email", "error.dto", "Email já cadastrado! Por favor, insira um email não cadastrado.");
             }
-        } else {
-            errors.rejectValue("email", "error.dto", "Email já cadastrado! Por favor, insira o email.");
         }
 
         if (errors.hasErrors()) {
@@ -107,7 +105,7 @@ public class UserRegistrationController {
         Optional<UserCode> oUserCode = userCodeService.findByEmail(dto.getEmail());
 
         if (!oUserCode.isPresent()) {
-            String code = generatorUUIDService.generateUUID();
+            String code = authenticationCodeGeneratorService.generateAuthenticationCode();
 
             UserCodeDTO userCodeDTO = new UserCodeDTO(dto.getEmail(), code);
             UserCode userCode = userCodeMapper.toEntity(userCodeDTO);
@@ -141,19 +139,18 @@ public class UserRegistrationController {
         }
 
         UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class);
+        Optional<UserCode> oUserCode = null;
 
         if (dto.getCode() != null) {
-            Optional<UserCode> oUserCode = userCodeService.findByEmail(sessionDTO.getEmail());
+            oUserCode = userCodeService.findByEmail(sessionDTO.getEmail());
 
-            if (oUserCode.isPresent()) {
-                if (dto.getCode().equals(oUserCode.get().getCode())) {
-                    sessionDTO.setEmailVerified(true);
-                } else {
-                    errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de verificação de email.");
-                }
-            } else {
+            if (!oUserCode.isPresent()) {
                 errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de verificação de email.");
             }
+        }
+
+        if (dto.getCode().equals(oUserCode.get().getCode())) {
+            sessionDTO.setEmailVerified(true);
         } else {
             errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de verificação de email.");
         }
@@ -226,19 +223,18 @@ public class UserRegistrationController {
         }
 
         UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class);
+        Optional<UserCode> oUserCode = null;
 
         if (dto.getCode() != null) {
-            Optional<UserCode> oUserCode = userCodeService.findByEmail(sessionDTO.getEmail());
+            oUserCode = userCodeService.findByEmail(sessionDTO.getEmail());
 
-            if (oUserCode.isPresent()) {
-                if (dto.getCode().equals(oUserCode.get().getCode())) {
-                    sessionDTO.setPhoneVerified(true);
-                } else {
-                    errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de verificação de telefone.");
-                }
-            } else {
+            if (!oUserCode.isPresent()) {
                 errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de verificação de telefone.");
             }
+        }
+
+        if (dto.getCode().equals(oUserCode.get().getCode())) {
+            sessionDTO.setEmailVerified(true);
         } else {
             errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de verificação de telefone.");
         }
