@@ -5,18 +5,12 @@ $(document).ready(function() {
             $('#tab-default').click();
         });
 
-
     $('.tab a').click(function (e) {
         e.preventDefault();
 
         let url = $(this).attr("data-url");
         let href = this.hash;
         window.location.hash = href;
-
-        let urlParams = new URLSearchParams(window.location.search);
-        let id = (urlParams.has('id')) ? urlParams.get('id') : 0;
-        url += '?id=' + id;
-
         $(href).load(url, function (result) {
         });
     });
