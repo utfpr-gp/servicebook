@@ -42,17 +42,17 @@ VALUES ('Industrial', '800', '85053525', 'Avenida Professora Laura Pacheco Basto
 INSERT INTO users
 (cpf, birth_date, email, email_verified, gender, name, phone_number, phone_verified, profile_picture, profile_verified,
  address_id)
-VALUES ('98298864093', '2021-01-01', 'profissional1@gmail.com', 'true', 'MASCULINE', 'Nome do Primeiro Profissional', '42999999991', 'true',
+VALUES ('982.988.640-93', '2021-01-01', 'profissional1@gmail.com', 'true', 'MASCULINE', 'Nome do Primeiro Profissional', '(42) 99999-9991', 'true',
         'https://i.imgur.com/owhNAKK.png', 'true', '1'),
-       ('99804545047', '2021-01-01', 'profissional2@gmail.com', 'true', 'MASCULINE', 'Nome do Segundo Profissional', '42999999992', 'true',
+       ('998.045.450-47', '2021-01-01', 'profissional2@gmail.com', 'true', 'MASCULINE', 'Nome do Segundo Profissional', '(42) 99999-9992', 'true',
         'https://i.imgur.com/sHAg9pz.png', 'true', '1'),
-       ('13021826091', '2021-01-01', 'cliente1@gmail.com', 'true', 'MASCULINE', 'Nome do Primeiro Cliente', '42999999993', 'true',
+       ('130.218.260-91', '2021-01-01', 'cliente1@gmail.com', 'true', 'MASCULINE', 'Nome do Primeiro Cliente', '(42) 99999-9993', 'true',
         'https://i.imgur.com/y9dH2bJ.jpeg', 'true', '1'),
-       ('97316150084', '2021-01-01', 'cliente2@gmail.com', 'true', 'MASCULINE', 'Nome do Segundo Cliente', '42999999994', 'true',
+       ('973.161.500-84', '2021-01-01', 'cliente2@gmail.com', 'true', 'MASCULINE', 'Nome do Segundo Cliente', '(42) 99999-9994', 'true',
         'https://i.imgur.com/owhNAKK.png', 'true', '1'),
-       ('56769063085', '2021-01-01', 'profissional3@gmail.com', 'true', 'MASCULINE', 'Nome do Terceiro Profissional', '42999999995', 'false',
+       ('567.690.630-85', '2021-01-01', 'profissional3@gmail.com', 'true', 'MASCULINE', 'Nome do Terceiro Profissional', '(42) 99999-9995', 'false',
         null, 'false', '1'),
-       ('54922846069', '2021-01-01', 'profissional4@gmail.com', 'true', 'MASCULINE', 'Nome do Quarto Profissional', '42999999996', 'true',
+       ('549.228.460-69', '2021-01-01', 'profissional4@gmail.com', 'true', 'MASCULINE', 'Nome do Quarto Profissional', '(42) 99999-9996', 'true',
         'https://i.imgur.com/owhNAKK.png', 'true', '1');
 
 
