@@ -29,7 +29,6 @@ public class User implements Serializable {
 	private Long id;
 
 	@NonNull
-	@Column(unique = true)
 	private String name;
 
 	@NonNull
