@@ -169,7 +169,6 @@ public class ClientController {
     @GetMapping("/disponiveis")
     public ModelAndView showAvailableJobs(
             HttpServletRequest request,
-            @RequestParam(required = false, defaultValue = "0") Long id,
             @RequestParam(value = "pag", defaultValue = "1") int page,
             @RequestParam(value = "siz", defaultValue = "3") int size,
             @RequestParam(value = "ord", defaultValue = "id") String order,
@@ -186,10 +185,7 @@ public class ClientController {
         Page<JobRequest> jobRequestPage = null;
         List<JobRequestFullDTO> jobRequestFullDTOs = null;
 
-        if (id == 0) {
-            jobRequestPage = jobRequestService.findByStatusAndClient(JobRequest.Status.AVAILABLE, client.get(), pageRequest);
-        }
-
+        jobRequestPage = jobRequestService.findByStatusAndClient(JobRequest.Status.AVAILABLE, client.get(), pageRequest);
 
         jobRequestFullDTOs = jobRequestPage.stream()
                 .map(jobRequest -> {
@@ -214,7 +210,6 @@ public class ClientController {
     @GetMapping("/para-orcamento")
     public ModelAndView showDisputedJobs(
             HttpServletRequest request,
-            @RequestParam(required = false, defaultValue = "0") Long id,
             @RequestParam(value = "pag", defaultValue = "1") int page,
             @RequestParam(value = "siz", defaultValue = "3") int size,
             @RequestParam(value = "ord", defaultValue = "id") String order,
@@ -231,9 +226,7 @@ public class ClientController {
         Page<JobCandidate> jobCandidatePage = null;
         List<JobCandidateMinDTO> jobCandidateDTOs = null;
 
-        if (id == 0) {
-            jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.AVAILABLE, client.get(),pageRequest);
-        }
+        jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.BUDGET, client.get(),pageRequest);
 
         jobCandidateDTOs = jobCandidatePage.stream()
                 .map(jobCandidate -> {
@@ -258,7 +251,6 @@ public class ClientController {
     @GetMapping("/para-fazer")
     public ModelAndView showTodoJobs(
             HttpServletRequest request,
-            @RequestParam(required = false, defaultValue = "0") Long id,
             @RequestParam(value = "pag", defaultValue = "1") int page,
             @RequestParam(value = "siz", defaultValue = "3") int size,
             @RequestParam(value = "ord", defaultValue = "id") String order,
@@ -275,11 +267,7 @@ public class ClientController {
         Page<JobCandidate> jobCandidatePage = null;
         List<JobCandidateMinDTO> jobCandidateDTOs = null;
 
-
-        if (id == 0) {
-            jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.TO_DO, client.get(),pageRequest);
-
-        }
+         jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.TO_DO, client.get(),pageRequest);
 
         jobCandidateDTOs = jobCandidatePage.stream()
                 .map(jobCandidate -> {
@@ -304,7 +292,6 @@ public class ClientController {
     @GetMapping("/executados")
     public ModelAndView showJobsPerformed(
             HttpServletRequest request,
-            @RequestParam(required = false, defaultValue = "0") Long id,
             @RequestParam(value = "pag", defaultValue = "1") int page,
             @RequestParam(value = "siz", defaultValue = "3") int size,
             @RequestParam(value = "ord", defaultValue = "id") String order,
@@ -321,10 +308,7 @@ public class ClientController {
         Page<JobContracted> jobContractedPage = null;
         List<JobContractedFullDTO> jobContractedDTOs = null;
 
-        if (id == 0) {
-            jobContractedPage = jobContractedService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.CLOSED, client.get(), pageRequest);
-        }
-
+        jobContractedPage = jobContractedService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.CLOSED, client.get(), pageRequest);
 
         jobContractedDTOs = jobContractedPage.stream()
                 .map(jobContracted -> {
