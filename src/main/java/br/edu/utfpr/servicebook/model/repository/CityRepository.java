@@ -11,4 +11,7 @@ import java.util.Optional;
 public interface CityRepository extends JpaRepository<City, Long> {
     @Query("SELECT c FROM City c WHERE c.name = :name AND c.state = :state")
     Optional<City> findByNameAndState(@Param("name") String name, @Param("state") State state);
+
+    Optional<City> findByName(String name);
+
 }
