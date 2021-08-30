@@ -77,3 +77,11 @@
 
     </jsp:body>
 </t:visitor>
+
+<script src="assets/libraries/jquery.mask.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#cpf').mask('000.000.000-00', {reverse: true});
+    });
+</script>
