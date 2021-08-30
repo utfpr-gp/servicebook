@@ -54,7 +54,7 @@
                                 <i class="material-icons small dark-color-text">access_time</i>
                             </p>
                             <p class="center text-form-dados primary-color-text">
-                                    ${job.jobRequest.textualDate}
+                                   Concluído: ${job.jobRequest.dateExpired}
                             </p>
                         </div>
                     </div>
@@ -78,7 +78,7 @@
                         <div class="row no-margin center">
                             <div class="col l2 offset-l8 spacing-buttons center">
                                 <div class="center">
-                                    <a href="#modal-delete" data-url="${pageContext.request.contextPath}/minha-conta/meus-pedidos/${job.id}" data-name="${job.description}" class="waves-effect waves-light btn modal-trigger">Excluir</a>                                                        </div>
+                                    <a href="#modal-delete" data-url="${pageContext.request.contextPath}/minha-conta/meus-pedidos/${job.id}" data-name="${job.jobRequest.description}" class="waves-effect waves-light btn modal-trigger">Excluir</a>                                                        </div>
                             </div>
                             <div class="col l2 spacing-buttons center">
                                 <div class="center">

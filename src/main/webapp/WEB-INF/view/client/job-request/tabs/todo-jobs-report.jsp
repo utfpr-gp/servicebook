@@ -55,7 +55,7 @@
                                 <i class="material-icons small dark-color-text">access_time</i>
                             </p>
                             <p class="center text-form-dados primary-color-text">
-                                    ${job.jobRequest.textualDate}
+                                Solicitado: ${job.jobRequest.dateCreated}
                             </p>
                         </div>
                     </div>
