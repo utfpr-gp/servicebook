@@ -41,7 +41,8 @@
                         <form method="post" action="cadastrar-se/passo-3">
                             <div class="row center spacing-buttons">
                                 <div class="input-field col s12 l6 offset-l3 spacing-buttons">
-                                    <input id="phoneNumber" name="phoneNumber" type="text" value="${dto.phoneNumber}" class="validate">
+                                    <input id="phoneNumber" name="phoneNumber" type="text" value="${dto.phoneNumber}"
+                                           class="validate">
                                     <label for="phoneNumber">Telefone</label>
                                 </div>
                             </div>
@@ -66,3 +67,11 @@
 
     </jsp:body>
 </t:visitor>
+
+<script src="assets/libraries/jquery.mask.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#cpf').mask('000.000.000-00', {reverse: true});
+    });
+</script>
