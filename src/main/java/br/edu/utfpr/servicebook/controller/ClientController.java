@@ -1,22 +1,26 @@
 package br.edu.utfpr.servicebook.controller;
 
+import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
+import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
+import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -54,15 +58,16 @@ public class ClientController {
     private ExpertiseMapper expertiseMapper;
 
     @Autowired
-    private ProfessionalService professionalService;
+    private JobContractedService jobContractedService;
 
     @Autowired
-    private ProfessionalMapper professionalMapper;
+    private JobContractedMapper jobContractedMapper;
+
     @GetMapping
     public ModelAndView show() throws Exception {
         ModelAndView mv = new ModelAndView("client/my-requests");
 
-        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
 
         if (!client.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -91,7 +96,7 @@ public class ClientController {
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
-        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
 
         if (!client.isPresent()) {
             throw new IOException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -160,6 +165,173 @@ public class ClientController {
 
         return mv;
     }
+
+    @GetMapping("/disponiveis")
+    public ModelAndView showAvailableJobs(
+            HttpServletRequest request,
+            @RequestParam(value = "pag", defaultValue = "1") int page,
+            @RequestParam(value = "siz", defaultValue = "3") int size,
+            @RequestParam(value = "ord", defaultValue = "id") String order,
+            @RequestParam(value = "dir", defaultValue = "ASC") String direction
+    ) throws Exception {
+
+        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+
+        if (!client.isPresent()) {
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateExpired").ascending());
+        Page<JobRequest> jobRequestPage = null;
+        List<JobRequestFullDTO> jobRequestFullDTOs = null;
+
+        jobRequestPage = jobRequestService.findByStatusAndClient(JobRequest.Status.AVAILABLE, client.get(), pageRequest);
+
+        jobRequestFullDTOs = jobRequestPage.stream()
+                .map(jobRequest -> {
+                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobRequest);
+
+                    if (totalCandidates.isPresent()) {
+                        return jobRequestMapper.toFullDto(jobRequest, totalCandidates);
+                    }
+
+                    return jobRequestMapper.toFullDto(jobRequest, Optional.ofNullable(0L));
+                }).collect(Collectors.toList());
+
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/meus-pedidos/disponiveis");
+
+        ModelAndView mv = new ModelAndView("client/job-request/tabs/available-jobs-report");
+        mv.addObject("pagination", paginationDTO);
+        mv.addObject("jobs", jobRequestFullDTOs);
+
+        return mv;
+    }
+
+    @GetMapping("/para-orcamento")
+    public ModelAndView showDisputedJobs(
+            HttpServletRequest request,
+            @RequestParam(value = "pag", defaultValue = "1") int page,
+            @RequestParam(value = "siz", defaultValue = "3") int size,
+            @RequestParam(value = "ord", defaultValue = "id") String order,
+            @RequestParam(value = "dir", defaultValue = "ASC") String direction
+    ) throws Exception {
+
+        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+
+        if (!client.isPresent()) {
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
+        Page<JobCandidate> jobCandidatePage = null;
+        List<JobCandidateMinDTO> jobCandidateDTOs = null;
+
+        jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.BUDGET, client.get(),pageRequest);
+
+        jobCandidateDTOs = jobCandidatePage.stream()
+                .map(jobCandidate -> {
+                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobCandidate.getJobRequest());
+
+                    if (totalCandidates.isPresent()) {
+                        return jobCandidateMapper.toMinDto(jobCandidate, totalCandidates);
+                    }
+
+                    return jobCandidateMapper.toMinDto(jobCandidate, Optional.ofNullable(0L));
+                }).collect(Collectors.toList());
+
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/meus-pedidos/em-orcamento");
+
+        ModelAndView mv = new ModelAndView("client/job-request/tabs/disputed-jobs-report");
+        mv.addObject("pagination", paginationDTO);
+        mv.addObject("jobs", jobCandidateDTOs);
+
+        return mv;
+    }
+
+    @GetMapping("/para-fazer")
+    public ModelAndView showTodoJobs(
+            HttpServletRequest request,
+            @RequestParam(value = "pag", defaultValue = "1") int page,
+            @RequestParam(value = "siz", defaultValue = "3") int size,
+            @RequestParam(value = "ord", defaultValue = "id") String order,
+            @RequestParam(value = "dir", defaultValue = "ASC") String direction
+    ) throws Exception {
+
+        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+
+        if (!client.isPresent()) {
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
+        Page<JobCandidate> jobCandidatePage = null;
+        List<JobCandidateMinDTO> jobCandidateDTOs = null;
+
+         jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.TO_DO, client.get(),pageRequest);
+
+        jobCandidateDTOs = jobCandidatePage.stream()
+                .map(jobCandidate -> {
+                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobCandidate.getJobRequest());
+
+                    if (totalCandidates.isPresent()) {
+                        return jobCandidateMapper.toMinDto(jobCandidate, totalCandidates);
+                    }
+
+                    return jobCandidateMapper.toMinDto(jobCandidate, Optional.ofNullable(0L));
+                }).collect(Collectors.toList());
+
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/meus-pedidos/para-fazer");
+
+        ModelAndView mv = new ModelAndView("client/job-request/tabs/todo-jobs-report");
+        mv.addObject("pagination", paginationDTO);
+        mv.addObject("jobs", jobCandidateDTOs);
+
+        return mv;
+    }
+
+    @GetMapping("/executados")
+    public ModelAndView showJobsPerformed(
+            HttpServletRequest request,
+            @RequestParam(value = "pag", defaultValue = "1") int page,
+            @RequestParam(value = "siz", defaultValue = "3") int size,
+            @RequestParam(value = "ord", defaultValue = "id") String order,
+            @RequestParam(value = "dir", defaultValue = "ASC") String direction
+    ) throws Exception {
+
+        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+
+        if (!client.isPresent()) {
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("id").descending());
+        Page<JobContracted> jobContractedPage = null;
+        List<JobContractedFullDTO> jobContractedDTOs = null;
+
+        jobContractedPage = jobContractedService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.CLOSED, client.get(), pageRequest);
+
+        jobContractedDTOs = jobContractedPage.stream()
+                .map(jobContracted -> {
+                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobContracted.getJobRequest());
+
+                    if (totalCandidates.isPresent()) {
+                        return jobContractedMapper.toFullDto(jobContracted, totalCandidates);
+                    }
+
+                    return jobContractedMapper.toFullDto(jobContracted, Optional.ofNullable(0L));
+                })
+                .collect(Collectors.toList());
+
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobContractedPage, "/minha-conta/meus-pedidos/executados");
+
+        ModelAndView mv = new ModelAndView("client/job-request/tabs/executed-jobs-report");
+
+        mv.addObject("pagination", paginationDTO);
+        mv.addObject("jobs", jobContractedDTOs);
+
+        return mv;
+    }
+
 }
 
 

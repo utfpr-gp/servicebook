@@ -65,9 +65,9 @@ VALUES ('111111111', 'Descrição profissional 1', '5', '1', '1'),
 
 
 
-INSERT INTO clients (usuario_id)
-VALUES ('3'),
-       ('4');
+INSERT INTO clients (usuario_id,rating)
+VALUES ('3','1'),
+       ('4','5');
 
 
 

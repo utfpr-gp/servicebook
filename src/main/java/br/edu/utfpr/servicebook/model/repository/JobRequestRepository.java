@@ -136,4 +136,6 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
 
     List<JobRequest> findByClientOrderByDateCreatedDesc(Client client);
 
+    Page<JobRequest> findByStatusAndClient(JobRequest.Status status, Client client, Pageable pageable);
+
 }

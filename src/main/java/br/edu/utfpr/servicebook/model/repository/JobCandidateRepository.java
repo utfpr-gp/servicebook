@@ -4,8 +4,6 @@ import br.edu.utfpr.servicebook.model.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -70,5 +68,7 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
     Optional<Long> countByJobRequest(JobRequest jobRequest);
 
     List<JobCandidate> findByJobRequest(JobRequest jobRequest);
+
+    Page<JobCandidate> findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status status, Client client, Pageable pageable);
 
 }
