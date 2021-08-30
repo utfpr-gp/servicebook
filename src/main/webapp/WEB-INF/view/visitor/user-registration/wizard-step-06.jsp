@@ -96,3 +96,8 @@
 </t:visitor>
 
 <script src="assets/resources/scripts/cep-user-registration.js"></script>
+<script src="assets/libraries/jquery.mask.js"></script>
+
+<script>
+    $('#postalCode').mask('00000-000');
+</script>
