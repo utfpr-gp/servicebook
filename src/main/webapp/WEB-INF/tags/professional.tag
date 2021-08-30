@@ -1,5 +1,4 @@
-<%@tag description="Template inicial" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@tag description="Servicebook - Professional template" pageEncoding="UTF-8" %>
 <%@attribute name="title" %>
 
 <!DOCTYPE html>
@@ -13,7 +12,8 @@
 
     <link rel="shortcut icon" href="assets/resources/images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="assets/libraries/materialize/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="assets/libraries/materialize/css/materialize.min.css" type="text/css" rel="stylesheet"
+          media="screen,projection"/>
     <link href="assets/resources/styles/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 <body>
@@ -34,15 +34,16 @@
         </a>
 
         <ul class="right hide-on-med-and-down">
-            <li><a class="menu-itens dropdown-trigger" href="#!" data-target="dropdown1">ORDEM DE SERVIÇOS<i class="material-icons right">arrow_drop_down</i></a></li>
-            <li><a class="menu-itens" href="minha-conta">MINHA CONTA</a></li>
+            <li><a class="menu-itens dropdown-trigger" href="#!" data-target="dropdown1">ORDEM DE SERVIÇOS<i
+                    class="material-icons right">arrow_drop_down</i></a></li>
+            <li><a class="menu-itens" href="minha-conta/profissional">MINHA CONTA</a></li>
             <li><a class="menu-itens" href="#!">SAIR</a></li>
         </ul>
 
         <ul id="nav-mobile" class="sidenav">
             <li><a class="menu-itens" href="#!">ORDEM DE SERVIÇO</a></li>
             <li><a class="menu-itens" href="#!">MINHAS ORDEM</a></li>
-            <li><a class="menu-itens" href="minha-conta">MINHA CONTA</a></li>
+            <li><a class="menu-itens" href="minha-conta/profissional">MINHA CONTA</a></li>
             <li><a class="menu-itens" href="#!">SAIR</a></li>
         </ul>
 
