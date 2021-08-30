@@ -7,7 +7,7 @@ import java.security.SecureRandom;
 @Service
 public class AuthenticationCodeGeneratorService {
 
-    public String generateCode() {
+    public String generateAuthenticationCode() {
         SecureRandom secureRandom = new SecureRandom();
         String code = "";
 
