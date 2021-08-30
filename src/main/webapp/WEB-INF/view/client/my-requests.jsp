@@ -10,14 +10,14 @@
             <div class="row">
                 <div class="col s12 l3 hide-on-med-and-down no-padding" id="area-perfil">
                     <div class="row primary-background-color area-perfil no-margin">
-                        <div class="col s12 icons-area-request">
-                            <div class="row center">
+                        <div class="col s12 icons-area-request client">
+                            <div class="row center no-margin">
                                 <div class="col s12 dark-color-text">
                                     <div class="row tooltipped" data-position="bottom"
                                          data-tooltip="${client} estrela (s).">
-                                        <i class="material-icons yellow-text small">star_border</i>
-                                        <i class="material-icons yellow-text small">star_border</i>
-                                        <i class="material-icons yellow-text small">star</i>
+                                        <i class="material-icons dark-color-icon-text small">star</i>
+                                        <i class="material-icons dark-color-icon-text small">star_border</i>
+                                        <i class="material-icons dark-color-icon-text small">star_border</i>
                                     </div>
                                 </div>
                             </div>
@@ -48,7 +48,7 @@
                     </div>
                     <div class="row secondary-background-color no-margin">
                         <div class="col s12">
-                            <h5 class="name-header no-margin center white-text">
+                            <h5 class="name-header client no-margin center white-text">
                                 <strong>${client.name}</strong>
                             </h5>
                         </div>
@@ -115,19 +115,13 @@
                        class="hide-on-large-only show-area-perfil waves-effect waves-light btn btn-floating grey darken-3 z-depth-A">
                         <i class="material-icons">compare_arrows</i>
                     </a>
-
+                    <div class="container">
                     <div class="row">
                             <div class="col s12">
                                 <h2 class="secondary-color-text">Minhas Solicitações</h2>
-                                <blockquote class="light-blue lighten-5 info-headers">
-                                    <p>
-                                        Abaixo você encontra as solicitações de serviços disponíveis no momento. Clique nos quadros para mais
-                                        detalhes.
-                                    </p>
-                                </blockquote>
                             </div>
 
-                        <div class="container center">
+                        <div class="center">
                             <a href="minha-conta/meus-pedidos" class="waves-effect waves-light btn"><i class="material-icons right">sync</i>ATUALIZAR</a>
                         </div>
 
@@ -154,18 +148,20 @@
                                 </a>
                             </li>
                         </ul>
-                        <div id="disponiveis" class="col s12">
+
+                        <div id="disponiveis" class="col s12 no-padding">
 
                         </div>
-                        <div id="paraOrcamento" class="col s12">
+                        <div id="paraOrcamento" class="col s12 no-padding">
 
                         </div>
-                        <div id="paraFazer" class="col s12">
+                        <div id="paraFazer" class="col s12 no-padding">
 
                         </div>
-                        <div id="executados" class="col s12">
+                        <div id="executados" class="col s12 no-padding">
                     </div>
                 </div>
+                    </div>
             </div>
             </div>
             <div id="modal-delete" class="modal">
