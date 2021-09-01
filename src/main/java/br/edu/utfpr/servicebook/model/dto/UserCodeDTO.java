@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 
@@ -17,7 +16,6 @@ public class UserCodeDTO implements Serializable {
 
     private String email;
 
-    @NotBlank(message = "Código inválido! Por favor, insira o código de autenticação.", groups = UserCodeDTO.RequestUserCodeInfoGroupValidation.class)
     @Pattern(regexp = "^([0-9]{6})$", message = "Código inválido! Por favor, insira o código de autenticação.", groups = UserCodeDTO.RequestUserCodeInfoGroupValidation.class)
     private String code;
 
