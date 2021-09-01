@@ -14,8 +14,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User save(User entity) {
-        return userRepository.save(entity);
+    public void save(User entity) {
+        userRepository.save(entity);
     }
 
     public void delete(Long id) {
@@ -42,7 +42,7 @@ public class UserService {
         return this.userRepository.findByPhoneNumber(phoneNumber);
     }
 
-    public Optional<User> findyByCpf(String cpf) {
+    public Optional<User> findByCpf(String cpf) {
         return this.userRepository.findByCpf(cpf);
     }
 
