@@ -1,22 +1,20 @@
 package br.edu.utfpr.servicebook.controller;
 
-import br.edu.utfpr.servicebook.model.dto.AddressDTO;
-import br.edu.utfpr.servicebook.model.dto.UserCodeDTO;
-import br.edu.utfpr.servicebook.model.dto.UserDTO;
+import br.edu.utfpr.servicebook.model.dto.*;
+import br.edu.utfpr.servicebook.model.entity.City;
 import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.model.entity.UserCode;
+import br.edu.utfpr.servicebook.model.mapper.CityMapper;
 import br.edu.utfpr.servicebook.model.mapper.UserCodeMapper;
 import br.edu.utfpr.servicebook.model.mapper.UserMapper;
-import br.edu.utfpr.servicebook.service.AuthenticationCodeGeneratorService;
-import br.edu.utfpr.servicebook.service.EmailSenderService;
-import br.edu.utfpr.servicebook.service.UserCodeService;
-import br.edu.utfpr.servicebook.service.UserService;
+import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.SmartValidator;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
@@ -49,10 +47,40 @@ public class UserRegistrationController {
     private UserCodeMapper userCodeMapper;
 
     @Autowired
+    private CityService cityService;
+
+    @Autowired
+    private CityMapper cityMapper;
+
+    @Autowired
     private EmailSenderService emailSenderService;
 
     @Autowired
+    private SmartValidator validator;
+
+    @Autowired
     private AuthenticationCodeGeneratorService authenticationCodeGeneratorService;
+
+    private String userRegistrationErrorForwarding(String step, UserDTO dto, Model model, BindingResult errors) {
+        model.addAttribute("dto", dto);
+        model.addAttribute("errors", errors.getAllErrors());
+
+        return "visitor/user-registration/wizard-step-0" + step;
+    }
+
+    private String userCodeErrorForwarding(String step, UserCodeDTO dto, Model model, BindingResult errors) {
+        model.addAttribute("dto", dto);
+        model.addAttribute("errors", errors.getAllErrors());
+
+        return "visitor/user-registration/wizard-step-0" + step;
+    }
+
+    private String userAddressRegistrationErrorForwarding(String step, AddressDTO dto, Model model, BindingResult errors) {
+        model.addAttribute("dto", dto);
+        model.addAttribute("errors", errors.getAllErrors());
+
+        return "visitor/user-registration/wizard-step-0" + step;
+    }
 
     @GetMapping
     public String showUserRegistrationWizard(
@@ -81,25 +109,17 @@ public class UserRegistrationController {
     ) throws MessagingException {
 
         if (errors.hasErrors()) {
-            model.addAttribute("dto", dto);
-            model.addAttribute("errors", errors.getAllErrors());
-
-            return "visitor/user-registration/wizard-step-01";
+            return this.userRegistrationErrorForwarding("1", dto, model, errors);
         }
 
-        if (dto.getEmail() != null) {
-            Optional<User> oUser = userService.findByEmail(dto.getEmail());
+        Optional<User> oUser = userService.findByEmail(dto.getEmail());
 
-            if (oUser.isPresent()) {
-                errors.rejectValue("email", "error.dto", "Email já cadastrado! Por favor, insira um email não cadastrado.");
-            }
+        if (oUser.isPresent()) {
+            errors.rejectValue("email", "error.dto", "Email já cadastrado! Por favor, insira um email não cadastrado.");
         }
 
         if (errors.hasErrors()) {
-            model.addAttribute("dto", dto);
-            model.addAttribute("errors", errors.getAllErrors());
-
-            return "visitor/user-registration/wizard-step-01";
+            return this.userRegistrationErrorForwarding("1", dto, model, errors);
         }
 
         Optional<UserCode> oUserCode = userCodeService.findByEmail(dto.getEmail());
@@ -132,35 +152,29 @@ public class UserRegistrationController {
     ) {
 
         if (errors.hasErrors()) {
-            model.addAttribute("dto", dto);
-            model.addAttribute("errors", errors.getAllErrors());
-
-            return "visitor/user-registration/wizard-step-02";
+            return this.userCodeErrorForwarding("2", dto, model, errors);
         }
 
         UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class);
-        Optional<UserCode> oUserCode = null;
+        Optional<UserCode> oUserCode = userCodeService.findByEmail(sessionDTO.getEmail());
 
-        if (dto.getCode() != null) {
-            oUserCode = userCodeService.findByEmail(sessionDTO.getEmail());
-
-            if (!oUserCode.isPresent()) {
-                errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de verificação de email.");
-            }
-        }
-
-        if (dto.getCode().equals(oUserCode.get().getCode())) {
-            sessionDTO.setEmailVerified(true);
-        } else {
-            errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de verificação de email.");
+        if (!oUserCode.isPresent()) {
+            errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de autenticação.");
         }
 
         if (errors.hasErrors()) {
-            model.addAttribute("dto", dto);
-            model.addAttribute("errors", errors.getAllErrors());
-
-            return "visitor/user-registration/wizard-step-02";
+            return this.userCodeErrorForwarding("2", dto, model, errors);
         }
+
+        if (!dto.getCode().equals(oUserCode.get().getCode())) {
+            errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de autenticação.");
+        }
+
+        if (errors.hasErrors()) {
+            return this.userCodeErrorForwarding("2", dto, model, errors);
+        }
+
+        sessionDTO.setEmailVerified(true);
 
         redirectAttributes.addFlashAttribute("msg", "Email verificado com sucesso!");
 
@@ -177,28 +191,20 @@ public class UserRegistrationController {
     ) {
 
         if (errors.hasErrors()) {
-            model.addAttribute("dto", dto);
-            model.addAttribute("errors", errors.getAllErrors());
-
-            return "visitor/user-registration/wizard-step-03";
+            return this.userRegistrationErrorForwarding("3", dto, model, errors);
         }
 
-        if (dto.getPhoneNumber() != null) {
-            Optional<User> oUser = userService.findByPhoneNumber(dto.getPhoneNumber());
+        Optional<User> oUser = userService.findByPhoneNumber(dto.getPhoneNumber());
 
-            if (oUser.isPresent()) {
-                errors.rejectValue("phoneNumber", "error.dto", "Telefone já cadastrado! Por favor, insira um número de telefone não cadastrado.");
-            }
+        if (oUser.isPresent()) {
+            errors.rejectValue("phoneNumber", "error.dto", "Telefone já cadastrado! Por favor, insira um número de telefone não cadastrado.");
         }
 
         if (errors.hasErrors()) {
-            model.addAttribute("dto", dto);
-            model.addAttribute("errors", errors.getAllErrors());
-
-            return "visitor/user-registration/wizard-step-03";
+            return this.userRegistrationErrorForwarding("3", dto, model, errors);
         }
 
-        ///// Enviar código de verificação para telefone.
+        ///// Enviar código de autenticação para telefone.
 
         UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class);
         sessionDTO.setPhoneNumber(dto.getPhoneNumber());
@@ -216,35 +222,29 @@ public class UserRegistrationController {
     ) {
 
         if (errors.hasErrors()) {
-            model.addAttribute("dto", dto);
-            model.addAttribute("errors", errors.getAllErrors());
-
-            return "visitor/user-registration/wizard-step-04";
+            return this.userCodeErrorForwarding("4", dto, model, errors);
         }
 
         UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class);
-        Optional<UserCode> oUserCode = null;
+        Optional<UserCode> oUserCode = userCodeService.findByEmail(sessionDTO.getEmail());
 
-        if (dto.getCode() != null) {
-            oUserCode = userCodeService.findByEmail(sessionDTO.getEmail());
-
-            if (!oUserCode.isPresent()) {
-                errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de verificação de telefone.");
-            }
-        }
-
-        if (dto.getCode().equals(oUserCode.get().getCode())) {
-            sessionDTO.setEmailVerified(true);
-        } else {
-            errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de verificação de telefone.");
+        if (!oUserCode.isPresent()) {
+            errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de autenticação.");
         }
 
         if (errors.hasErrors()) {
-            model.addAttribute("dto", dto);
-            model.addAttribute("errors", errors.getAllErrors());
-
-            return "visitor/user-registration/wizard-step-04";
+            return this.userCodeErrorForwarding("4", dto, model, errors);
         }
+
+        if (!dto.getCode().equals(oUserCode.get().getCode())) {
+            errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de autenticação.");
+        }
+
+        if (errors.hasErrors()) {
+            return this.userCodeErrorForwarding("4", dto, model, errors);
+        }
+
+        sessionDTO.setPhoneVerified(true);
 
         redirectAttributes.addFlashAttribute("msg", "Telefone verificado com sucesso!");
 
@@ -254,45 +254,24 @@ public class UserRegistrationController {
     @PostMapping("/passo-5")
     public String saveUserNameAndCPF(
             HttpSession httpSession,
-            @Validated({
-                    UserDTO.RequestUserNameInfoGroupValidation.class,
-                    UserDTO.RequestUserCPFInfoGroupValidation.class
-            }) UserDTO dto,
+            @Validated(UserDTO.RequestUserNameAndCPFInfoGroupValidation.class) UserDTO dto,
             BindingResult errors,
             RedirectAttributes redirectAttributes,
             Model model
     ) {
 
         if (errors.hasErrors()) {
-            model.addAttribute("dto", dto);
-            model.addAttribute("errors", errors.getAllErrors());
-
-            return "visitor/user-registration/wizard-step-05";
+            return this.userRegistrationErrorForwarding("5", dto, model, errors);
         }
 
-        Optional<User> oUser = null;
+        Optional<User> oUser = userService.findByCpf(dto.getCpf());
 
-        if (dto.getName() != null) {
-            oUser = userService.findByName(dto.getName());
-
-            if (oUser.isPresent()) {
-                errors.rejectValue("name", "error.dto", "Nome já cadastrado! Por favor, insira um nome não cadastrado.");
-            }
-        }
-
-        if (dto.getCpf() != null) {
-            oUser = userService.findyByCpf(dto.getCpf());
-
-            if (oUser.isPresent()) {
-                errors.rejectValue("cpf", "error.dto", "CPF já cadastrado! Por favor, insira um CPF não cadastrado.");
-            }
+        if (oUser.isPresent()) {
+            errors.rejectValue("cpf", "error.dto", "CPF já cadastrado! Por favor, insira um CPF não cadastrado.");
         }
 
         if (errors.hasErrors()) {
-            model.addAttribute("dto", dto);
-            model.addAttribute("errors", errors.getAllErrors());
-
-            return "visitor/user-registration/wizard-step-05";
+            return this.userRegistrationErrorForwarding("5", dto, model, errors);
         }
 
         UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class);
@@ -305,36 +284,38 @@ public class UserRegistrationController {
     @PostMapping("/passo-6")
     public String saveUserAddress(
             HttpSession httpSession,
-            @Validated({
-                    AddressDTO.RequestAddressStreetInfoGroupValidation.class,
-                    AddressDTO.RequestAddressNumberInfoGroupValidation.class,
-                    AddressDTO.RequestAddressPostalCodeInfoGroupValidation.class,
-                    AddressDTO.RequestAddressNeighborhoodInfoGroupValidation.class,
-                    AddressDTO.RequestAddressCityInfoGroupValidation.class,
-                    AddressDTO.RequestAddressStateInfoGroupValidation.class
-            }) AddressDTO dto,
+            @Validated(AddressDTO.RequestUserAddressInfoGroupValidation.class) AddressDTO dto,
             BindingResult errors,
             RedirectAttributes redirectAttributes,
             Model model
     ) {
 
         if (errors.hasErrors()) {
-            model.addAttribute("dto", dto);
-            model.addAttribute("errors", errors.getAllErrors());
-
-            return "visitor/user-registration/wizard-step-06";
+            return this.userAddressRegistrationErrorForwarding("6", dto, model, errors);
         }
 
-        AddressDTO addressDTO = new AddressDTO();
-        addressDTO.setStreet(dto.getStreet());
-        addressDTO.setNumber(dto.getNumber());
-        addressDTO.setPostalCode(dto.getPostalCode());
-        addressDTO.setNeighborhood(dto.getNeighborhood());
+        Optional<City> oCity = cityService.findByName(dto.getCity());
 
-        ///// Adicionar cidade e estado para addressDTO.
+        if (!oCity.isPresent()) {
+            errors.rejectValue("city", "error.dto", "Cidade não cadastrada! Por favor, insira uma cidade cadastrada.");
+        }
+
+        if (errors.hasErrors()) {
+            return this.userAddressRegistrationErrorForwarding("6", dto, model, errors);
+        }
+
+        CityMidDTO cityMidDTO = cityMapper.toMidDto(oCity.get());
+
+        AddressFullDTO addressFullDTO = new AddressFullDTO();
+        addressFullDTO.setStreet(dto.getStreet());
+        addressFullDTO.setNumber(dto.getNumber());
+        addressFullDTO.setPostalCode(dto.getPostalCode());
+        addressFullDTO.setNeighborhood(dto.getNeighborhood());
+        addressFullDTO.setCity(cityMidDTO);
 
         UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class);
-        sessionDTO.setAddress(addressDTO);
+        sessionDTO.setAddress(addressFullDTO);
+        sessionDTO.setProfileVerified(true);
 
         return "redirect:/cadastrar-se?passo=7";
     }
@@ -343,13 +324,24 @@ public class UserRegistrationController {
     public String saveUser(
             HttpSession httpSession,
             UserDTO dto,
-            RedirectAttributes redirectAttributes,
+            BindingResult errors,
             Model model,
+            RedirectAttributes redirectAttributes,
             SessionStatus status
     ) {
 
         UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class);
-        sessionDTO.setProfileVerified(true);
+
+        validator.validate(sessionDTO, errors, new Class[]{
+                UserDTO.RequestUserEmailInfoGroupValidation.class,
+                UserDTO.RequestUserPhoneInfoGroupValidation.class,
+                UserDTO.RequestUserNameAndCPFInfoGroupValidation.class,
+                AddressDTO.RequestUserAddressInfoGroupValidation.class
+        });
+
+        if (errors.hasErrors()) {
+            return this.userRegistrationErrorForwarding("7", dto, model, errors);
+        }
 
         User user = userMapper.toEntity(sessionDTO);
         userService.save(user);
