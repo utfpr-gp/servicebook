@@ -1,9 +1,6 @@
 package br.edu.utfpr.servicebook.service;
 
-import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.JobContracted;
-import br.edu.utfpr.servicebook.model.entity.JobRequest;
-import br.edu.utfpr.servicebook.model.entity.Professional;
+import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.repository.JobContractedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -67,5 +64,9 @@ public class JobContractedService {
     public Page<JobContracted> findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional (JobRequest.Status status, Expertise expertise, Professional professional, Pageable pageable){
         return this.jobContractedRepository.findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(status, expertise, professional, pageable);
     }
+    public Page<JobContracted> findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status status, Client client, Pageable pageable){
+        return this.jobContractedRepository.findByJobRequest_StatusAndJobRequest_Client(status, client, pageable);
+    }
+
 
 }

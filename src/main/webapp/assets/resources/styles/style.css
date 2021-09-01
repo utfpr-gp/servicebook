@@ -400,6 +400,12 @@ footer.page-footer {
   padding: 25px;
 }
 
+.name-header.client{
+  text-transform: uppercase;
+}
+.icons-area-request.client {
+  margin-top: 20px;
+}
 .info-headers{
   padding: 12px;
 }

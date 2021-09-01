@@ -10,14 +10,19 @@
             <div class="row">
                 <div class="col s12 l3 hide-on-med-and-down no-padding" id="area-perfil">
                     <div class="row primary-background-color area-perfil no-margin">
-                        <div class="col s12 icons-area-request">
-                            <div class="row center">
+                        <div class="col s12 icons-area-request client">
+                            <div class="row center no-margin">
                                 <div class="col s12 dark-color-text">
                                     <div class="row tooltipped" data-position="bottom"
-                                         data-tooltip="${client} estrela (s).">
-                                        <i class="material-icons yellow-text small">star_border</i>
-                                        <i class="material-icons yellow-text small">star_border</i>
-                                        <i class="material-icons yellow-text small">star</i>
+                                        data-tooltip="${client.rating} estrela (s).">
+                                        <c:forEach var="star" begin="1" end="5">
+                                            <c:if test="${star <= client.rating}">
+                                                <i class="material-icons dark-color-icon-text small">star</i>
+                                            </c:if>
+                                            <c:if test="${star > client.rating}">
+                                                <i class="material-icons dark-color-icon-text small">star_border</i>
+                                            </c:if>
+                                        </c:forEach>
                                     </div>
                                 </div>
                             </div>
@@ -48,11 +53,12 @@
                     </div>
                     <div class="row secondary-background-color no-margin">
                         <div class="col s12">
-                            <h5 class="name-header no-margin center white-text">
+                            <h5 class="name-header client no-margin center white-text">
                                 <strong>${client.name}</strong>
                             </h5>
                         </div>
                     </div>
+
                     <div class="row primary-background-color no-margin">
                         <div class="col s12">
                             <p class="header-verification tertiary-color-text center">VERIFICAÇÃO DO PERFIL</p>
@@ -114,70 +120,53 @@
                        class="hide-on-large-only show-area-perfil waves-effect waves-light btn btn-floating grey darken-3 z-depth-A">
                         <i class="material-icons">compare_arrows</i>
                     </a>
-
+                    <div class="container">
                     <div class="row">
-                        <div class="container">
-
-                            <c:if test="${empty jobRequests}">
-                                <div class="col s12 center">
-                                    <i class="material-icons large"> sentiment_dissatisfied </i>
-                                    <h2 class="secondary-color-text"> Não há nenhuma solicitação.</h2>
-                                </div>
-                            </c:if>
                             <div class="col s12">
-
-                                <c:if test="${not empty jobRequests}">
+                                <h2 class="secondary-color-text">Minhas Solicitações</h2>
                             </div>
-                            <div class="col s12">
-                                <div class="row">
-                                    <h2 class="secondary-color-text ">Minhas solicitações</h2>
 
-                                    <c:forEach var="jobRequest" items="${jobRequests}">
-                                        <div class="col s12">
-
-                                            <div class="row card-request spacing-standard">
-                                                <div class="col s8 m10 l2 center center-align">
-                                                    <svg style="width:120px;height:120px" viewBox="0 0 24 24">
-                                                        <path class="dark-color-icon" d="M11,2H13V4H13.5A1.5,1.5 0 0,1 15,5.5V9L14.56,9.44L16.2,12.28C17.31,11.19 18,9.68 18,8H20C20,10.42 18.93,12.59 17.23,14.06L20.37,19.5L20.5,21.72L18.63,20.5L15.56,15.17C14.5,15.7 13.28,16 12,16C10.72,16 9.5,15.7 8.44,15.17L5.37,20.5L3.5,21.72L3.63,19.5L9.44,9.44L9,9V5.5A1.5,1.5 0 0,1 10.5,4H11V2M9.44,13.43C10.22,13.8 11.09,14 12,14C12.91,14 13.78,13.8 14.56,13.43L13.1,10.9H13.09C12.47,11.5 11.53,11.5 10.91,10.9H10.9L9.44,13.43M12,6A1,1 0 0,0 11,7A1,1 0 0,0 12,8A1,1 0 0,0 13,7A1,1 0 0,0 12,6Z" />
-                                                    </svg>
-                                                </div>
-                                                <div class="col s4 m2 hide-on-large-only">
-                                                    <div class="center">
-                                                        <div class="badge-requests no-margin right"><span>${jobRequest.amountOfCandidates}</span></div>
-                                                    </div>
-                                                </div>
-                                                <div class="col s12 l8 text-detail-request">
-                                                    <p>${jobRequest.expertiseDTO.name}</p>
-                                                    <p class="truncate">${jobRequest.description}</p>
-                                                    <p>Solicitado: ${jobRequest.dateCreated}</p>
-                                                </div>
-                                                <div class="col s4 l2 hide-on-med-and-down">
-                                                    <div class="center">
-                                                        <div class="badge-requests no-margin right"><span>${jobRequest.amountOfCandidates}</span></div>
-                                                    </div>
-                                                </div>
-                                                <div class="col s12">
-                                                    <div class="row no-margin">
-                                                        <div class="col s6 m6 l2 offset-l8 spacing-buttons center">
-                                                            <div class="center">
-                                                                <a href="#modal-delete" data-url="${pageContext.request.contextPath}/minha-conta/meus-pedidos/${jobRequest.id}" data-name="${jobRequest.description}" class="waves-effect waves-light btn modal-trigger">Excluir</a>                                                        </div>
-                                                        </div>
-                                                        <div class="col s6 m6  l2 spacing-buttons center">
-                                                            <div class="center">
-                                                                <a class="waves-effect waves-light btn" href="minha-conta/meus-pedidos/${jobRequest.id}">Ver</a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </c:forEach>
-                                </div>
-                            </div>
-                            </c:if>
+                        <div class="center">
+                            <a href="minha-conta/meus-pedidos" class="waves-effect waves-light btn"><i class="material-icons right">sync</i>ATUALIZAR</a>
                         </div>
+
+                        <ul class="tabs tabs-fixed-width center">
+                            <li class="tab">
+                                <a id="tab-default" data-url="minha-conta/meus-pedidos/disponiveis"
+                                   href="#disponiveis">
+                                    DISPONÍVEIS
+                                </a>
+                            </li>
+                            <li class="tab">
+                                <a data-url="minha-conta/meus-pedidos/para-orcamento" href="#paraOrcamento">
+                                    PARA ORÇAMENTO
+                                </a>
+                            </li>
+                            <li class="tab">
+                                <a data-url="minha-conta/meus-pedidos/para-fazer" href="#paraFazer">
+                                    PARA FAZER
+                                </a>
+                            </li>
+                            <li class="tab">
+                                <a data-url="minha-conta/meus-pedidos/executados" href="#executados">
+                                    CONCLUÍDOS
+                                </a>
+                            </li>
+                        </ul>
+
+                        <div id="disponiveis" class="col s12 no-padding">
+
+                        </div>
+                        <div id="paraOrcamento" class="col s12 no-padding">
+
+                        </div>
+                        <div id="paraFazer" class="col s12 no-padding">
+
+                        </div>
+                        <div id="executados" class="col s12 no-padding">
                     </div>
                 </div>
+                    </div>
             </div>
             </div>
             <div id="modal-delete" class="modal">

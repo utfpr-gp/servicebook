@@ -65,7 +65,9 @@ public class JobRequestService {
     public Page<JobRequest> findByStatusAndExpertiseAndJobContracted_Professional(JobRequest.Status status, Expertise expertise, Professional professional, Pageable pageable) {
         return this.jobRequestRepository.findByStatusAndExpertiseAndJobContracted_Professional(status, expertise, professional, pageable);
     }
-
+    public Page<JobRequest> findByStatusAndClient(JobRequest.Status status,  Client client, Pageable pageable) {
+        return this.jobRequestRepository.findByStatusAndClient(status, client, pageable);
+    }
     public void init() {
 
     }
