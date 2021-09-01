@@ -17,7 +17,7 @@ public class UserCodeService {
         userCodeRepository.save(entity);
     }
 
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         userCodeRepository.deleteById(id);
     }
 
