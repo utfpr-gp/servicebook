@@ -23,29 +23,35 @@ public class User implements Serializable {
 	public enum Gender {
 		MASCULINE, FEMININE
 	};
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NonNull
 	private String name;
-	
+
 	@NonNull
+	@Column(unique = true)
+	private String cpf;
+
+	@NonNull
+	@Column(unique = true)
 	private String email;
 
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
-	
+
 	private String profilePicture;
-	
+
 	private Date birthDate;
-	
+
 	@NonNull
+	@Column(unique = true)
 	private String phoneNumber;
-	
+
 	private boolean phoneVerified;
-	
+
 	private boolean emailVerified;
 
 	private boolean profileVerified;
@@ -55,5 +61,5 @@ public class User implements Serializable {
 
 	@OneToOne(cascade = CascadeType.PERSIST)
 	private Address address;
-	
+
 }

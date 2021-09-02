@@ -10,31 +10,40 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+
     @Autowired
     private UserRepository userRepository;
 
-    public User save(User entity){
-
-        return userRepository.save(entity);
+    public void save(User entity) {
+        userRepository.save(entity);
     }
 
-    public void delete(Long id){
-
+    public void delete(Long id) {
         userRepository.deleteById(id);
     }
 
-    public List<User> findAll(){
-
+    public List<User> findAll() {
         return this.userRepository.findAll();
     }
 
-    public Optional<User> findById(Long id){
-
+    public Optional<User> findById(Long id) {
         return this.userRepository.findById(id);
     }
 
-    public Optional<User> findByName(String name){
-
+    public Optional<User> findByName(String name) {
         return this.userRepository.findByName(name);
     }
+
+    public Optional<User> findByEmail(String email) {
+        return this.userRepository.findByEmail(email);
+    }
+
+    public Optional<User> findByPhoneNumber(String phoneNumber) {
+        return this.userRepository.findByPhoneNumber(phoneNumber);
+    }
+
+    public Optional<User> findByCpf(String cpf) {
+        return this.userRepository.findByCpf(cpf);
+    }
+
 }

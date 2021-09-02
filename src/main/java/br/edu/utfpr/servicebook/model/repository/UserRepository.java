@@ -8,7 +8,32 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
+
     @Query("SELECT u FROM User u WHERE u.name = :name")
     Optional<User> findByName(@Param("name") String name);
+
+    /**
+     * Retorna o usuário por email.
+     *
+     * @param email
+     * @return Optional<User>
+     */
+    Optional<User> findByEmail(String email);
+
+    /**
+     * Retorna o usuário por telefone.
+     *
+     * @param phoneNumber
+     * @return Optional<User>
+     */
+    Optional<User> findByPhoneNumber(String phoneNumber);
+
+    /**
+     * Retorna o usuário por cpf.
+     *
+     * @param cpf
+     * @return Optional<User>
+     */
+    Optional<User> findByCpf(String cpf);
 
 }

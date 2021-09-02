@@ -35,33 +35,33 @@ VALUES ('https://i.imgur.com/qMKc4rf.png', 'Guarapuava', '16');
 
 
 INSERT INTO addresses (neighborhood, number, postal_code, street, city_id)
-VALUES ('Industrial', '800', '85053-525', 'Avenida Professora Laura Pacheco Bastos', '1');
+VALUES ('Industrial', '800', '85053525', 'Avenida Professora Laura Pacheco Bastos', '1');
 
 
 
 INSERT INTO users
-(birth_date, email, email_verified, gender, name, phone_number, phone_verified, profile_picture, profile_verified,
+(cpf, birth_date, email, email_verified, gender, name, phone_number, phone_verified, profile_picture, profile_verified,
  address_id)
-VALUES ('2021-01-01', 'profissional1@gmail.com', 'true', 'MASCULINE', 'Profissional 1', '(42)9 9999-9999', 'true',
+VALUES ('982.988.640-93', '2021-01-01', 'profissional1@gmail.com', 'true', 'MASCULINE', 'Nome do Primeiro Profissional', '(42) 99999-9991', 'true',
         'https://i.imgur.com/owhNAKK.png', 'true', '1'),
-       ('2021-01-01', 'profissional2@gmail.com', 'true', 'MASCULINE', 'Profissional 2', '(42)9 9999-9999', 'true',
+       ('998.045.450-47', '2021-01-01', 'profissional2@gmail.com', 'true', 'MASCULINE', 'Nome do Segundo Profissional', '(42) 99999-9992', 'true',
         'https://i.imgur.com/sHAg9pz.png', 'true', '1'),
-       ('2021-01-01', 'cliente1@gmail.com', 'true', 'MASCULINE', 'Cliente 1', '(42)9 9999-9999', 'true',
+       ('130.218.260-91', '2021-01-01', 'cliente1@gmail.com', 'true', 'MASCULINE', 'Nome do Primeiro Cliente', '(42) 99999-9993', 'true',
         'https://i.imgur.com/y9dH2bJ.jpeg', 'true', '1'),
-       ('2021-01-01', 'cliente2@gmail.com', 'true', 'MASCULINE', 'Cliente 2', '(42)9 9999-9999', 'true',
+       ('973.161.500-84', '2021-01-01', 'cliente2@gmail.com', 'true', 'MASCULINE', 'Nome do Segundo Cliente', '(42) 99999-9994', 'true',
         'https://i.imgur.com/owhNAKK.png', 'true', '1'),
-       ('2021-01-01', 'profissional3@gmail.com', 'true', 'MASCULINE', 'Profissional 3', '(42)9 9999-9999', 'false',
+       ('567.690.630-85', '2021-01-01', 'profissional3@gmail.com', 'true', 'MASCULINE', 'Nome do Terceiro Profissional', '(42) 99999-9995', 'false',
         null, 'false', '1'),
-       ('2021-01-01', 'profissional4@gmail.com', 'true', 'MASCULINE', 'Profissional 4', '(42)9 9999-9999', 'true',
+       ('549.228.460-69', '2021-01-01', 'profissional4@gmail.com', 'true', 'MASCULINE', 'Nome do Quarto Profissional', '(42) 99999-9996', 'true',
         'https://i.imgur.com/owhNAKK.png', 'true', '1');
 
 
 
-INSERT INTO professionals (cpf, description, rating, denounce_amount, id)
-VALUES ('111111111', 'Descrição profissional 1', '5', '1', '1'),
-       ('222222222', 'Descrição profissional 2', '5', '1', '2'),
-       ('222222233', 'Descrição profissional 3', '5', '1', '5'),
-       ('222222211', 'Descrição profissional 4', '4', '1', '6');
+INSERT INTO professionals (description, rating, denounce_amount, id)
+VALUES ('Descrição profissional 1', '5', '1', '1'),
+       ('Descrição profissional 2', '5', '1', '2'),
+       ('Descrição profissional 3', '5', '1', '5'),
+       ('Descrição profissional 4', '4', '1', '6');
 
 
 

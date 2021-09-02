@@ -3,33 +3,59 @@ package br.edu.utfpr.servicebook.model.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.sql.Date;
+import lombok.ToString;
+import org.hibernate.validator.constraints.br.CPF;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
+@ToString
+public class UserDTO implements Serializable {
 
     private Long id;
 
+    @Pattern(regexp = "^(\\s?[A-ZÀ-Ú][a-zà-ú]*)+(\\s[a-zà-ú]*)?(\\s[A-ZÀ-Ú][a-zà-ú]*)+$", message = "Nome inválido! Por favor, insira o nome completo.", groups = UserDTO.RequestUserNameAndCPFInfoGroupValidation.class)
     private String name;
 
+    @CPF(message = "CPF inválido! Por favor, insira um CPF válido.", groups = UserDTO.RequestUserNameAndCPFInfoGroupValidation.class)
+    private String cpf;
+
+    @NotBlank(message = "Email inválido! Por favor, insira o email.", groups = UserDTO.RequestUserEmailInfoGroupValidation.class)
+    @Email(message = "Email inválido! Por favor, insira um email válido.", groups = UserDTO.RequestUserEmailInfoGroupValidation.class)
     private String email;
 
     private String type;
-
     private String gender;
-
     private String profilePicture;
-
     private Date birthDate;
 
+    @Pattern(regexp = "^\\(?\\d{2}\\)?\\s?(\\d{4,5})-?(\\d{4})$", message = "Telefone inválido! Por favor, insira um número de telefone válido.", groups = UserDTO.RequestUserPhoneInfoGroupValidation.class)
     private String phoneNumber;
 
     private boolean phoneVerified;
-
     private boolean emailVerified;
-
     private boolean profileVerified;
+
+    @Valid
+    private AddressFullDTO address;
+
+    public interface RequestUserNameAndCPFInfoGroupValidation {
+
+    }
+
+    public interface RequestUserEmailInfoGroupValidation {
+
+    }
+
+    public interface RequestUserPhoneInfoGroupValidation {
+
+    }
 
 }
