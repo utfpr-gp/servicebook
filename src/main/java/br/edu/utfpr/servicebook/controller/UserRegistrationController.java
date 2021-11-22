@@ -95,7 +95,6 @@ public class UserRegistrationController {
 
         UserDTO dto = wizardSessionUtil.getWizardState(httpSession, UserDTO.class);
         model.addAttribute("dto", dto);
-
         return "visitor/user-registration/wizard-step-0" + step;
     }
 

@@ -39,6 +39,5 @@
                 </div>
             </div>
         </main>
-
     </jsp:body>
 </t:visitor>
