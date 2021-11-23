@@ -91,7 +91,7 @@ public class JobRequestController {
         if(step < 1 || step > 8){
             step = 1L;
         }
-        JobRequestDTO dto = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
+        JobRequestDTO dto = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         model.addAttribute("dto", dto);
 
         if(step == 1L){
@@ -130,7 +130,7 @@ public class JobRequestController {
             return "client/job-request/wizard-step-01";
         }
 
-        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
+        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         sessionDTO.setExpertiseId(dto.getExpertiseId());
 
         log.debug("Passo 1 {}", sessionDTO);
@@ -150,7 +150,7 @@ public class JobRequestController {
             return "client/job-request/wizard-step-02";
 
         }
-        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
+        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
 
 
         if(dto.getDateProximity() == RequestDateSelect.today.value){
@@ -198,7 +198,7 @@ public class JobRequestController {
             return "client/job-request/wizard-step-03+9";
 
         }
-        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
+        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         sessionDTO.setQuantityCandidatorsMax(dto.getQuantityCandidatorsMax());
 
         log.debug("Passo 3 {}", sessionDTO);
@@ -219,7 +219,7 @@ public class JobRequestController {
 
         }
 
-        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
+        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         sessionDTO.setDescription(dto.getDescription());
 
         log.debug("Passo 4 {}", sessionDTO);
@@ -232,7 +232,7 @@ public class JobRequestController {
 
 
         //persiste na sessão
-        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
+        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         sessionDTO.setImageFile(dto.getImageFile());
 
 
@@ -263,7 +263,7 @@ public class JobRequestController {
 
         }
         //persiste na sessão
-        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
+        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         sessionDTO.setNameClient(dto.getNameClient());
         sessionDTO.setCep(dto.getCep());
         sessionDTO.setEmailClient(dto.getEmailClient());
@@ -276,7 +276,7 @@ public class JobRequestController {
     @PostMapping("/passo-7")
     public String saveFormVerification(HttpSession httpSession, JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
 
-        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class);
+        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         Expertise exp = null;
         log.debug("Passo Name {}", sessionDTO.getNameClient());
         Client client = clientService.save(new Client(sessionDTO.getNameClient(), sessionDTO.getEmailClient(), sessionDTO.getPhone(), sessionDTO.getCep()));
