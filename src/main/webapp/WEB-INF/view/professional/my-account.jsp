@@ -103,6 +103,22 @@
                         </div>
                     </div>
                     <div class="row no-margin center">
+
+                        <div class="col s12 no-margin no-padding input-field area-profission-select">
+
+                            <div class="row no-margin center">
+                                <div class="col s12 no-margin no-padding input-field area-profission-select">
+                                    <div class="spacing-buttons">
+                                        <a class="waves-effect waves-light btn" href="minha-conta/meus-pedidos">
+                                            Acessar como cliente </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row no-margin center">
+
                         <div class="col s12 no-margin no-padding input-field area-profission-select">
                             <p class="header-verification tertiary-color-text">
                                 ESPECIALIDADES
