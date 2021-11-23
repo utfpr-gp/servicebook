@@ -105,11 +105,6 @@
                     <div class="row no-margin center">
 
                         <div class="col s12 no-margin no-padding input-field area-profission-select">
-                            <p class="header-verification tertiary-color-text">
-                                ESPECIALIDADES
-                            </p>
-
-
 
                             <div class="row no-margin center">
                                 <div class="col s12 no-margin no-padding input-field area-profission-select">
@@ -119,8 +114,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
 
                         </div>
                     </div>
