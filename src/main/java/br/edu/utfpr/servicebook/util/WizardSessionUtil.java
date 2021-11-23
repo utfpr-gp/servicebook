@@ -7,14 +7,15 @@ import javax.servlet.http.HttpSession;
 @Component
 public class WizardSessionUtil<T> {
 
-    private final String KEY_WIZARD = "wizard";
+    public static final String KEY_WIZARD_JOB_REQUEST = "wizardJobRequest";
+    public static final String KEY_WIZARD_USER = "wizardUser";
+    public T getWizardState(HttpSession httpSession, Class<T> clazz, String wizard) {
 
-    public T getWizardState(HttpSession httpSession, Class<T> clazz) {
-        T wizardDTO = (T) httpSession.getAttribute(KEY_WIZARD);
+        T wizardDTO = (T) httpSession.getAttribute(wizard);
         if(wizardDTO == null){
             try {
                 wizardDTO = (T) clazz.newInstance();
-                httpSession.setAttribute(KEY_WIZARD, wizardDTO);
+                httpSession.setAttribute(wizard, wizardDTO);
             } catch (InstantiationException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
