@@ -15,34 +15,35 @@
                     </div>
                 </c:if>
 
+                <c:if test="${not empty msg}">
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="card-panel green lighten-1 msg-view center-align">
+                                <span class="white-text">${msg}</span>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
+
                 <div class="section">
                     <div class="row">
                         <h3 class="center secondary-color-text">
-                            Vamos validar o seu número de celular?
+                            Qual o seu número de celular ?
                         </h3>
+                        <h4 class="center secondary-color-text">
+                            (de preferência com whatsapp)
+                        </h4>
                         <h5 class="center secondary-color-text">
-                            Enviamos um código para o seu WhatsApp.
-                        </h5>
-                        <h5 class="center secondary-color-text">
-                            Por favor, digite o código para validar o seu celular!
-                        </h5>
-
-                        <h5 class="center secondary-color-text">
-                            O código de autenticação enviado por email também é valido!
+                            Este número será usado para comunicação com os clientes
+                            ou profissionais.
                         </h5>
 
                         <form method="post" action="cadastrar-se/passo-4">
                             <div class="row center spacing-buttons">
                                 <div class="input-field col s12 l6 offset-l3 spacing-buttons">
-                                    <input id="code" name="code" type="text" class="validate">
-                                    <label for="code">Código</label>
-                                </div>
-                                <div class="col s6 offset-s3">
-                                    <div class="center">
-                                        <a href="cadastrar-se?passo=5" class="waves-effect waves-light btn">
-                                            Fazer Depois
-                                        </a>
-                                    </div>
+                                    <input id="phoneNumber" name="phoneNumber" type="text" value="${dto.phoneNumber}"
+                                           class="validate">
+                                    <label for="phoneNumber">Telefone</label>
                                 </div>
                             </div>
                             <div class="col s6 m3 offset-m3 spacing-buttons">
@@ -66,3 +67,11 @@
 
     </jsp:body>
 </t:visitor>
+
+<script src="assets/libraries/jquery.mask.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#phoneNumber').mask('(00) 00000-0000');
+    });
+</script>

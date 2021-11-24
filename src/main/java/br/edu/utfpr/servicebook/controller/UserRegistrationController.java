@@ -89,7 +89,7 @@ public class UserRegistrationController {
             Model model
     ) {
 
-        if (step < 1 || step > 7) {
+        if (step < 1 || step > 8) {
             step = 1L;
         }
 
@@ -181,6 +181,34 @@ public class UserRegistrationController {
     }
 
     @PostMapping("/passo-3")
+    public String saveUserPassword(
+            HttpSession httpSession,
+            @Validated(UserDTO.RequestUserPasswordInfoGroupValidation.class) UserDTO dto,
+            BindingResult errors,
+            RedirectAttributes redirectAttributes,
+            Model model
+    ) {
+
+        if (errors.hasErrors()) {
+            return this.userRegistrationErrorForwarding("3", dto, model, errors);
+        }
+
+        if(!dto.getPassword().equals(dto.getRepassword())){
+            errors.rejectValue("password", "error.dto", "As senhas não correspondem. Por favor, tente novamente.");
+        }
+
+        if (errors.hasErrors()) {
+            return this.userRegistrationErrorForwarding("3", dto, model, errors);
+        }
+
+        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
+        sessionDTO.setPassword(dto.getPassword());
+        sessionDTO.setRepassword(dto.getRepassword());
+
+        return "redirect:/cadastrar-se?passo=4";
+    }
+
+    @PostMapping("/passo-4")
     public String saveUserPhone(
             HttpSession httpSession,
             @Validated(UserDTO.RequestUserPhoneInfoGroupValidation.class) UserDTO dto,
@@ -190,7 +218,7 @@ public class UserRegistrationController {
     ) {
 
         if (errors.hasErrors()) {
-            return this.userRegistrationErrorForwarding("3", dto, model, errors);
+            return this.userRegistrationErrorForwarding("4", dto, model, errors);
         }
 
         Optional<User> oUser = userService.findByPhoneNumber(dto.getPhoneNumber());
@@ -200,7 +228,7 @@ public class UserRegistrationController {
         }
 
         if (errors.hasErrors()) {
-            return this.userRegistrationErrorForwarding("3", dto, model, errors);
+            return this.userRegistrationErrorForwarding("4", dto, model, errors);
         }
 
         ///// Enviar código de autenticação para telefone.
@@ -208,10 +236,10 @@ public class UserRegistrationController {
         UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setPhoneNumber(dto.getPhoneNumber());
 
-        return "redirect:/cadastrar-se?passo=4";
+        return "redirect:/cadastrar-se?passo=5";
     }
 
-    @PostMapping("/passo-4")
+    @PostMapping("/passo-5")
     public String saveUserPhoneCode(
             HttpSession httpSession,
             @Validated(UserCodeDTO.RequestUserCodeInfoGroupValidation.class) UserCodeDTO dto,
@@ -221,7 +249,7 @@ public class UserRegistrationController {
     ) {
 
         if (errors.hasErrors()) {
-            return this.userCodeErrorForwarding("4", dto, model, errors);
+            return this.userCodeErrorForwarding("5", dto, model, errors);
         }
 
         UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
@@ -232,7 +260,7 @@ public class UserRegistrationController {
         }
 
         if (errors.hasErrors()) {
-            return this.userCodeErrorForwarding("4", dto, model, errors);
+            return this.userCodeErrorForwarding("5", dto, model, errors);
         }
 
         if (!dto.getCode().equals(oUserCode.get().getCode())) {
@@ -240,17 +268,17 @@ public class UserRegistrationController {
         }
 
         if (errors.hasErrors()) {
-            return this.userCodeErrorForwarding("4", dto, model, errors);
+            return this.userCodeErrorForwarding("5", dto, model, errors);
         }
 
         sessionDTO.setPhoneVerified(true);
 
         redirectAttributes.addFlashAttribute("msg", "Telefone verificado com sucesso!");
 
-        return "redirect:/cadastrar-se?passo=5";
+        return "redirect:/cadastrar-se?passo=6";
     }
 
-    @PostMapping("/passo-5")
+    @PostMapping("/passo-6")
     public String saveUserNameAndCPF(
             HttpSession httpSession,
             @Validated(UserDTO.RequestUserNameAndCPFInfoGroupValidation.class) UserDTO dto,
@@ -260,7 +288,7 @@ public class UserRegistrationController {
     ) {
 
         if (errors.hasErrors()) {
-            return this.userRegistrationErrorForwarding("5", dto, model, errors);
+            return this.userRegistrationErrorForwarding("6", dto, model, errors);
         }
 
         Optional<User> oUser = userService.findByCpf(dto.getCpf());
@@ -270,17 +298,17 @@ public class UserRegistrationController {
         }
 
         if (errors.hasErrors()) {
-            return this.userRegistrationErrorForwarding("5", dto, model, errors);
+            return this.userRegistrationErrorForwarding("6", dto, model, errors);
         }
 
         UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setName(dto.getName());
         sessionDTO.setCpf(dto.getCpf());
 
-        return "redirect:/cadastrar-se?passo=6";
+        return "redirect:/cadastrar-se?passo=7";
     }
 
-    @PostMapping("/passo-6")
+    @PostMapping("/passo-7")
     public String saveUserAddress(
             HttpSession httpSession,
             @Validated(AddressDTO.RequestUserAddressInfoGroupValidation.class) AddressDTO dto,
@@ -290,7 +318,7 @@ public class UserRegistrationController {
     ) {
 
         if (errors.hasErrors()) {
-            return this.userAddressRegistrationErrorForwarding("6", dto, model, errors);
+            return this.userAddressRegistrationErrorForwarding("7", dto, model, errors);
         }
 
         Optional<City> oCity = cityService.findByName(dto.getCity());
@@ -300,7 +328,7 @@ public class UserRegistrationController {
         }
 
         if (errors.hasErrors()) {
-            return this.userAddressRegistrationErrorForwarding("6", dto, model, errors);
+            return this.userAddressRegistrationErrorForwarding("7", dto, model, errors);
         }
 
         CityMidDTO cityMidDTO = cityMapper.toMidDto(oCity.get());
@@ -316,10 +344,10 @@ public class UserRegistrationController {
         sessionDTO.setAddress(addressFullDTO);
         sessionDTO.setProfileVerified(true);
 
-        return "redirect:/cadastrar-se?passo=7";
+        return "redirect:/cadastrar-se?passo=8";
     }
 
-    @PostMapping("/passo-7")
+    @PostMapping("/passo-8")
     public String saveUser(
             HttpSession httpSession,
             UserDTO dto,
@@ -333,13 +361,14 @@ public class UserRegistrationController {
 
         validator.validate(sessionDTO, errors, new Class[]{
                 UserDTO.RequestUserEmailInfoGroupValidation.class,
+                UserDTO.RequestUserPasswordInfoGroupValidation.class,
                 UserDTO.RequestUserPhoneInfoGroupValidation.class,
                 UserDTO.RequestUserNameAndCPFInfoGroupValidation.class,
                 AddressDTO.RequestUserAddressInfoGroupValidation.class
         });
 
         if (errors.hasErrors()) {
-            return this.userRegistrationErrorForwarding("7", dto, model, errors);
+            return this.userRegistrationErrorForwarding("8", dto, model, errors);
         }
 
         User user = userMapper.toEntity(sessionDTO);

@@ -31,6 +31,13 @@ public class UserDTO implements Serializable {
     @Email(message = "Email inválido! Por favor, insira um email válido.", groups = UserDTO.RequestUserEmailInfoGroupValidation.class)
     private String email;
 
+    @NotBlank(message = "Senha inválida! Por favor, insira uma senha.", groups = UserDTO.RequestUserPasswordInfoGroupValidation.class)
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "A senha precisa conter no mínimo 8 caracteres e pelo menos uma letra e um número", groups = UserDTO.RequestUserPasswordInfoGroupValidation.class)
+    private String password;
+
+    @NotBlank(message = "Por favor, lembre de redigitar a senha.", groups = UserDTO.RequestUserPasswordInfoGroupValidation.class)
+    private String repassword;
+
     private String type;
     private String gender;
     private String profilePicture;
@@ -51,6 +58,10 @@ public class UserDTO implements Serializable {
     }
 
     public interface RequestUserEmailInfoGroupValidation {
+
+    }
+
+    public interface RequestUserPasswordInfoGroupValidation {
 
     }
 

@@ -39,6 +39,9 @@ public class User implements Serializable {
 	@Column(unique = true)
 	private String email;
 
+	@NonNull
+	private String password;
+
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
 

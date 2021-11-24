@@ -15,68 +15,51 @@
                     </div>
                 </c:if>
 
+                <c:if test="${not empty msg}">
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="card-panel green lighten-1 msg-view center-align">
+                                <span class="white-text">${msg}</span>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
+
                 <div class="section">
                     <div class="row">
-                        <h3 class="row center secondary-color-text">
-                            Qual o seu endereço?
-                        </h3>
-                        <h5 class="row center secondary-color-text">
-                            Será útil para filtrar serviços por região e de acordo com a distância
-                            para o local de realização do serviço.
-                        </h5>
+                        <div class="row">
+                            <h3 class="center secondary-color-text">Nos conte mais sobre você!</h3>
+                        </div>
 
                         <form method="post" action="cadastrar-se/passo-6">
-                            <div class="row spacing-buttons">
-                                <div class="row">
-                                    <div class="center">
-                                        <a id="btn-search-cep" class="waves-effect waves-light btn">Buscar CEP</a>
-                                    </div>
+                            <div class="row center spacing-buttons">
+                                <h4 class="center secondary-color-text">
+                                    Qual o seu nome completo?
+                                </h4>
+                                <h5 class="center secondary-color-text">
+                                    O usuários precisam saber com quem estão negociando.
+                                </h5>
+                                <div class="input-field col s12 l6 offset-l3 spacing-buttons">
+                                    <input id="name" name="name" type="text" value="${dto.name}" class="validate">
+                                    <label for="name">Nome completo</label>
                                 </div>
-                                <div class="row">
-                                    <div class="input-field col s8 offset-s2">
-                                        <input id="postalCode" name="postalCode" type="text" placeholder="CEP"
-                                               class="validate">
-                                        <label for="postalCode">CEP</label>
-                                        <span id="errorPostalCode" class="hide helper-text red-text darken-3"></span>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="input-field col s8 offset-s2">
-                                        <input id="number" name="number" type="text" placeholder="Número"
-                                               class="validate">
-                                        <label for="number">Número</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="input-field col s8 offset-s2">
-                                        <input id="street" name="street" type="text" placeholder="Rua" class="validate">
-                                        <label for="street">Rua</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="input-field col s8 offset-s2">
-                                        <input id="neighborhood" name="neighborhood" type="text" placeholder="Bairro"
-                                               class="validate">
-                                        <label for="neighborhood">Bairro</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="input-field col s8 offset-s2">
-                                        <input id="city" name="city" type="text" placeholder="Cidade" class="validate">
-                                        <label for="city">Cidade</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="input-field col s8 offset-s2">
-                                        <input id="state" name="state" type="text" placeholder="Estado"
-                                               class="validate">
-                                        <label for="state">Estado</label>
-                                    </div>
+                            </div>
+                            <div class="row center spacing-buttons">
+                                <h4 class="center secondary-color-text">
+                                    Qual o seu CPF?
+                                </h4>
+                                <h5 class="center secondary-color-text">
+                                    Poderá ser usado para validar a veracidade dos dados pessoais.
+                                </h5>
+                                <div class="input-field col s12 l6 offset-l3 spacing-buttons">
+                                    <input id="cpf" name="cpf" type="text" value="${dto.cpf}" class="validate">
+                                    <label for="cpf">CPF</label>
                                 </div>
                             </div>
                             <div class="col s6 m3 offset-m3 spacing-buttons">
                                 <div class="center">
-                                    <a href="cadastrar-se?passo=5" class="waves-effect waves-light btn btn-gray">
+                                    <a class="waves-effect waves-light btn btn-gray"
+                                       href="cadastrar-se?passo=5">
                                         Voltar
                                     </a>
                                 </div>
@@ -95,9 +78,10 @@
     </jsp:body>
 </t:visitor>
 
-<script src="assets/resources/scripts/cep-user-registration.js"></script>
 <script src="assets/libraries/jquery.mask.js"></script>
 
 <script>
-    $('#postalCode').mask('00000-000');
+    $(document).ready(function () {
+        $('#cpf').mask('000.000.000-00', {reverse: true});
+    });
 </script>
