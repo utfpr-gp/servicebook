@@ -35,7 +35,6 @@ public class UserDTO implements Serializable {
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "A senha precisa conter no mínimo 8 caracteres e pelo menos uma letra e um número", groups = UserDTO.RequestUserPasswordInfoGroupValidation.class)
     private String password;
 
-    @NotBlank(message = "Por favor, lembre de redigitar a senha.", groups = UserDTO.RequestUserPasswordInfoGroupValidation.class)
     private String repassword;
 
     private String type;

@@ -37,14 +37,14 @@
                         <form method="post" action="cadastrar-se/passo-3">
                             <div class="row center">
                                 <div class="input-field col s12 l6 offset-l3">
-                                    <input id="password" name="password" type="password"
+                                    <input id="password" name="password" type="password" value="${dto.password}"
                                            class="validate">
                                     <label for="password">Digite sua senha</label>
                                 </div>
                             </div>
                             <div class="row center">
                                 <div class="input-field col s12 l6 offset-l3">
-                                    <input id="repassword" name="repassword" type="password"
+                                    <input id="repassword" name="repassword" type="password" value="${dto.repassword}"
                                            class="validate">
                                     <label for="repassword">Digite novamente</label>
                                 </div>
