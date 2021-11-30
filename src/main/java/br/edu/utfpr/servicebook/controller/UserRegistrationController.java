@@ -203,6 +203,7 @@ public class UserRegistrationController {
 
         UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setPassword(dto.getPassword());
+        sessionDTO.setRepassword(dto.getRepassword());
 
         return "redirect:/cadastrar-se?passo=4";
     }
