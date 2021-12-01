@@ -82,7 +82,7 @@ class JobRequestRepositoryTest {
         jobRequestRepository.save(jb5);
 
         //João Mecânico e Desenvolvedor
-        Professional joao = new Professional("Roberto Carlos", "joao@mail.com", "(42) 88999-9991", CPFUtil.geraCPF());
+        Professional joao = new Professional("Roberto Carlos", "joao@mail.com", "Senha123", "", CPFUtil.geraCPF());
         joao = professionalRepository.save(joao);
 
         ProfessionalExpertise professionalExpertise1 = new ProfessionalExpertise(joao, mechanicExpertise);
@@ -92,7 +92,7 @@ class JobRequestRepositoryTest {
         professionalExpertiseRepository.save(professionalExpertise2);
 
         //Maria Desenvolvedora
-        Professional maria = new Professional("Maria", "maria@mail.com", "(42) 88999-9992", CPFUtil.geraCPF());
+        Professional maria = new Professional("Maria", "maria@mail.com", "Senha123","", CPFUtil.geraCPF());
         maria = professionalRepository.save(maria);
 
         ProfessionalExpertise professionalExpertise3 = new ProfessionalExpertise(maria, developerExpertise);

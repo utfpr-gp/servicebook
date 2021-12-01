@@ -42,7 +42,7 @@ public class IndexService {
         Expertise expertise5 = new Expertise("Pedreiro");
         expertiseRepository.saveAll(Arrays.asList(expertise1, expertise2, expertise3, expertise4, expertise5));
 
-        Professional professional1 = new Professional("Darth Vader", "darth_vader@mail.com", "(42)9 9999-9999", CPFUtil.geraCPF());
+        Professional professional1 = new Professional("Darth Vader", "darth_vader@mail.com", "Senha123", "(42)9 9999-9999", CPFUtil.geraCPF());
         professional1.setBirthDate(new Date());
         professional1.setProfilePicture("https://i.imgur.com/owhNAKK.png");
         professional1.setDescription("Sua falta de fé é perturbadora.");
@@ -50,7 +50,7 @@ public class IndexService {
         professional1.setDenounceAmount(1);
         professionalRepository.save(professional1);
 
-        Professional professional2 = new Professional("Chewbacca", "chewbacca@mail.com", "(42)9 9999-9999", CPFUtil.geraCPF());
+        Professional professional2 = new Professional("Chewbacca", "chewbacca@mail.com", "Senha123", "(42)9 9999-9999", CPFUtil.geraCPF());
         professional2.setBirthDate(new Date());
         professional2.setProfilePicture("https://i.imgur.com/owhNAKK.png");
         professional2.setDescription("Sua falta de fé é perturbadora.");
