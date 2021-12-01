@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.*;
 
+import br.edu.utfpr.servicebook.util.PasswordUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -39,6 +40,9 @@ public class User implements Serializable {
 	@Column(unique = true)
 	private String email;
 
+	@NonNull
+	private String password;
+
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
 
@@ -61,5 +65,16 @@ public class User implements Serializable {
 
 	@OneToOne(cascade = CascadeType.PERSIST)
 	private Address address;
+
+	@PrePersist
+	@PreUpdate
+	public void onSave() {
+		if(this.password == null) {
+			return;
+		}
+
+		final String hashed = PasswordUtil.generateBCrypt(getPassword());
+		setPassword(hashed);
+	}
 
 }

@@ -15,45 +15,34 @@
                     </div>
                 </c:if>
 
-                <c:if test="${not empty msg}">
-                    <div class="row">
-                        <div class="col s12">
-                            <div class="card-panel green lighten-1 msg-view center-align">
-                                <span class="white-text">${msg}</span>
-                            </div>
-                        </div>
-                    </div>
-                </c:if>
-
                 <div class="section">
                     <div class="row">
-                        <div class="row">
-                            <h3 class="center secondary-color-text">Nos conte mais sobre você!</h3>
-                        </div>
+                        <h3 class="center secondary-color-text">
+                            Vamos validar o seu número de celular?
+                        </h3>
+                        <h5 class="center secondary-color-text">
+                            Enviamos um código para o seu WhatsApp.
+                        </h5>
+                        <h5 class="center secondary-color-text">
+                            Por favor, digite o código para validar o seu celular!
+                        </h5>
+
+                        <h5 class="center secondary-color-text">
+                            O código de autenticação enviado por email também é valido!
+                        </h5>
 
                         <form method="post" action="cadastrar-se/passo-5">
                             <div class="row center spacing-buttons">
-                                <h4 class="center secondary-color-text">
-                                    Qual o seu nome completo?
-                                </h4>
-                                <h5 class="center secondary-color-text">
-                                    O usuários precisam saber com quem estão negociando.
-                                </h5>
                                 <div class="input-field col s12 l6 offset-l3 spacing-buttons">
-                                    <input id="name" name="name" type="text" value="${dto.name}" class="validate">
-                                    <label for="name">Nome completo</label>
+                                    <input id="code" name="code" type="text" class="validate">
+                                    <label for="code">Código</label>
                                 </div>
-                            </div>
-                            <div class="row center spacing-buttons">
-                                <h4 class="center secondary-color-text">
-                                    Qual o seu CPF?
-                                </h4>
-                                <h5 class="center secondary-color-text">
-                                    Poderá ser usado para validar a veracidade dos dados pessoais.
-                                </h5>
-                                <div class="input-field col s12 l6 offset-l3 spacing-buttons">
-                                    <input id="cpf" name="cpf" type="text" value="${dto.cpf}" class="validate">
-                                    <label for="cpf">CPF</label>
+                                <div class="col s6 offset-s3">
+                                    <div class="center">
+                                        <a href="cadastrar-se?passo=6" class="waves-effect waves-light btn">
+                                            Fazer Depois
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col s6 m3 offset-m3 spacing-buttons">
@@ -77,11 +66,3 @@
 
     </jsp:body>
 </t:visitor>
-
-<script src="assets/libraries/jquery.mask.js"></script>
-
-<script>
-    $(document).ready(function () {
-        $('#cpf').mask('000.000.000-00', {reverse: true});
-    });
-</script>

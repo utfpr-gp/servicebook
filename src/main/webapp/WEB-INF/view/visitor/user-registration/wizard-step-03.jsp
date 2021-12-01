@@ -28,22 +28,25 @@
                 <div class="section">
                     <div class="row">
                         <h3 class="center secondary-color-text">
-                            Qual o seu número de celular ?
+                            Vamos definir a sua senha de acesso?
                         </h3>
-                        <h4 class="center secondary-color-text">
-                            (de preferência com whatsapp)
-                        </h4>
                         <h5 class="center secondary-color-text">
-                            Este número será usado para comunicação com os clientes
-                            ou profissionais.
+                            Digite a sua senha e depois redigite para se certificar de que digitou corretamente!
                         </h5>
 
                         <form method="post" action="cadastrar-se/passo-3">
-                            <div class="row center spacing-buttons">
-                                <div class="input-field col s12 l6 offset-l3 spacing-buttons">
-                                    <input id="phoneNumber" name="phoneNumber" type="text" value="${dto.phoneNumber}"
+                            <div class="row center">
+                                <div class="input-field col s12 l6 offset-l3">
+                                    <input id="password" name="password" type="password" value="${dto.password}"
                                            class="validate">
-                                    <label for="phoneNumber">Telefone</label>
+                                    <label for="password">Digite sua senha</label>
+                                </div>
+                            </div>
+                            <div class="row center">
+                                <div class="input-field col s12 l6 offset-l3">
+                                    <input id="repassword" name="repassword" type="password" value="${dto.repassword}"
+                                           class="validate">
+                                    <label for="repassword">Digite novamente</label>
                                 </div>
                             </div>
                             <div class="col s6 m3 offset-m3 spacing-buttons">
@@ -67,11 +70,3 @@
 
     </jsp:body>
 </t:visitor>
-
-<script src="assets/libraries/jquery.mask.js"></script>
-
-<script>
-    $(document).ready(function () {
-        $('#phoneNumber').mask('(00) 00000-0000');
-    });
-</script>
