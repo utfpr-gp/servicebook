@@ -44,7 +44,8 @@
                     <div class="row no-margin">
                         <div class="col s6 m6 l2 offset-l8 spacing-buttons center">
                             <div class="center">
-                                <a href="#modal-delete" data-url="${pageContext.request.contextPath}/minha-conta/meus-pedidos/${jobRequest.id}" data-name="${jobRequest.description}" class="waves-effect waves-light btn modal-trigger">Excluir</a>                                                        </div>
+                                <a href="#modal-delete" data-url="${pageContext.request.contextPath}/minha-conta/meus-pedidos/${jobRequest.id}" data-name="${jobRequest.description}" class="waves-effect waves-light btn modal-trigger">Excluir</a>
+                            </div>
                         </div>
                         <div class="col s6 m6  l2 spacing-buttons center">
                             <div class="center">
