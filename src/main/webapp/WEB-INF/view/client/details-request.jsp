@@ -145,12 +145,12 @@
                         </div>
                         <div class="col s12 m6 l3">
                             <div class="center">
-                                <a href="#modal-close" class="spacing-buttons waves-effect waves-light btn modal-trigger">Parar de receber propostas</a>
+                                <a href="#!" class="spacing-buttons waves-effect waves-light btn">Parar de receber propostas</a>
                             </div>
                         </div>
                         <div class="col s12 m6 l3">
                             <div class="center">
-                                <a href="#modal-delete" data-url="${pageContext.request.contextPath}/minha-conta/meus-pedidos/${jobRequest.id}" class="spacing-buttons waves-effect waves-light btn modal-trigger">Excluir o pedido</a>
+                                <a href="#!" class="spacing-buttons waves-effect waves-light btn">Excluir o pedido</a>
                             </div>
                         </div>
                         <div class="col s12 tertiary-color-text description-orcamento text-info-request">
@@ -252,43 +252,6 @@
                         </div>
                     </div>
                 </div>
-                </div>
-            </div>
-            <div id="modal-close" class="modal">
-                <div class="modal-content">
-                    <form action="${pageContext.request.contextPath}/minha-conta/meus-pedidos" method="post">
-                        <input type="hidden" name="id" value="${jobRequest.id}"/>
-                        <input type="hidden" name="clientConfirmation" value="${jobRequest.clientConfirmation}"/>
-                        <input type="hidden" name="description" value="${jobRequest.description}"/>
-                        <input type="hidden" name="professionalConfirmation" value="${jobRequest.professionalConfirmation}"/>
-                        <input type="hidden" name="quantityCandidatorsMax" value="${jobRequest.quantityCandidatorsMax}"/>
-                        <input type="hidden" name="status" value="BUDGET"/>
-                        <input type="hidden" name="client" value="${jobRequest.client.id}"/>
-                        <input type="hidden" name="expertise" value="${jobRequest.expertise.id}"/>
-                        <div class="modal-content">
-                            <h4>Você tem certeza que deseja encerrar o recebimento de propostas para este pedido? Não será possível reativar depois</h4>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
-                            <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <div id="modal-delete" class="modal">
-                <div class="modal-content">
-                    <form action="" method="post">
-                        <input type="hidden" name="id" value="${jobRequest.id}"/>
-                        <input type="hidden" name="_method" value="DELETE"/>
-                        <div class="modal-content">
-                            <h4>Você tem certeza que deseja excluir <strong>${jobRequest.description}</strong>?</h4>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
-                            <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </main>

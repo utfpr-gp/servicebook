@@ -8,7 +8,6 @@ import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
-import com.cloudinary.utils.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,25 +15,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -105,7 +93,6 @@ public class ClientController {
 
         return mv;
     }
-
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
@@ -145,7 +132,6 @@ public class ClientController {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
         ClientDTO clientDTO = clientMapper.toDto(client.get());
-        System.out.println("Cliente: " + clientDTO);
         mv.addObject("client", clientDTO);
 
         Optional<JobRequest> job = jobRequestService.findById(id.get());
@@ -155,7 +141,6 @@ public class ClientController {
         }
 
         JobRequestFullDTO jobDTO = jobRequestMapper.toFullDto(job.get());
-        System.out.println("Requisição de trabalho: " + jobDTO);
         mv.addObject("jobRequest", jobDTO);
 
         Long expertiseId = job.get().getExpertise().getId();
@@ -167,7 +152,6 @@ public class ClientController {
         }
 
         ExpertiseMinDTO expertiseDTO = expertiseMapper.toMinDto(expertise.get());
-        System.out.println("Especialidade: " + expertiseDTO);
         mv.addObject("expertise", expertiseDTO);
 
         List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequest(job.get());
@@ -177,7 +161,7 @@ public class ClientController {
                 .collect(Collectors.toList());
 
         mv.addObject("candidates", jobCandidatesDTOs);
-        System.out.println("Candidatos à vaga: " + jobCandidatesDTOs);
+
 
         return mv;
     }
@@ -348,37 +332,6 @@ public class ClientController {
         return mv;
     }
 
-    @PostMapping
-    public ModelAndView save(@Validated JobRequestDTO dto, Errors errors, RedirectAttributes redirectAttributes) {
-
-        //imprime o código de erro e o nome do atributo
-        for(FieldError e: errors.getFieldErrors()){
-            log.info(e.getField() + " -> " + e.getCode());
-        }
-        //verifica os erros de validação
-        if(errors.hasErrors()){
-            ModelAndView mv = new ModelAndView("client/my-requests");
-            //salva o DTO para manter tais dados em caso de erro
-            mv.addObject("dto", dto);
-            //salva os erros para serem apresentados
-            mv.addObject("errors", errors.getAllErrors());
-            //encaminhamento para a visão
-            return mv;
-        }
-
-        System.out.println("Persistindo o DTO " + dto);
-        log.debug("Persistindo o DTO {}", dto);
-
-        JobRequest jobRequest = jobRequestMapper.toEntity(dto);
-        System.out.println("Persistindo a entidade " + jobRequest);
-        log.debug("Persistindo a entidade {}", jobRequest);
-        jobRequestService.save(jobRequest);
-
-        redirectAttributes.addFlashAttribute("msg", "Anúncio salvo com sucesso!");
-
-        //redirecionamento para a rota
-        return new ModelAndView("redirect:meus-pedidos");
-
-    }
-
 }
+
+

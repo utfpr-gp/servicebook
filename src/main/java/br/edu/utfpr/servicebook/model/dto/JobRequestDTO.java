@@ -54,7 +54,6 @@ public class JobRequestDTO implements Serializable {
     @Pattern(regexp="^\\(?\\d{2}\\)?\\s?(\\d{4,5})-?(\\d{4})",message="Por favor, preencha um celular válido", groups = RequestClientInfoGroupValidation.class)
     private String phone;
     private Boolean clientConfirmation;
-    private Boolean professionalConfirmation;
 
     public interface RequestExpertiseGroupValidation {
 
