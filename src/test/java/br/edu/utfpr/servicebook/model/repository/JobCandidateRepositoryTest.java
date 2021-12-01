@@ -44,7 +44,7 @@ class JobCandidateRepositoryTest {
         Expertise developerExpertise = new Expertise("Desenvolvedor de Software");
         developerExpertise = expertiseRepository.save(developerExpertise);
 
-        Expertise mechanicExpertise = new Expertise("Mecânico");
+        Expertise mechanicExpertise = new Expertise("Mecânico de Motossera ");
         mechanicExpertise = expertiseRepository.save(mechanicExpertise);
 
         JobRequest jb1 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, dateOfNow);
@@ -64,7 +64,7 @@ class JobCandidateRepositoryTest {
         jobRequestRepository.save(jb3);
         jobRequestRepository.save(jb4);
 
-        Professional joao = new Professional("Roberto Carlos", "joao@mail.com", "Senha123", "", CPFUtil.geraCPF());
+        Professional joao = new Professional("Roberto Carlos", "joao@mail.com", "Senha123", "(42) 88999-9992", CPFUtil.geraCPF());
         joao = professionalRepository.save(joao);
 
         ProfessionalExpertise professionalExpertise1 = new ProfessionalExpertise(joao, mechanicExpertise);
@@ -83,7 +83,7 @@ class JobCandidateRepositoryTest {
     @DisplayName("Deve retornar uma lista de candidaturas de um profissional")
     public void findByProfessional() {
 
-        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
+        Professional joao = professionalRepository.findByEmail("joao@mail.com");
         List<JobCandidate> jobs = jobCandidateRepository.findByProfessional(joao);
         log.debug(jobs.toString());
         for(JobCandidate job : jobs){

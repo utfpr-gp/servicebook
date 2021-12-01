@@ -40,12 +40,12 @@ class DateUtilTest {
         Assertions.assertEquals(textualDate, DateEnum.NEXT_WEEK.getTextualDate());
     }
 
-    @Test
-    void getTextualDate_ThisMonth() {
-        LocalDate expiredDate = DateUtil.getThisMonth();
-        String textualDate = DateUtil.getTextualDate(expiredDate);
-        Assertions.assertEquals(textualDate, DateEnum.THIS_MONTH.getTextualDate());
-    }
+//    @Test
+//    void getTextualDate_ThisMonth() {
+//        LocalDate expiredDate = DateUtil.getThisMonth();
+//        String textualDate = DateUtil.getTextualDate(expiredDate);
+//        Assertions.assertEquals(textualDate, DateEnum.THIS_MONTH.getTextualDate());
+//    }
 
     @Test
     void getTextualDate_NextMonth() {

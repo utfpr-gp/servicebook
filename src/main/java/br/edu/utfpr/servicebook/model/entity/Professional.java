@@ -20,7 +20,7 @@ public class Professional extends User {
     private static final long serialVersionUID = 1L;
 
 	public Professional(String name, String email, String password, String phoneNumber, String cpf){
-		super(name, email, password, phoneNumber, cpf);
+		super(name, cpf, email, password, phoneNumber);
 	}
 
 //	@NonNull

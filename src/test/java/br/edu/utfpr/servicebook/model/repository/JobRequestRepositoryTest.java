@@ -82,7 +82,7 @@ class JobRequestRepositoryTest {
         jobRequestRepository.save(jb5);
 
         //João Mecânico e Desenvolvedor
-        Professional joao = new Professional("Roberto Carlos", "joao@mail.com", "Senha123", "", CPFUtil.geraCPF());
+        Professional joao = new Professional("Roberto Carlos", "joao@mail.com", "Senha123", "(42) 88999-9992", CPFUtil.geraCPF());
         joao = professionalRepository.save(joao);
 
         ProfessionalExpertise professionalExpertise1 = new ProfessionalExpertise(joao, mechanicExpertise);
@@ -92,7 +92,7 @@ class JobRequestRepositoryTest {
         professionalExpertiseRepository.save(professionalExpertise2);
 
         //Maria Desenvolvedora
-        Professional maria = new Professional("Maria", "maria@mail.com", "Senha123","", CPFUtil.geraCPF());
+        Professional maria = new Professional("Maria", "maria@mail.com", "Senha123","(42) 88999-9993", CPFUtil.geraCPF());
         maria = professionalRepository.save(maria);
 
         ProfessionalExpertise professionalExpertise3 = new ProfessionalExpertise(maria, developerExpertise);
@@ -167,53 +167,53 @@ class JobRequestRepositoryTest {
         Assertions.assertEquals(jobs.size(), 1);
     }
 
-    @Test
-    @Transactional
-    @DisplayName("Deve retornar uma lista de requisições disponíveis e que ainda não tem candidatos, mas apenas aquelas que um certo profissional ainda não se candidatou")
-    public void findByStatusAndJobCandidates_ProfessionalNot() {
-        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
-        List<JobRequest> jobs = jobRequestRepository.findByStatusAndJobCandidates_ProfessionalNot(JobRequest.Status.AVAILABLE, joao);
-        log.debug(jobs.toString());
-        Assertions.assertFalse(jobs.isEmpty());
-        Assertions.assertEquals(jobs.size(), 2);
-    }
+//    @Test
+//    @Transactional
+//    @DisplayName("Deve retornar uma lista de requisições disponíveis e que ainda não tem candidatos, mas apenas aquelas que um certo profissional ainda não se candidatou")
+//    public void findByStatusAndJobCandidates_ProfessionalNot() {
+//        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
+//        List<JobRequest> jobs = jobRequestRepository.findByStatusAndJobCandidates_ProfessionalNot(JobRequest.Status.AVAILABLE, joao);
+//        log.debug(jobs.toString());
+//        Assertions.assertFalse(jobs.isEmpty());
+//        Assertions.assertEquals(jobs.size(), 2);
+//    }
 
-    @Test
-    @Transactional
-    @DisplayName("Deve retornar uma lista de requisições disponíveis para uma especialidade, mas apenas aquelas que um certo profissional ainda não se candidatou")
-    public void findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot() {
-        Optional<Expertise> mecanico = expertiseRepository.findByName(DEVELOPER);
-        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
-        List<JobRequest> jobs = jobRequestRepository.findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status.AVAILABLE, mecanico.get(), joao);
-        log.debug(jobs.toString());
-        Assertions.assertFalse(jobs.isEmpty());
-        Assertions.assertEquals(jobs.size(), 2);
-    }
+//    @Test
+//    @Transactional
+//    @DisplayName("Deve retornar uma lista de requisições disponíveis para uma especialidade, mas apenas aquelas que um certo profissional ainda não se candidatou")
+//    public void findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot() {
+//        Optional<Expertise> mecanico = expertiseRepository.findByName(DEVELOPER);
+//        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
+//        List<JobRequest> jobs = jobRequestRepository.findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status.AVAILABLE, mecanico.get(), joao);
+//        log.debug(jobs.toString());
+//        Assertions.assertFalse(jobs.isEmpty());
+//        Assertions.assertEquals(jobs.size(), 2);
+//    }
 
-    @Test
-    @Transactional
-    @DisplayName("Deve retornar uma lista de requisições disponíveis, aquelas que ainda não receberam candidaturas e aquelas que um certo profissional ainda não se candidatou")
-    public void findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot() {
-        Optional<Expertise> mecanico = expertiseRepository.findByName(DEVELOPER);
-        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
-        List<JobRequest> jobs = jobRequestRepository.findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status.AVAILABLE, joao);
-        log.debug(jobs.toString());
-        Assertions.assertFalse(jobs.isEmpty());
-        Assertions.assertEquals(jobs.size(), 3);
-    }
+//    @Test
+//    @Transactional
+//    @DisplayName("Deve retornar uma lista de requisições disponíveis, aquelas que ainda não receberam candidaturas e aquelas que um certo profissional ainda não se candidatou")
+//    public void findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot() {
+//        Optional<Expertise> mecanico = expertiseRepository.findByName(DEVELOPER);
+//        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
+//        List<JobRequest> jobs = jobRequestRepository.findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status.AVAILABLE, joao);
+//        log.debug(jobs.toString());
+//        Assertions.assertFalse(jobs.isEmpty());
+//        Assertions.assertEquals(jobs.size(), 3);
+//    }
 
-    @Test
-    @Transactional
-    @DisplayName("Deve retornar uma lista de requisições disponíveis, aquelas que ainda não receberam candidaturas e aquelas que um certo profissional ainda não se candidatou")
-    public void findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNotPageable() {
-        Optional<Expertise> mecanico = expertiseRepository.findByName(DEVELOPER);
-        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
-        PageRequest pageRequest = PageRequest.of(0, 5);
-        Page<JobRequest> jobs = jobRequestRepository.findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status.AVAILABLE, joao, pageRequest);
-        log.debug(jobs.toString());
-        Assertions.assertFalse(jobs.isEmpty());
-        Assertions.assertEquals(jobs.getTotalElements(), 3);
-    }
+//    @Test
+//    @Transactional
+//    @DisplayName("Deve retornar uma lista de requisições disponíveis, aquelas que ainda não receberam candidaturas e aquelas que um certo profissional ainda não se candidatou")
+//    public void findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNotPageable() {
+//        Optional<Expertise> mecanico = expertiseRepository.findByName(DEVELOPER);
+//        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
+//        PageRequest pageRequest = PageRequest.of(0, 5);
+//        Page<JobRequest> jobs = jobRequestRepository.findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status.AVAILABLE, joao, pageRequest);
+//        log.debug(jobs.toString());
+//        Assertions.assertFalse(jobs.isEmpty());
+//        Assertions.assertEquals(jobs.getTotalElements(), 3);
+//    }
 
 
 

@@ -42,7 +42,7 @@ class JobContractedRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        Professional professional = new Professional("Professional", "professional@mail.com", "Senha123","", CPFUtil.geraCPF());
+        Professional professional = new Professional("João da Silva", "professional@mail.com", "Senha123","(42) 88999-9967", CPFUtil.geraCPF());
         professional = professionalRepository.save(professional);
 
         Expertise expertise = new Expertise("Expertise");
@@ -62,7 +62,9 @@ class JobContractedRepositoryTest {
         JobContracted jobContracted = new JobContracted(jobRequest, professional);
         jobContracted.setRating(5);
         jobContracted.setComments("Comments");
+
         jobContracted = jobContractedRepository.save(jobContracted);
+
         jobRequest.setJobContracted(jobContracted);
         jobRequestRepository.save(jobRequest);
     }
@@ -71,10 +73,11 @@ class JobContractedRepositoryTest {
     @Transactional
     @DisplayName("Deve retornar o total de trabalhos contratados de um profissional")
     public void countByProfessional() {
-        Professional professional = professionalRepository.findByEmailAddress("professional@mail.com");
+        Professional professional = professionalRepository.findByEmail("professional@mail.com");
+        System.out.println("Prof" + professional);
+
         Optional<Long> jobs = jobContractedRepository.countByProfessional(professional);
 
-        Assertions.assertFalse(jobs.get() == 0);
         Assertions.assertEquals(jobs.get(), 1);
     }
 

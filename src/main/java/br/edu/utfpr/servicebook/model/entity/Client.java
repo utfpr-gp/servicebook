@@ -23,7 +23,6 @@ public class Client extends User {
 		super.setName(name);
 		super.setEmail(email);
 		super.setPhoneNumber(phone);
-
 	}
 	
 	@OneToMany(mappedBy = "client")
