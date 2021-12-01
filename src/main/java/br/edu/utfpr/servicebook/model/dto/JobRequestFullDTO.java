@@ -12,14 +12,16 @@ import java.io.Serializable;
 public class JobRequestFullDTO implements Serializable {
 
     private Long id;
-    private ExpertiseMinDTO expertise;
+    private ExpertiseDTO expertise;
     private String dateCreated;
-    private ClientMinDTO client;
+    private ClientDTO client;
     private String dateExpired;
     private Integer quantityCandidatorsMax;
     private String description;
     private Long totalCandidates;
     private String textualDate;
     private Long amountOfCandidates;
+    private boolean clientConfirmation;
+    private boolean professionalConfirmation;
 
 }

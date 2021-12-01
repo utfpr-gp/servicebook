@@ -93,7 +93,7 @@ public class UserRegistrationController {
             step = 1L;
         }
 
-        UserDTO dto = wizardSessionUtil.getWizardState(httpSession, UserDTO.class);
+        UserDTO dto = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         model.addAttribute("dto", dto);
 
         return "visitor/user-registration/wizard-step-0" + step;
@@ -136,7 +136,7 @@ public class UserRegistrationController {
             emailSenderService.sendEmailToServer(dto.getEmail(), "Servicebook: Código de autenticação.", "Código de autenticação:" + "\n\n\n" + oUserCode.get().getCode());
         }
 
-        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class);
+        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setEmail(dto.getEmail());
 
         return "redirect:/cadastrar-se?passo=2";
@@ -155,7 +155,7 @@ public class UserRegistrationController {
             return this.userCodeErrorForwarding("2", dto, model, errors);
         }
 
-        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class);
+        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         Optional<UserCode> oUserCode = userCodeService.findByEmail(sessionDTO.getEmail());
 
         if (!oUserCode.isPresent()) {
@@ -206,7 +206,7 @@ public class UserRegistrationController {
 
         ///// Enviar código de autenticação para telefone.
 
-        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class);
+        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setPhoneNumber(dto.getPhoneNumber());
 
         return "redirect:/cadastrar-se?passo=4";
@@ -225,7 +225,7 @@ public class UserRegistrationController {
             return this.userCodeErrorForwarding("4", dto, model, errors);
         }
 
-        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class);
+        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         Optional<UserCode> oUserCode = userCodeService.findByEmail(sessionDTO.getEmail());
 
         if (!oUserCode.isPresent()) {
@@ -274,7 +274,7 @@ public class UserRegistrationController {
             return this.userRegistrationErrorForwarding("5", dto, model, errors);
         }
 
-        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class);
+        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setName(dto.getName());
         sessionDTO.setCpf(dto.getCpf());
 
@@ -313,7 +313,7 @@ public class UserRegistrationController {
         addressFullDTO.setNeighborhood(dto.getNeighborhood());
         addressFullDTO.setCity(cityMidDTO);
 
-        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class);
+        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setAddress(addressFullDTO);
         sessionDTO.setProfileVerified(true);
 
@@ -330,7 +330,7 @@ public class UserRegistrationController {
             SessionStatus status
     ) {
 
-        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class);
+        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
 
         validator.validate(sessionDTO, errors, new Class[]{
                 UserDTO.RequestUserEmailInfoGroupValidation.class,
