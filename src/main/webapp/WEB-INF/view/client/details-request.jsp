@@ -143,11 +143,13 @@
                             <p>${jobRequest.description}</p>
                             <p>Pedido expedido em ${jobRequest.dateExpired}</p>
                         </div>
-                        <div class="col s12 m6 l3">
-                            <div class="center">
-                                <a href="#!" class="spacing-buttons waves-effect waves-light btn">Parar de receber propostas</a>
-                            </div>
-                        </div>
+                            <c:if test="${jobRequest.status != 'BUDGET'}">
+                                <div class="col s12 m6 l3">
+                                    <div class="center">
+                                        <a href="#modal-close" class="spacing-buttons waves-effect waves-light btn modal-trigger">Parar de receber propostas</a>
+                                    </div>
+                                </div>
+                            </c:if>
                         <div class="col s12 m6 l3">
                             <div class="center">
                                 <a href="#!" class="spacing-buttons waves-effect waves-light btn">Excluir o pedido</a>
@@ -254,6 +256,28 @@
                 </div>
                 </div>
             </div>
+            <div id="modal-close" class="modal">
+                <div class="modal-content">
+                    <form action="${pageContext.request.contextPath}/minha-conta/meus-pedidos" method="post">
+                        <input type="hidden" name="id" value="${jobRequest.id}"/>
+                        <input type="hidden" name="clientConfirmation" value="${jobRequest.clientConfirmation}"/>
+                        <input type="hidden" name="description" value="${jobRequest.description}"/>
+                        <input type="hidden" name="professionalConfirmation" value="${jobRequest.professionalConfirmation}"/>
+                        <input type="hidden" name="quantityCandidatorsMax" value="${jobRequest.quantityCandidatorsMax}"/>
+                        <input type="hidden" name="status" value="BUDGET"/>
+                        <input type="hidden" name="clientId" value="${jobRequest.client.id}"/>
+                        <input type="hidden" name="expertiseId" value="${jobRequest.expertise.id}"/>
+                        <div class="modal-content">
+                            <h4>Você tem certeza que deseja encerrar o recebimento de propostas para este pedido? Não será possível reativar depois</h4>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
+                            <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
         </main>
 
     </jsp:body>

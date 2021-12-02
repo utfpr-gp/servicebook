@@ -6,6 +6,7 @@ import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
+import br.edu.utfpr.servicebook.util.DateUtil;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import org.slf4j.Logger;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -332,7 +335,58 @@ public class ClientController {
         return mv;
     }
 
-//    public ModelAndView save(@Validated JobRequestDTO dto, Errors errors, RedirectAttributes redirectAttributes) {
+    @PostMapping
+    public ModelAndView save(@Validated JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes) {
+
+        //verifica os erros de validação
+        if(errors.hasErrors()){
+            ModelAndView mv = new ModelAndView("client/my-requests");
+            //salva o DTO para manter tais dados em caso de erro
+            mv.addObject("dto", dto);
+            //salva os erros para serem apresentados
+            mv.addObject("errors", errors.getAllErrors());
+            //encaminhamento para a visão
+            return mv;
+        }
+
+        log.debug("Persistindo o DTO {}", dto);
+
+        JobRequest jobRequest = jobRequestMapper.toEntity(dto);
+
+        Client cli = null;
+        Optional<Client> oClient = clientService.findById(dto.getClientId());
+        if(oClient.isPresent()){
+            cli = oClient.get();
+        }
+
+        Expertise exp = null;
+        Optional<Expertise> oExpertise = expertiseService.findById(dto.getExpertiseId());
+        if(oExpertise.isPresent()){
+            exp = oExpertise.get();
+        }
+
+        Optional<JobRequest> job = jobRequestService.findById(dto.getId());
+
+        if (!job.isPresent()) {
+            throw new EntityNotFoundException("Solicitação de serviço não encontrado. Por favor, tente novamente.");
+        }
+
+        JobRequestFullDTO jobDTO = jobRequestMapper.toFullDto(job.get());
+
+        jobRequest.setDateCreated(DateUtil.charConvertDate("dd/MM/yyyy", jobDTO.getDateCreated()));
+        jobRequest.setDateExpired(DateUtil.charConvertDate("dd/MM/yyyy", jobDTO.getDateExpired()));
+        jobRequest.setClient(cli);
+        jobRequest.setExpertise(exp);
+
+        jobRequestService.save(jobRequest);
+
+        redirectAttributes.addFlashAttribute("msg", "Solicitação de serviço atualizado com sucesso com sucesso!");
+
+        //redirecionamento para a rota
+        return new ModelAndView("redirect:meus-pedidos");
+
+    }
+
 }
 
 
