@@ -69,7 +69,7 @@ public class MyAccountProfessionalController {
     public ModelAndView showMyAccountProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> id) throws Exception {
         log.debug("ServiceBook: Minha conta.");
 
-        Optional<Professional> oProfessional = Optional.ofNullable(professionalService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = Optional.ofNullable(professionalService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -140,7 +140,7 @@ public class MyAccountProfessionalController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Professional> oProfessional = Optional.ofNullable(professionalService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = Optional.ofNullable(professionalService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -202,7 +202,7 @@ public class MyAccountProfessionalController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Professional> oProfessional = Optional.ofNullable(professionalService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = Optional.ofNullable(professionalService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -264,7 +264,7 @@ public class MyAccountProfessionalController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Professional> oProfessional = Optional.ofNullable(professionalService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = Optional.ofNullable(professionalService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -326,7 +326,7 @@ public class MyAccountProfessionalController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Professional> oProfessional = Optional.ofNullable(professionalService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = Optional.ofNullable(professionalService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -383,7 +383,7 @@ public class MyAccountProfessionalController {
     public ModelAndView showMyDetails() throws Exception {
         ModelAndView mv = new ModelAndView("client/details-contact");
 
-        Optional<Professional> oProfessional = Optional.ofNullable(professionalService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = Optional.ofNullable(professionalService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");

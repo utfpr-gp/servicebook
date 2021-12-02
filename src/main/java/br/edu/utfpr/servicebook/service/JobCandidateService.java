@@ -22,20 +22,20 @@ public class JobCandidateService {
         return this.jobCandidateRepository.countByJobRequest(jobRequest);
     }
 
-    public Page<JobCandidate> findByJobRequest_StatusAndProfessional(JobRequest.Status status, Professional professional, Pageable pageable) {
-        return this.jobCandidateRepository.findByJobRequest_StatusAndProfessional(status, professional, pageable);
+    public Page<JobCandidate> findByJobRequest_StatusAndProfessional(JobRequest.Status status, Individual individual, Pageable pageable) {
+        return this.jobCandidateRepository.findByJobRequest_StatusAndProfessional(status, individual, pageable);
     }
 
     public List<JobCandidate> findByJobRequest(JobRequest jobRequest) {
         return this.jobCandidateRepository.findByJobRequest(jobRequest);
     }
 
-    public Page<JobCandidate> findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status status, Client client , Pageable pageable) {
+    public Page<JobCandidate> findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status status, Individual client, Pageable pageable) {
         return this.jobCandidateRepository.findByJobRequest_StatusAndJobRequest_Client(status, client, pageable);
     }
 
-    public Page<JobCandidate> findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status status, Expertise expertise, Professional professional, Pageable pageable) {
-        return this.jobCandidateRepository.findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(status, expertise, professional, pageable);
+    public Page<JobCandidate> findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable) {
+        return this.jobCandidateRepository.findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(status, expertise, individual, pageable);
     }
 
 }

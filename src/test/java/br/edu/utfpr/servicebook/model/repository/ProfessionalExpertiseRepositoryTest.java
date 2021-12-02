@@ -1,7 +1,7 @@
 package br.edu.utfpr.servicebook.model.repository;
 
 import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.Professional;
+import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
 import br.edu.utfpr.servicebook.util.CPFUtil;
 import org.junit.jupiter.api.*;
@@ -14,8 +14,6 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.transaction.Transactional;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @ActiveProfiles("test")
 class ProfessionalExpertiseRepositoryTest {
@@ -27,7 +25,7 @@ class ProfessionalExpertiseRepositoryTest {
     ExpertiseRepository expertiseRepository;
 
     @Autowired
-    ProfessionalRepository professionalRepository;
+    IndividualRepository individualRepository;
 
     @Autowired
     ProfessionalExpertiseRepository professionalExpertiseRepository;
@@ -41,15 +39,15 @@ class ProfessionalExpertiseRepositoryTest {
         mechanicExpertise = expertiseRepository.save(mechanicExpertise);
 
         //João Mecânico
-        Professional joao = new Professional("Roberto Carlos", "joao@mail.com", "Senha123", "(42) 88999-9991", CPFUtil.geraCPF());
-        joao = professionalRepository.save(joao);
+        Individual joao = new Individual("Roberto Carlos", "joao@mail.com", "Senha123", "(42) 88999-9991", CPFUtil.geraCPF());
+        joao = individualRepository.save(joao);
 
         ProfessionalExpertise professionalExpertise1 = new ProfessionalExpertise(joao, mechanicExpertise);
         professionalExpertiseRepository.save(professionalExpertise1);
 
         //Maria Desenvolvedora
-        Professional maria = new Professional("Maria", "maria@mail.com", "Senha123", "(42) 88999-9992", CPFUtil.geraCPF());
-        maria = professionalRepository.save(maria);
+        Individual maria = new Individual("Maria", "maria@mail.com", "Senha123", "(42) 88999-9992", CPFUtil.geraCPF());
+        maria = individualRepository.save(maria);
 
         ProfessionalExpertise professionalExpertise2 = new ProfessionalExpertise(maria, developerExpertise);
         professionalExpertiseRepository.save(professionalExpertise2);
@@ -59,7 +57,7 @@ class ProfessionalExpertiseRepositoryTest {
     @Transactional
     @DisplayName("Deve retornar uma lista com UMA especialidade do profissional João")
     public void findByProfessionals() {
-        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
+        Individual joao = individualRepository.findByEmail("joao@mail.com");
         List<ProfessionalExpertise> expertises = professionalExpertiseRepository.findByProfessional(joao);
         log.debug(expertises.toString());
         Assertions.assertFalse(expertises.isEmpty());

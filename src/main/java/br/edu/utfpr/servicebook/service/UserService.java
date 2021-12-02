@@ -42,8 +42,6 @@ public class UserService {
         return this.userRepository.findByPhoneNumber(phoneNumber);
     }
 
-    public Optional<User> findByCpf(String cpf) {
-        return this.userRepository.findByCpf(cpf);
-    }
+
 
 }

@@ -32,10 +32,9 @@ public class JobRequest {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-
 	@ManyToOne
 	@JoinColumn(name = "client_id")
-	private Client client;
+	private Individual client;
 	
 	@ManyToOne
 	@JoinColumn(name = "expertise_id")

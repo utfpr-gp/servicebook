@@ -19,38 +19,38 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
 
     /**
      * Retorna uma lista de candidaturas de um dado profissional
-     * @param professional
+     * @param individual
      * @return
      */
-    List<JobCandidate> findByProfessional(Professional professional);
+    List<JobCandidate> findByProfessional(Individual individual);
 
     /**
      * Retorna uma lista de candidaturas de um profissional que foram escolhidas para orçamento
-     * @param professional
+     * @param individual
      * @param chosen
      * @return
      */
-    List<JobCandidate> findByProfessionalAndChosenByBudget(Professional professional, boolean chosen);
+    List<JobCandidate> findByProfessionalAndChosenByBudget(Individual individual, boolean chosen);
 
     /**
      * Retorna uma lista de candidaturas de um profissional para requisições de um certo estado.
      * @param status
-     * @param professional
+     * @param individual
      * @return
      */
-    List<JobCandidate> findByJobRequest_StatusAndProfessional(JobRequest.Status status, Professional professional);
+    List<JobCandidate> findByJobRequest_StatusAndProfessional(JobRequest.Status status, Individual individual);
 
     /**
      * Retorna uma lista de candidaturas de um profissional para requisições de um certo estado.
      * Retorna com paginação.
      *
      * @param status
-     * @param professional
+     * @param individual
      * @param pageable
      *
      * @returnPage<JobCandidate>
      */
-    Page<JobCandidate> findByJobRequest_StatusAndProfessional(JobRequest.Status status, Professional professional, Pageable pageable);
+    Page<JobCandidate> findByJobRequest_StatusAndProfessional(JobRequest.Status status, Individual individual, Pageable pageable);
 
     /**
      * Retorna uma lista de candidaturas de um profissional para requisições de um certo estado.
@@ -58,17 +58,17 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
      *
      * @param status
      * @param expertise
-     * @param professional
+     * @param individual
      * @param pageable
      *
      * @returnPage<JobCandidate>
      */
-    Page<JobCandidate> findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status status, Expertise expertise, Professional professional, Pageable pageable);
+    Page<JobCandidate> findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable);
 
     Optional<Long> countByJobRequest(JobRequest jobRequest);
 
     List<JobCandidate> findByJobRequest(JobRequest jobRequest);
 
-    Page<JobCandidate> findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status status, Client client, Pageable pageable);
+    Page<JobCandidate> findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status status, Individual individual, Pageable pageable);
 
 }

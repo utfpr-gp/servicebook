@@ -177,10 +177,10 @@
 
 
                                                                 <c:forEach var="star" begin="1" end="5">
-                                                                                    <c:if test="${star <= jobCandidate.professional.rating}">
+                                                                                    <c:if test="${star <= jobCandidate.individual.rating}">
                                                                                         <i class="material-icons dark-text small">star</i>
                                                                                     </c:if>
-                                                                                    <c:if test="${star > jobCandidate.professional.rating}">
+                                                                                    <c:if test="${star > jobCandidate.individual.rating}">
                                                                                         <i class="material-icons dark-text small">star_border</i>
                                                                                     </c:if>
                                                                 </c:forEach>
@@ -197,42 +197,42 @@
                                         </div>
                                         <div class="col s12 center">
 
-                                            <c:if test="${jobCandidate.professional.profilePicture == null}">
+                                            <c:if test="${jobCandidate.individual.profilePicture == null}">
                                                 <svg style="width:220px;height:220px" viewBox="0 0 24 24">
                                                     <path class="dark-color-icon" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
                                                 </svg>
                                             </c:if>
 
-                                            <c:if test="${jobCandidate.professional.profilePicture != null}">
+                                            <c:if test="${jobCandidate.individual.profilePicture != null}">
                                                 <div class="row">
-                                                    <img src="${jobCandidate.professional.profilePicture}" alt="Profissional - Imagem de perfil."
+                                                    <img src="${jobCandidate.individual.profilePicture}" alt="Profissional - Imagem de perfil."
                                                          style="width:200px;height:200px">
                                                 </div>
                                             </c:if>
                                         </div>
                                         <div class="col s12">
                                             <div class="center title-card-resquest">
-                                                <P class="truncate">${jobCandidate.professional.name}</P>
+                                                <P class="truncate">${jobCandidate.individual.name}</P>
                                             </div>
                                             <p class="contact-item center-block dark-color-text">
-                                                <c:if test="${jobCandidate.professional.emailVerified}">
+                                                <c:if test="${jobCandidate.individual.emailVerified}">
                                                     <i class="medium material-icons green-text tooltipped middle truncate" data-position="top"
-                                                       data-tooltip="Email verificado.">email </i>${jobCandidate.professional.email}
+                                                       data-tooltip="Email verificado.">email </i>${jobCandidate.individual.email}
                                                 </c:if>
-                                                <c:if test="${!jobCandidate.professional.emailVerified}">
+                                                <c:if test="${!jobCandidate.individual.emailVerified}">
                                                     <i class="medium material-icons gray-text tooltipped middle" data-position="top"
-                                                       data-tooltip="Email não verificado.">email</i> ${jobCandidate.professional.email}
+                                                       data-tooltip="Email não verificado.">email</i> ${jobCandidate.individual.email}
                                                 </c:if>
                                             </p>
 
                                             <p class="contact-item center-block dark-color-text">
-                                                <c:if test="${jobCandidate.professional.phoneVerified}">
+                                                <c:if test="${jobCandidate.individual.phoneVerified}">
                                                     <i class="medium material-icons green-text tooltipped middle" data-position="top"
-                                                       data-tooltip="Telefone verificado.">phone </i>${jobCandidate.professional.phoneNumber}
+                                                       data-tooltip="Telefone verificado.">phone </i>${jobCandidate.individual.phoneNumber}
                                                 </c:if>
-                                                <c:if test="${!jobCandidate.professional.phoneVerified}">
+                                                <c:if test="${!jobCandidate.individual.phoneVerified}">
                                                     <i class="medium material-icons gray-text tooltipped middle" data-position="top"
-                                                       data-tooltip="Telefone não verificado.">phone</i> ${jobCandidate.professional.phoneNumber}
+                                                       data-tooltip="Telefone não verificado.">phone</i> ${jobCandidate.individual.phoneNumber}
                                                 </c:if>
                                             </p>
 

@@ -12,18 +12,13 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @Data
-@Table(name = "users")
 @NoArgsConstructor
-@RequiredArgsConstructor
+@Table(name = "users")
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	public enum Gender {
-		MASCULINE, FEMININE
-	};
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,31 +29,24 @@ public class User implements Serializable {
 
 	@NonNull
 	@Column(unique = true)
-	private String cpf;
-
-	@NonNull
-	@Column(unique = true)
 	private String email;
 
-	@NonNull
 	private String password;
 
-	@Enumerated(EnumType.STRING)
-	private Gender gender;
+	@NonNull
+	private String phoneNumber;
 
 	private String profilePicture;
 
-	private Date birthDate;
-
-	@NonNull
-	@Column(unique = true)
-	private String phoneNumber;
+	private String mobileNumber;
 
 	private boolean phoneVerified;
 
 	private boolean emailVerified;
 
 	private boolean profileVerified;
+
+	private Integer rating;
 
 	@OneToOne(mappedBy = "user")
 	private UserToken userToken;
@@ -75,6 +63,19 @@ public class User implements Serializable {
 
 		final String hashed = PasswordUtil.generateBCrypt(getPassword());
 		setPassword(hashed);
+	}
+
+	public User(String name, String email, String password, String phoneNumber){
+		setName(name);
+		setEmail(email);
+		setPassword(password);
+		setPhoneNumber(phoneNumber);
+	}
+
+	public User(String name, String email, String phoneNumber){
+		setName(name);
+		setEmail(email);
+		setPhoneNumber(phoneNumber);
 	}
 
 }

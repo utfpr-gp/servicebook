@@ -1,7 +1,7 @@
 package br.edu.utfpr.servicebook.service;
 
-import br.edu.utfpr.servicebook.model.entity.Professional;
-import br.edu.utfpr.servicebook.model.repository.ProfessionalRepository;
+import br.edu.utfpr.servicebook.model.entity.Individual;
+import br.edu.utfpr.servicebook.model.repository.IndividualRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,29 +11,33 @@ import java.util.Optional;
 @Service
 public class ProfessionalService {
     @Autowired
-    private ProfessionalRepository professionalRepository;
+    private IndividualRepository individualRepository;
 
-    public Professional save(Professional entity){
+    public Individual save(Individual entity){
 
-        return professionalRepository.save(entity);
+        return individualRepository.save(entity);
     }
 
     public void delete(Long id){
 
-        professionalRepository.deleteById(id);
+        individualRepository.deleteById(id);
     }
 
-    public List<Professional> findAll(){
+    public List<Individual> findAll(){
 
-        return this.professionalRepository.findAll();
+        return this.individualRepository.findAll();
     }
-    public Optional<Professional> findById(Long id){
+    public Optional<Individual> findById(Long id){
 
-        return this.professionalRepository.findById(id);
+        return this.individualRepository.findById(id);
     }
 
-    public Professional findByEmailAddress(String email){
+    public Individual findByEmail(String email){
 
-        return this.professionalRepository.findByEmailAddress(email);
+        return this.individualRepository.findByEmail(email);
+    }
+
+    public Optional<Individual> findByCpf(String cpf) {
+        return this.individualRepository.findByCpf(cpf);
     }
 }

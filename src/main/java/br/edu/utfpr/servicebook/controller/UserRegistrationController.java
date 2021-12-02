@@ -2,6 +2,7 @@ package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.City;
+import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.model.entity.UserCode;
 import br.edu.utfpr.servicebook.model.mapper.CityMapper;
@@ -36,6 +37,9 @@ public class UserRegistrationController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ProfessionalService professionalService;
 
     @Autowired
     private UserMapper userMapper;
@@ -291,7 +295,7 @@ public class UserRegistrationController {
             return this.userRegistrationErrorForwarding("6", dto, model, errors);
         }
 
-        Optional<User> oUser = userService.findByCpf(dto.getCpf());
+        Optional<Individual> oUser = professionalService.findByCpf(dto.getCpf());
 
         if (oUser.isPresent()) {
             errors.rejectValue("cpf", "error.dto", "CPF já cadastrado! Por favor, insira um CPF não cadastrado.");

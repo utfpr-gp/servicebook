@@ -2,7 +2,6 @@ package br.edu.utfpr.servicebook.model.repository;
 
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.util.CPFUtil;
-import br.edu.utfpr.servicebook.util.DateUtil;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +12,6 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -29,7 +27,7 @@ class JobCandidateRepositoryTest {
     JobCandidateRepository jobCandidateRepository;
 
     @Autowired
-    ProfessionalRepository professionalRepository;
+    IndividualRepository individualRepository;
 
     @Autowired
     ProfessionalExpertiseRepository professionalExpertiseRepository;
@@ -64,8 +62,8 @@ class JobCandidateRepositoryTest {
         jobRequestRepository.save(jb3);
         jobRequestRepository.save(jb4);
 
-        Professional joao = new Professional("Roberto Carlos", "joao@mail.com", "Senha123", "(42) 88999-9992", CPFUtil.geraCPF());
-        joao = professionalRepository.save(joao);
+        Individual joao = new Individual("Roberto Carlos", "joao@mail.com", "Senha123", "(42) 88999-9992", CPFUtil.geraCPF());
+        joao = individualRepository.save(joao);
 
         ProfessionalExpertise professionalExpertise1 = new ProfessionalExpertise(joao, mechanicExpertise);
         professionalExpertiseRepository.save(professionalExpertise1);
@@ -83,7 +81,7 @@ class JobCandidateRepositoryTest {
     @DisplayName("Deve retornar uma lista de candidaturas de um profissional")
     public void findByProfessional() {
 
-        Professional joao = professionalRepository.findByEmail("joao@mail.com");
+        Individual joao = individualRepository.findByEmail("joao@mail.com");
         List<JobCandidate> jobs = jobCandidateRepository.findByProfessional(joao);
         log.debug(jobs.toString());
         for(JobCandidate job : jobs){
@@ -98,7 +96,7 @@ class JobCandidateRepositoryTest {
     @DisplayName("Deve retornar uma lista de candidaturas de um profissional escolhidas para fazer orçamento")
     public void findByProfessionalAndChosenByBudget() {
 
-        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
+        Individual joao = individualRepository.findByEmail("joao@mail.com");
         List<JobCandidate> jobs = jobCandidateRepository.findByProfessionalAndChosenByBudget(joao, true);
         log.debug(jobs.toString());
         Assertions.assertFalse(jobs.isEmpty());
@@ -112,7 +110,7 @@ class JobCandidateRepositoryTest {
         JobRequest jb1 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, dateOfNow);
         jobRequestRepository.save(jb1);
 
-        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
+        Individual joao = individualRepository.findByEmail("joao@mail.com");
 
         JobCandidate candidate1 = new JobCandidate(jb1, joao);
         jobCandidateRepository.save(candidate1);

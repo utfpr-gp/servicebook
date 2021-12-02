@@ -1,7 +1,5 @@
 package br.edu.utfpr.servicebook.model.dto;
 
-import br.edu.utfpr.servicebook.model.entity.JobRequest;
-import br.edu.utfpr.servicebook.model.entity.Professional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -18,58 +18,58 @@ public interface JobContractedRepository extends JpaRepository<JobContracted, Lo
     /**
      * Retorna o total de trabalhos contratados de um profissional.
      *
-     * @param professional
+     * @param individual
      * @return Optional<Long>
      */
-    Optional<Long> countByProfessional(Professional professional);
+    Optional<Long> countByProfessional(Individual individual);
 
     /**
      * Retorna o total de avaliações dos trabalhos contratados de um profissional.
      *
-     * @param professional
+     * @param individual
      * @return Optional<Long>
      */
-    Optional<Long> countRatingByProfessional(Professional professional);
+    Optional<Long> countRatingByProfessional(Individual individual);
 
     /**
      * Retorna o total de comentários dos trabalhos contratados de um profissional.
      *
-     * @param professional
+     * @param individual
      * @return Optional<Long>
      */
-    Optional<Long> countCommentsByProfessional(Professional professional);
+    Optional<Long> countCommentsByProfessional(Individual individual);
 
     /**
      * Retorna o total de trabalhos contratados de um profissional para uma dada especialidade.
      *
-     * @param professional
+     * @param individual
      * @param expertise
      * @return Optional<Long>
      */
-    Optional<Long> countByProfessionalAndJobRequest_Expertise(Professional professional, Expertise expertise);
+    Optional<Long> countByProfessionalAndJobRequest_Expertise(Individual professional, Expertise expertise);
 
     /**
      * Retorna o total de avaliações dos trabalhos contratados de um profissional para uma dada especialidade.
      *
-     * @param professional
+     * @param individual
      * @param expertise
      * @return Optional<Long>
      */
-    Optional<Long> countRatingByProfessionalAndJobRequest_Expertise(Professional professional, Expertise expertise);
+    Optional<Long> countRatingByProfessionalAndJobRequest_Expertise(Individual professional, Expertise expertise);
 
     /**
      * Retorna o total de comentários dos trabalhos contratados de um profissional para uma dada especialidade.
      *
-     * @param professional
+     * @param individual
      * @param expertise
      * @return Optional<Long>
      */
-    Optional<Long> countCommentsByProfessionalAndJobRequest_Expertise(Professional professional, Expertise expertise);
+    Optional<Long> countCommentsByProfessionalAndJobRequest_Expertise(Individual professional, Expertise expertise);
 
-    Page<JobContracted> findByJobRequest_StatusAndProfessional(JobRequest.Status status, Professional professional, Pageable pageable);
+    Page<JobContracted> findByJobRequest_StatusAndProfessional(JobRequest.Status status, Individual professional, Pageable pageable);
 
-    Page<JobContracted> findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status status, Client client, Pageable pageable);
+    Page<JobContracted> findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status status, Individual client, Pageable pageable);
 
-    Page<JobContracted> findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status status, Expertise expertise, Professional professional, Pageable pageable);
+    Page<JobContracted> findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status status, Expertise expertise, Individual professional, Pageable pageable);
 
 }

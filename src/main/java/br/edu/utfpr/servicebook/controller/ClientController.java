@@ -1,6 +1,5 @@
 package br.edu.utfpr.servicebook.controller;
 
-import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
@@ -26,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RequestMapping("/minha-conta/meus-pedidos")
+@RequestMapping("/clientes")
 @Controller
 public class ClientController {
 
@@ -67,7 +66,7 @@ public class ClientController {
     public ModelAndView show() throws Exception {
         ModelAndView mv = new ModelAndView("client/my-requests");
 
-        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> client = Optional.ofNullable(clientService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
 
         if (!client.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -93,10 +92,11 @@ public class ClientController {
 
         return mv;
     }
+
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
-        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> client = Optional.ofNullable(clientService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
 
         if (!client.isPresent()) {
             throw new IOException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -126,7 +126,7 @@ public class ClientController {
     public ModelAndView showDetailsRequest(@PathVariable Optional<Long> id) throws Exception {
         ModelAndView mv = new ModelAndView("client/details-request");
 
-        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> client = Optional.ofNullable(clientService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
 
         if (!client.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -175,7 +175,7 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> client = Optional.ofNullable(clientService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
 
         if (!client.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -216,7 +216,7 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> client = Optional.ofNullable(clientService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
 
         if (!client.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -257,7 +257,7 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> client = Optional.ofNullable(clientService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
 
         if (!client.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -298,7 +298,7 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> client = Optional.ofNullable(clientService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
 
         if (!client.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -332,7 +332,6 @@ public class ClientController {
         return mv;
     }
 
-//    public ModelAndView save(@Validated JobRequestDTO dto, Errors errors, RedirectAttributes redirectAttributes) {
 }
 
 

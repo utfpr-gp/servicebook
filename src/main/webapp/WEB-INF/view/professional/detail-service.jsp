@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
-<t:professional title="Detalhes do serviço">
+<t:individual title="Detalhes do serviço">
     <jsp:body>
 
         <main>
@@ -92,4 +92,4 @@
         </main>
 
     </jsp:body>
-</t:professional>
+</t:individual>

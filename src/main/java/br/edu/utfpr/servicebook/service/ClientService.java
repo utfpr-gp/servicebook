@@ -1,8 +1,7 @@
 package br.edu.utfpr.servicebook.service;
 
-import br.edu.utfpr.servicebook.model.entity.Client;
-import br.edu.utfpr.servicebook.model.entity.Professional;
-import br.edu.utfpr.servicebook.model.repository.ClientRepository;
+import br.edu.utfpr.servicebook.model.entity.Individual;
+import br.edu.utfpr.servicebook.model.repository.IndividualRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,11 +13,10 @@ import java.util.Optional;
 @Service
 public class ClientService {
 
-
     @Autowired
-    private ClientRepository clientRepository;
+    private IndividualRepository clientRepository;
 
-    public Client save(Client entity){
+    public Individual save(Individual entity){
         return clientRepository.save(entity);
     }
 
@@ -26,19 +24,18 @@ public class ClientService {
         clientRepository.deleteById(id);
     }
 
-    public List<Client> findAll(){
+    public List<Individual> findAll(){
         return this.clientRepository.findAll();
     }
 
-    public Optional<Client> findById(Long id){
+    public Optional<Individual> findById(Long id){
         return this.clientRepository.findById(id);
     }
 
-    public Client findByEmailAddress(String email){
-
-        return this.clientRepository.findByEmailAddress(email);
+    public Individual findByEmail(String email){
+        return this.clientRepository.findByEmail(email);
     }
-    public void init() {
 
+    public void init() {
     }
 }

@@ -33,14 +33,4 @@ public class Expertise {
 	@NonNull
 	@Column(unique = true)
 	private String name;
-	
-//	@ManyToMany(mappedBy = "expertises")
-//	private Set<Professional> professionals = new HashSet<>();
-	
-//	@OneToMany(mappedBy = "expertise")
-//	private Set<JobRequest> jobRequests = new HashSet<>();
-
-//	@OneToMany(mappedBy = "expertise")
-//	Set<ProfessionalExpertise> professionals;
-	
 }

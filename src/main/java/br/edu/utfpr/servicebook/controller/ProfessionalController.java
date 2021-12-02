@@ -2,7 +2,7 @@ package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.dto.JobContractedDTO;
 import br.edu.utfpr.servicebook.model.dto.ProfessionalDTO;
-import br.edu.utfpr.servicebook.model.entity.Professional;
+import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.JobContracted;
 import br.edu.utfpr.servicebook.model.mapper.JobContractedMapper;
 import br.edu.utfpr.servicebook.model.mapper.ProfessionalMapper;
@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RequestMapping("/detalhes-profissional")
+@RequestMapping("/profissionais")
 @Controller
-public class DetailProfessionalController {
+public class ProfessionalController {
 
     @Autowired
     private ProfessionalService professionalService;
@@ -40,7 +40,7 @@ public class DetailProfessionalController {
     public ModelAndView showForm(){
         ModelAndView mv = new ModelAndView("client/details-contact");
 
-        Optional<Professional> oProfessional = Optional.ofNullable(professionalService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = Optional.ofNullable(professionalService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
         ProfessionalDTO professionalDTO = professionaMapper.toResponseDto(oProfessional.get());
         mv.addObject("professional", professionalDTO);
 

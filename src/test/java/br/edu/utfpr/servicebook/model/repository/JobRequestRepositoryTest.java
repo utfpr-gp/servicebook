@@ -2,25 +2,17 @@ package br.edu.utfpr.servicebook.model.repository;
 
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.util.CPFUtil;
-import br.edu.utfpr.servicebook.util.DateUtil;
-import org.h2.tools.Server;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -36,7 +28,7 @@ class JobRequestRepositoryTest {
     JobCandidateRepository jobCandidateRepository;
 
     @Autowired
-    ProfessionalRepository professionalRepository;
+    IndividualRepository individualRepository;
 
     @Autowired
     ProfessionalExpertiseRepository professionalExpertiseRepository;
@@ -82,8 +74,8 @@ class JobRequestRepositoryTest {
         jobRequestRepository.save(jb5);
 
         //João Mecânico e Desenvolvedor
-        Professional joao = new Professional("Roberto Carlos", "joao@mail.com", "Senha123", "(42) 88999-9992", CPFUtil.geraCPF());
-        joao = professionalRepository.save(joao);
+        Individual joao = new Individual("Roberto Carlos", "joao@mail.com", "Senha123", "(42) 88999-9992", CPFUtil.geraCPF());
+        joao = individualRepository.save(joao);
 
         ProfessionalExpertise professionalExpertise1 = new ProfessionalExpertise(joao, mechanicExpertise);
         professionalExpertiseRepository.save(professionalExpertise1);
@@ -92,8 +84,8 @@ class JobRequestRepositoryTest {
         professionalExpertiseRepository.save(professionalExpertise2);
 
         //Maria Desenvolvedora
-        Professional maria = new Professional("Maria", "maria@mail.com", "Senha123","(42) 88999-9993", CPFUtil.geraCPF());
-        maria = professionalRepository.save(maria);
+        Individual maria = new Individual("Maria", "maria@mail.com", "Senha123","(42) 88999-9993", CPFUtil.geraCPF());
+        maria = individualRepository.save(maria);
 
         ProfessionalExpertise professionalExpertise3 = new ProfessionalExpertise(maria, developerExpertise);
         professionalExpertiseRepository.save(professionalExpertise3);
@@ -136,7 +128,7 @@ class JobRequestRepositoryTest {
     @DisplayName("Deve retornar uma lista de requisições disponíveis para uma especialidade que um profissional se candidatou")
     public void findByStatusAndExpertiseAndJobCandidates_Professional() {
         Optional<Expertise> mecanico = expertiseRepository.findByName(MECHANIC);
-        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
+        Individual joao = individualRepository.findByEmail("joao@mail.com");
         List<JobRequest> jobs = jobRequestRepository.findByStatusAndExpertiseAndJobCandidates_Professional(JobRequest.Status.AVAILABLE, mecanico.get(), joao);
         log.debug(jobs.toString());
         Assertions.assertFalse(jobs.isEmpty());
@@ -148,7 +140,7 @@ class JobRequestRepositoryTest {
     @DisplayName("Deve retornar uma lista de requisições disponíveis para uma especialidade, mas apenas aquelas que não tiveram candidaturas")
     public void findByStatusAndExpertiseAndJobCandidatesIsNull() {
         Optional<Expertise> mecanico = expertiseRepository.findByName(MECHANIC);
-        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
+        Individual joao = individualRepository.findByEmail("joao@mail.com");
         List<JobRequest> jobs = jobRequestRepository.findByStatusAndExpertiseAndJobCandidatesIsNull(JobRequest.Status.AVAILABLE, mecanico.get());
         log.debug(jobs.toString());
         Assertions.assertFalse(jobs.isEmpty());
@@ -160,7 +152,7 @@ class JobRequestRepositoryTest {
     @DisplayName("Deve retornar uma lista de requisições disponíveis para uma especialidade, mas apenas aquelas que um certo profissional ainda não se candidatou")
     public void findByStatusAndExpertiseAndJobCandidates_ProfessionalNot() {
         Optional<Expertise> mecanico = expertiseRepository.findByName(DEVELOPER);
-        Professional joao = professionalRepository.findByEmailAddress("joao@mail.com");
+        Individual joao = individualRepository.findByEmail("joao@mail.com");
         List<JobRequest> jobs = jobRequestRepository.findByStatusAndExpertiseAndJobCandidates_ProfessionalNot(JobRequest.Status.AVAILABLE, mecanico.get(), joao);
         log.debug(jobs.toString());
         Assertions.assertFalse(jobs.isEmpty());

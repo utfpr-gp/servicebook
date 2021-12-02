@@ -2,7 +2,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:professional title="ServiceBook - Minha conta">
+<t:individual title="ServiceBook - Minha conta">
     <jsp:body>
 
         <main>
@@ -13,13 +13,13 @@
                             <div class="row center">
                                 <div class="col s12 dark-color-text">
                                     <div class="row tooltipped" data-position="bottom"
-                                         data-tooltip="${professional.rating} estrela (s).">
+                                         data-tooltip="${individual.rating} estrela (s).">
 
                                         <c:forEach var="star" begin="1" end="5">
-                                            <c:if test="${star <= professional.rating}">
+                                            <c:if test="${star <= individual.rating}">
                                                 <i class="material-icons yellow-text small">star</i>
                                             </c:if>
-                                            <c:if test="${star > professional.rating}">
+                                            <c:if test="${star > individual.rating}">
                                                 <i class="material-icons yellow-text small">star_border</i>
                                             </c:if>
                                         </c:forEach>
@@ -30,22 +30,22 @@
                         </div>
                         <div class="col s12 center">
 
-                            <c:if test="${professional.profilePicture == null}">
+                            <c:if test="${individual.profilePicture == null}">
                                 <svg class="icon-person" style="width:250px;height:250px" viewBox="0 0 24 24">
                                     <path class="dark-color-icon"
                                           d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
                                 </svg>
                             </c:if>
 
-                            <c:if test="${professional.profilePicture != null}">
+                            <c:if test="${individual.profilePicture != null}">
                                 <div class="row">
-                                    <img src="${professional.profilePicture}" alt="Profissional - Imagem de perfil."
+                                    <img src="${individual.profilePicture}" alt="Profissional - Imagem de perfil."
                                          style="width:250px;height:250px">
                                 </div>
                             </c:if>
 
                             <div class="row">
-                                <p>${professional.description != null ? professional.description : 'Perfil sem descrição.'}</p>
+                                <p>${individual.description != null ? individual.description : 'Perfil sem descrição.'}</p>
                             </div>
                             <h5 class="edit-link tertiary-color-text">
                                 <a class="tertiary-color-text" href="">Editar perfil</a>
@@ -55,7 +55,7 @@
                     <div class="row secondary-background-color no-margin">
                         <div class="col s12">
                             <h5 class="name-header no-margin center white-text">
-                                <strong>${professional.name}</strong>
+                                <strong>${individual.name}</strong>
                             </h5>
                         </div>
                     </div>
@@ -67,11 +67,11 @@
                     <div class="row secondary-background-color no-margin">
                         <div class="col s4 center no-padding">
 
-                            <c:if test="${professional.profileVerified}">
+                            <c:if test="${individual.profileVerified}">
                                 <i class="medium material-icons green-text tooltipped" data-position="top"
                                    data-tooltip="Perfil verificado.">person</i>
                             </c:if>
-                            <c:if test="${!professional.profileVerified}">
+                            <c:if test="${!individual.profileVerified}">
                                 <i class="medium material-icons gray-text tooltipped" data-position="top"
                                    data-tooltip="Perfil não verificado.">person</i>
                             </c:if>
@@ -79,11 +79,11 @@
                         </div>
                         <div class="col s4 center no-padding">
 
-                            <c:if test="${professional.emailVerified}">
+                            <c:if test="${individual.emailVerified}">
                                 <i class="medium material-icons green-text tooltipped" data-position="top"
                                    data-tooltip="Email verificado.">email</i>
                             </c:if>
-                            <c:if test="${!professional.emailVerified}">
+                            <c:if test="${!individual.emailVerified}">
                                 <i class="medium material-icons gray-text tooltipped" data-position="top"
                                    data-tooltip="Email não verificado.">email</i>
                             </c:if>
@@ -91,11 +91,11 @@
                         </div>
                         <div class="col s4 center no-padding">
 
-                            <c:if test="${professional.phoneVerified}">
+                            <c:if test="${individual.phoneVerified}">
                                 <i class="medium material-icons green-text tooltipped" data-position="top"
                                    data-tooltip="Telefone verificado.">phone</i>
                             </c:if>
-                            <c:if test="${!professional.phoneVerified}">
+                            <c:if test="${!individual.phoneVerified}">
                                 <i class="medium material-icons gray-text tooltipped" data-position="top"
                                    data-tooltip="Telefone não verificado.">phone</i>
                             </c:if>
@@ -146,14 +146,14 @@
                             <div class="row secondary-background-color no-margin">
                                 <div class="col s12 white-text center">
                                     <div class="row tooltipped" data-position="bottom"
-                                         data-tooltip="${professionalExpertiseRating != null ? professionalExpertiseRating : professional.rating} estrela (s).">
+                                         data-tooltip="${professionalExpertiseRating != null ? professionalExpertiseRating : individual.rating} estrela (s).">
 
                                         <c:if test="${professionalExpertiseRating == null}">
                                             <c:forEach var="star" begin="1" end="5">
-                                                <c:if test="${star <= professional.rating}">
+                                                <c:if test="${star <= individual.rating}">
                                                     <i class="material-icons yellow-text small">star</i>
                                                 </c:if>
-                                                <c:if test="${star > professional.rating}">
+                                                <c:if test="${star > individual.rating}">
                                                     <i class="material-icons yellow-text small">star_border</i>
                                                 </c:if>
                                             </c:forEach>
@@ -264,7 +264,7 @@
         </main>
 
     </jsp:body>
-</t:professional>
+</t:individual>
 
 <script>
     $(document).ready(function () {

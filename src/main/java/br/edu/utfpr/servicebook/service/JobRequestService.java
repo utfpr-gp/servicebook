@@ -1,9 +1,8 @@
 package br.edu.utfpr.servicebook.service;
 
-import br.edu.utfpr.servicebook.model.entity.Client;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
+import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
-import br.edu.utfpr.servicebook.model.entity.Professional;
 import br.edu.utfpr.servicebook.model.repository.JobRequestRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,26 +45,26 @@ public class JobRequestService {
         return this.jobRequestRepository.findByStatus(status);
     }
 
-    public List<JobRequest> findByClientOrderByDateCreatedDesc(Client client) {
+    public List<JobRequest> findByClientOrderByDateCreatedDesc(Individual client) {
         return this.jobRequestRepository.findByClientOrderByDateCreatedDesc(client);
     }
 
-    public Page<JobRequest> findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status status, Professional professional, Pageable pageable) {
-        return this.jobRequestRepository.findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(status, professional, pageable);
+    public Page<JobRequest> findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status status, Individual individual, Pageable pageable) {
+        return this.jobRequestRepository.findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(status, individual, pageable);
     }
 
-    public Page<JobRequest> findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status status, Expertise expertise, Professional professional, Pageable pageable) {
-        return this.jobRequestRepository.findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(status, expertise, professional, pageable);
+    public Page<JobRequest> findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable) {
+        return this.jobRequestRepository.findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(status, expertise, individual, pageable);
     }
 
-    public Page<JobRequest> findByStatusAndJobContracted_Professional(JobRequest.Status status, Professional professional, Pageable pageable) {
-        return this.jobRequestRepository.findByStatusAndJobContracted_Professional(status, professional, pageable);
+    public Page<JobRequest> findByStatusAndJobContracted_Professional(JobRequest.Status status, Individual individual, Pageable pageable) {
+        return this.jobRequestRepository.findByStatusAndJobContracted_Professional(status, individual, pageable);
     }
 
-    public Page<JobRequest> findByStatusAndExpertiseAndJobContracted_Professional(JobRequest.Status status, Expertise expertise, Professional professional, Pageable pageable) {
-        return this.jobRequestRepository.findByStatusAndExpertiseAndJobContracted_Professional(status, expertise, professional, pageable);
+    public Page<JobRequest> findByStatusAndExpertiseAndJobContracted_Professional(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable) {
+        return this.jobRequestRepository.findByStatusAndExpertiseAndJobContracted_Professional(status, expertise, individual, pageable);
     }
-    public Page<JobRequest> findByStatusAndClient(JobRequest.Status status,  Client client, Pageable pageable) {
+    public Page<JobRequest> findByStatusAndClient(JobRequest.Status status,  Individual client, Pageable pageable) {
         return this.jobRequestRepository.findByStatusAndClient(status, client, pageable);
     }
     public void init() {

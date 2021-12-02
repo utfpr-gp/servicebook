@@ -2,14 +2,15 @@ package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
 import br.edu.utfpr.servicebook.model.dto.JobRequestDTO;
-import br.edu.utfpr.servicebook.model.entity.Client;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
+import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
 import br.edu.utfpr.servicebook.service.ClientService;
 import br.edu.utfpr.servicebook.service.ExpertiseService;
 import br.edu.utfpr.servicebook.service.JobRequestService;
+import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.DateUtil;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import com.cloudinary.Cloudinary;
@@ -262,12 +263,15 @@ public class JobRequestController {
             return "client/job-request/wizard-step-06";
 
         }
+
         //persiste na sessão
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         sessionDTO.setNameClient(dto.getNameClient());
-        sessionDTO.setCep(dto.getCep());
+        sessionDTO.setCpf(dto.getCpf());
         sessionDTO.setEmailClient(dto.getEmailClient());
         sessionDTO.setPhone(dto.getPhone());
+
+        redirectAttributes.addFlashAttribute("email", dto.getEmailClient());
         log.debug("Passo 6 {}", sessionDTO);
 
         return "redirect:/requisicoes?passo=7";
@@ -279,7 +283,7 @@ public class JobRequestController {
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         Expertise exp = null;
         log.debug("Passo Name {}", sessionDTO.getNameClient());
-        Client client = clientService.save(new Client(sessionDTO.getNameClient(), sessionDTO.getEmailClient(), sessionDTO.getPhone(), sessionDTO.getCep()));
+        Individual client = clientService.save(new Individual(sessionDTO.getNameClient(), sessionDTO.getEmailClient(), sessionDTO.getPhone(), sessionDTO.getCpf()));
         Optional<Expertise> oExpertise = expertiseService.findById(sessionDTO.getExpertiseId());
 
         if(oExpertise.isPresent()){
