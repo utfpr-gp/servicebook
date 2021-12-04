@@ -258,15 +258,8 @@
             </div>
             <div id="modal-close" class="modal">
                 <div class="modal-content">
-                    <form action="${pageContext.request.contextPath}/minha-conta/meus-pedidos" method="post">
-                        <input type="hidden" name="id" value="${jobRequest.id}"/>
-                        <input type="hidden" name="clientConfirmation" value="${jobRequest.clientConfirmation}"/>
-                        <input type="hidden" name="description" value="${jobRequest.description}"/>
-                        <input type="hidden" name="professionalConfirmation" value="${jobRequest.professionalConfirmation}"/>
-                        <input type="hidden" name="quantityCandidatorsMax" value="${jobRequest.quantityCandidatorsMax}"/>
-                        <input type="hidden" name="status" value="BUDGET"/>
-                        <input type="hidden" name="clientId" value="${jobRequest.client.id}"/>
-                        <input type="hidden" name="expertiseId" value="${jobRequest.expertise.id}"/>
+                    <form action="${pageContext.request.contextPath}/minha-conta/meus-pedidos/encerrar-pedido/${jobRequest.id}" method="post">
+                        <input type="hidden" name="_method" value="PATCH"/>
                         <div class="modal-content">
                             <h4>Você tem certeza que deseja encerrar o recebimento de propostas para este pedido? Não será possível reativar depois</h4>
                         </div>

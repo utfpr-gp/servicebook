@@ -335,58 +335,40 @@ public class ClientController {
         return mv;
     }
 
-    @PostMapping
-    public ModelAndView save(@Validated JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes) {
+    @PatchMapping("/encerrar-pedido/{id}")
+    public String updateRequest(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
-        //verifica os erros de validação
-        if(errors.hasErrors()){
-            ModelAndView mv = new ModelAndView("client/my-requests");
-            //salva o DTO para manter tais dados em caso de erro
-            mv.addObject("dto", dto);
-            //salva os erros para serem apresentados
-            mv.addObject("errors", errors.getAllErrors());
-            //encaminhamento para a visão
-            return mv;
+        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+
+        if (!client.isPresent()) {
+            throw new IOException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        log.debug("Persistindo o DTO {}", dto);
-
-        JobRequest jobRequest = jobRequestMapper.toEntity(dto);
-
-        Client cli = null;
-        Optional<Client> oClient = clientService.findById(dto.getClientId());
-        if(oClient.isPresent()){
-            cli = oClient.get();
+        JobRequest jobRequest = null;
+        Optional<JobRequest> optionalJobRequest = this.jobRequestService.findById(id);
+        if(optionalJobRequest.isPresent()) {
+            jobRequest = optionalJobRequest.get();
+        } else {
+            throw new EntityNotFoundException("Solicitação não foi encontrada pelo id informado.");
         }
 
-        Expertise exp = null;
-        Optional<Expertise> oExpertise = expertiseService.findById(dto.getExpertiseId());
-        if(oExpertise.isPresent()){
-            exp = oExpertise.get();
+        Long jobRequestClientId = jobRequest.getClient().getId();
+        Long clientId = client.get().getId();
+
+        if(jobRequestClientId != clientId){
+            throw new EntityNotFoundException("Você não tem permissão para alterar essa solicitação.");
         }
 
-        Optional<JobRequest> job = jobRequestService.findById(dto.getId());
-
-        if (!job.isPresent()) {
-            throw new EntityNotFoundException("Solicitação de serviço não encontrado. Por favor, tente novamente.");
+        if (jobRequest.getStatus().equals(JobRequest.Status.AVAILABLE)) {
+            jobRequest.setStatus(JobRequest.Status.BUDGET);
+            this.jobRequestService.save(jobRequest);
+        } else {
+            throw new InvalidParamsException("O status da solicitação não pode ser alterado.");
         }
 
-        JobRequestFullDTO jobDTO = jobRequestMapper.toFullDto(job.get());
-
-        jobRequest.setDateCreated(DateUtil.charConvertDate("dd/MM/yyyy", jobDTO.getDateCreated()));
-        jobRequest.setDateExpired(DateUtil.charConvertDate("dd/MM/yyyy", jobDTO.getDateExpired()));
-        jobRequest.setClient(cli);
-        jobRequest.setExpertise(exp);
-
-        jobRequestService.save(jobRequest);
-
-        redirectAttributes.addFlashAttribute("msg", "Solicitação de serviço atualizado com sucesso com sucesso!");
-
-        //redirecionamento para a rota
-        return new ModelAndView("redirect:meus-pedidos");
+        redirectAttributes.addFlashAttribute("msg", "Solicitação alterada!");
+        return "redirect:/minha-conta/meus-pedidos";
 
     }
 
 }
-
-
