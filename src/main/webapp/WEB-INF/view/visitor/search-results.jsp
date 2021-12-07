@@ -41,25 +41,37 @@
             <div class="section">
                 <div class="row">
                     <div class="col s12">
-                        <h4 class="center">Bora contratar um profissional para realizar o serviço!</h4>
-                        <blockquote class="itens-list">
-                            <p>Descreva o serviço que precisa;</p>
-                            <p>Informe para quando precisa que o serviço seja realizado;</p>
-                            <p>Defina o o número máximo de contatos de profissionais que deseja receber;</p>
-                            <p>Receba uma lista de contatos dos profissionais interessados em realizar o serviço;</p>
-                            <p>
-                                Entre em contato com um ou mais destes profissionais para explicar melhor o serviço e
-                                saber do orçamento;
-                            </p>
-                            <p>
-                                Marque na lista o profissional escolhido para o serviço para que você possa avaliar o
-                                serviço posteriorment;
-                            </p>
-                            <p>Pronto!</p>
-                            <p>O pagamento do serviço é realizado diretamente ao profissional!</p>
-                        </blockquote>
-                        <div class="center">
-                            <a class="waves-effect waves-light btn" href="requisicoes">Começar</a>
+
+                        <div class="row">
+
+                            <c:forEach var="professional" items="${professionals}">
+                                <div class="col s12 m6">
+                                    <div class="card-panel card-result blue lighten-1 white-text">
+                                        <div class="row center-align">
+                                            <c:choose>
+                                                <c:when test="${professional.profilePicture != null}">
+                                                    <img src="${professional.profilePicture}" class="avatar" alt="Foto de perfil">
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <img src="assets/resources/images/no-photo.png" class="avatar" alt="Sem foto de perfil">
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </div>
+                                        <div class="row center-align">
+                                            <h5>${professional.name}</h5>
+                                            <div class="divider"></div>
+                                        </div>
+                                        <div class="row center-align">
+                                            <div class="col expertise-label">pedreiro</div>
+                                            <div class="col expertise-label">encanador </div>
+                                        </div>
+                                        <div class="row center-align ">
+                                            <a href="detalhes-do-profissional/${professional.id}" class="waves-effect waves-light btn-large white blue-text text-lighten-1"><strong>Ver perfil</strong></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:forEach>
+
                         </div>
                     </div>
                 </div>
