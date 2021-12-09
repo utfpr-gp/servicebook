@@ -258,7 +258,7 @@
             </div>
             <div id="modal-close" class="modal">
                 <div class="modal-content">
-                    <form action="${pageContext.request.contextPath}/minha-conta/meus-pedidos/encerrar-pedido/${jobRequest.id}" method="post">
+                    <form action="${pageContext.request.contextPath}/minha-conta/meus-pedidos/encerra-pedido/${jobRequest.id}" method="post">
                         <input type="hidden" name="_method" value="PATCH"/>
                         <div class="modal-content">
                             <h4>Você tem certeza que deseja encerrar o recebimento de propostas para este pedido? Não será possível reativar depois</h4>

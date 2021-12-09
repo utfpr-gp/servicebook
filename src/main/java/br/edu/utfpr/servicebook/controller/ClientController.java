@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -96,6 +97,7 @@ public class ClientController {
 
         return mv;
     }
+
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
@@ -335,22 +337,30 @@ public class ClientController {
         return mv;
     }
 
-    @PatchMapping("/encerrar-pedido/{id}")
+    /**
+     * Encerra o recebimento de candidaturas antes de receber o total de candidaturas esperado.
+     * @param id
+     * @param redirectAttributes
+     * @return
+     * @throws IOException
+     */
+    @PatchMapping("/encerra-pedido/{id}")
     public String updateRequest(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
         Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
 
         if (!client.isPresent()) {
-            throw new IOException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
         JobRequest jobRequest = null;
-        Optional<JobRequest> optionalJobRequest = this.jobRequestService.findById(id);
-        if(optionalJobRequest.isPresent()) {
-            jobRequest = optionalJobRequest.get();
-        } else {
+        Optional<JobRequest> oJobRequest = this.jobRequestService.findById(id);
+
+        if(!oJobRequest.isPresent()) {
             throw new EntityNotFoundException("Solicitação não foi encontrada pelo id informado.");
         }
+
+        jobRequest = oJobRequest.get();
 
         Long jobRequestClientId = jobRequest.getClient().getId();
         Long clientId = client.get().getId();
@@ -359,16 +369,14 @@ public class ClientController {
             throw new EntityNotFoundException("Você não tem permissão para alterar essa solicitação.");
         }
 
-        if (jobRequest.getStatus().equals(JobRequest.Status.AVAILABLE)) {
-            jobRequest.setStatus(JobRequest.Status.BUDGET);
-            this.jobRequestService.save(jobRequest);
-        } else {
+        if (!jobRequest.getStatus().equals(JobRequest.Status.AVAILABLE)) {
             throw new InvalidParamsException("O status da solicitação não pode ser alterado.");
         }
 
+        jobRequest.setStatus(JobRequest.Status.BUDGET);
+        this.jobRequestService.save(jobRequest);
+
         redirectAttributes.addFlashAttribute("msg", "Solicitação alterada!");
-        return "redirect:/minha-conta/meus-pedidos";
-
+        return "redirect:/minha-conta/meus-pedidos?tab=paraOrcamento";
     }
-
 }
