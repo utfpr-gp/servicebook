@@ -188,7 +188,27 @@
                     </form>
                 </div>
             </div>
+
+            <div id="modal-msg" class="modal">
+                <div class="modal-content">
+                    <div class="modal-content">
+                        <h4>${msg}</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="modal-close btn waves-effect waves-light gray">OK</button>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </jsp:body>
 </t:client>
 <script src="assets/resources/scripts/requests.js"></script>
+
+<c:if test="${not empty msg}">
+    <script>
+        $(document).ready(function(){
+            $('#modal-msg').modal('open');
+        });
+    </script>
+</c:if>
