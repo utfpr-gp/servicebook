@@ -10,9 +10,7 @@
                     <i class="material-icons large"> sentiment_dissatisfied </i>
                     <p class="center text-form-dados">
                         Nenhuma solicitação para fazer encontrada!
-
                     </p>
-
                 </div>
             </div>
         </div>
