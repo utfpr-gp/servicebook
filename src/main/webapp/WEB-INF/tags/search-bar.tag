@@ -8,12 +8,12 @@
             </div>
         </div>
         <div class="row">
-            <form action="buscar" method="post">
+            <form action="profissionais/busca" method="get">
                 <div class="col s10">
                     <nav class="grey lighten-4">
                         <div class="nav-wrapper">
                             <div class="input-field">
-                                <input id="search" type="search" name="name" placeholder="Digite aqui..." required>
+                                <input id="search" type="search" name="termo-da-busca" placeholder="Digite aqui..." required>
                                 <label class="label-icon" for="search"><i class="material-icons black-text">search</i></label>
                                 <i class="material-icons">close</i>
                             </div>

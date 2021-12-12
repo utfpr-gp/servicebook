@@ -5,35 +5,7 @@
 <t:visitor title="Servicebook - Início">
     <jsp:body>
 
-        <div id="index-banner" class="parallax-container">
-            <div class="section no-pad-bot">
-                <div class="container">
-                    <br><br>
-                    <h3 class="header center logo-text logo-text-parallax">ServiceBook</h3>
-                    <c:if test="${cities.size() > 1}">
-                        <div class="row center">
-                            <div class="col s10 offset-s1 m4 offset-m4  input-field">
-                                <select id="select-city" class="white-text select-city">
-                                    <c:forEach var="city" items="${cities}">
-                                        <option value="${city.image}">${city.name} - ${city.state.uf}</option>
-                                    </c:forEach>
-                                </select>
-                            </div>
-                        </div>
-                    </c:if>
-                    <h4 class="header center">O MELHOR PROFISSIONAL QUE VOCÊ PRECISA ESTÁ AQUI!</h4>
-                    <h4 class="header center">São + de 3000 profissionais cadastrados!</h4>
-                </div>
-            </div>
-            <div class="parallax">
-                <c:if test="${not empty cities}">
-                    <img id="img-city" src="${cities[0].image}" alt="Imagem das cidades">
-                </c:if>
-                <c:if test="${empty cities}">
-                    <img id="img-city" src="assets/resources/images/default.jpeg" alt="Imagem das cidades">
-                </c:if>
-            </div>
-        </div>
+        <t:banner></t:banner>
 
         <t:search-bar></t:search-bar>
 
