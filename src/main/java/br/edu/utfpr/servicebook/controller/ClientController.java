@@ -347,9 +347,9 @@ public class ClientController {
     @PatchMapping("/encerra-pedido/{id}")
     public String updateRequest(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
-        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Client> oClient = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
 
-        if (!client.isPresent()) {
+        if (!oClient.isPresent()) {
             throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
@@ -363,7 +363,7 @@ public class ClientController {
         jobRequest = oJobRequest.get();
 
         Long jobRequestClientId = jobRequest.getClient().getId();
-        Long clientId = client.get().getId();
+        Long clientId = oClient.get().getId();
 
         if(jobRequestClientId != clientId){
             throw new EntityNotFoundException("Você não tem permissão para alterar essa solicitação.");
@@ -379,4 +379,5 @@ public class ClientController {
         redirectAttributes.addFlashAttribute("msg", "Solicitação alterada!");
         return "redirect:/minha-conta/meus-pedidos?tab=paraOrcamento";
     }
+
 }

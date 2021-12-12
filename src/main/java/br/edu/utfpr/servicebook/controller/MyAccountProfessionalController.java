@@ -14,14 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -64,6 +67,18 @@ public class MyAccountProfessionalController {
 
     @Autowired
     private JobCandidateMapper jobCandidateMapper;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private CityService cityService;
+
+    @Autowired
+    private CityMapper cityMapper;
 
     @GetMapping
     public ModelAndView showMyAccountProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> id) throws Exception {
@@ -398,6 +413,32 @@ public class MyAccountProfessionalController {
 
         mv.addObject("professional", professionalDTO);
         mv.addObject("jobContracted", jobContractedDTOs);
+
+        return mv;
+    }
+
+    @GetMapping("/perfil/{id}")
+    public ModelAndView editProfile(@PathVariable Long id) throws IOException {
+        Optional<Professional> oProfessional = Optional.ofNullable(professionalService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+        if (!oProfessional.isPresent()) {
+            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        Optional<User> oUser = userService.findById(id);
+        if (!oUser.isPresent()) {
+            throw new EntityNotFoundException("Usuário não foi encontrado pelo id informado.");
+        }
+        UserDTO userDTO = userMapper.toDto(oUser.get());
+
+        Optional<City> oCity = cityService.findById(userDTO.getAddress().getCity().getId());
+        if (!oCity.isPresent()) {
+            throw new EntityNotFoundException("Cidade não foi encontrada pelo id informado.");
+        }
+        CityMinDTO cityMinDTO = cityMapper.toMinDto(oCity.get());
+
+        ModelAndView mv = new ModelAndView("professional/edit-account");
+        mv.addObject("user", userDTO);
+        mv.addObject("city", cityMinDTO);
 
         return mv;
     }
