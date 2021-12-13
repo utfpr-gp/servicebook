@@ -18,4 +18,8 @@ public class ProfessionalDTO extends UserDTO {
     private int rating;
 
     private int denounceAmount;
+
+    public String getOnlyNumbersFromPhone() {
+        return getPhoneNumber().replaceAll("[^0-9]", "");
+    }
 }
