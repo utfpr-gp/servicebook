@@ -3,6 +3,10 @@ package br.edu.utfpr.servicebook.exception;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,6 +36,22 @@ public class GlobalExceptionHandler {
 		log.error("[URL] : {}", req.getRequestURL(), e);
 
 		//caso contrário, envia para a visão de erro
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("message", e.getMessage());
+		mv.addObject("url", req.getRequestURL());
+		mv.setViewName("error/error-handler");
+		return mv;
+	}
+
+	/**
+	 * Disparado quando não é possível encontrar os dados do usuário na sessão.
+	 * AccessDeniedException é lançado pelo Spring ao acessar rota sem permissão
+	 * AuthenticationCredentialsNotFoundException lançado pelo desenvolvedor ao não encontrar o usuário na sesão
+	 * @param e
+	 * @return
+	 */
+	@ExceptionHandler({AuthenticationCredentialsNotFoundException.class, AccessDeniedException.class})
+	public ModelAndView handleException(HttpServletRequest req, AuthenticationCredentialsNotFoundException e) {
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("message", e.getMessage());
 		mv.addObject("url", req.getRequestURL());
