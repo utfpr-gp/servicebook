@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -64,6 +65,15 @@ public class MyAccountProfessionalController {
 
     @Autowired
     private JobCandidateMapper jobCandidateMapper;
+
+    @Autowired
+    private CityService cityService;
+
+    @Autowired
+    private StateService stateService;
+
+    @Autowired
+    private ClientService clientService;
 
     @GetMapping
     public ModelAndView showMyAccountProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> id) throws Exception {
@@ -129,6 +139,53 @@ public class MyAccountProfessionalController {
 
         return mv;
     }
+
+
+    @GetMapping("/detalhes-servico/{id}")
+    public ModelAndView showAvailableDetailJobs(
+            @PathVariable Long id
+    ) throws Exception {
+
+        Optional<Professional> oProfessional = Optional.ofNullable(professionalService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+
+        if (!oProfessional.isPresent()) {
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        ModelAndView mv = new ModelAndView("professional/detail-service");
+        Optional<JobRequest> oJob = jobRequestService.findById(id);
+
+        if (!oJob.isPresent()) {
+            throw new Exception("O trabalho não foi encontrado em nosso sistema!");
+        }
+
+        JobRequest jb = oJob.get();
+
+        JobRequestDetailsDTO jobFull = jobRequestMapper.jobRequestDetailsDTO(jb);
+
+        Optional oClient, oCity, oState;
+
+        oClient = clientService.findById(jobFull.getClient().getId());
+        Client client = (Client) oClient.get();
+
+        oCity = cityService.findById(jobFull.getClient().getAddress().getCity().getId());
+
+        City city = (City) oCity.get();
+        oState = stateService.findById(city.getState().getId());
+
+        State state = (State) oState.get();
+
+
+        System.out.println(client.getProfilePicture());
+
+        mv.addObject("job", jobFull);
+        mv.addObject("client", client);
+        mv.addObject("city", city.getName());
+        mv.addObject("state", state.getName());
+        mv.addObject("ricardo", "ricardo");
+        return mv;
+    }
+
 
     @GetMapping("/disponiveis")
     public ModelAndView showAvailableJobs(
