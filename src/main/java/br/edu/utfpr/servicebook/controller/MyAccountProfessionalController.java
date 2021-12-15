@@ -468,21 +468,34 @@ public class MyAccountProfessionalController {
             throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        Optional<User> oUser = userService.findById(id);
-        if (!oUser.isPresent()) {
-            throw new EntityNotFoundException("Usuário não foi encontrado pelo id informado.");
-        }
-        UserDTO userDTO = userMapper.toDto(oUser.get());
+        ProfessionalDTO professionalDTO = professionalMapper.toDto(oProfessional.get());
 
-        Optional<City> oCity = cityService.findById(userDTO.getAddress().getCity().getId());
+        Optional<City> oCity = cityService.findById(oProfessional.get().getAddress().getCity().getId());
         if (!oCity.isPresent()) {
             throw new EntityNotFoundException("Cidade não foi encontrada pelo id informado.");
         }
         CityMinDTO cityMinDTO = cityMapper.toMinDto(oCity.get());
 
         ModelAndView mv = new ModelAndView("professional/edit-account");
-        mv.addObject("user", userDTO);
+        mv.addObject("professional", professionalDTO);
         mv.addObject("city", cityMinDTO);
+
+        return mv;
+    }
+
+    @GetMapping("/meu-anuncio/{id}")
+    public ModelAndView showMyAd(@PathVariable Long id) throws IOException {
+        Optional<Professional> oProfessional = professionalService.findById(id);
+
+        if (!oProfessional.isPresent()) {
+            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        ProfessionalMinDTO professionalMinDTO = professionalMapper.toMinDto(oProfessional.get());
+
+        ModelAndView mv = new ModelAndView("professional/account/my-ad");
+
+        mv.addObject("professional", professionalMinDTO);
 
         return mv;
     }
