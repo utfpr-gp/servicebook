@@ -2,6 +2,7 @@ package br.edu.utfpr.servicebook.model.mapper;
 
 
 import br.edu.utfpr.servicebook.model.dto.JobRequestDTO;
+import br.edu.utfpr.servicebook.model.dto.JobRequestDetailsDTO;
 import br.edu.utfpr.servicebook.model.dto.JobRequestFullDTO;
 import br.edu.utfpr.servicebook.model.dto.JobRequestMinDTO;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
@@ -36,6 +37,15 @@ public class JobRequestMapper {
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         JobRequest entity = mapper.map(dto, JobRequest.class);
         return entity;
+    }
+
+    public JobRequestDetailsDTO jobRequestDetailsDTO(JobRequest entity){
+        JobRequestDetailsDTO dto = mapper.map(entity, JobRequestDetailsDTO.class);
+        dto.setDateCreated(this.dateFormat.format(entity.getDateCreated()));
+        dto.setDateExpired(this.dateFormat.format(entity.getDateExpired()));
+        dto.setTextualDate(DateUtil.getTextualDate(DateUtil.toLocalDate(entity.getDateExpired())));
+
+        return dto;
     }
 
     public JobRequestMinDTO toMinDto(JobRequest entity, Optional<Long> amountOfCandidates) {

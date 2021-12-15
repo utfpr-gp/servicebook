@@ -36,4 +36,8 @@ public class ProfessionalService {
 
         return this.professionalRepository.findByEmailAddress(email);
     }
+
+    public List<Professional> findAllByNameIgnoreCase(String name){
+        return this.professionalRepository.findAllByNameIgnoreCase(name);
+    }
 }
