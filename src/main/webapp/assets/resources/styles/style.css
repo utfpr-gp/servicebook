@@ -560,11 +560,6 @@ a.middle-indicator-text{
   top: 90px;
 }
 
-textarea {
-  height: 100%;
-  resize: none;
-}
-
 @media only screen and (max-width : 992px) {
   .parallax-container .section {
     position: absolute;

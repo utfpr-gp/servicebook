@@ -72,6 +72,9 @@ public class MyAccountProfessionalController {
     private CityService cityService;
 
     @Autowired
+    private CityMapper cityMapper;
+
+    @Autowired
     private StateService stateService;
 
     @Autowired
@@ -479,23 +482,6 @@ public class MyAccountProfessionalController {
         ModelAndView mv = new ModelAndView("professional/edit-account");
         mv.addObject("professional", professionalDTO);
         mv.addObject("city", cityMinDTO);
-
-        return mv;
-    }
-
-    @GetMapping("/meu-anuncio/{id}")
-    public ModelAndView showMyAd(@PathVariable Long id) throws IOException {
-        Optional<Professional> oProfessional = professionalService.findById(id);
-
-        if (!oProfessional.isPresent()) {
-            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
-        }
-
-        ProfessionalMinDTO professionalMinDTO = professionalMapper.toMinDto(oProfessional.get());
-
-        ModelAndView mv = new ModelAndView("professional/account/my-ad");
-
-        mv.addObject("professional", professionalMinDTO);
 
         return mv;
     }
