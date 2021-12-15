@@ -3,6 +3,7 @@ package br.edu.utfpr.servicebook.model.mapper;
 import br.edu.utfpr.servicebook.model.dto.CityDTO;
 import br.edu.utfpr.servicebook.model.dto.CityDTO2;
 import br.edu.utfpr.servicebook.model.dto.CityMidDTO;
+import br.edu.utfpr.servicebook.model.dto.CityMinDTO;
 import br.edu.utfpr.servicebook.model.entity.City;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,11 @@ public class CityMapper {
 
     public CityMidDTO toMidDto(City entity) {
         CityMidDTO dto = mapper.map(entity, CityMidDTO.class);
+        return dto;
+    }
+
+    public CityMinDTO toMinDto(City entity) {
+        CityMinDTO dto = mapper.map(entity, CityMinDTO.class);
         return dto;
     }
 
