@@ -560,6 +560,31 @@ a.middle-indicator-text{
   top: 90px;
 }
 
+textarea {
+  height: 100%;
+  resize: none;
+}
+.btn-save {
+  margin-right: 10px;
+}
+.formulario {
+  display: none;
+}
+.formulario .btn {
+  margin-left: 10px;
+}
+.exibir {
+  cursor: pointer;
+}
+#ocultar {
+  position: relative;
+  top: 8px;
+  padding: 0 10px;
+  font-size: 31px;
+  text-decoration: none;
+  color: #000 !important;
+}
+
 @media only screen and (max-width : 992px) {
   .parallax-container .section {
     position: absolute;
