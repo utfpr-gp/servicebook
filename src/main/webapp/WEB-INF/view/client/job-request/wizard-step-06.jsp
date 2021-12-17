@@ -20,7 +20,7 @@
                         <p class="center grey-text text-form-dados">Não perca tempo ligando para vários profissionais. Preencha os dados abaixo e nós encontraremos os melhores para você!</p>
                         <div class="row center">
                             <div class="col s12 l6 offset-l3  input-field">
-                                <form method="post" action="requisicoes/passo-6">
+                                <form method="post" action="requisicoes/passo-7">
                                     <div class="row">
                                         <div class="input-field col s12">
                                             <input placeholder="00000-000"  value="${dto.cep}" id="cep" data-mask="00000-000" name="cep" type="text" class="validate">

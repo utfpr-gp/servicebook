@@ -26,7 +26,7 @@
                                     <div class="col s12 m6 offset-m3 l4 offset-l4 ">
                                         <div class="file-field input-field">
                                             <div class="btn">
-                                                <span>Choose File</span>
+                                                <span>Adicionar fotos</span>
                                                 <input type="file" value="${dto.imageFile}" name="imageFile" accept=".jpg, .jpeg, .png">
                                             </div>
                                             <div class="file-path-wrapper">
