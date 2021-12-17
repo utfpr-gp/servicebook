@@ -16,11 +16,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
@@ -484,6 +482,40 @@ public class MyAccountProfessionalController {
         mv.addObject("city", cityMinDTO);
 
         return mv;
+    }
+
+    @GetMapping("/meu-anuncio/{id}")
+    public ModelAndView showMyAd(@PathVariable Long id) throws IOException {
+        Optional<Professional> oProfessional = this.professionalService.findById(id);
+
+        if (!oProfessional.isPresent()) {
+            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        ProfessionalMinDTO professionalMinDTO = professionalMapper.toMinDto(oProfessional.get());
+
+        ModelAndView mv = new ModelAndView("professional/account/my-ad");
+
+        mv.addObject("professional", professionalMinDTO);
+
+        return mv;
+    }
+
+    @PatchMapping("/cadastra-descricao/{id}")
+    public String updateDescriptionProfessional(@PathVariable Long id, HttpServletRequest request, RedirectAttributes redirectAttributes) throws IOException {
+
+        Optional<Professional> oProfessional = this.professionalService.findById(id);
+
+        if(!oProfessional.isPresent()) {
+            throw new EntityNotFoundException("Profissional não encontrado pelo id informado.");
+        }
+
+        Professional professional = oProfessional.get();
+        String description = request.getParameter("description");
+        professional.setDescription(description);
+        this.professionalService.save(professional);
+
+        return "redirect:/minha-conta/profissional/meu-anuncio/{id}";
     }
 
 }
