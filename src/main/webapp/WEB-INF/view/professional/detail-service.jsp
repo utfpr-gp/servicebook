@@ -45,19 +45,25 @@
             </div>
             <div class="row">
                 <div class="container">
-                    <div class="row">
+                        <div class="row">
+                            <div class="progress  col s12 m10">
+                                <div class="determinate blue" style="width: ${percentage}%"></div>
+                            </div>
+                            <div class=" col s12 m2">${amountOfCandidates} / ${quantityCanditatorMax}</div>
+                        </div>
+                   <div class="row">
                         <div class="row">
                             <div class="col s12 m6 left area-info-request-client-left">
                                 <p class="text-area-info-cli primary-color-text"><i class="small material-icons dark-color-text">person</i> ${job.expertise.name}</p>
-                                <p class="text-area-info-cli primary-color-text"><i class="small material-icons dark-color-text">access_time</i>${job.textualDate}</p>
+                                <p class="text-area-info-cli primary-color-text"><i class="small material-icons dark-color-text">access_time</i> ${job.textualDate}</p>
                                 <p class="text-area-info-cli primary-color-text"><i class="small material-icons dark-color-text">location_on</i> ${job.client.address.street}, ${job.client.address.neighborhood}, ${job.client.address.number}, ${city} - ${state}</p>
                             </div>
                             <div class="col s12 m6 left area-info-request-client-right">
                                <div class="row">
                                    <div class="col s12 m7">
-                                       <p class="text-area-info-cli primary-color-text"><i class="small material-icons dark-color-text">person</i>${client.name}</p>
+                                       <p class="text-area-info-cli primary-color-text"><i class="small material-icons dark-color-text">person</i> ${client.name}</p>
                                        <p class="text-area-info-cli primary-color-text"><i class="small material-icons dark-color-text">phone</i> ${client.phoneNumber}</p>
-                                       <p class="text-area-info-cli primary-color-text"><i class="small material-icons dark-color-text">mail</i>${client.email}</p>
+                                       <p class="text-area-info-cli primary-color-text"><i class="small material-icons dark-color-text">mail</i> ${client.email}</p>
                                    </div>
                                    <div class="col s6 offset-s3 m5 area-foto center">
                                        <img src="${client.profilePicture}" width="150px" height="150px" alt="${client.name}">

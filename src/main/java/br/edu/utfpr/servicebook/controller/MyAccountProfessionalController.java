@@ -181,8 +181,23 @@ public class MyAccountProfessionalController {
         State state = (State) oState.get();
 
 
-        System.out.println(client.getProfilePicture());
+        int quantityCanditatorMax;
+        int amountOfCandidates;
+        quantityCanditatorMax = jobFull.getQuantityCandidatorsMax();
 
+
+        if (jobFull.getAmountOfCandidates() == null)
+            amountOfCandidates = 0;
+        else
+            amountOfCandidates = jobFull.getAmountOfCandidates();
+
+        int percentage = (amountOfCandidates * 100) / quantityCanditatorMax;
+
+
+        mv.addObject("quantityCanditatorMax", quantityCanditatorMax);
+        mv.addObject("amountOfCandidates", amountOfCandidates);
+        mv.addObject("percentage", percentage);
+        mv.addObject("job", jobFull);
         mv.addObject("job", jobFull);
         mv.addObject("client", client);
         mv.addObject("city", city.getName());
