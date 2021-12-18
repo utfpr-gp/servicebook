@@ -20,6 +20,6 @@ public class JobRequestDetailsDTO implements Serializable {
     private String description;
     private Long totalCandidates;
     private String textualDate;
-    private Long amountOfCandidates;
+    private Integer amountOfCandidates;
 
 }
