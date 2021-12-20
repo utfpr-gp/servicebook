@@ -111,9 +111,18 @@ public class UserRegistrationController {
             return this.userRegistrationErrorForwarding("1", dto, model, errors);
         }
 
+        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         Optional<User> oUser = userService.findByEmail(dto.getEmail());
-
         if (oUser.isPresent()) {
+            if (dto.getEmail().equals(oUser.get().getEmail())) {
+                if (oUser.get().getPassword() != null) {
+                    return "redirect:/entrar";
+                }
+                sessionDTO.setId(oUser.get().getId());
+                sessionDTO.setEmail(oUser.get().getEmail());
+                sessionDTO.setPhoneNumber(oUser.get().getPhoneNumber());
+                return "redirect:/cadastrar-se?passo=3";
+            }
             errors.rejectValue("email", "error.dto", "Email já cadastrado! Por favor, insira um email não cadastrado.");
         }
 
@@ -135,7 +144,6 @@ public class UserRegistrationController {
             emailSenderService.sendEmailToServer(dto.getEmail(), "Servicebook: Código de autenticação.", "Código de autenticação:" + "\n\n\n" + oUserCode.get().getCode());
         }
 
-        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setEmail(dto.getEmail());
 
         return "redirect:/cadastrar-se?passo=2";
@@ -202,6 +210,17 @@ public class UserRegistrationController {
         }
 
         UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
+        Optional<User> oUser = userService.findByEmail(sessionDTO.getEmail());
+        if (oUser.isPresent()) {
+            if (sessionDTO.getEmail().equals(oUser.get().getEmail())) {
+                sessionDTO.setPassword(dto.getPassword());
+                sessionDTO.setRepassword(dto.getRepassword());
+                redirectAttributes.addFlashAttribute("phoneNumber", sessionDTO.getPhoneNumber());
+                redirectAttributes.addFlashAttribute("id", sessionDTO.getId());
+                return "redirect:/cadastrar-se?passo=5";
+            }
+        }
+
         sessionDTO.setPassword(dto.getPassword());
         sessionDTO.setRepassword(dto.getRepassword());
 
@@ -369,6 +388,14 @@ public class UserRegistrationController {
 
         if (errors.hasErrors()) {
             return this.userRegistrationErrorForwarding("8", dto, model, errors);
+        }
+
+        Optional<User> oUser = userService.findByEmail(sessionDTO.getEmail());
+        if (oUser.isPresent()) {
+            if (sessionDTO.getEmail().equals(oUser.get().getEmail())) {
+                sessionDTO.setName(oUser.get().getName());
+                sessionDTO.setCpf(oUser.get().getCpf());
+            }
         }
 
         User user = userMapper.toEntity(sessionDTO);
