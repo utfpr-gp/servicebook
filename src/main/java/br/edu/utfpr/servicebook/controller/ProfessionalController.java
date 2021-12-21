@@ -2,6 +2,7 @@ package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
 import br.edu.utfpr.servicebook.model.dto.ProfessionalDTO;
+import br.edu.utfpr.servicebook.model.dto.ProfessionalSearchItemDTO;
 import br.edu.utfpr.servicebook.model.entity.City;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.Professional;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -63,15 +65,12 @@ public class ProfessionalController {
         mv.addObject("cities", cities);
 
         List<Professional> professionals = professionalService.findDistinctByTermIgnoreCase(searchTerm);
-        Map<Long, List> professionalsExpertises = new HashMap<>();
 
-        for (Professional professional : professionals) {
-            List<ExpertiseDTO> expertisesDTO = professionalService.getExpertises(professional);
-            professionalsExpertises.put(professional.getId(), expertisesDTO);
-        }
+        List<ProfessionalSearchItemDTO> professionalSearchItemDTOS = professionals.stream()
+                .map(s -> professionalMapper.toSearchItemDto(s, professionalService.getExpertises(s)))
+                .collect(Collectors.toList());
 
-        mv.addObject("professionals", professionals);
-        mv.addObject("professionalsExpertises", professionalsExpertises);
+        mv.addObject("professionals", professionalSearchItemDTOS);
         mv.addObject("searchTerm", searchTerm);
         
         return mv;

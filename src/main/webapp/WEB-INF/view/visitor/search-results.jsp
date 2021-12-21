@@ -35,7 +35,7 @@
                                                     <div class="divider"></div>
                                                 </div>
                                                 <div class="row center-align">
-                                                    <c:forEach var="expertise" items="${professionalsExpertises.get(professional.id)}">
+                                                    <c:forEach var="expertise" items="${professional.expertises}">
                                                         <div class="col expertise-label">${expertise.name}</div>
                                                     </c:forEach>
                                                 </div>
