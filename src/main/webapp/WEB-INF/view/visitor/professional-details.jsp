@@ -28,9 +28,10 @@
 
         <div class="container">
             <div class="section">
-                <div class="row center-align">
-                    <div class="col expertise-label">pedreiro</div>
-                    <div class="col expertise-label">encanador </div>
+                <div class="row">
+                    <c:forEach var="expertise" items="${professionalExpertises}">
+                        <div class="col expertise-label">${expertise.name}</div>
+                    </c:forEach>
                 </div>
 
                 <div class="row center-align">

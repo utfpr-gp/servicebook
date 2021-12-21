@@ -52,7 +52,7 @@ VALUES ('982.988.640-93', '2021-01-01', 'profissional1@gmail.com', 'true', 'MASC
         'https://i.imgur.com/owhNAKK.png', 'true', '1'),
        ('567.690.630-85', '2021-01-01', 'profissional3@gmail.com', 'true', 'MASCULINE', 'Nome do Terceiro Profissional', '(42) 99999-9995', 'false',
         null, 'false', '1'),
-       ('549.228.460-69', '2021-01-01', 'profissional4@gmail.com', 'true', 'MASCULINE', 'Nome do Quarto Profissional', '(42) 99999-9996', 'true',
+       ('549.228.460-69', '2021-01-01', 'profissional4@gmail.com', 'true', 'MASCULINE', 'Nome do Quarto  Profissional Profissional Profissional', '(42) 99999-9996', 'true',
         'https://i.imgur.com/owhNAKK.png', 'true', '1');
 
 
