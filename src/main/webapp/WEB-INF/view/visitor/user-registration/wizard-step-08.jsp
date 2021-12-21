@@ -25,7 +25,15 @@
                             nos informe suas especialidades.
                         </h5>
 
-                        <form method="post" action="cadastrar-se/passo-8">
+                        <c:choose>
+                            <c:when test="${dto.id == null}">
+                                <form method="post" action="cadastrar-se/passo-8">
+                            </c:when>
+                            <c:otherwise>
+                                <form method="post" action="cadastrar-se/passo-8">
+                                    <input type="hidden" name="id" value="${dto.id}"/>
+                            </c:otherwise>
+                        </c:choose>
                             <div class="row center spacing-buttons">
                                 <h4><strong>Categoria: Construção e Reformas</strong></h4>
                                 <div class="col s12 l4 offset-l4 spacing-buttons">
