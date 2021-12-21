@@ -18,6 +18,10 @@ public class JobCandidateService {
     @Autowired
     private JobCandidateRepository jobCandidateRepository;
 
+    public JobCandidate save(JobCandidate entity){
+        return jobCandidateRepository.save(entity);
+    }
+
     public Optional<Long> countByJobRequest(JobRequest jobRequest) {
         return this.jobCandidateRepository.countByJobRequest(jobRequest);
     }
