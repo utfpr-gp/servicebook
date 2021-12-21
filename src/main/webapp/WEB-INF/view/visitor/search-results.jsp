@@ -19,23 +19,26 @@
                                 <c:forEach var="professional" items="${professionals}">
                                     <div class="col s12 m6">
                                         <div class="card-panel card-result blue lighten-1 white-text">
-                                            <div class="row center-align">
-                                                <c:choose>
-                                                    <c:when test="${professional.profilePicture != null}">
-                                                        <img src="${professional.profilePicture}" class="avatar" alt="Foto de perfil">
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        <img src="assets/resources/images/no-photo.png" class="avatar" alt="Sem foto de perfil">
-                                                    </c:otherwise>
-                                                </c:choose>
-                                            </div>
-                                            <div class="row center-align">
-                                                <h5>${professional.name}</h5>
-                                                <div class="divider"></div>
-                                            </div>
-                                            <div class="row center-align">
-                                                <div class="col expertise-label">pedreiro</div>
-                                                <div class="col expertise-label">encanador </div>
+                                            <div class="card-body">
+                                                <div class="row center-align">
+                                                    <c:choose>
+                                                        <c:when test="${professional.profilePicture != null}">
+                                                            <img src="${professional.profilePicture}" class="avatar" alt="Foto de perfil">
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <img src="assets/resources/images/no-photo.png" class="avatar" alt="Sem foto de perfil">
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </div>
+                                                <div class="row center-align">
+                                                    <h5 class="truncate tooltipped" data-position="bottom" data-tooltip="${professional.name}">${professional.name}</h5>
+                                                    <div class="divider"></div>
+                                                </div>
+                                                <div class="row center-align">
+                                                    <c:forEach var="expertise" items="${professional.expertises}">
+                                                        <div class="col expertise-label">${expertise.name}</div>
+                                                    </c:forEach>
+                                                </div>
                                             </div>
                                             <div class="row center-align ">
                                                 <a href="profissionais/detalhes/${professional.id}" class="waves-effect waves-light btn-large white blue-text text-lighten-1"><strong>Ver perfil</strong></a>
@@ -66,5 +69,11 @@
             </div>
         </div>
 
+        <script>
+            $(document).ready(function(){
+                $('.tooltipped').tooltip();
+            });
+        </script>
     </jsp:body>
 </t:visitor>
+

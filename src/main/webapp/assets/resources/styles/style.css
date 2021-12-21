@@ -462,15 +462,15 @@ footer.page-footer {
   height: 10rem;
 }
 
-.card-result {
-  min-height: 25rem;
+.card-body {
+  min-height: 23rem;
 }
 
 .expertise-label {
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 2rem;
   padding: 0.5rem 1rem!important;
-  margin: 0 0.5rem;
+  margin: 0.5rem;
 }
 
 .upper-case {

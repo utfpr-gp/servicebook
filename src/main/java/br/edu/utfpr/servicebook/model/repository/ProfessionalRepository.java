@@ -12,6 +12,9 @@ public interface ProfessionalRepository extends JpaRepository<Professional, Long
     Professional findByEmailAddress(String emailAddress);
     Professional findByEmail(String email);
 
-    @Query("select p from Professional p where lower(p.name) like lower(concat('%', :name, '%'))")
-    List<Professional> findAllByNameIgnoreCase(@Param("name") String name);
+    @Query("select distinct p from Professional p left join ProfessionalExpertise pe on p.id = pe.professional.id where " +
+            "lower(p.name) like lower(concat('%', :term, '%'))" +
+            "or lower(p.description) like lower(concat('%', :term, '%')) " +
+            "or lower(pe.expertise.name) like lower(concat('%', :term, '%'))")
+    List<Professional> findDistinctByTermIgnoreCase(@Param("term") String term);
 }
