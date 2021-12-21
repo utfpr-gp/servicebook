@@ -28,7 +28,7 @@ import java.util.Optional;
 @Controller
 @Slf4j
 @RequestMapping("/cadastrar-se")
-@SessionAttributes("wizard")
+@SessionAttributes("wizardUser")
 public class UserRegistrationController {
 
     @Autowired
