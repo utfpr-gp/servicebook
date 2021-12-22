@@ -28,6 +28,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
@@ -93,7 +94,7 @@ public class JobRequestController {
                              HttpSession httpSession,
                              Model model) {
         log.debug("Mostrando o passo {}", step);
-        if (step < 1 || step > 8) {
+        if (step < 1 || step > 9) {
             step = 1L;
         }
         JobRequestDTO dto = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
@@ -114,11 +115,14 @@ public class JobRequestController {
     public String saveFormRequestedJob(HttpSession httpSession, @Validated(JobRequestDTO.RequestExpertiseGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model) {
         Optional<Expertise> oExpertise = null;
 
-        if (dto.getExpertiseId() != null) {
-            oExpertise = expertiseService.findById(dto.getExpertiseId());
-            if (!oExpertise.isPresent()) {
-                errors.rejectValue("expertiseId", "error.dto", "Especialidade não encontrada! Por favor, selecione uma especialidade profissional.");
-            }
+
+        if (dto.getExpertiseId() == null) {
+            throw new EntityNotFoundException("Ops, ocorreu um erro! Por favor recaregue a pagina e selecione uma especialidade profissional. ");
+        }
+
+        oExpertise = expertiseService.findById(dto.getExpertiseId());
+        if (!oExpertise.isPresent()) {
+            throw new EntityNotFoundException("Ops, ocorreu um erro! Especialidade não encontrada! Por favor recaregue a pagina e selecione uma especialidade profissional. ");
         }
 
         if (errors.hasErrors()) {
@@ -254,7 +258,7 @@ public class JobRequestController {
 
             return "redirect:/requisicoes?passo=6";
         } else {
-            return "client/job-request/wizard-step-login-user";
+            return "client/job-request/wizard-step-06";
         }
 
 
@@ -268,7 +272,7 @@ public class JobRequestController {
             model.addAttribute("dto", dto);
             model.addAttribute("errors", errors.getAllErrors());
             log.debug("Passo 6 {}", errors.getAllErrors());
-            return "client/job-request/wizard-step-login-user";
+            return "client/job-request/wizard-step-06";
 
         }
 
@@ -278,21 +282,14 @@ public class JobRequestController {
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         sessionDTO.setEmailClient(dto.getEmail());
 
-
-
-
-
         log.debug("Passo 6 {}", sessionDTO);
 
         if (oUser.isPresent()) {
-
             redirectAttributes.addFlashAttribute("msg", "Você já possui conta, agora é só realizar o login!");
             redirectAttributes.addFlashAttribute("email", dto.getEmail());
             return "redirect:/entrar";
-
         } else {
-
-            return "client/job-request/wizard-step-06";
+            return "client/job-request/wizard-step-07";
         }
 
 
@@ -300,16 +297,16 @@ public class JobRequestController {
 
     @PostMapping("/passo-7")
     public String saveFormClientInfo(HttpSession httpSession, @Validated(JobRequestDTO.RequestClientInfoGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model) {
+        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
 
         if (errors.hasErrors()) {
             model.addAttribute("dto", dto);
             model.addAttribute("errors", errors.getAllErrors());
-            log.debug("Passo 6 {}", errors.getAllErrors());
-            return "client/job-request/wizard-step-06";
+            log.debug("Passo 7 {}", errors.getAllErrors());
+            return "client/job-request/wizard-step-07";
 
         }
         //persiste na sessão
-        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         sessionDTO.setNameClient(dto.getNameClient());
         sessionDTO.setCep(dto.getCep());
         sessionDTO.setEmailClient(dto.getEmailClient());
@@ -337,12 +334,15 @@ public class JobRequestController {
         sessionDTO.setClientConfirmation(true);
         sessionDTO.setDateCreated(DateUtil.getToday());
         sessionDTO.setStatus("Requerido");
+
         log.debug("Passo 8 {}", sessionDTO);
         JobRequest jobRequest = jobRequestMapper.toEntity(sessionDTO);
         jobRequest.setClient(client);
         jobRequest.setExpertise(exp);
         //jobRequest.setImage(sessionDTO.getImageSession());
         jobRequestService.save(jobRequest);
+
+
         redirectAttributes.addFlashAttribute("msg", "Requisição confirmada!");
         status.setComplete();
         return "redirect:/requisicoes?passo=9";
