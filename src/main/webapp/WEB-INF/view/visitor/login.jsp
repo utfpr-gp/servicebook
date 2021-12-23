@@ -27,7 +27,7 @@
                             <div class="row center">
                                 <div class="input-field col s10 offset-s1 m6 offset-m3  l4 offset-l4 center">
                                     <input id="email" name="email" type="text"
-                                           class="validate">
+                                           class="validate" value="${email}">
                                     <label for="email">Email</label>
                                 </div>
                             </div>

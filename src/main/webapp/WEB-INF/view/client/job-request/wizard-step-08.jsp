@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<t:client title="Etapa 08">
+<t:client title="Etapa 07">
     <jsp:body>
 
         <main>
@@ -16,11 +16,47 @@
                 </c:if>
                 <div class="section">
                     <div class="row">
-                        <h3 class="center secondary-color-text"><strong>Olá João, recebemos a sua solicitação de serviço!</strong></h3>
-                        <p class="center secondary-color-text text-form-dados">Fique atento, logo você começará a receber os contatos dos profissionais interessados em realizar o serviço no prazo especificado!</p>
-                        <div class="col s12 l6 offset-l3 spacing-standard">
+                        <h3 class="center grey-text"><strong>Enviamos um código para (42) 99999-1234</strong></h3>
+                        <h4 class="center grey-text">Digite este código para validar seu pedido</h4>
+                        <div class="row center spacing-standard">
+                            <div class="col s10  offset-s1 m6 offset-m3  input-field">
+                                <form method="post" action="requisicoes/passo-8">
+                                    <div class="row">
+                                        <div class="input-field col s12">
+                                            <div class="col s12 m8">
+                                                <input placeholder="Digite o código de validação" type="text">
+                                            </div>
+                                            <div class="col s12 m4">
+                                                <button class="waves-effect waves-light btn">Validar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="col s6 offset-s3">
                             <div class="center">
-                                <a class="waves-effect waves-light btn" href="#!">Acompanhe a sua solicitação</a>
+                                <a class="waves-effect waves-light btn" href="javascript: alert('SMS Reenviado')">Reenviar SMS</a>
+                            </div>
+                        </div>
+
+                        <div class="col s12 center spacing-standard">
+                            <h4 class="grey-text">Digitou um número de telefone errado?</h4>
+                            <a  class="text-center text-form-dados modal-trigger" href="#modal1">Troque o número</a>
+                        </div>
+
+                        <div id="modal1" class="modal">
+                            <div class="modal-content">
+                                <div class="row">
+                                    <div class="col s12 m6 offset-m3">
+                                        <h5>Digite o novo número de celular:</h5>
+                                        <input id="telefone" placeholder="(00) 00000-0000)" type="text" class="validate">
+                                        <div class="center spacing-standard">
+                                            <a class="waves-effect waves-light btn" href="javascript: alert('numero atualizado')">Atualizar</a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
