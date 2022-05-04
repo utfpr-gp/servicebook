@@ -181,9 +181,7 @@ public class MyAccountProfessionalController {
         int maxCandidates = jb.getQuantityCandidatorsMax();
         int currentCandidates = jb.getJobCandidates().size();
         int percentCandidatesApplied = (int)(((double)currentCandidates / (double)maxCandidates) * 100);
-        System.out.println("Max: " + maxCandidates);
-        System.out.println("Current: " + currentCandidates);
-        System.out.println("App: " + percentCandidatesApplied);
+
         mv.addObject("job", jobFull);
         mv.addObject("client", client);
         mv.addObject("city", city.getName());
