@@ -178,14 +178,19 @@ public class MyAccountProfessionalController {
 
         State state = (State) oState.get();
 
-
-        System.out.println(client.getProfilePicture());
-
+        int maxCandidates = jb.getQuantityCandidatorsMax();
+        int currentCandidates = jb.getJobCandidates().size();
+        int percentCandidatesApplied = (int)(((double)currentCandidates / (double)maxCandidates) * 100);
+        System.out.println("Max: " + maxCandidates);
+        System.out.println("Current: " + currentCandidates);
+        System.out.println("App: " + percentCandidatesApplied);
         mv.addObject("job", jobFull);
         mv.addObject("client", client);
         mv.addObject("city", city.getName());
         mv.addObject("state", state.getName());
-        mv.addObject("ricardo", "ricardo");
+        mv.addObject("candidatesApplied", currentCandidates);
+        mv.addObject("maxCandidates", maxCandidates);
+        mv.addObject("percentCandidatesApplied", percentCandidatesApplied);
         return mv;
     }
 

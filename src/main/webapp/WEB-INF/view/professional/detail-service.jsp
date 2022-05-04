@@ -45,6 +45,12 @@
             </div>
             <div class="row">
                 <div class="container">
+                    <div class="progress-bar">
+                        <div class="progress">
+                            <div class="determinate" style="width: ${percentCandidatesApplied}%"></div>
+                        </div>
+                        <p>${candidatesApplied}/${maxCandidates}</p>
+                    </div>
                     <div class="row">
                         <div class="row">
                             <div class="col s12 m6 left area-info-request-client-left">

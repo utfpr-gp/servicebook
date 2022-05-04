@@ -585,6 +585,17 @@ textarea {
   color: #000 !important;
 }
 
+.progress-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.progress-bar .progress {
+  margin-right: 1rem;
+  margin-top: 14px;
+}
+
 @media only screen and (max-width : 992px) {
   .parallax-container .section {
     position: absolute;
