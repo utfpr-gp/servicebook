@@ -13,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -57,8 +58,8 @@ class ProfessionalExpertiseRepositoryTest {
     @Transactional
     @DisplayName("Deve retornar uma lista com UMA especialidade do profissional João")
     public void findByProfessionals() {
-        Individual joao = individualRepository.findByEmail("joao@mail.com");
-        List<ProfessionalExpertise> expertises = professionalExpertiseRepository.findByProfessional(joao);
+        Optional<Individual> joao = individualRepository.findByEmail("joao@mail.com");
+        List<ProfessionalExpertise> expertises = professionalExpertiseRepository.findByProfessional(joao.get());
         log.debug(expertises.toString());
         Assertions.assertFalse(expertises.isEmpty());
         Assertions.assertEquals(expertises.size(), 1);

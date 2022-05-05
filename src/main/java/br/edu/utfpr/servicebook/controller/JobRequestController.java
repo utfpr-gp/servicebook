@@ -7,10 +7,9 @@ import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
-import br.edu.utfpr.servicebook.service.ClientService;
 import br.edu.utfpr.servicebook.service.ExpertiseService;
+import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobRequestService;
-import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.DateUtil;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import com.cloudinary.Cloudinary;
@@ -48,7 +47,7 @@ public class JobRequestController {
     private JobRequestService jobRequestService;
 
     @Autowired
-    private ClientService clientService;
+    private IndividualService individualService;
 
     @Autowired
     private ExpertiseService expertiseService;
@@ -283,7 +282,8 @@ public class JobRequestController {
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         Expertise exp = null;
         log.debug("Passo Name {}", sessionDTO.getNameClient());
-        Individual client = clientService.save(new Individual(sessionDTO.getNameClient(), sessionDTO.getEmailClient(), sessionDTO.getPhone(), sessionDTO.getCpf()));
+        Individual client = new Individual(sessionDTO.getNameClient(), sessionDTO.getEmailClient(), sessionDTO.getPhone(), sessionDTO.getCpf());
+        individualService.save(client);
         Optional<Expertise> oExpertise = expertiseService.findById(sessionDTO.getExpertiseId());
 
         if(oExpertise.isPresent()){

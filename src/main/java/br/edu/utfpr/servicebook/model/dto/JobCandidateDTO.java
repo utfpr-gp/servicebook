@@ -16,7 +16,7 @@ public class JobCandidateDTO implements Serializable {
 
     private JobRequestMinDTO  jobRequest;
 
-    private ProfessionalMinDTO professional;
+    private IndividualMinDTO professional;
 
 
 }

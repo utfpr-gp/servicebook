@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProfessionalMinDTO extends UserDTO {
+public class IndividualMinDTO extends UserDTO {
 
     private Long id;
     private String description;

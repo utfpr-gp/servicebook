@@ -2,9 +2,8 @@ package br.edu.utfpr.servicebook.model.mapper;
 
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
 import br.edu.utfpr.servicebook.model.dto.ProfessionalDTO;
-import br.edu.utfpr.servicebook.model.dto.ProfessionalMinDTO;
-import br.edu.utfpr.servicebook.model.dto.ProfessionalSearchItemDTO;
-import br.edu.utfpr.servicebook.model.entity.Professional;
+import br.edu.utfpr.servicebook.model.dto.IndividualMinDTO;
+import br.edu.utfpr.servicebook.model.entity.Individual;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,8 +20,8 @@ public class ProfessionalMapper {
         return dto;
     }
 
-    public ProfessionalMinDTO toMinDto(Individual entity){
-        ProfessionalMinDTO dto = mapper.map(entity, ProfessionalMinDTO.class);
+    public IndividualMinDTO toMinDto(Individual entity){
+        IndividualMinDTO dto = mapper.map(entity, IndividualMinDTO.class);
         return dto;
     }
 

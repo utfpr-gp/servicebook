@@ -12,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -81,8 +82,8 @@ class JobCandidateRepositoryTest {
     @DisplayName("Deve retornar uma lista de candidaturas de um profissional")
     public void findByProfessional() {
 
-        Individual joao = individualRepository.findByEmail("joao@mail.com");
-        List<JobCandidate> jobs = jobCandidateRepository.findByProfessional(joao);
+        Optional<Individual> joao = individualRepository.findByEmail("joao@mail.com");
+        List<JobCandidate> jobs = jobCandidateRepository.findByProfessional(joao.get());
         log.debug(jobs.toString());
         for(JobCandidate job : jobs){
             log.debug(job.getJobRequest().toString());
@@ -96,8 +97,8 @@ class JobCandidateRepositoryTest {
     @DisplayName("Deve retornar uma lista de candidaturas de um profissional escolhidas para fazer orçamento")
     public void findByProfessionalAndChosenByBudget() {
 
-        Individual joao = individualRepository.findByEmail("joao@mail.com");
-        List<JobCandidate> jobs = jobCandidateRepository.findByProfessionalAndChosenByBudget(joao, true);
+        Optional<Individual> joao = individualRepository.findByEmail("joao@mail.com");
+        List<JobCandidate> jobs = jobCandidateRepository.findByProfessionalAndChosenByBudget(joao.get(), true);
         log.debug(jobs.toString());
         Assertions.assertFalse(jobs.isEmpty());
         Assertions.assertEquals(jobs.size(), 1);
@@ -110,12 +111,12 @@ class JobCandidateRepositoryTest {
         JobRequest jb1 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, dateOfNow);
         jobRequestRepository.save(jb1);
 
-        Individual joao = individualRepository.findByEmail("joao@mail.com");
+        Optional<Individual> joao = individualRepository.findByEmail("joao@mail.com");
 
-        JobCandidate candidate1 = new JobCandidate(jb1, joao);
+        JobCandidate candidate1 = new JobCandidate(jb1, joao.get());
         jobCandidateRepository.save(candidate1);
 
-        List<JobCandidate> jobs = jobCandidateRepository.findByJobRequest_StatusAndProfessional(JobRequest.Status.AVAILABLE, joao);
+        List<JobCandidate> jobs = jobCandidateRepository.findByJobRequest_StatusAndProfessional(JobRequest.Status.AVAILABLE, joao.get());
         log.debug(jobs.toString());
         for(JobCandidate job : jobs){
             log.debug(job.getJobRequest().toString());
@@ -123,7 +124,6 @@ class JobCandidateRepositoryTest {
         Assertions.assertFalse(jobs.isEmpty());
         Assertions.assertEquals(jobs.size(), 3);
     }
-
 
     @AfterEach
     void tearDown() {

@@ -28,15 +28,15 @@ import java.util.stream.Collectors;
 
 @RequestMapping("/minha-conta/profissional")
 @Controller
-public class MyAccountProfessionalController {
+public class ProfessionalHomeController {
 
-    public static final Logger log = LoggerFactory.getLogger(MyAccountProfessionalController.class);
-
-    @Autowired
-    private ProfessionalService professionalService;
+    public static final Logger log = LoggerFactory.getLogger(ProfessionalHomeController.class);
 
     @Autowired
-    private ProfessionalMapper professionalMapper;
+    private IndividualService individualService;
+
+    @Autowired
+    private IndividualMapper individualMapper;
 
     @Autowired
     private ProfessionalExpertiseService professionalExpertiseService;
@@ -69,13 +69,13 @@ public class MyAccountProfessionalController {
     public ModelAndView showMyAccountProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> id) throws Exception {
         log.debug("ServiceBook: Minha conta.");
 
-        Optional<Individual> oProfessional = Optional.ofNullable(professionalService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        ProfessionalMinDTO professionalMinDTO = professionalMapper.toMinDto(oProfessional.get());
+        IndividualMinDTO professionalMinDTO = individualMapper.toMinDto(oProfessional.get());
 
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
         List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
@@ -140,7 +140,7 @@ public class MyAccountProfessionalController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> oProfessional = Optional.ofNullable(professionalService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -202,7 +202,7 @@ public class MyAccountProfessionalController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> oProfessional = Optional.ofNullable(professionalService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -264,7 +264,7 @@ public class MyAccountProfessionalController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> oProfessional = Optional.ofNullable(professionalService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -326,7 +326,7 @@ public class MyAccountProfessionalController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> oProfessional = Optional.ofNullable(professionalService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -383,13 +383,13 @@ public class MyAccountProfessionalController {
     public ModelAndView showMyDetails() throws Exception {
         ModelAndView mv = new ModelAndView("client/details-contact");
 
-        Optional<Individual> oProfessional = Optional.ofNullable(professionalService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        ProfessionalDTO professionalDTO = professionalMapper.toResponseDto(oProfessional.get());
+        IndividualDTO professionalDTO = individualMapper.toDto(oProfessional.get());
 
         List<JobContracted> jobContracted = jobContractedService.findByIdProfessional(professionalDTO.getId());
         List<JobContractedDTO> jobContractedDTOs = jobContracted.stream()
