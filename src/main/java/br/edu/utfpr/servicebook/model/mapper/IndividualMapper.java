@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserMapper {
+public class IndividualMapper {
 
     @Autowired
     private ModelMapper mapper;
