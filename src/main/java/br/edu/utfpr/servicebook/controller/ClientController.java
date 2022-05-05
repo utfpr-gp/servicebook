@@ -5,6 +5,7 @@ import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
+import br.edu.utfpr.servicebook.util.DateUtil;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import org.slf4j.Logger;
@@ -13,7 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -332,6 +336,47 @@ public class ClientController {
         return mv;
     }
 
+    /**
+     * Encerra o recebimento de candidaturas antes de receber o total de candidaturas esperado.
+     * @param id
+     * @param redirectAttributes
+     * @return
+     * @throws IOException
+     */
+    @PatchMapping("/encerra-pedido/{id}")
+    public String updateRequest(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
+
+        Optional<Client> oClient = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+
+        if (!oClient.isPresent()) {
+            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        JobRequest jobRequest = null;
+        Optional<JobRequest> oJobRequest = this.jobRequestService.findById(id);
+
+        if(!oJobRequest.isPresent()) {
+            throw new EntityNotFoundException("Solicitação não foi encontrada pelo id informado.");
+        }
+
+        jobRequest = oJobRequest.get();
+
+        Long jobRequestClientId = jobRequest.getClient().getId();
+        Long clientId = oClient.get().getId();
+
+        if(jobRequestClientId != clientId){
+            throw new EntityNotFoundException("Você não tem permissão para alterar essa solicitação.");
+        }
+
+        if (!jobRequest.getStatus().equals(JobRequest.Status.AVAILABLE)) {
+            throw new InvalidParamsException("O status da solicitação não pode ser alterado.");
+        }
+
+        jobRequest.setStatus(JobRequest.Status.BUDGET);
+        this.jobRequestService.save(jobRequest);
+
+        redirectAttributes.addFlashAttribute("msg", "Solicitação alterada!");
+        return "redirect:/minha-conta/meus-pedidos?tab=paraOrcamento";
+    }
+
 }
-
-

@@ -5,7 +5,6 @@
 
 <t:client title="Minhas Solicitações">
     <jsp:body>
-
         <main>
             <div class="row">
                 <div class="col s12 l3 hide-on-med-and-down no-padding" id="area-perfil">
@@ -119,6 +118,8 @@
                        class="hide-on-large-only show-area-perfil waves-effect waves-light btn btn-floating grey darken-3 z-depth-A">
                         <i class="material-icons">compare_arrows</i>
                     </a>
+
+                    <!-- Painel com as solicitações de serviços -->
                     <div class="container">
                         <div class="row">
                             <div class="col s12">
@@ -131,23 +132,23 @@
                             </div>
 
                             <ul class="tabs tabs-fixed-width center">
-                                <li class="tab">
+                                <li class="tab" id="1">
                                     <a id="tab-default" data-url="minha-conta/meus-pedidos/disponiveis"
                                        href="#disponiveis">
                                         DISPONÍVEIS
                                     </a>
                                 </li>
-                                <li class="tab">
+                                <li class="tab" id="2">
                                     <a data-url="minha-conta/meus-pedidos/para-orcamento" href="#paraOrcamento">
                                         PARA ORÇAMENTO
                                     </a>
                                 </li>
-                                <li class="tab">
+                                <li class="tab" id="3">
                                     <a data-url="minha-conta/meus-pedidos/para-fazer" href="#paraFazer">
                                         PARA FAZER
                                     </a>
                                 </li>
-                                <li class="tab">
+                                <li class="tab" id="4">
                                     <a data-url="minha-conta/meus-pedidos/executados" href="#executados">
                                         CONCLUÍDOS
                                     </a>
@@ -187,8 +188,28 @@
                     </form>
                 </div>
             </div>
-        </main>
 
+            <div id="modal-msg" class="modal">
+                <div class="modal-content">
+                    <div class="modal-content">
+                        <h4>${msg}</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="modal-close btn waves-effect waves-light gray">OK</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
     </jsp:body>
 </t:client>
 <script src="assets/resources/scripts/requests.js"></script>
+
+<c:if test="${not empty msg}">
+    <script>
+        $(document).ready(function(){
+            $('#modal-msg').modal('open');
+        });
+    </script>
+</c:if>
+

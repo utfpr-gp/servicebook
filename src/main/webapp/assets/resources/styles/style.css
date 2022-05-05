@@ -40,6 +40,11 @@ p {
 .tertiary-color-text{
   color: #3f51b5;
 }
+
+.facebook-color-text {
+  color: #3A69B1;
+}
+
 .grey-text{
   color: rgb(117, 117, 117) !important;
 }
@@ -54,6 +59,10 @@ p {
 
 .secondary-background-color{
   background-color: rgb(51, 51, 51);
+}
+
+.tertiary-background-color{
+  background-color: rgb(28, 34, 49);
 }
 
 /* icons colors */
@@ -449,6 +458,45 @@ footer.page-footer {
   border: solid black 1px;
 }
 
+.avatar {
+  height: 10rem;
+}
+
+.card-body {
+  min-height: 23rem;
+}
+
+.expertise-label {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 2rem;
+  padding: 0.5rem 1rem!important;
+  margin: 0.5rem;
+}
+
+.upper-case {
+  text-transform: uppercase;
+}
+
+.mb-1 {
+  margin-bottom: 1rem;
+}
+
+.mt-1 {
+  margin-top: 1rem;
+}
+
+.whatsapp-icon {
+  height: 2rem;
+}
+
+.whatsapp {
+  background-image: url("assets/resources/images/whatsapp-logo.png");
+}
+
+.p1 {
+  padding: 1rem;
+}
+
 @font-face {
   font-family: 'Material Icons';
   font-style: normal;
@@ -510,6 +558,42 @@ a.middle-indicator-text{
   position: absolute;
   left: 20px;
   top: 90px;
+}
+
+textarea {
+  height: 100%;
+  resize: none;
+}
+.btn-save {
+  margin-right: 10px;
+}
+.formulario {
+  display: none;
+}
+.formulario .btn {
+  margin-left: 10px;
+}
+.exibir {
+  cursor: pointer;
+}
+#ocultar {
+  position: relative;
+  top: 8px;
+  padding: 0 10px;
+  font-size: 31px;
+  text-decoration: none;
+  color: #000 !important;
+}
+
+.progress-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.progress-bar .progress {
+  margin-right: 1rem;
+  margin-top: 14px;
 }
 
 @media only screen and (max-width : 992px) {

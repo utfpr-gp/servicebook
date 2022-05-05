@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProfessionalDTO extends UserDTO {
+public class ProfessionalSearchItemDTO extends UserDTO {
 
     private Long id;
 
@@ -22,4 +24,6 @@ public class ProfessionalDTO extends UserDTO {
     public String getOnlyNumbersFromPhone() {
         return getPhoneNumber().replaceAll("[^0-9]", "");
     }
+
+    public List<ExpertiseDTO> expertises;
 }

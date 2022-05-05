@@ -9,18 +9,17 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class JobRequestFullDTO implements Serializable {
+public class JobRequestDetailsDTO implements Serializable {
 
     private Long id;
     private ExpertiseMinDTO expertise;
     private String dateCreated;
-    private ClientMinDTO client;
+    private ClientDTO client;
     private String dateExpired;
     private Integer quantityCandidatorsMax;
     private String description;
     private Long totalCandidates;
     private String textualDate;
     private Long amountOfCandidates;
-    public String status;
 
 }

@@ -63,7 +63,7 @@
                     </blockquote>
                     <div>
                         <div class="center">
-                            <a href="" class="waves-effect waves-light btn spacing-buttons">
+                            <a href="minha-conta/profissional/detalhes-servico/${job.id}" class="waves-effect waves-light btn spacing-buttons">
                                 Detalhes
                             </a>
                         </div>
