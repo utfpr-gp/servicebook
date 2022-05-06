@@ -5,7 +5,6 @@
 
 <t:professional title="Editar perfil">
     <jsp:body>
-
         <main>
            <div class="row primary-background-color">
                <div class="container">
@@ -36,7 +35,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col s12 l5 offset-l1 spacing-buttons">
-                            <a href="${pageContext.request.contextPath}/minha-conta/profissional/meu-anuncio/${professional.id}" class="dark-color-text">
+                            <a href="${pageContext.request.contextPath}/minha-conta/meu-anuncio/${professional.id}" class="dark-color-text">
                                 <div class="active-profission no-padding">
                                     <h3 class="center"><strong><i class="medium material-icons">chrome_reader_mode</i></strong></h3>
                                     <h4 class="center"><strong>Meu anúncio</strong></h4>

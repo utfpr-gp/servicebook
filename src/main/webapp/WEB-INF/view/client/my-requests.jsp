@@ -46,7 +46,7 @@
                             </div>
 
                             <h5 class="edit-link tertiary-color-text">
-                                <a class="tertiary-color-text" href="">Editar perfil</a>
+                                <a class="tertiary-color-text" href="minha-conta/perfil">Editar perfil</a>
                             </h5>
                         </div>
                     </div>
@@ -127,29 +127,29 @@
                             </div>
 
                             <div class="center">
-                                <a href="minha-conta/meus-pedidos" class="waves-effect waves-light btn"><i
+                                <a href="minha-conta/cliente" class="waves-effect waves-light btn"><i
                                         class="material-icons right">sync</i>ATUALIZAR</a>
                             </div>
 
                             <ul class="tabs tabs-fixed-width center">
                                 <li class="tab" id="1">
-                                    <a id="tab-default" data-url="minha-conta/meus-pedidos/disponiveis"
+                                    <a id="tab-default" data-url="minha-conta/cliente/meus-pedidos/disponiveis"
                                        href="#disponiveis">
                                         DISPONÍVEIS
                                     </a>
                                 </li>
                                 <li class="tab" id="2">
-                                    <a data-url="minha-conta/meus-pedidos/para-orcamento" href="#paraOrcamento">
+                                    <a data-url="minha-conta/cliente/meus-pedidos/para-orcamento" href="#paraOrcamento">
                                         PARA ORÇAMENTO
                                     </a>
                                 </li>
                                 <li class="tab" id="3">
-                                    <a data-url="minha-conta/meus-pedidos/para-fazer" href="#paraFazer">
+                                    <a data-url="minha-conta/cliente/meus-pedidos/para-fazer" href="#paraFazer">
                                         PARA FAZER
                                     </a>
                                 </li>
                                 <li class="tab" id="4">
-                                    <a data-url="minha-conta/meus-pedidos/executados" href="#executados">
+                                    <a data-url="minha-conta/cliente/meus-pedidos/executados" href="#executados">
                                         CONCLUÍDOS
                                     </a>
                                 </li>

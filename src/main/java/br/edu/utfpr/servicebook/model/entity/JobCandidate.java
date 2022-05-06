@@ -4,7 +4,6 @@ package br.edu.utfpr.servicebook.model.entity;
 
 import javax.persistence.*;
 
-import br.edu.utfpr.servicebook.util.DateUtil;
 import lombok.*;
 
 import java.util.Date;
@@ -12,10 +11,12 @@ import java.util.Date;
 /**
  * Classe para armazenar as informações necessárias para a classe auxiliar n x n
  */
+
 @Data
-@EqualsAndHashCode(exclude={"jobRequest","professional"})
-@Table(name = "job_candidates")
 @NoArgsConstructor
+@EqualsAndHashCode(exclude={"jobRequest","professional"})
+
+@Table(name = "job_candidates")
 @Entity
 public class JobCandidate  {
 
@@ -38,18 +39,16 @@ public class JobCandidate  {
 	@ManyToOne
 	@MapsId("professionalId")
 	@JoinColumn(name = "professional_id")
-	private Professional professional;
+	private Individual individual;
 
-	public JobCandidate(JobRequest jobRequest, Professional professional){
+	public JobCandidate(JobRequest jobRequest, Individual individual){
 		this.jobRequest = jobRequest;
-		this.professional = professional;
-		this.id = new JobCandidatePK(jobRequest.getId(), professional.getId());
+		this.individual = individual;
+		this.id = new JobCandidatePK(jobRequest.getId(), individual.getId());
 	}
 
 	@PrePersist
 	public void onPersist(){
 		this.date = new Date();
 	}
-
-
 }

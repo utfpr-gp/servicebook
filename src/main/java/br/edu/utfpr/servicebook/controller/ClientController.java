@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RequestMapping("/minha-conta/meus-pedidos")
+@RequestMapping("/minha-conta/cliente")
 @Controller
 public class ClientController {
 
@@ -38,10 +38,10 @@ public class ClientController {
             LoggerFactory.getLogger(ClientController.class);
 
     @Autowired
-    private ClientService clientService;
+    private IndividualService individualService;
 
     @Autowired
-    private ClientMapper clientMapper;
+    private IndividualMapper individualMapper;
 
     @Autowired
     private JobCandidateService jobCandidateService;
@@ -71,16 +71,16 @@ public class ClientController {
     public ModelAndView show() throws Exception {
         ModelAndView mv = new ModelAndView("client/my-requests");
 
-        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> individual = individualService.findByEmail(CurrentUserUtil.getCurrentClientUser());
 
-        if (!client.isPresent()) {
+        if (!individual.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        ClientDTO clientDTO = clientMapper.toDto(client.get());
+        IndividualDTO clientDTO = individualMapper.toDto(individual.get());
         mv.addObject("client", clientDTO);
 
-        List<JobRequest> jobRequests = jobRequestService.findByClientOrderByDateCreatedDesc(client.get());
+        List<JobRequest> jobRequests = jobRequestService.findByClientOrderByDateCreatedDesc(individual.get());
 
         List<JobRequestMinDTO> jobRequestDTOs = jobRequests.stream()
                 .map(job -> {
@@ -98,12 +98,12 @@ public class ClientController {
         return mv;
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/meus-pedidos/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
-        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
 
-        if (!client.isPresent()) {
+        if (!individual.isPresent()) {
             throw new IOException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
@@ -113,8 +113,8 @@ public class ClientController {
             throw new EntityNotFoundException("Solicitação não foi encontrada pelo id informado.");
         }
 
-        Long jobRequestClientId = jobRequest.get().getClient().getId();
-        Long clientId = client.get().getId();
+        Long jobRequestClientId = jobRequest.get().getIndividual().getId();
+        Long clientId = individual.get().getId();
 
         if(jobRequestClientId != clientId){
             throw new EntityNotFoundException("Você não ter permissão para deletar essa solicitação.");
@@ -124,20 +124,19 @@ public class ClientController {
         redirectAttributes.addFlashAttribute("msg", "Solicitação deletada!");
 
         return "redirect:/minha-conta/meus-pedidos";
-
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/meus-pedidos/{id}")
     public ModelAndView showDetailsRequest(@PathVariable Optional<Long> id) throws Exception {
         ModelAndView mv = new ModelAndView("client/details-request");
 
-        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> client = (individualService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
 
         if (!client.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
-        ClientDTO clientDTO = clientMapper.toDto(client.get());
-        mv.addObject("client", clientDTO);
+        IndividualDTO individualDTO = individualMapper.toDto(client.get());
+        mv.addObject("client", individualDTO);
 
         Optional<JobRequest> job = jobRequestService.findById(id.get());
 
@@ -167,11 +166,10 @@ public class ClientController {
 
         mv.addObject("candidates", jobCandidatesDTOs);
 
-
         return mv;
     }
 
-    @GetMapping("/disponiveis")
+    @GetMapping("/meus-pedidos/disponiveis")
     public ModelAndView showAvailableJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -180,9 +178,9 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
 
-        if (!client.isPresent()) {
+        if (!individual.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
@@ -190,7 +188,7 @@ public class ClientController {
         Page<JobRequest> jobRequestPage = null;
         List<JobRequestFullDTO> jobRequestFullDTOs = null;
 
-        jobRequestPage = jobRequestService.findByStatusAndClient(JobRequest.Status.AVAILABLE, client.get(), pageRequest);
+        jobRequestPage = jobRequestService.findByStatusAndClient(JobRequest.Status.AVAILABLE, individual.get(), pageRequest);
 
         jobRequestFullDTOs = jobRequestPage.stream()
                 .map(jobRequest -> {
@@ -212,7 +210,7 @@ public class ClientController {
         return mv;
     }
 
-    @GetMapping("/para-orcamento")
+    @GetMapping("/meus-pedidos/para-orcamento")
     public ModelAndView showDisputedJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -221,9 +219,9 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
 
-        if (!client.isPresent()) {
+        if (!individual.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
@@ -231,7 +229,7 @@ public class ClientController {
         Page<JobCandidate> jobCandidatePage = null;
         List<JobCandidateMinDTO> jobCandidateDTOs = null;
 
-        jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.BUDGET, client.get(),pageRequest);
+        jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.BUDGET, individual.get(),pageRequest);
 
         jobCandidateDTOs = jobCandidatePage.stream()
                 .map(jobCandidate -> {
@@ -253,7 +251,7 @@ public class ClientController {
         return mv;
     }
 
-    @GetMapping("/para-fazer")
+    @GetMapping("/meus-pedidos/para-fazer")
     public ModelAndView showTodoJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -262,7 +260,7 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> client = (individualService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
 
         if (!client.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -294,7 +292,7 @@ public class ClientController {
         return mv;
     }
 
-    @GetMapping("/executados")
+    @GetMapping("/meus-pedidos/executados")
     public ModelAndView showJobsPerformed(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -303,7 +301,7 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Client> client = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> client = (individualService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
 
         if (!client.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -347,7 +345,7 @@ public class ClientController {
     @PatchMapping("/encerra-pedido/{id}")
     public String updateRequest(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
-        Optional<Client> oClient = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> oClient = (individualService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
 
         if (!oClient.isPresent()) {
             throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -362,7 +360,7 @@ public class ClientController {
 
         jobRequest = oJobRequest.get();
 
-        Long jobRequestClientId = jobRequest.getClient().getId();
+        Long jobRequestClientId = jobRequest.getIndividual().getId();
         Long clientId = oClient.get().getId();
 
         if(jobRequestClientId != clientId){

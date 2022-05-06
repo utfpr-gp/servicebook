@@ -2,11 +2,12 @@ package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.City;
+import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.model.entity.UserCode;
 import br.edu.utfpr.servicebook.model.mapper.CityMapper;
+import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.UserCodeMapper;
-import br.edu.utfpr.servicebook.model.mapper.UserMapper;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -28,17 +29,17 @@ import java.util.Optional;
 @Controller
 @Slf4j
 @RequestMapping("/cadastrar-se")
-@SessionAttributes("wizardUser")
-public class UserRegistrationController {
+@SessionAttributes("wizard")
+public class IndividualRegisterController {
 
     @Autowired
-    private WizardSessionUtil<UserDTO> wizardSessionUtil;
+    private WizardSessionUtil<IndividualDTO> wizardSessionUtil;
 
     @Autowired
-    private UserService userService;
+    private IndividualService individualService;
 
     @Autowired
-    private UserMapper userMapper;
+    private IndividualMapper individualMapper;
 
     @Autowired
     private UserCodeService userCodeService;
@@ -61,7 +62,7 @@ public class UserRegistrationController {
     @Autowired
     private AuthenticationCodeGeneratorService authenticationCodeGeneratorService;
 
-    private String userRegistrationErrorForwarding(String step, UserDTO dto, Model model, BindingResult errors) {
+    private String userRegistrationErrorForwarding(String step, IndividualDTO dto, Model model, BindingResult errors) {
         model.addAttribute("dto", dto);
         model.addAttribute("errors", errors.getAllErrors());
 
@@ -93,7 +94,7 @@ public class UserRegistrationController {
             step = 1L;
         }
 
-        UserDTO dto = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
+        IndividualDTO dto = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         model.addAttribute("dto", dto);
         return "visitor/user-registration/wizard-step-0" + step;
     }
@@ -101,7 +102,7 @@ public class UserRegistrationController {
     @PostMapping("/passo-1")
     public String saveUserEmail(
             HttpSession httpSession,
-            @Validated(UserDTO.RequestUserEmailInfoGroupValidation.class) UserDTO dto,
+            @Validated(IndividualDTO.RequestUserEmailInfoGroupValidation.class) IndividualDTO dto,
             BindingResult errors,
             RedirectAttributes redirectAttributes,
             Model model
@@ -111,18 +112,9 @@ public class UserRegistrationController {
             return this.userRegistrationErrorForwarding("1", dto, model, errors);
         }
 
-        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
-        Optional<User> oUser = userService.findByEmail(dto.getEmail());
+        Optional<Individual> oUser = individualService.findByEmail(dto.getEmail());
+
         if (oUser.isPresent()) {
-            if (dto.getEmail().equals(oUser.get().getEmail())) {
-                if (oUser.get().getPassword() != null) {
-                    return "redirect:/entrar";
-                }
-                sessionDTO.setId(oUser.get().getId());
-                sessionDTO.setEmail(oUser.get().getEmail());
-                sessionDTO.setPhoneNumber(oUser.get().getPhoneNumber());
-                return "redirect:/cadastrar-se?passo=3";
-            }
             errors.rejectValue("email", "error.dto", "Email já cadastrado! Por favor, insira um email não cadastrado.");
         }
 
@@ -144,6 +136,7 @@ public class UserRegistrationController {
             emailSenderService.sendEmailToServer(dto.getEmail(), "Servicebook: Código de autenticação.", "Código de autenticação:" + "\n\n\n" + oUserCode.get().getCode());
         }
 
+        IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setEmail(dto.getEmail());
 
         return "redirect:/cadastrar-se?passo=2";
@@ -162,7 +155,7 @@ public class UserRegistrationController {
             return this.userCodeErrorForwarding("2", dto, model, errors);
         }
 
-        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
+        IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         Optional<UserCode> oUserCode = userCodeService.findByEmail(sessionDTO.getEmail());
 
         if (!oUserCode.isPresent()) {
@@ -191,7 +184,7 @@ public class UserRegistrationController {
     @PostMapping("/passo-3")
     public String saveUserPassword(
             HttpSession httpSession,
-            @Validated(UserDTO.RequestUserPasswordInfoGroupValidation.class) UserDTO dto,
+            @Validated(IndividualDTO.RequestUserPasswordInfoGroupValidation.class) IndividualDTO dto,
             BindingResult errors,
             RedirectAttributes redirectAttributes,
             Model model
@@ -209,18 +202,7 @@ public class UserRegistrationController {
             return this.userRegistrationErrorForwarding("3", dto, model, errors);
         }
 
-        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
-        Optional<User> oUser = userService.findByEmail(sessionDTO.getEmail());
-        if (oUser.isPresent()) {
-            if (sessionDTO.getEmail().equals(oUser.get().getEmail())) {
-                sessionDTO.setPassword(dto.getPassword());
-                sessionDTO.setRepassword(dto.getRepassword());
-                redirectAttributes.addFlashAttribute("phoneNumber", sessionDTO.getPhoneNumber());
-                redirectAttributes.addFlashAttribute("id", sessionDTO.getId());
-                return "redirect:/cadastrar-se?passo=5";
-            }
-        }
-
+        IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setPassword(dto.getPassword());
         sessionDTO.setRepassword(dto.getRepassword());
 
@@ -230,7 +212,7 @@ public class UserRegistrationController {
     @PostMapping("/passo-4")
     public String saveUserPhone(
             HttpSession httpSession,
-            @Validated(UserDTO.RequestUserPhoneInfoGroupValidation.class) UserDTO dto,
+            @Validated(IndividualDTO.RequestUserPhoneInfoGroupValidation.class) IndividualDTO dto,
             BindingResult errors,
             RedirectAttributes redirectAttributes,
             Model model
@@ -240,7 +222,7 @@ public class UserRegistrationController {
             return this.userRegistrationErrorForwarding("4", dto, model, errors);
         }
 
-        Optional<User> oUser = userService.findByPhoneNumber(dto.getPhoneNumber());
+        Optional<Individual> oUser = individualService.findByPhoneNumber(dto.getPhoneNumber());
 
         if (oUser.isPresent()) {
             errors.rejectValue("phoneNumber", "error.dto", "Telefone já cadastrado! Por favor, insira um número de telefone não cadastrado.");
@@ -252,7 +234,7 @@ public class UserRegistrationController {
 
         ///// Enviar código de autenticação para telefone.
 
-        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
+        IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setPhoneNumber(dto.getPhoneNumber());
 
         return "redirect:/cadastrar-se?passo=5";
@@ -271,7 +253,7 @@ public class UserRegistrationController {
             return this.userCodeErrorForwarding("5", dto, model, errors);
         }
 
-        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
+        IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         Optional<UserCode> oUserCode = userCodeService.findByEmail(sessionDTO.getEmail());
 
         if (!oUserCode.isPresent()) {
@@ -300,7 +282,7 @@ public class UserRegistrationController {
     @PostMapping("/passo-6")
     public String saveUserNameAndCPF(
             HttpSession httpSession,
-            @Validated(UserDTO.RequestUserNameAndCPFInfoGroupValidation.class) UserDTO dto,
+            @Validated(IndividualDTO.RequestUserNameAndCPFInfoGroupValidation.class) IndividualDTO dto,
             BindingResult errors,
             RedirectAttributes redirectAttributes,
             Model model
@@ -310,7 +292,7 @@ public class UserRegistrationController {
             return this.userRegistrationErrorForwarding("6", dto, model, errors);
         }
 
-        Optional<User> oUser = userService.findByCpf(dto.getCpf());
+        Optional<Individual> oUser = individualService.findByCpf(dto.getCpf());
 
         if (oUser.isPresent()) {
             errors.rejectValue("cpf", "error.dto", "CPF já cadastrado! Por favor, insira um CPF não cadastrado.");
@@ -320,7 +302,7 @@ public class UserRegistrationController {
             return this.userRegistrationErrorForwarding("6", dto, model, errors);
         }
 
-        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
+        IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setName(dto.getName());
         sessionDTO.setCpf(dto.getCpf());
 
@@ -359,7 +341,7 @@ public class UserRegistrationController {
         addressFullDTO.setNeighborhood(dto.getNeighborhood());
         addressFullDTO.setCity(cityMidDTO);
 
-        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
+        IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setAddress(addressFullDTO);
         sessionDTO.setProfileVerified(true);
 
@@ -369,20 +351,20 @@ public class UserRegistrationController {
     @PostMapping("/passo-8")
     public String saveUser(
             HttpSession httpSession,
-            UserDTO dto,
+            IndividualDTO dto,
             BindingResult errors,
             Model model,
             RedirectAttributes redirectAttributes,
             SessionStatus status
     ) {
 
-        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, UserDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
+        IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
 
         validator.validate(sessionDTO, errors, new Class[]{
-                UserDTO.RequestUserEmailInfoGroupValidation.class,
-                UserDTO.RequestUserPasswordInfoGroupValidation.class,
-                UserDTO.RequestUserPhoneInfoGroupValidation.class,
-                UserDTO.RequestUserNameAndCPFInfoGroupValidation.class,
+                IndividualDTO.RequestUserEmailInfoGroupValidation.class,
+                IndividualDTO.RequestUserPasswordInfoGroupValidation.class,
+                IndividualDTO.RequestUserPhoneInfoGroupValidation.class,
+                IndividualDTO.RequestUserNameAndCPFInfoGroupValidation.class,
                 AddressDTO.RequestUserAddressInfoGroupValidation.class
         });
 
@@ -390,16 +372,8 @@ public class UserRegistrationController {
             return this.userRegistrationErrorForwarding("8", dto, model, errors);
         }
 
-        Optional<User> oUser = userService.findByEmail(sessionDTO.getEmail());
-        if (oUser.isPresent()) {
-            if (sessionDTO.getEmail().equals(oUser.get().getEmail())) {
-                sessionDTO.setName(oUser.get().getName());
-                sessionDTO.setCpf(oUser.get().getCpf());
-            }
-        }
-
-        User user = userMapper.toEntity(sessionDTO);
-        userService.save(user);
+        Individual user = individualMapper.toEntity(sessionDTO);
+        individualService.save(user);
 
         redirectAttributes.addFlashAttribute("msg", "Usuário cadastrado com sucesso! Realize o login no Servicebook!");
         status.setComplete();

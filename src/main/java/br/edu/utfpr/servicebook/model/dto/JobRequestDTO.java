@@ -3,6 +3,7 @@ package br.edu.utfpr.servicebook.model.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.*;
@@ -38,9 +39,9 @@ public class JobRequestDTO implements Serializable {
     private MultipartFile imageFile;
     private String imageSession;
 
-    @NotBlank(message = "O campo CEP é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
-    @Pattern(regexp="\\d{5}-?\\d{3}",message="Por favor, preencha um CEP válido", groups = RequestClientInfoGroupValidation.class)
-    private String cep;
+//    @NotBlank(message = "O campo CEP é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
+//    @Pattern(regexp="\\d{5}-?\\d{3}",message="Por favor, preencha um CEP válido", groups = RequestClientInfoGroupValidation.class)
+//    private String cep;
 
     @NotBlank(message = "O campo Nome é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
     @Pattern(regexp="^(\\s?[A-ZÀ-Ú][a-zà-ú]*)+(\\s[a-zà-ú]*)?(\\s[A-ZÀ-Ú][a-zà-ú]*)+",message="Por favor, preencha um nome válido", groups = RequestClientInfoGroupValidation.class)
@@ -53,6 +54,11 @@ public class JobRequestDTO implements Serializable {
     @NotBlank(message = "O campo Celular é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
     @Pattern(regexp="^\\(?\\d{2}\\)?\\s?(\\d{4,5})-?(\\d{4})",message="Por favor, preencha um celular válido", groups = RequestClientInfoGroupValidation.class)
     private String phone;
+
+    @NotBlank(message = "O campo CPF é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
+    @CPF(message = "O CPF é inválido!", groups = RequestClientInfoGroupValidation.class)
+    private String cpf;
+
     private Boolean clientConfirmation;
 
     public interface RequestExpertiseGroupValidation {

@@ -5,7 +5,7 @@
 <t:visitor title="Servicebook - Início">
     <jsp:body>
 
-        <t:banner></t:banner>
+        <t:banner cities="${cities}"></t:banner>
 
         <t:search-bar></t:search-bar>
 

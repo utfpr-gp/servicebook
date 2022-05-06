@@ -16,7 +16,7 @@
                     <c:choose>
                         <c:when test="${professional.description == ''}">
                             <div class="row">
-                                <form class="col s12" action="${pageContext.request.contextPath}/minha-conta/profissional/cadastra-descricao/${professional.id}" method="post">
+                                <form class="col s12" action="${pageContext.request.contextPath}/minha-conta/cadastra-descricao/${professional.id}" method="post">
                                     <input type="hidden" name="_method" value="PATCH"/>
                                     <div class="row">
                                         <div class="input-field col s12">
@@ -36,7 +36,7 @@
                                     </div>
                                 </div>
                                 <div class="formulario">
-                                    <form class="col s12" action="${pageContext.request.contextPath}/minha-conta/profissional/cadastra-descricao/${professional.id}" method="post">
+                                    <form class="col s12" action="${pageContext.request.contextPath}/minha-conta/cadastra-descricao/${professional.id}" method="post">
                                         <input type="hidden" name="_method" value="PATCH"/>
                                         <div class="row">
                                             <div class="input-field col s12">

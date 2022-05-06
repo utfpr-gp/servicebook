@@ -29,15 +29,21 @@ import java.util.stream.Collectors;
 
 @RequestMapping("/minha-conta/profissional")
 @Controller
-public class MyAccountProfessionalController {
+public class ProfessionalHomeController {
 
-    public static final Logger log = LoggerFactory.getLogger(MyAccountProfessionalController.class);
-
-    @Autowired
-    private ProfessionalService professionalService;
+    public static final Logger log = LoggerFactory.getLogger(ProfessionalHomeController.class);
 
     @Autowired
-    private ProfessionalMapper professionalMapper;
+    private IndividualService individualService;
+
+    @Autowired
+    private IndividualMapper individualMapper;
+
+    @Autowired
+    private CityService cityService;
+
+    @Autowired
+    private CityMapper cityMapper;
 
     @Autowired
     private ProfessionalExpertiseService professionalExpertiseService;
@@ -67,28 +73,19 @@ public class MyAccountProfessionalController {
     private JobCandidateMapper jobCandidateMapper;
 
     @Autowired
-    private CityService cityService;
-
-    @Autowired
-    private CityMapper cityMapper;
-
-    @Autowired
     private StateService stateService;
-
-    @Autowired
-    private ClientService clientService;
 
     @GetMapping
     public ModelAndView showMyAccountProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> id) throws Exception {
         log.debug("ServiceBook: Minha conta.");
 
-        Optional<Professional> oProfessional = Optional.ofNullable(professionalService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        ProfessionalMinDTO professionalMinDTO = professionalMapper.toMinDto(oProfessional.get());
+        IndividualMinDTO professionalMinDTO = individualMapper.toMinDto(oProfessional.get());
 
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
         List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
@@ -98,7 +95,7 @@ public class MyAccountProfessionalController {
 
         ModelAndView mv = new ModelAndView("professional/my-account");
 
-        mv.addObject("professional", professionalMinDTO);
+        mv.addObject("individual", professionalMinDTO);
         mv.addObject("expertises", expertiseDTOs);
 
         Optional<Long> jobs, ratings, comments;
@@ -143,56 +140,6 @@ public class MyAccountProfessionalController {
         return mv;
     }
 
-
-    @GetMapping("/detalhes-servico/{id}")
-    public ModelAndView showAvailableDetailJobs(
-            @PathVariable Long id
-    ) throws Exception {
-
-        Optional<Professional> oProfessional = Optional.ofNullable(professionalService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
-
-        if (!oProfessional.isPresent()) {
-            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
-        }
-
-        ModelAndView mv = new ModelAndView("professional/detail-service");
-        Optional<JobRequest> oJob = jobRequestService.findById(id);
-
-        if (!oJob.isPresent()) {
-            throw new Exception("O trabalho não foi encontrado em nosso sistema!");
-        }
-
-        JobRequest jb = oJob.get();
-
-        JobRequestDetailsDTO jobFull = jobRequestMapper.jobRequestDetailsDTO(jb);
-
-        Optional oClient, oCity, oState;
-
-        oClient = clientService.findById(jobFull.getClient().getId());
-        Client client = (Client) oClient.get();
-
-        oCity = cityService.findById(jobFull.getClient().getAddress().getCity().getId());
-
-        City city = (City) oCity.get();
-        oState = stateService.findById(city.getState().getId());
-
-        State state = (State) oState.get();
-
-        int maxCandidates = jb.getQuantityCandidatorsMax();
-        int currentCandidates = jb.getJobCandidates().size();
-        int percentCandidatesApplied = (int)(((double)currentCandidates / (double)maxCandidates) * 100);
-
-        mv.addObject("job", jobFull);
-        mv.addObject("client", client);
-        mv.addObject("city", city.getName());
-        mv.addObject("state", state.getName());
-        mv.addObject("candidatesApplied", currentCandidates);
-        mv.addObject("maxCandidates", maxCandidates);
-        mv.addObject("percentCandidatesApplied", percentCandidatesApplied);
-        return mv;
-    }
-
-
     @GetMapping("/disponiveis")
     public ModelAndView showAvailableJobs(
             HttpServletRequest request,
@@ -203,7 +150,7 @@ public class MyAccountProfessionalController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Professional> oProfessional = Optional.ofNullable(professionalService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -265,7 +212,7 @@ public class MyAccountProfessionalController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Professional> oProfessional = Optional.ofNullable(professionalService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -327,7 +274,7 @@ public class MyAccountProfessionalController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Professional> oProfessional = Optional.ofNullable(professionalService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -389,7 +336,7 @@ public class MyAccountProfessionalController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Professional> oProfessional = Optional.ofNullable(professionalService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -446,13 +393,13 @@ public class MyAccountProfessionalController {
     public ModelAndView showMyDetails() throws Exception {
         ModelAndView mv = new ModelAndView("client/details-contact");
 
-        Optional<Professional> oProfessional = Optional.ofNullable(professionalService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        ProfessionalDTO professionalDTO = professionalMapper.toResponseDto(oProfessional.get());
+        IndividualDTO professionalDTO = individualMapper.toDto(oProfessional.get());
 
         List<JobContracted> jobContracted = jobContractedService.findByIdProfessional(professionalDTO.getId());
         List<JobContractedDTO> jobContractedDTOs = jobContracted.stream()
@@ -465,60 +412,53 @@ public class MyAccountProfessionalController {
         return mv;
     }
 
-    @GetMapping("/perfil/{id}")
-    public ModelAndView editProfile(@PathVariable Long id) throws IOException {
-        Optional<Professional> oProfessional = Optional.ofNullable(professionalService.findByEmailAddress(CurrentUserUtil.getCurrentUserEmail()));
-        if (!oProfessional.isPresent()) {
-            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
-        }
 
-        ProfessionalDTO professionalDTO = professionalMapper.toDto(oProfessional.get());
+    @GetMapping("/detalhes-servico/{id}")
+    public ModelAndView showAvailableDetailJobs(
+            @PathVariable Long id
+    ) throws Exception {
 
-        Optional<City> oCity = cityService.findById(oProfessional.get().getAddress().getCity().getId());
-        if (!oCity.isPresent()) {
-            throw new EntityNotFoundException("Cidade não foi encontrada pelo id informado.");
-        }
-        CityMinDTO cityMinDTO = cityMapper.toMinDto(oCity.get());
-
-        ModelAndView mv = new ModelAndView("professional/edit-account");
-        mv.addObject("professional", professionalDTO);
-        mv.addObject("city", cityMinDTO);
-
-        return mv;
-    }
-
-    @GetMapping("/meu-anuncio/{id}")
-    public ModelAndView showMyAd(@PathVariable Long id) throws IOException {
-        Optional<Professional> oProfessional = this.professionalService.findById(id);
+        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
-            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        ProfessionalMinDTO professionalMinDTO = professionalMapper.toMinDto(oProfessional.get());
+        ModelAndView mv = new ModelAndView("professional/detail-service");
+        Optional<JobRequest> oJob = jobRequestService.findById(id);
 
-        ModelAndView mv = new ModelAndView("professional/account/my-ad");
+        if (!oJob.isPresent()) {
+            throw new Exception("O trabalho não foi encontrado em nosso sistema!");
+        }
 
-        mv.addObject("professional", professionalMinDTO);
+        JobRequest jb = oJob.get();
 
+        JobRequestDetailsDTO jobFull = jobRequestMapper.jobRequestDetailsDTO(jb);
+
+        Optional oClient, oCity, oState;
+
+        oClient = individualService.findById(jobFull.getIndividual().getId());
+        Individual client = (Individual) oClient.get();
+
+        oCity = cityService.findById(jobFull.getIndividual().getAddress().getCity().getId());
+
+        City city = (City) oCity.get();
+        oState = stateService.findById(city.getState().getId());
+
+        State state = (State) oState.get();
+
+        int maxCandidates = jb.getQuantityCandidatorsMax();
+        int currentCandidates = jb.getJobCandidates().size();
+        int percentCandidatesApplied = (int)(((double)currentCandidates / (double)maxCandidates) * 100);
+
+        mv.addObject("job", jobFull);
+        mv.addObject("client", client);
+        mv.addObject("city", city.getName());
+        mv.addObject("state", state.getName());
+        mv.addObject("candidatesApplied", currentCandidates);
+        mv.addObject("maxCandidates", maxCandidates);
+        mv.addObject("percentCandidatesApplied", percentCandidatesApplied);
         return mv;
-    }
-
-    @PatchMapping("/cadastra-descricao/{id}")
-    public String updateDescriptionProfessional(@PathVariable Long id, HttpServletRequest request, RedirectAttributes redirectAttributes) throws IOException {
-
-        Optional<Professional> oProfessional = this.professionalService.findById(id);
-
-        if(!oProfessional.isPresent()) {
-            throw new EntityNotFoundException("Profissional não encontrado pelo id informado.");
-        }
-
-        Professional professional = oProfessional.get();
-        String description = request.getParameter("description");
-        professional.setDescription(description);
-        this.professionalService.save(professional);
-
-        return "redirect:/minha-conta/profissional/meu-anuncio/{id}";
     }
 
 }
