@@ -39,12 +39,12 @@ public class JobCandidate  {
 	@ManyToOne
 	@MapsId("professionalId")
 	@JoinColumn(name = "professional_id")
-	private Individual professional;
+	private Individual individual;
 
-	public JobCandidate(JobRequest jobRequest, Individual professional){
+	public JobCandidate(JobRequest jobRequest, Individual individual){
 		this.jobRequest = jobRequest;
-		this.professional = professional;
-		this.id = new JobCandidatePK(jobRequest.getId(), professional.getId());
+		this.individual = individual;
+		this.id = new JobCandidatePK(jobRequest.getId(), individual.getId());
 	}
 
 	@PrePersist

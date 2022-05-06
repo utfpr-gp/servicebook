@@ -14,14 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,6 +38,12 @@ public class ProfessionalHomeController {
 
     @Autowired
     private IndividualMapper individualMapper;
+
+    @Autowired
+    private CityService cityService;
+
+    @Autowired
+    private CityMapper cityMapper;
 
     @Autowired
     private ProfessionalExpertiseService professionalExpertiseService;
@@ -65,6 +72,9 @@ public class ProfessionalHomeController {
     @Autowired
     private JobCandidateMapper jobCandidateMapper;
 
+    @Autowired
+    private StateService stateService;
+
     @GetMapping
     public ModelAndView showMyAccountProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> id) throws Exception {
         log.debug("ServiceBook: Minha conta.");
@@ -85,7 +95,7 @@ public class ProfessionalHomeController {
 
         ModelAndView mv = new ModelAndView("professional/my-account");
 
-        mv.addObject("professional", professionalMinDTO);
+        mv.addObject("individual", professionalMinDTO);
         mv.addObject("expertises", expertiseDTOs);
 
         Optional<Long> jobs, ratings, comments;
@@ -399,6 +409,55 @@ public class ProfessionalHomeController {
         mv.addObject("professional", professionalDTO);
         mv.addObject("jobContracted", jobContractedDTOs);
 
+        return mv;
+    }
+
+
+    @GetMapping("/detalhes-servico/{id}")
+    public ModelAndView showAvailableDetailJobs(
+            @PathVariable Long id
+    ) throws Exception {
+
+        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+
+        if (!oProfessional.isPresent()) {
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        ModelAndView mv = new ModelAndView("professional/detail-service");
+        Optional<JobRequest> oJob = jobRequestService.findById(id);
+
+        if (!oJob.isPresent()) {
+            throw new Exception("O trabalho não foi encontrado em nosso sistema!");
+        }
+
+        JobRequest jb = oJob.get();
+
+        JobRequestDetailsDTO jobFull = jobRequestMapper.jobRequestDetailsDTO(jb);
+
+        Optional oClient, oCity, oState;
+
+        oClient = individualService.findById(jobFull.getIndividual().getId());
+        Individual client = (Individual) oClient.get();
+
+        oCity = cityService.findById(jobFull.getIndividual().getAddress().getCity().getId());
+
+        City city = (City) oCity.get();
+        oState = stateService.findById(city.getState().getId());
+
+        State state = (State) oState.get();
+
+        int maxCandidates = jb.getQuantityCandidatorsMax();
+        int currentCandidates = jb.getJobCandidates().size();
+        int percentCandidatesApplied = (int)(((double)currentCandidates / (double)maxCandidates) * 100);
+
+        mv.addObject("job", jobFull);
+        mv.addObject("client", client);
+        mv.addObject("city", city.getName());
+        mv.addObject("state", state.getName());
+        mv.addObject("candidatesApplied", currentCandidates);
+        mv.addObject("maxCandidates", maxCandidates);
+        mv.addObject("percentCandidatesApplied", percentCandidatesApplied);
         return mv;
     }
 

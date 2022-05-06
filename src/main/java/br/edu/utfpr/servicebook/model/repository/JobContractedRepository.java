@@ -12,8 +12,8 @@ import java.util.Optional;
 
 public interface JobContractedRepository extends JpaRepository<JobContracted, Long> {
 
-    @Query("SELECT j FROM JobContracted j WHERE j.professional.id = :professional_id")
-    List<JobContracted> findByIdProfessional(@Param("professional_id") Long professional_id);
+    @Query("SELECT j FROM JobContracted j WHERE j.individual.id = :professional_id")
+    List<JobContracted> findByIdIndividual(@Param("professional_id") Long professional_id);
 
     /**
      * Retorna o total de trabalhos contratados de um profissional.
@@ -21,7 +21,7 @@ public interface JobContractedRepository extends JpaRepository<JobContracted, Lo
      * @param individual
      * @return Optional<Long>
      */
-    Optional<Long> countByProfessional(Individual individual);
+    Optional<Long> countByIndividual(Individual individual);
 
     /**
      * Retorna o total de avaliações dos trabalhos contratados de um profissional.
@@ -29,7 +29,7 @@ public interface JobContractedRepository extends JpaRepository<JobContracted, Lo
      * @param individual
      * @return Optional<Long>
      */
-    Optional<Long> countRatingByProfessional(Individual individual);
+    Optional<Long> countRatingByIndividual(Individual individual);
 
     /**
      * Retorna o total de comentários dos trabalhos contratados de um profissional.
@@ -37,7 +37,7 @@ public interface JobContractedRepository extends JpaRepository<JobContracted, Lo
      * @param individual
      * @return Optional<Long>
      */
-    Optional<Long> countCommentsByProfessional(Individual individual);
+    Optional<Long> countCommentsByIndividual(Individual individual);
 
     /**
      * Retorna o total de trabalhos contratados de um profissional para uma dada especialidade.
@@ -46,7 +46,7 @@ public interface JobContractedRepository extends JpaRepository<JobContracted, Lo
      * @param expertise
      * @return Optional<Long>
      */
-    Optional<Long> countByProfessionalAndJobRequest_Expertise(Individual professional, Expertise expertise);
+    Optional<Long> countByIndividualAndJobRequest_Expertise(Individual professional, Expertise expertise);
 
     /**
      * Retorna o total de avaliações dos trabalhos contratados de um profissional para uma dada especialidade.
@@ -55,7 +55,7 @@ public interface JobContractedRepository extends JpaRepository<JobContracted, Lo
      * @param expertise
      * @return Optional<Long>
      */
-    Optional<Long> countRatingByProfessionalAndJobRequest_Expertise(Individual professional, Expertise expertise);
+    Optional<Long> countRatingByIndividualAndJobRequest_Expertise(Individual professional, Expertise expertise);
 
     /**
      * Retorna o total de comentários dos trabalhos contratados de um profissional para uma dada especialidade.
@@ -64,12 +64,12 @@ public interface JobContractedRepository extends JpaRepository<JobContracted, Lo
      * @param expertise
      * @return Optional<Long>
      */
-    Optional<Long> countCommentsByProfessionalAndJobRequest_Expertise(Individual professional, Expertise expertise);
+    Optional<Long> countCommentsByIndividualAndJobRequest_Expertise(Individual individual, Expertise expertise);
 
-    Page<JobContracted> findByJobRequest_StatusAndProfessional(JobRequest.Status status, Individual professional, Pageable pageable);
+    Page<JobContracted> findByJobRequest_StatusAndIndividual(JobRequest.Status status, Individual individual, Pageable pageable);
 
-    Page<JobContracted> findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status status, Individual client, Pageable pageable);
+    Page<JobContracted> findByJobRequest_StatusAndJobRequest_Individual(JobRequest.Status status, Individual individual, Pageable pageable);
 
-    Page<JobContracted> findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status status, Expertise expertise, Individual professional, Pageable pageable);
+    Page<JobContracted> findByJobRequest_StatusAndJobRequest_ExpertiseAndIndividual(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable);
 
 }

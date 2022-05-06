@@ -33,7 +33,7 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
      * @param individual
      * @return
      */
-    List<JobRequest> findByStatusAndExpertiseAndJobCandidates_Professional(JobRequest.Status status, Expertise expertise, Individual individual);
+    List<JobRequest> findByStatusAndExpertiseAndJobCandidates_Individual(JobRequest.Status status, Expertise expertise, Individual individual);
 
     /**
      * Retorna uma lista de requisições em um certo estado de todas as especialidades e ainda, referente a um dado profissional
@@ -41,7 +41,7 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
      * @param individual
      * @return
      */
-    List<JobRequest> findByStatusAndJobCandidates_Professional(JobRequest.Status status, Individual individual);
+    List<JobRequest> findByStatusAndJobCandidates_Individual(JobRequest.Status status, Individual individual);
 
     /**
      * Retorna uma lista de requisições de um determinado Status e Especialidade que ainda não receberam candidaturas.
@@ -70,7 +70,7 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
      * @param individual
      * @return
      */
-    List<JobRequest> findByStatusAndExpertiseAndJobCandidates_ProfessionalNot(JobRequest.Status status, Expertise expertise, Individual individual);
+    List<JobRequest> findByStatusAndExpertiseAndJobCandidates_IndividualNot(JobRequest.Status status, Expertise expertise, Individual individual);
 
     /**
      * Retorna uma lista de requisições de um determinado Status e de todas Especialidades que um dado profissional ainda não se
@@ -79,7 +79,7 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
      * @param individual
      * @return
      */
-    List<JobRequest> findByStatusAndJobCandidates_ProfessionalNot(JobRequest.Status status, Individual individual);
+    List<JobRequest> findByStatusAndJobCandidates_IndividualNot(JobRequest.Status status, Individual individual);
 
     /**
      * Retorna uma lista de requisições de um determinado Status e Especialidade que ainda não tiveram candidaturas ou
@@ -89,7 +89,7 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
      * @param individual
      * @return
      */
-    List<JobRequest> findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status status, Expertise expertise, Individual individual);
+    List<JobRequest> findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_IndividualNot(JobRequest.Status status, Expertise expertise, Individual individual);
 
     /**
      * Retorna uma lista de requisições de um determinado Status e Especialidade que ainda não tiveram candidaturas ou
@@ -99,7 +99,7 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
      * @param individual
      * @return
      */
-    Page<JobRequest> findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable);
+    Page<JobRequest> findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_IndividualNot(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable);
 
     /**
      * Retorna uma lista de requisições de um determinado Status e todas especialidades que ainda não tiveram candidaturas ou
@@ -108,7 +108,7 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
      * @param individual
      * @return
      */
-    List<JobRequest> findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status status, Individual individual);
+    List<JobRequest> findByStatusAndJobCandidatesIsNullOrJobCandidates_IndividualNot(JobRequest.Status status, Individual individual);
 
     /**
      * Retorna uma lista de requisições de um determinado Status e todas especialidades que ainda não tiveram candidaturas ou
@@ -118,7 +118,7 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
      * @param individual
      * @return
      */
-    Page<JobRequest> findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status status, Individual individual, Pageable pageable);
+    Page<JobRequest> findByStatusAndJobCandidatesIsNullOrJobCandidates_IndividualNot(JobRequest.Status status, Individual individual, Pageable pageable);
 
     /**
      * Retorna uma lista de requisições em certo Status e Especialidade cujo o profissional foi contratado para realizar
@@ -128,14 +128,14 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
      * @param individual
      * @return
      */
-    List<JobRequest> findByStatusAndExpertiseAndJobContracted_Professional(JobRequest.Status status, Expertise expertise, Individual individual);
+    List<JobRequest> findByStatusAndExpertiseAndJobContracted_Individual(JobRequest.Status status, Expertise expertise, Individual individual);
 
-    Page<JobRequest> findByStatusAndJobContracted_Professional(JobRequest.Status status, Individual individual, Pageable pageable);
+    Page<JobRequest> findByStatusAndJobContracted_Individual(JobRequest.Status status, Individual individual, Pageable pageable);
 
-    Page<JobRequest> findByStatusAndExpertiseAndJobContracted_Professional(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable);
+    Page<JobRequest> findByStatusAndExpertiseAndJobContracted_Individual(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable);
 
-    List<JobRequest> findByClientOrderByDateCreatedDesc(Individual client);
+    List<JobRequest> findByIndividualOrderByDateCreatedDesc(Individual client);
 
-    Page<JobRequest> findByStatusAndClient(JobRequest.Status status, Individual client, Pageable pageable);
+    Page<JobRequest> findByStatusAndIndividual(JobRequest.Status status, Individual client, Pageable pageable);
 
 }

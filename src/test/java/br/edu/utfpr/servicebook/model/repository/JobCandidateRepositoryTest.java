@@ -83,7 +83,7 @@ class JobCandidateRepositoryTest {
     public void findByProfessional() {
 
         Optional<Individual> joao = individualRepository.findByEmail("joao@mail.com");
-        List<JobCandidate> jobs = jobCandidateRepository.findByProfessional(joao.get());
+        List<JobCandidate> jobs = jobCandidateRepository.findByIndividual(joao.get());
         log.debug(jobs.toString());
         for(JobCandidate job : jobs){
             log.debug(job.getJobRequest().toString());
@@ -98,7 +98,7 @@ class JobCandidateRepositoryTest {
     public void findByProfessionalAndChosenByBudget() {
 
         Optional<Individual> joao = individualRepository.findByEmail("joao@mail.com");
-        List<JobCandidate> jobs = jobCandidateRepository.findByProfessionalAndChosenByBudget(joao.get(), true);
+        List<JobCandidate> jobs = jobCandidateRepository.findByIndividualAndChosenByBudget(joao.get(), true);
         log.debug(jobs.toString());
         Assertions.assertFalse(jobs.isEmpty());
         Assertions.assertEquals(jobs.size(), 1);
@@ -116,7 +116,7 @@ class JobCandidateRepositoryTest {
         JobCandidate candidate1 = new JobCandidate(jb1, joao.get());
         jobCandidateRepository.save(candidate1);
 
-        List<JobCandidate> jobs = jobCandidateRepository.findByJobRequest_StatusAndProfessional(JobRequest.Status.AVAILABLE, joao.get());
+        List<JobCandidate> jobs = jobCandidateRepository.findByJobRequest_StatusAndIndividual(JobRequest.Status.AVAILABLE, joao.get());
         log.debug(jobs.toString());
         for(JobCandidate job : jobs){
             log.debug(job.getJobRequest().toString());

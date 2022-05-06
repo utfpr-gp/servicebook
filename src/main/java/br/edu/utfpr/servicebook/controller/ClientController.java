@@ -1,5 +1,6 @@
 package br.edu.utfpr.servicebook.controller;
 
+import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
@@ -29,7 +30,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RequestMapping("/clientes")
+@RequestMapping("/minha-conta/cliente")
 @Controller
 public class ClientController {
 
@@ -97,7 +98,7 @@ public class ClientController {
         return mv;
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/meus-pedidos/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
         Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
@@ -112,7 +113,7 @@ public class ClientController {
             throw new EntityNotFoundException("Solicitação não foi encontrada pelo id informado.");
         }
 
-        Long jobRequestClientId = jobRequest.get().getClient().getId();
+        Long jobRequestClientId = jobRequest.get().getIndividual().getId();
         Long clientId = individual.get().getId();
 
         if(jobRequestClientId != clientId){
@@ -125,7 +126,7 @@ public class ClientController {
         return "redirect:/minha-conta/meus-pedidos";
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/meus-pedidos/{id}")
     public ModelAndView showDetailsRequest(@PathVariable Optional<Long> id) throws Exception {
         ModelAndView mv = new ModelAndView("client/details-request");
 
@@ -168,7 +169,7 @@ public class ClientController {
         return mv;
     }
 
-    @GetMapping("/disponiveis")
+    @GetMapping("/meus-pedidos/disponiveis")
     public ModelAndView showAvailableJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -209,7 +210,7 @@ public class ClientController {
         return mv;
     }
 
-    @GetMapping("/para-orcamento")
+    @GetMapping("/meus-pedidos/para-orcamento")
     public ModelAndView showDisputedJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -250,7 +251,7 @@ public class ClientController {
         return mv;
     }
 
-    @GetMapping("/para-fazer")
+    @GetMapping("/meus-pedidos/para-fazer")
     public ModelAndView showTodoJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -291,7 +292,7 @@ public class ClientController {
         return mv;
     }
 
-    @GetMapping("/executados")
+    @GetMapping("/meus-pedidos/executados")
     public ModelAndView showJobsPerformed(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -344,7 +345,7 @@ public class ClientController {
     @PatchMapping("/encerra-pedido/{id}")
     public String updateRequest(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
-        Optional<Client> oClient = Optional.ofNullable(clientService.findByEmailAddress(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> oClient = (individualService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
 
         if (!oClient.isPresent()) {
             throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -359,7 +360,7 @@ public class ClientController {
 
         jobRequest = oJobRequest.get();
 
-        Long jobRequestClientId = jobRequest.getClient().getId();
+        Long jobRequestClientId = jobRequest.getIndividual().getId();
         Long clientId = oClient.get().getId();
 
         if(jobRequestClientId != clientId){

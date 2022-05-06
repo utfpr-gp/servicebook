@@ -32,10 +32,10 @@ public class Individual extends User {
 
     private Date birthDate;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "individual")
     private Set<JobRequest> jobRequest = new HashSet<>();
 
-    @OneToMany(mappedBy = "professional")
+    @OneToMany(mappedBy = "individual")
     Set<JobCandidate> candidatures;
 
     private String description;

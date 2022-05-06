@@ -38,8 +38,6 @@ public class User implements Serializable {
 
 	private String profilePicture;
 
-	private String mobileNumber;
-
 	private boolean phoneVerified;
 
 	private boolean emailVerified;

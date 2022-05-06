@@ -47,7 +47,7 @@
                             </div>
 
                             <h5 class="edit-link tertiary-color-text">
-                                <a class="tertiary-color-text" href="">Editar perfil</a>
+                                <a class="tertiary-color-text" href="minha-conta/perfil">Editar perfil</a>
                             </h5>
                         </div>
                     </div>

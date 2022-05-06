@@ -23,7 +23,7 @@ public class JobCandidateService {
     }
 
     public Page<JobCandidate> findByJobRequest_StatusAndProfessional(JobRequest.Status status, Individual individual, Pageable pageable) {
-        return this.jobCandidateRepository.findByJobRequest_StatusAndProfessional(status, individual, pageable);
+        return this.jobCandidateRepository.findByJobRequest_StatusAndIndividual(status, individual, pageable);
     }
 
     public List<JobCandidate> findByJobRequest(JobRequest jobRequest) {
@@ -31,11 +31,11 @@ public class JobCandidateService {
     }
 
     public Page<JobCandidate> findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status status, Individual client, Pageable pageable) {
-        return this.jobCandidateRepository.findByJobRequest_StatusAndJobRequest_Client(status, client, pageable);
+        return this.jobCandidateRepository.findByJobRequest_StatusAndJobRequest_Individual(status, client, pageable);
     }
 
     public Page<JobCandidate> findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable) {
-        return this.jobCandidateRepository.findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(status, expertise, individual, pageable);
+        return this.jobCandidateRepository.findByJobRequest_StatusAndJobRequest_ExpertiseAndIndividual(status, expertise, individual, pageable);
     }
 
 }

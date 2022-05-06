@@ -34,7 +34,7 @@ public class JobRequest {
 
 	@ManyToOne
 	@JoinColumn(name = "client_id")
-	private Individual client;
+	private Individual individual;
 	
 	@ManyToOne
 	@JoinColumn(name = "expertise_id")

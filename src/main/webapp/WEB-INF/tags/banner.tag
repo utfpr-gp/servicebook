@@ -1,13 +1,16 @@
 <%@tag description="Servicebook - Banner template" pageEncoding="UTF-8" %>
+<%@attribute name="cities" type="java.util.List" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div id="index-banner" class="parallax-container">
     <div class="section no-pad-bot">
         <div class="container">
             <br><br>
             <h3 class="header center logo-text logo-text-parallax">ServiceBook</h3>
-            <c:if test="${cities.size() > 1}">
+            <c:if test="${not empty cities}">
                 <div class="row center">
                     <div class="col s10 offset-s1 m4 offset-m4  input-field">
+
                         <select id="select-city" class="white-text select-city">
                             <c:forEach var="city" items="${cities}">
                                 <option value="${city.image}">${city.name} - ${city.state.uf}</option>

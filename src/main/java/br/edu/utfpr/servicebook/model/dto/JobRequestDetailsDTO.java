@@ -14,7 +14,7 @@ public class JobRequestDetailsDTO implements Serializable {
     private Long id;
     private ExpertiseMinDTO expertise;
     private String dateCreated;
-    private ClientDTO client;
+    private ClientDTO individual;
     private String dateExpired;
     private Integer quantityCandidatorsMax;
     private String description;

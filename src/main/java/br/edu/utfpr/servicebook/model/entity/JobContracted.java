@@ -35,6 +35,6 @@ public class JobContracted {
 	@NonNull
 	@OneToOne
 	@JoinColumn(name = "professional")
-	private Individual professional;
+	private Individual individual;
 
 }

@@ -2,7 +2,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:individual title="ServiceBook - Minha conta">
+<t:professional title="ServiceBook - Minha conta">
     <jsp:body>
 
         <main>
@@ -48,7 +48,7 @@
                                 <p>${individual.description != null ? individual.description : 'Perfil sem descrição.'}</p>
                             </div>
                             <h5 class="edit-link tertiary-color-text">
-                                <a class="tertiary-color-text" href="minha-conta/profissional/perfil/${professional.id}">Editar perfil</a>
+                                <a class="tertiary-color-text" href="minha-conta/perfil">Editar perfil</a>
                             </h5>
                         </div>
                     </div>
@@ -109,7 +109,7 @@
                             <div class="row no-margin center">
                                 <div class="col s12 no-margin no-padding input-field area-profission-select">
                                     <div class="spacing-buttons">
-                                        <a class="waves-effect waves-light btn" href="minha-conta/meus-pedidos">
+                                        <a class="waves-effect waves-light btn" href="minha-conta/cliente">
                                             Acessar como cliente </a>
                                     </div>
                                 </div>
@@ -264,7 +264,7 @@
         </main>
 
     </jsp:body>
-</t:individual>
+</t:professional>
 
 <script>
     $(document).ready(function () {

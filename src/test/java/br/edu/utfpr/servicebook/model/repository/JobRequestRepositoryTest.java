@@ -129,7 +129,7 @@ class JobRequestRepositoryTest {
     public void findByStatusAndExpertiseAndJobCandidates_Professional() {
         Optional<Expertise> mecanico = expertiseRepository.findByName(MECHANIC);
         Optional<Individual> joao = individualRepository.findByEmail("joao@mail.com");
-        List<JobRequest> jobs = jobRequestRepository.findByStatusAndExpertiseAndJobCandidates_Professional(JobRequest.Status.AVAILABLE, mecanico.get(), joao.get());
+        List<JobRequest> jobs = jobRequestRepository.findByStatusAndExpertiseAndJobCandidates_Individual(JobRequest.Status.AVAILABLE, mecanico.get(), joao.get());
         log.debug(jobs.toString());
         Assertions.assertFalse(jobs.isEmpty());
         Assertions.assertEquals(jobs.size(), 3);
@@ -153,7 +153,7 @@ class JobRequestRepositoryTest {
     public void findByStatusAndExpertiseAndJobCandidates_ProfessionalNot() {
         Optional<Expertise> mecanico = expertiseRepository.findByName(DEVELOPER);
         Optional<Individual> joao = individualRepository.findByEmail("joao@mail.com");
-        List<JobRequest> jobs = jobRequestRepository.findByStatusAndExpertiseAndJobCandidates_ProfessionalNot(JobRequest.Status.AVAILABLE, mecanico.get(), joao.get());
+        List<JobRequest> jobs = jobRequestRepository.findByStatusAndExpertiseAndJobCandidates_IndividualNot(JobRequest.Status.AVAILABLE, mecanico.get(), joao.get());
         log.debug(jobs.toString());
         Assertions.assertFalse(jobs.isEmpty());
         Assertions.assertEquals(jobs.size(), 1);

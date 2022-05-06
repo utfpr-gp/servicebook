@@ -39,14 +39,14 @@
                             <p class="center text-form-dados primary-color-text">
                                 <i class="material-icons small dark-color-text">person</i>
                             </p>
-                            <p class="center text-form-dados primary-color-text"> ${job.client.name} </p>
+                            <p class="center text-form-dados primary-color-text"> ${job.individual.name} </p>
                         </div>
                         <div class="col s4">
                             <p class="center center-align text-form-dados primary-color-text">
                                 <i class="material-icons small dark-color-text">location_on</i>
                             </p>
                             <p class="center text-form-dados primary-color-text">
-                                    ${job.client.address.neighborhood}, ${job.client.address.city.name}/${job.client.address.city.state.uf}
+                                    ${job.individual.address.neighborhood}, ${job.individual.address.city.name}/${job.individual.address.city.state.uf}
                             </p>
                         </div>
                         <div class="col s4">

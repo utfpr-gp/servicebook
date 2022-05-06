@@ -64,11 +64,11 @@ public class IndexService {
 
         JobRequest jb1 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, new Date());
         jb1.setExpertise(expertise1);
-        jb1.setClient(client1);
+        jb1.setIndividual(client1);
 
         JobRequest jb2 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, new Date());
         jb1.setExpertise(expertise1);
-        jb1.setClient(client2);
+        jb1.setIndividual(client2);
 
         jobRequestRepository.save(jb1);
 

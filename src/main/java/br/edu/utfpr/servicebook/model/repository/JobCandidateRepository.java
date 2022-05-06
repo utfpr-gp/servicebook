@@ -15,14 +15,14 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
      * @param id
      * @return
      */
-    List<JobCandidate> findByProfessional_Id(Long id);
+    List<JobCandidate> findByIndividual_Id(Long id);
 
     /**
      * Retorna uma lista de candidaturas de um dado profissional
      * @param individual
      * @return
      */
-    List<JobCandidate> findByProfessional(Individual individual);
+    List<JobCandidate> findByIndividual(Individual individual);
 
     /**
      * Retorna uma lista de candidaturas de um profissional que foram escolhidas para orçamento
@@ -30,7 +30,7 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
      * @param chosen
      * @return
      */
-    List<JobCandidate> findByProfessionalAndChosenByBudget(Individual individual, boolean chosen);
+    List<JobCandidate> findByIndividualAndChosenByBudget(Individual individual, boolean chosen);
 
     /**
      * Retorna uma lista de candidaturas de um profissional para requisições de um certo estado.
@@ -38,7 +38,7 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
      * @param individual
      * @return
      */
-    List<JobCandidate> findByJobRequest_StatusAndProfessional(JobRequest.Status status, Individual individual);
+    List<JobCandidate> findByJobRequest_StatusAndIndividual(JobRequest.Status status, Individual individual);
 
     /**
      * Retorna uma lista de candidaturas de um profissional para requisições de um certo estado.
@@ -50,7 +50,7 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
      *
      * @returnPage<JobCandidate>
      */
-    Page<JobCandidate> findByJobRequest_StatusAndProfessional(JobRequest.Status status, Individual individual, Pageable pageable);
+    Page<JobCandidate> findByJobRequest_StatusAndIndividual(JobRequest.Status status, Individual individual, Pageable pageable);
 
     /**
      * Retorna uma lista de candidaturas de um profissional para requisições de um certo estado.
@@ -63,12 +63,12 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
      *
      * @returnPage<JobCandidate>
      */
-    Page<JobCandidate> findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable);
+    Page<JobCandidate> findByJobRequest_StatusAndJobRequest_ExpertiseAndIndividual(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable);
 
     Optional<Long> countByJobRequest(JobRequest jobRequest);
 
     List<JobCandidate> findByJobRequest(JobRequest jobRequest);
 
-    Page<JobCandidate> findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status status, Individual individual, Pageable pageable);
+    Page<JobCandidate> findByJobRequest_StatusAndJobRequest_Individual(JobRequest.Status status, Individual individual, Pageable pageable);
 
 }

@@ -19,6 +19,7 @@ public class IndexController {
 
     @GetMapping
     public ModelAndView showIndexPage() {
+
         ModelAndView mv = new ModelAndView("visitor/index");
 
         List<City> cities = cityService.findAll();

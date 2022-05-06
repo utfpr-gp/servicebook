@@ -30,4 +30,12 @@ public class IndividualDTO extends UserDTO implements Serializable {
     private String phoneNumber;
 
     private String description;
+
+    private int rating;
+
+    private int denounceAmount;
+
+    public String getOnlyNumbersFromPhone() {
+        return getPhoneNumber().replaceAll("[^0-9]", "");
+    }
 }

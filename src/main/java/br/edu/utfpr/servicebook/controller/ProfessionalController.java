@@ -1,12 +1,12 @@
 package br.edu.utfpr.servicebook.controller;
 
-import br.edu.utfpr.servicebook.model.dto.IndividualDTO;
-import br.edu.utfpr.servicebook.model.dto.JobContractedDTO;
-import br.edu.utfpr.servicebook.model.dto.ProfessionalDTO;
+import br.edu.utfpr.servicebook.model.dto.*;
+import br.edu.utfpr.servicebook.model.entity.City;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.JobContracted;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobContractedMapper;
+import br.edu.utfpr.servicebook.service.CityService;
 import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobContractedService;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
@@ -29,7 +29,13 @@ public class ProfessionalController {
     private IndividualService individualService;
 
     @Autowired
-    private ProfessionalMapper professionalMapper;
+    private CityService cityService;
+
+    @Autowired
+    private JobContractedService jobContractedService;
+
+    @Autowired
+    private JobContractedMapper jobContractedMapper;
 
     @Autowired
     private IndividualMapper individualMapper;
@@ -47,11 +53,12 @@ public class ProfessionalController {
         List<JobContracted> jobContracted = jobContractedService.findByIdProfessional(individualDTO.getId());
         List<JobContractedDTO> JobContractedDTO = jobContracted.stream()
                 .map(contracted -> jobContractedMapper.toResponseDto(contracted))
-        List<Professional> professionals = professionalService.findAll();
+                .collect(Collectors.toList());
+        List<Individual> professionals = individualService.findAll();
         Map<Long, List> professionalsExpertises = new HashMap<>();
 
-        for (Professional professional : professionals) {
-            List<ExpertiseDTO> expertisesDTO = professionalService.getExpertises(professional);
+        for (Individual professional : professionals) {
+            List<ExpertiseDTO> expertisesDTO = individualService.getExpertises(professional);
             professionalsExpertises.put(professional.getId(), expertisesDTO);
         }
 
@@ -69,10 +76,10 @@ public class ProfessionalController {
         List<City> cities = cityService.findAll();
         mv.addObject("cities", cities);
 
-        List<Professional> professionals = professionalService.findDistinctByTermIgnoreCase(searchTerm);
+        List<Individual> professionals = individualService.findDistinctByTermIgnoreCase(searchTerm);
 
         List<ProfessionalSearchItemDTO> professionalSearchItemDTOS = professionals.stream()
-                .map(s -> professionalMapper.toSearchItemDto(s, professionalService.getExpertises(s)))
+                .map(s -> individualMapper.toSearchItemDto(s, individualService.getExpertises(s)))
                 .collect(Collectors.toList());
 
         mv.addObject("professionals", professionalSearchItemDTOS);
@@ -85,14 +92,15 @@ public class ProfessionalController {
     protected ModelAndView showProfessionalDetailsToVisitors(@PathVariable("id") Long id) throws Exception {
         ModelAndView mv = new ModelAndView("visitor/professional-details");
 
-        Optional<Professional> oProfessional = professionalService.findById(id);
-        List<ExpertiseDTO> expertisesDTO = professionalService.getExpertises(oProfessional.get());
+        Optional<Individual> oProfessional = individualService.findById(id);
 
         if(!oProfessional.isPresent()) {
             throw new EntityNotFoundException("Profissional não encontrado.");
         }
 
-        ProfessionalDTO professionalDTO = professionalMapper.toDto(oProfessional.get());
+        List<ExpertiseDTO> expertisesDTO = individualService.getExpertises(oProfessional.get());
+
+        IndividualDTO professionalDTO = individualMapper.toDto(oProfessional.get());
 
         mv.addObject("professional", professionalDTO);
         mv.addObject("professionalExpertises", expertisesDTO);

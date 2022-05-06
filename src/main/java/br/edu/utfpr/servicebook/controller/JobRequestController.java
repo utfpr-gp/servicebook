@@ -295,7 +295,7 @@ public class JobRequestController {
         sessionDTO.setStatus("Requerido");
         log.debug("Passo 7 {}", sessionDTO);
         JobRequest jobRequest = jobRequestMapper.toEntity(sessionDTO);
-        jobRequest.setClient(client);
+        jobRequest.setIndividual(client);
         jobRequest.setExpertise(exp);
         //jobRequest.setImage(sessionDTO.getImageSession());
         jobRequestService.save(jobRequest);

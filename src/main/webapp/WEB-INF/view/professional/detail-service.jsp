@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
-<t:individual title="Detalhes do serviço">
+<t:professional title="Detalhes do serviço">
     <jsp:body>
 
         <main>
@@ -56,7 +56,7 @@
                             <div class="col s12 m6 left area-info-request-client-left">
                                 <p class="text-area-info-cli primary-color-text"><i class="small material-icons dark-color-text">person</i> ${job.expertise.name}</p>
                                 <p class="text-area-info-cli primary-color-text"><i class="small material-icons dark-color-text">access_time</i>${job.textualDate}</p>
-                                <p class="text-area-info-cli primary-color-text"><i class="small material-icons dark-color-text">location_on</i> ${job.client.address.street}, ${job.client.address.neighborhood}, ${job.client.address.number}, ${city} - ${state}</p>
+                                <p class="text-area-info-cli primary-color-text"><i class="small material-icons dark-color-text">location_on</i> ${job.individual.address.street}, ${job.individual.address.neighborhood}, ${job.individual.address.number}, ${city} - ${state}</p>
                             </div>
                             <div class="col s12 m6 left area-info-request-client-right">
                                <div class="row">
@@ -96,4 +96,4 @@
         </main>
 
     </jsp:body>
-</t:individual>
+</t:professional>

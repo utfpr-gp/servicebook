@@ -46,26 +46,26 @@ public class JobRequestService {
     }
 
     public List<JobRequest> findByClientOrderByDateCreatedDesc(Individual client) {
-        return this.jobRequestRepository.findByClientOrderByDateCreatedDesc(client);
+        return this.jobRequestRepository.findByIndividualOrderByDateCreatedDesc(client);
     }
 
     public Page<JobRequest> findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status status, Individual individual, Pageable pageable) {
-        return this.jobRequestRepository.findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(status, individual, pageable);
+        return this.jobRequestRepository.findByStatusAndJobCandidatesIsNullOrJobCandidates_IndividualNot(status, individual, pageable);
     }
 
     public Page<JobRequest> findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable) {
-        return this.jobRequestRepository.findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(status, expertise, individual, pageable);
+        return this.jobRequestRepository.findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_IndividualNot(status, expertise, individual, pageable);
     }
 
     public Page<JobRequest> findByStatusAndJobContracted_Professional(JobRequest.Status status, Individual individual, Pageable pageable) {
-        return this.jobRequestRepository.findByStatusAndJobContracted_Professional(status, individual, pageable);
+        return this.jobRequestRepository.findByStatusAndJobContracted_Individual(status, individual, pageable);
     }
 
     public Page<JobRequest> findByStatusAndExpertiseAndJobContracted_Professional(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable) {
-        return this.jobRequestRepository.findByStatusAndExpertiseAndJobContracted_Professional(status, expertise, individual, pageable);
+        return this.jobRequestRepository.findByStatusAndExpertiseAndJobContracted_Individual(status, expertise, individual, pageable);
     }
     public Page<JobRequest> findByStatusAndClient(JobRequest.Status status,  Individual client, Pageable pageable) {
-        return this.jobRequestRepository.findByStatusAndClient(status, client, pageable);
+        return this.jobRequestRepository.findByStatusAndIndividual(status, client, pageable);
     }
     public void init() {
 
