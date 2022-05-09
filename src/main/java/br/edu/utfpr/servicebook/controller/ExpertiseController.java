@@ -50,7 +50,7 @@ public class ExpertiseController {
         ModelAndView mv = new ModelAndView("admin/profession-registration");
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
         Page<Expertise> expertisePage = expertiseService.findAll(pageRequest);
-
+        System.out.println("oi");
         List<ExpertiseDTO> professionDTOs = expertisePage.stream()
                 .map(s -> expertiseMapper.toDto(s))
                 .collect(Collectors.toList());
