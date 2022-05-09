@@ -3,11 +3,12 @@ package br.edu.utfpr.servicebook.controller;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.City;
 import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.model.entity.UserCode;
+import br.edu.utfpr.servicebook.model.entity.UserSms;
 import br.edu.utfpr.servicebook.model.mapper.CityMapper;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.UserCodeMapper;
+import br.edu.utfpr.servicebook.model.mapper.UserSmsMapper;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +49,12 @@ public class IndividualRegisterController {
     private UserCodeMapper userCodeMapper;
 
     @Autowired
+    private UserSmsService userSmsService;
+
+    @Autowired
+    private UserSmsMapper userSmsMapper;
+
+    @Autowired
     private CityService cityService;
 
     @Autowired
@@ -55,6 +62,9 @@ public class IndividualRegisterController {
 
     @Autowired
     private EmailSenderService emailSenderService;
+
+    @Autowired
+    private SmsSenderService smsSenderService;
 
     @Autowired
     private SmartValidator validator;
@@ -70,6 +80,13 @@ public class IndividualRegisterController {
     }
 
     private String userCodeErrorForwarding(String step, UserCodeDTO dto, Model model, BindingResult errors) {
+        model.addAttribute("dto", dto);
+        model.addAttribute("errors", errors.getAllErrors());
+
+        return "visitor/user-registration/wizard-step-0" + step;
+    }
+
+    private String userSmsErrorForwarding(String step, UserSmsDTO dto, Model model, BindingResult errors) {
         model.addAttribute("dto", dto);
         model.addAttribute("errors", errors.getAllErrors());
 
@@ -234,6 +251,24 @@ public class IndividualRegisterController {
 
         ///// Enviar código de autenticação para telefone.
 
+
+        Optional<UserSms> oUserSms = userSmsService.findByPhoneNumber(dto.getPhoneNumber());
+
+        if (!oUserSms.isPresent()) {
+            String code = authenticationCodeGeneratorService.generateAuthenticationCode();
+
+            UserSmsDTO userSmsDTO = new UserSmsDTO(dto.getPhoneNumber(), code);
+            UserSms userSms = userSmsMapper.toEntity(userSmsDTO);
+
+            userSmsService.save(userSms);
+            smsSenderService.sendSmsToUser(dto.getPhoneNumber().replaceAll("[ ()-]", ""), "Servicebook: Código de autenticação: " + "\n\n\n" + code);
+        } else {
+            smsSenderService.sendSmsToUser(dto.getPhoneNumber().replaceAll("[ ()-]", ""), "Servicebook: Código de autenticação:" + "\n\n\n" + oUserSms.get().getCode());
+        }
+
+
+        //// Fim do método enviar código para o telefone
+
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setPhoneNumber(dto.getPhoneNumber());
 
@@ -243,33 +278,33 @@ public class IndividualRegisterController {
     @PostMapping("/passo-5")
     public String saveUserPhoneCode(
             HttpSession httpSession,
-            @Validated(UserCodeDTO.RequestUserCodeInfoGroupValidation.class) UserCodeDTO dto,
+            @Validated(UserSmsDTO.RequestUserSmsInfoGroupValidation.class) UserSmsDTO dto,
             BindingResult errors,
             RedirectAttributes redirectAttributes,
             Model model
     ) {
 
         if (errors.hasErrors()) {
-            return this.userCodeErrorForwarding("5", dto, model, errors);
+            return this.userSmsErrorForwarding("5", dto, model, errors);
         }
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
-        Optional<UserCode> oUserCode = userCodeService.findByEmail(sessionDTO.getEmail());
+        Optional<UserSms> oUserSms = userSmsService.findByPhoneNumber(sessionDTO.getPhoneNumber());
 
-        if (!oUserCode.isPresent()) {
+        if (!oUserSms.isPresent()) {
             errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de autenticação.");
         }
 
         if (errors.hasErrors()) {
-            return this.userCodeErrorForwarding("5", dto, model, errors);
+            return this.userSmsErrorForwarding("5", dto, model, errors);
         }
 
-        if (!dto.getCode().equals(oUserCode.get().getCode())) {
+        if (!dto.getCode().equals(oUserSms.get().getCode())) {
             errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de autenticação.");
         }
 
         if (errors.hasErrors()) {
-            return this.userCodeErrorForwarding("5", dto, model, errors);
+            return this.userSmsErrorForwarding("5", dto, model, errors);
         }
 
         sessionDTO.setPhoneVerified(true);
