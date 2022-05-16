@@ -5,9 +5,10 @@ import lombok.*;
 import javax.persistence.*;
 
 @Data
-@Table(name = "states")
 @NoArgsConstructor
 @RequiredArgsConstructor
+
+@Table(name = "states")
 @Entity
 public class State {
     @Id
