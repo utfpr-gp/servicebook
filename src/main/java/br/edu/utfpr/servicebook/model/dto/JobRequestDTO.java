@@ -52,7 +52,7 @@ public class JobRequestDTO implements Serializable {
     private String emailClient;
 
     @NotBlank(message = "O campo Celular é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
-    @Pattern(regexp="^\\(?\\d{2}\\)?\\s?(\\d{4,5})-?(\\d{4})",message="Por favor, preencha um celular válido", groups = RequestClientInfoGroupValidation.class)
+    @Pattern(regexp="^\\(?\\d{2}\\)?\\s?(9\\d{4})-?(\\d{4})",message="Por favor, preencha um celular válido, deve possuir o 9 após o DDD", groups = RequestClientInfoGroupValidation.class)
     private String phone;
 
     @NotBlank(message = "O campo CPF é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
@@ -79,5 +79,4 @@ public class JobRequestDTO implements Serializable {
     public interface RequestExpirationGroupValidation {
 
     }
-
 }
