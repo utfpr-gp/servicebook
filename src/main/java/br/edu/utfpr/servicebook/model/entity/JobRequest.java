@@ -8,18 +8,16 @@ import java.util.Set;
 import javax.persistence.*;
 
 import br.edu.utfpr.servicebook.util.DateUtil;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Data
 @Table(name = "job_requests")
 @NoArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode(exclude={"client", "jobCandidates", "jobContracted", "expertise", "jobImages"})
+@ToString(exclude={"client", "jobCandidates", "jobContracted", "expertise", "jobImages"})
 @Entity
 public class JobRequest {
-
 	/**
 	 * AVAILABLE: disponível para candidaturas e permanece neste estado também durante o recebimento de candidaturas
 	 * BUDGET: passa para este estado quando alcançado o total de candidaturas esperado ou quando o cliente encerra o recebimento de candidaturas
@@ -36,8 +34,8 @@ public class JobRequest {
 
 	@ManyToOne
 	@JoinColumn(name = "client_id")
-	private Client client;
-
+	private Individual individual;
+	
 	@ManyToOne
 	@JoinColumn(name = "expertise_id")
 	private Expertise expertise;
@@ -63,19 +61,20 @@ public class JobRequest {
 	
 	private boolean professionalConfirmation;
 
-	@OneToMany(mappedBy = "jobRequest")
+	@OneToMany(mappedBy = "jobRequest", cascade = CascadeType.REMOVE)
 	private Set<JobImages> jobImages = new HashSet<>();
 	
-	@OneToOne(mappedBy = "jobRequest", cascade = CascadeType.PERSIST)
+	@OneToOne(mappedBy = "jobRequest", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
 	private JobContracted jobContracted;
 
-	@OneToMany(mappedBy = "jobRequest")
+	@OneToMany(mappedBy = "jobRequest", cascade = CascadeType.REMOVE)
 	Set<JobCandidate> jobCandidates = new HashSet<>();
 
 	@PrePersist
 	public void onPersist(){
 		final Date now = new Date();
 		this.dateCreated = now;
+		this.dateExpired = now;
 		this.status = Status.AVAILABLE;
 	}
 

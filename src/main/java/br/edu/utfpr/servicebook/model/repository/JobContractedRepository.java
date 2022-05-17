@@ -1,8 +1,8 @@
 package br.edu.utfpr.servicebook.model.repository;
 
-import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.JobContracted;
-import br.edu.utfpr.servicebook.model.entity.Professional;
+import br.edu.utfpr.servicebook.model.entity.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,58 +12,64 @@ import java.util.Optional;
 
 public interface JobContractedRepository extends JpaRepository<JobContracted, Long> {
 
-    @Query("SELECT j FROM JobContracted j WHERE j.professional.id = :professional_id")
-    List<JobContracted> findByIdProfessional(@Param("professional_id") Long professional_id);
+    @Query("SELECT j FROM JobContracted j WHERE j.individual.id = :professional_id")
+    List<JobContracted> findByIdIndividual(@Param("professional_id") Long professional_id);
 
     /**
      * Retorna o total de trabalhos contratados de um profissional.
      *
-     * @param professional
+     * @param individual
      * @return Optional<Long>
      */
-    Optional<Long> countByProfessional(Professional professional);
+    Optional<Long> countByIndividual(Individual individual);
 
     /**
      * Retorna o total de avaliações dos trabalhos contratados de um profissional.
      *
-     * @param professional
+     * @param individual
      * @return Optional<Long>
      */
-    Optional<Long> countRatingByProfessional(Professional professional);
+    Optional<Long> countRatingByIndividual(Individual individual);
 
     /**
      * Retorna o total de comentários dos trabalhos contratados de um profissional.
      *
-     * @param professional
+     * @param individual
      * @return Optional<Long>
      */
-    Optional<Long> countCommentsByProfessional(Professional professional);
+    Optional<Long> countCommentsByIndividual(Individual individual);
 
     /**
      * Retorna o total de trabalhos contratados de um profissional para uma dada especialidade.
      *
-     * @param professional
+     * @param individual
      * @param expertise
      * @return Optional<Long>
      */
-    Optional<Long> countByProfessionalAndJobRequest_Expertise(Professional professional, Expertise expertise);
+    Optional<Long> countByIndividualAndJobRequest_Expertise(Individual professional, Expertise expertise);
 
     /**
      * Retorna o total de avaliações dos trabalhos contratados de um profissional para uma dada especialidade.
      *
-     * @param professional
+     * @param individual
      * @param expertise
      * @return Optional<Long>
      */
-    Optional<Long> countRatingByProfessionalAndJobRequest_Expertise(Professional professional, Expertise expertise);
+    Optional<Long> countRatingByIndividualAndJobRequest_Expertise(Individual professional, Expertise expertise);
 
     /**
      * Retorna o total de comentários dos trabalhos contratados de um profissional para uma dada especialidade.
      *
-     * @param professional
+     * @param individual
      * @param expertise
      * @return Optional<Long>
      */
-    Optional<Long> countCommentsByProfessionalAndJobRequest_Expertise(Professional professional, Expertise expertise);
+    Optional<Long> countCommentsByIndividualAndJobRequest_Expertise(Individual individual, Expertise expertise);
+
+    Page<JobContracted> findByJobRequest_StatusAndIndividual(JobRequest.Status status, Individual individual, Pageable pageable);
+
+    Page<JobContracted> findByJobRequest_StatusAndJobRequest_Individual(JobRequest.Status status, Individual individual, Pageable pageable);
+
+    Page<JobContracted> findByJobRequest_StatusAndJobRequest_ExpertiseAndIndividual(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable);
 
 }

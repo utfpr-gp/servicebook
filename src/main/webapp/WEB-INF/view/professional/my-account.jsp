@@ -13,13 +13,13 @@
                             <div class="row center">
                                 <div class="col s12 dark-color-text">
                                     <div class="row tooltipped" data-position="bottom"
-                                         data-tooltip="${professional.rating} estrela (s).">
+                                         data-tooltip="${individual.rating} estrela (s).">
 
                                         <c:forEach var="star" begin="1" end="5">
-                                            <c:if test="${star <= professional.rating}">
+                                            <c:if test="${star <= individual.rating}">
                                                 <i class="material-icons yellow-text small">star</i>
                                             </c:if>
-                                            <c:if test="${star > professional.rating}">
+                                            <c:if test="${star > individual.rating}">
                                                 <i class="material-icons yellow-text small">star_border</i>
                                             </c:if>
                                         </c:forEach>
@@ -30,32 +30,32 @@
                         </div>
                         <div class="col s12 center">
 
-                            <c:if test="${professional.profilePicture == null}">
+                            <c:if test="${individual.profilePicture == null}">
                                 <svg class="icon-person" style="width:250px;height:250px" viewBox="0 0 24 24">
                                     <path class="dark-color-icon"
                                           d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
                                 </svg>
                             </c:if>
 
-                            <c:if test="${professional.profilePicture != null}">
+                            <c:if test="${individual.profilePicture != null}">
                                 <div class="row">
-                                    <img src="${professional.profilePicture}" alt="Profissional - Imagem de perfil."
+                                    <img src="${individual.profilePicture}" alt="Profissional - Imagem de perfil."
                                          style="width:250px;height:250px">
                                 </div>
                             </c:if>
 
                             <div class="row">
-                                <p>${professional.description != null ? professional.description : 'Perfil sem descrição.'}</p>
+                                <p>${individual.description != null ? individual.description : 'Perfil sem descrição.'}</p>
                             </div>
                             <h5 class="edit-link tertiary-color-text">
-                                <a class="tertiary-color-text" href="">Editar perfil</a>
+                                <a class="tertiary-color-text" href="minha-conta/perfil">Editar perfil</a>
                             </h5>
                         </div>
                     </div>
                     <div class="row secondary-background-color no-margin">
                         <div class="col s12">
                             <h5 class="name-header no-margin center white-text">
-                                <strong>${professional.name}</strong>
+                                <strong>${individual.name}</strong>
                             </h5>
                         </div>
                     </div>
@@ -67,11 +67,11 @@
                     <div class="row secondary-background-color no-margin">
                         <div class="col s4 center no-padding">
 
-                            <c:if test="${professional.profileVerified}">
+                            <c:if test="${individual.profileVerified}">
                                 <i class="medium material-icons green-text tooltipped" data-position="top"
                                    data-tooltip="Perfil verificado.">person</i>
                             </c:if>
-                            <c:if test="${!professional.profileVerified}">
+                            <c:if test="${!individual.profileVerified}">
                                 <i class="medium material-icons gray-text tooltipped" data-position="top"
                                    data-tooltip="Perfil não verificado.">person</i>
                             </c:if>
@@ -79,11 +79,11 @@
                         </div>
                         <div class="col s4 center no-padding">
 
-                            <c:if test="${professional.emailVerified}">
+                            <c:if test="${individual.emailVerified}">
                                 <i class="medium material-icons green-text tooltipped" data-position="top"
                                    data-tooltip="Email verificado.">email</i>
                             </c:if>
-                            <c:if test="${!professional.emailVerified}">
+                            <c:if test="${!individual.emailVerified}">
                                 <i class="medium material-icons gray-text tooltipped" data-position="top"
                                    data-tooltip="Email não verificado.">email</i>
                             </c:if>
@@ -91,11 +91,11 @@
                         </div>
                         <div class="col s4 center no-padding">
 
-                            <c:if test="${professional.phoneVerified}">
+                            <c:if test="${individual.phoneVerified}">
                                 <i class="medium material-icons green-text tooltipped" data-position="top"
                                    data-tooltip="Telefone verificado.">phone</i>
                             </c:if>
-                            <c:if test="${!professional.phoneVerified}">
+                            <c:if test="${!individual.phoneVerified}">
                                 <i class="medium material-icons gray-text tooltipped" data-position="top"
                                    data-tooltip="Telefone não verificado.">phone</i>
                             </c:if>
@@ -103,12 +103,28 @@
                         </div>
                     </div>
                     <div class="row no-margin center">
+
+                        <div class="col s12 no-margin no-padding input-field area-profission-select">
+
+                            <div class="row no-margin center">
+                                <div class="col s12 no-margin no-padding input-field area-profission-select">
+                                    <div class="spacing-buttons">
+                                        <a class="waves-effect waves-light btn" href="minha-conta/cliente">
+                                            Acessar como cliente </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row no-margin center">
+
                         <div class="col s12 no-margin no-padding input-field area-profission-select">
                             <p class="header-verification tertiary-color-text">
                                 ESPECIALIDADES
                             </p>
 
-                            <form method="get" action="minha-conta" id="form-expertise">
+                            <form method="get" action="minha-conta/profissional" id="form-expertise">
                                 <div class="input-field col s12 no-padding white-text">
                                     <select name="id" id="select-expertise">
                                         <option value="0">Todas as Especialidades</option>
@@ -121,22 +137,40 @@
                                 </div>
                                 <button type="submit" hidden></button>
                             </form>
+
                         </div>
                     </div>
+
+                    <div class="row no-margin center">
+
+                        <div class="col s12 no-margin no-padding input-field area-profission-select">
+
+                            <div class="row no-margin center">
+                                <div class="col s12 no-margin no-padding input-field area-profission-select">
+                                    <div class="spacing-buttons">
+                                        <a class="waves-effect waves-light btn" href="minha-conta/profissional/especialidades">
+                                            Adicionar Especialidades </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
                     <div class="row no-margin">
                         <div class="col s12 no-margin no-padding">
                             <p class="header-verification tertiary-color-text center">ESTRELAS</p>
                             <div class="row secondary-background-color no-margin">
                                 <div class="col s12 white-text center">
                                     <div class="row tooltipped" data-position="bottom"
-                                         data-tooltip="${professionalExpertiseRating != null ? professionalExpertiseRating : professional.rating} estrela (s).">
+                                         data-tooltip="${professionalExpertiseRating != null ? professionalExpertiseRating : individual.rating} estrela (s).">
 
                                         <c:if test="${professionalExpertiseRating == null}">
                                             <c:forEach var="star" begin="1" end="5">
-                                                <c:if test="${star <= professional.rating}">
+                                                <c:if test="${star <= individual.rating}">
                                                     <i class="material-icons yellow-text small">star</i>
                                                 </c:if>
-                                                <c:if test="${star > professional.rating}">
+                                                <c:if test="${star > individual.rating}">
                                                     <i class="material-icons yellow-text small">star_border</i>
                                                 </c:if>
                                             </c:forEach>
@@ -200,108 +234,45 @@
                         </div>
                         <div class="col s12">
                             <div class="row">
-                                <ul class="tabs center">
-                                    <li class="tab"><a class="active" href="#disponiveis">DISPONÍVEIS</a></li>
-                                    <li class="tab"><a href="#emDisputa">EM DISPUTA</a></li>
-                                    <li class="tab"><a href="#paraFazer">PARA FAZER</a></li>
-                                    <li class="tab"><a href="#executados">EXECUTADOS</a></li>
+                                <div class="container center">
+                                    <a href="minha-conta/profissional" class="waves-effect waves-light btn"><i class="material-icons right">sync</i>ATUALIZAR</a>
+                                </div>
+
+                                <ul class="tabs tabs-fixed-width center">
+                                    <li class="tab">
+                                        <a id="tab-default" data-url="minha-conta/profissional/disponiveis"
+                                           href="#disponiveis">
+                                            DISPONÍVEIS
+                                        </a>
+                                    </li>
+                                    <li class="tab">
+                                        <a data-url="minha-conta/profissional/em-disputa" href="#emDisputa">
+                                            EM DISPUTA
+                                        </a>
+                                    </li>
+                                    <li class="tab">
+                                        <a data-url="minha-conta/profissional/para-fazer" href="#paraFazer">
+                                            PARA FAZER
+                                        </a>
+                                    </li>
+                                    <li class="tab">
+                                        <a data-url="minha-conta/profissional/executados" href="#executados">
+                                            EXECUTADOS
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                             <div id="disponiveis" class="col s12">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col s12 spacing-buttons">
-                                            <div style="border: solid 1px black">
-                                                <div class="secondary-background-color">
-                                                    <div class="row">
-                                                        <div class="col s8 offset-s2">
-                                                            <h5 class="center white-text">
-                                                                PEDREIRO
-                                                            </h5>
-                                                        </div>
-                                                        <div class="col s2">
-                                                            <h5 class="right white-text badge-service">
-                                                                4/10
-                                                            </h5>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col s4">
-                                                        <p class="center text-form-dados primary-color-text">
-                                                            <i class="material-icons small dark-color-text">person</i>
-                                                            Maria
-                                                        </p>
-                                                    </div>
-                                                    <div class="col s4">
-                                                        <p class="center text-form-dados primary-color-text">
-                                                            <i class="material-icons small dark-color-text">location_on</i>
-                                                            Santana, Guarapuava-PR
-                                                        </p>
-                                                    </div>
-                                                    <div class="col s4">
-                                                        <p class="center text-form-dados primary-color-text">
-                                                            <i class="material-icons small dark-color-text">access_time</i>
-                                                            Próxima semana
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <blockquote class="light-blue lighten-5 info-headers">
-                                                    <p>Descrição do serviço ...</p>
-                                                </blockquote>
-                                                <div>
-                                                    <div class="center">
-                                                        <a href="" class="waves-effect waves-light btn spacing-buttons">
-                                                            Detalhes
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                             </div>
                             <div id="emDisputa" class="col s12">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col s12 spacing-buttons">
-                                            <div class="none-profission">
-                                                <p class="center text-form-dados">
-                                                    Você ainda não tem pedidos, mas um novo pedido pode chegar aqui a
-                                                    qualquer momento.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                             </div>
                             <div id="paraFazer" class="col s12">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col s12 spacing-buttons">
-                                            <div class="none-profission">
-                                                <p class="center text-form-dados">
-                                                    Você ainda não tem pedidos, mas um novo pedido pode chegar aqui a
-                                                    qualquer momento.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                             </div>
                             <div id="executados" class="col s12">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col s12 spacing-buttons">
-                                            <div class="none-profission">
-                                                <p class="center text-form-dados">
-                                                    Você ainda não tem pedidos, mas um novo pedido pode chegar aqui a
-                                                    qualquer momento.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -313,11 +284,31 @@
 </t:professional>
 
 <script>
-    window.onload = function () {
-        $('#select-expertise').formSelect();
-
-        $('#select-expertise').change(function () {
-            $('#form-expertise').submit();
+    $(document).ready(function () {
+        $('#disponiveis').load($('.tab .active').attr("data-url"), function (result) {
+            window.location.hash = "#disponiveis";
+            $('#tab-default').click();
         });
-    }
+    });
+
+    $('#select-expertise').formSelect();
+
+    $('#select-expertise').change(function () {
+        $('#form-expertise').submit();
+    });
+
+    $('.tab a').click(function (e) {
+        e.preventDefault();
+
+        let url = $(this).attr("data-url");
+        let href = this.hash;
+        window.location.hash = href;
+
+        let urlParams = new URLSearchParams(window.location.search);
+        let id = (urlParams.has('id')) ? urlParams.get('id') : 0;
+        url += '?id=' + id;
+
+        $(href).load(url, function (result) {
+        });
+    });
 </script>

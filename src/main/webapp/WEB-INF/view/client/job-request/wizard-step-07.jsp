@@ -16,7 +16,7 @@
                 </c:if>
                 <div class="section">
                     <div class="row">
-                        <h3 class="center grey-text"><strong>Enviamos um código para (42) 99999-1234</strong></h3>
+                        <h3 class="center grey-text"><strong>Enviamos um código para ${email}</strong></h3>
                         <h4 class="center grey-text">Digite este código para validar seu pedido</h4>
                         <div class="row center spacing-standard">
                             <div class="col s10  offset-s1 m6 offset-m3  input-field">
@@ -35,18 +35,18 @@
                             </div>
                         </div>
 
-                        <div class="col s6 offset-s3">
+                        <!--div class="col s6 offset-s3">
                             <div class="center">
                                 <a class="waves-effect waves-light btn" href="javascript: alert('SMS Reenviado')">Reenviar SMS</a>
                             </div>
-                        </div>
+                        </div-->
 
-                        <div class="col s12 center spacing-standard">
+                        <!--div class="col s12 center spacing-standard">
                             <h4 class="grey-text">Digitou um número de telefone errado?</h4>
                             <a  class="text-center text-form-dados modal-trigger" href="#modal1">Troque o número</a>
-                        </div>
+                        </div-->
 
-                        <div id="modal1" class="modal">
+                        <!--div id="modal1" class="modal">
                             <div class="modal-content">
                                 <div class="row">
                                     <div class="col s12 m6 offset-m3">
@@ -58,7 +58,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div-->
                     </div>
                 </div>
             </div>

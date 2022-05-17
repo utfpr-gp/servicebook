@@ -21,10 +21,13 @@ public class JobRequestMinDTO implements Serializable {
 
     private String dateCreated;
 
+    private String dateExpired;
+
     public String status;
 
     private String description;
 
     private Long amountOfCandidates;
+
 
 }

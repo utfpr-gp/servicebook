@@ -21,20 +21,26 @@
                         <div class="row center">
                             <div class="col s12 l6 offset-l3  input-field">
                                 <form method="post" action="requisicoes/passo-6">
-                                    <div class="row">
+                                    <!--div class="row">
                                         <div class="input-field col s12">
-                                            <input placeholder="00000-000"  value="${dto.cep}" id="cep" data-mask="00000-000" name="cep" type="text" class="validate">
+                                            <input placeholder="00000-000"  value="<%--${dto.cep}--%>" id="cep" data-mask="00000-000" name="cep" type="text" class="validate">
                                             <label for="cep">CEP</label>
                                             <span id="error-cep" class="hide helper-text red-text darken-3"></span>
                                         </div>
                                         <div id="endereco-area" class="endereco-area col s12 hide">
                                             <p><span id="rua">Rua 15 de novembro</span> - <span id="bairro">Centro</span> - <span id="cidade">Guarapuava</span> - <span id="uf">PR</span></p>
                                         </div>
-                                    </div>
+                                    </div-->
                                     <div class="row">
                                         <div class="input-field col s12">
                                             <input placeholder="João da Silva" id="nameClient" value="${dto.nameClient}" name="nameClient" type="text" class="validate">
                                             <label for="nameClient">Nome</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col s12">
+                                            <input placeholder="000.000.000-00" id="cpf" value="${dto.cpf}" name="cpf" type="text" class="validate">
+                                            <label for="cpf">CPF</label>
                                         </div>
                                     </div>
                                     <div class="row">

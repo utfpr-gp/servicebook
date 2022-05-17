@@ -13,13 +13,13 @@
                             <div class="row center">
                                 <div class="col s12 dark-color-text">
                                     <div class="row tooltipped" data-position="bottom"
-                                         data-tooltip="${professional.rating} estrela (s).">
+                                         data-tooltip="${individual.rating} estrela (s).">
 
                                         <c:forEach var="star" begin="1" end="5">
-                                            <c:if test="${star <= professional.rating}">
+                                            <c:if test="${star <= individual.rating}">
                                                 <i class="material-icons yellow-text small">star</i>
                                             </c:if>
-                                            <c:if test="${star > professional.rating}">
+                                            <c:if test="${star > individual.rating}">
                                                 <i class="material-icons yellow-text small">star_border</i>
                                             </c:if>
                                         </c:forEach>
@@ -30,32 +30,32 @@
                         </div>
                         <div class="col s12 center">
 
-                            <c:if test="${professional.profilePicture == null}">
+                            <c:if test="${individual.profilePicture == null}">
                                 <svg class="icon-person" style="width:250px;height:250px" viewBox="0 0 24 24">
                                     <path class="dark-color-icon"
                                           d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
                                 </svg>
                             </c:if>
 
-                            <c:if test="${professional.profilePicture != null}">
+                            <c:if test="${individual.profilePicture != null}">
                                 <div class="row">
-                                    <img src="${professional.profilePicture}" alt="Profissional - Imagem de perfil."
+                                    <img src="${individual.profilePicture}" alt="Profissional - Imagem de perfil."
                                          style="width:250px;height:250px">
                                 </div>
                             </c:if>
 
                             <div class="row">
-                                <p>${professional.description != null ? professional.description : 'Perfil sem descrição.'}</p>
+                                <p>${individual.description != null ? individual.description : 'Perfil sem descrição.'}</p>
                             </div>
                             <h5 class="edit-link tertiary-color-text">
-                                <a class="tertiary-color-text" href="">Editar perfil</a>
+                                <a class="tertiary-color-text" href="minha-conta/perfil">Editar perfil</a>
                             </h5>
                         </div>
                     </div>
                     <div class="row secondary-background-color no-margin">
                         <div class="col s12">
                             <h5 class="name-header no-margin center white-text">
-                                <strong>${professional.name}</strong>
+                                <strong>${individual.name}</strong>
                             </h5>
                         </div>
                     </div>
@@ -67,11 +67,11 @@
                     <div class="row secondary-background-color no-margin">
                         <div class="col s4 center no-padding">
 
-                            <c:if test="${professional.profileVerified}">
+                            <c:if test="${individual.profileVerified}">
                                 <i class="medium material-icons green-text tooltipped" data-position="top"
                                    data-tooltip="Perfil verificado.">person</i>
                             </c:if>
-                            <c:if test="${!professional.profileVerified}">
+                            <c:if test="${!individual.profileVerified}">
                                 <i class="medium material-icons gray-text tooltipped" data-position="top"
                                    data-tooltip="Perfil não verificado.">person</i>
                             </c:if>
@@ -79,11 +79,11 @@
                         </div>
                         <div class="col s4 center no-padding">
 
-                            <c:if test="${professional.emailVerified}">
+                            <c:if test="${individual.emailVerified}">
                                 <i class="medium material-icons green-text tooltipped" data-position="top"
                                    data-tooltip="Email verificado.">email</i>
                             </c:if>
-                            <c:if test="${!professional.emailVerified}">
+                            <c:if test="${!individual.emailVerified}">
                                 <i class="medium material-icons gray-text tooltipped" data-position="top"
                                    data-tooltip="Email não verificado.">email</i>
                             </c:if>
@@ -91,11 +91,11 @@
                         </div>
                         <div class="col s4 center no-padding">
 
-                            <c:if test="${professional.phoneVerified}">
+                            <c:if test="${individual.phoneVerified}">
                                 <i class="medium material-icons green-text tooltipped" data-position="top"
                                    data-tooltip="Telefone verificado.">phone</i>
                             </c:if>
-                            <c:if test="${!professional.phoneVerified}">
+                            <c:if test="${!individual.phoneVerified}">
                                 <i class="medium material-icons gray-text tooltipped" data-position="top"
                                    data-tooltip="Telefone não verificado.">phone</i>
                             </c:if>
@@ -133,10 +133,10 @@
 
                                         <c:if test="${professionalExpertiseRating == null}">
                                             <c:forEach var="star" begin="1" end="5">
-                                                <c:if test="${star <= professional.rating}">
+                                                <c:if test="${star <= individual.rating}">
                                                     <i class="material-icons yellow-text small">star</i>
                                                 </c:if>
-                                                <c:if test="${star > professional.rating}">
+                                                <c:if test="${star > individual.rating}">
                                                     <i class="material-icons yellow-text small">star_border</i>
                                                 </c:if>
                                             </c:forEach>
@@ -196,6 +196,8 @@
                             </blockquote>
                         </div>
                     </div>
+
+
                     <div class="col s12">
                         <div class="row expertises">
                             <c:forEach var="professionalExpertises" items="${professionalExpertises}">
@@ -226,8 +228,21 @@
                             </a>
                         </button>
                     </div>
+
+<%--                    <div class="input-field col s12">--%>
+<%--                        <i class="material-icons prefix">textsms</i>--%>
+<%--                        <input name="keyword" type="text" id="autocomplete-input" class="autocomplete">--%>
+<%--                        <label for="autocomplete-input">Autocomplete</label>--%>
+<%--                    </div>--%>
+
+
+<%--                    <div id="project-label">Select a project (type &quot;j&quot; for a start):</div>--%>
+<%--                    <input id="project">--%>
+<%--                    <input type="hidden" id="project-id">--%>
+<%--                    <p id="project-description"></p>--%>
+
                     <div id="modal-expertises" class="modal">
-                        <div class="modal-content">
+                        <div class="modal-content ui-front">
                             <div class="row">
                                 <div class="col s9">
                                     <h3>Escolha uma ou mais especialidades!</h3>
@@ -238,28 +253,88 @@
                                     </button>
                                 </div>
                             </div>
-                            <form id="form-expertises" action="minha-conta/especialidades" method="post">
-                                <c:forEach var="expertise" items="${expertises}">
-                                    <label class="card-expertise col s12 m5 offset-m1">
-                                        <input name="ids" type="checkbox" class="reset-checkbox" value="${expertise.id}">
-                                        <span class="center">
-                                            <i class="material-icons">work</i>
-                                                ${expertise.name}
-                                        </span>
-                                    </label>
-                                </c:forEach>
+
+                            <div class="row">
+                                <div class="col s12">
+                                    <div class="row">
+                                        <div class="input-field col s12">
+                                            <i class="material-icons prefix">work</i>
+                                            <input type="text" id="search-expertises" class="autocomplete">
+                                            <label for="search-expertises">Selecione sua especialidade</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <form id="form-expertises" action="minha-conta/profissional/especialidades" method="post">
+                                <div id="result-expertises">
+
+                                </div>
                                 <div class="input-field col s8 offset-s1">
-                                    <button type="submit" class="btn waves-effect waves-light left">Salvar</button>
+                                    <button id="submit-expertise" type="submit" class="btn waves-effect waves-light left">Salvar</button>
                                 </div>
                                 <div class="input-field col s3">
                                     <a class="btn waves-effect waves-light modal-close">Fechar</a>
                                 </div>
                             </form>
+
                         </div>
                     </div>
+
                 </div>
             </div>
         </main>
 
     </jsp:body>
 </t:professional>
+
+<script>
+    $("#form-expertises").hide();
+
+    $('#modal-expertises').ready(function () {
+        var terms=[];
+        var terms_id=[];
+        $( "#search-expertises" ).autocomplete({
+            minLength: 1,
+            source:  '${pageContext.request.contextPath}/minha-conta/profissional/especialidades/search',
+
+            select: function( event, ui ) {
+                $( "#search-expertises" ).val( ui.item.name );
+                $( "#search-expertises-id" ).val( ui.item.id );
+                $( "#project-name" ).html( ui.item.name );
+                $( "#ids" ).html( ui.item.id );
+                $( "#name-expertise" ).html( ui.item.name );
+
+                terms.push(ui.item.name);
+                terms_id.push(ui.item.id);
+
+                if(terms != ''){
+                    $("#form-expertises").show();
+                    $( "#ids" ).val( ui.item.id );
+                    let value_id = terms_id.slice(-1)
+                    $( "#result-expertises" )
+                        .prepend( "" +
+                            "<label class='card-expertise col s9 m5 offset-m1'> " +
+                            "<input id='ids' name='ids' type='checkbox' class='reset-checkbox' value='"+value_id+"'> <span class='center name-expertise'>"
+                            + "<i class='material-icons'>work</i>"
+                            +  terms.slice(-1)  +
+                            "</span> </label>")
+                }
+                return false;
+            }
+        })
+            .autocomplete( "instance" )._renderItem = function( ul, item ) {
+            return $( "<li>" )
+                .append( "<p class='teste_name'>" +  item.name + "</p>" )
+                .appendTo( ul );
+        };
+
+        $( "#submit-expertise" ).click(function() {
+            $('#modal-expertises').modal('close');
+            $( "#search-expertises" ).val( "" );
+            $( "#search-expertises-id" ).val( "" );
+            $( "#ids" ).html( "" );
+            $( "#name_expertise" ).html( "" );
+        });
+    } );
+</script>

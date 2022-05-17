@@ -2,7 +2,6 @@ package br.edu.utfpr.servicebook.model.repository;
 
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.util.CPFUtil;
-import br.edu.utfpr.servicebook.util.DateUtil;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +28,7 @@ class JobCandidateRepositoryTest {
     JobCandidateRepository jobCandidateRepository;
 
     @Autowired
-    ProfessionalRepository professionalRepository;
+    IndividualRepository individualRepository;
 
     @Autowired
     ProfessionalExpertiseRepository professionalExpertiseRepository;
@@ -44,7 +43,7 @@ class JobCandidateRepositoryTest {
         Expertise developerExpertise = new Expertise("Desenvolvedor de Software");
         developerExpertise = expertiseRepository.save(developerExpertise);
 
-        Expertise mechanicExpertise = new Expertise("Mecânico");
+        Expertise mechanicExpertise = new Expertise("Mecânico de Motossera ");
         mechanicExpertise = expertiseRepository.save(mechanicExpertise);
 
         JobRequest jb1 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, dateOfNow);
@@ -64,8 +63,8 @@ class JobCandidateRepositoryTest {
         jobRequestRepository.save(jb3);
         jobRequestRepository.save(jb4);
 
-        Professional joao = new Professional("Roberto Carlos", "joao@mail.com", "", "", CPFUtil.geraCPF());
-        joao = professionalRepository.save(joao);
+        Individual joao = new Individual("Roberto Carlos", "joao@mail.com", "Senha123", "(42) 88999-9992", CPFUtil.geraCPF());
+        joao = individualRepository.save(joao);
 
         ProfessionalExpertise professionalExpertise1 = new ProfessionalExpertise(joao, mechanicExpertise);
         professionalExpertiseRepository.save(professionalExpertise1);
@@ -83,8 +82,8 @@ class JobCandidateRepositoryTest {
     @DisplayName("Deve retornar uma lista de candidaturas de um profissional")
     public void findByProfessional() {
 
-        Professional joao = professionalRepository.findByEmail("joao@mail.com");
-        List<JobCandidate> jobs = jobCandidateRepository.findByProfessional(joao);
+        Optional<Individual> joao = individualRepository.findByEmail("joao@mail.com");
+        List<JobCandidate> jobs = jobCandidateRepository.findByIndividual(joao.get());
         log.debug(jobs.toString());
         for(JobCandidate job : jobs){
             log.debug(job.getJobRequest().toString());
@@ -98,8 +97,8 @@ class JobCandidateRepositoryTest {
     @DisplayName("Deve retornar uma lista de candidaturas de um profissional escolhidas para fazer orçamento")
     public void findByProfessionalAndChosenByBudget() {
 
-        Professional joao = professionalRepository.findByEmail("joao@mail.com");
-        List<JobCandidate> jobs = jobCandidateRepository.findByProfessionalAndChosenByBudget(joao, true);
+        Optional<Individual> joao = individualRepository.findByEmail("joao@mail.com");
+        List<JobCandidate> jobs = jobCandidateRepository.findByIndividualAndChosenByBudget(joao.get(), true);
         log.debug(jobs.toString());
         Assertions.assertFalse(jobs.isEmpty());
         Assertions.assertEquals(jobs.size(), 1);
@@ -112,12 +111,12 @@ class JobCandidateRepositoryTest {
         JobRequest jb1 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, dateOfNow);
         jobRequestRepository.save(jb1);
 
-        Professional joao = professionalRepository.findByEmail("joao@mail.com");
+        Optional<Individual> joao = individualRepository.findByEmail("joao@mail.com");
 
-        JobCandidate candidate1 = new JobCandidate(jb1, joao);
+        JobCandidate candidate1 = new JobCandidate(jb1, joao.get());
         jobCandidateRepository.save(candidate1);
 
-        List<JobCandidate> jobs = jobCandidateRepository.findByJobRequest_StatusAndProfessional(JobRequest.Status.AVAILABLE, joao);
+        List<JobCandidate> jobs = jobCandidateRepository.findByJobRequest_StatusAndIndividual(JobRequest.Status.AVAILABLE, joao.get());
         log.debug(jobs.toString());
         for(JobCandidate job : jobs){
             log.debug(job.getJobRequest().toString());
@@ -125,7 +124,6 @@ class JobCandidateRepositoryTest {
         Assertions.assertFalse(jobs.isEmpty());
         Assertions.assertEquals(jobs.size(), 3);
     }
-
 
     @AfterEach
     void tearDown() {

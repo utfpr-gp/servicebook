@@ -3,33 +3,69 @@ package br.edu.utfpr.servicebook.model.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.sql.Date;
+import lombok.ToString;
+import org.hibernate.validator.constraints.br.CPF;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
+@ToString
+public class UserDTO implements Serializable {
 
-    private Long id;
+    protected Long id;
 
-    private String name;
+    @Pattern(regexp = "^(\\s?[A-ZÀ-Ú][a-zà-ú]*)+(\\s[a-zà-ú]*)?(\\s[A-ZÀ-Ú][a-zà-ú]*)+$", message = "Nome inválido! Por favor, insira o nome completo.", groups = UserDTO.RequestUserNameAndCPFInfoGroupValidation.class)
+    protected String name;
 
-    private String email;
+    @CPF(message = "CPF inválido! Por favor, insira um CPF válido.", groups = UserDTO.RequestUserNameAndCPFInfoGroupValidation.class)
+    protected String cpf;
 
-    private String type;
+    @NotBlank(message = "Email inválido! Por favor, insira o email.", groups = UserDTO.RequestUserEmailInfoGroupValidation.class)
+    @Email(message = "Email inválido! Por favor, insira um email válido.", groups = UserDTO.RequestUserEmailInfoGroupValidation.class)
+    protected String email;
 
-    private String gender;
+    @NotBlank(message = "Senha inválida! Por favor, insira uma senha.", groups = UserDTO.RequestUserPasswordInfoGroupValidation.class)
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$", message = "A senha precisa conter no mínimo 8 caracteres e pelo menos uma letra e um número", groups = UserDTO.RequestUserPasswordInfoGroupValidation.class)
+    protected String password;
 
-    private String profilePicture;
+    protected String repassword;
 
-    private Date birthDate;
+    protected String type;
+    protected String gender;
+    protected String profilePicture;
+    protected Date birthDate;
 
-    private String phoneNumber;
+    @Pattern(regexp = "^\\(?\\d{2}\\)?\\s?(\\d{4,5})-?(\\d{4})$", message = "Telefone inválido! Por favor, insira um número de telefone válido.", groups = UserDTO.RequestUserPhoneInfoGroupValidation.class)
+    protected String phoneNumber;
 
-    private boolean phoneVerified;
+    protected boolean phoneVerified;
+    protected boolean emailVerified;
+    protected boolean profileVerified;
 
-    private boolean emailVerified;
+    @Valid
+    protected AddressFullDTO address;
 
-    private boolean profileVerified;
+    public interface RequestUserNameAndCPFInfoGroupValidation {
+
+    }
+
+    public interface RequestUserEmailInfoGroupValidation {
+
+    }
+
+    public interface RequestUserPasswordInfoGroupValidation {
+
+    }
+
+    public interface RequestUserPhoneInfoGroupValidation {
+
+    }
 
 }

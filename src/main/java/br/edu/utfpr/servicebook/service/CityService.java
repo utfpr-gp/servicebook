@@ -40,4 +40,8 @@ public class CityService {
         return this.cityRepository.findByNameAndState(name, state);
     }
 
+    public Optional<City> findByName(String name){
+        return this.cityRepository.findByName(name);
+    }
+
 }

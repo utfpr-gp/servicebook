@@ -16,4 +16,6 @@ public class ClientDTO extends UserDTO {
 
     private String phone;
 
+    private Integer rating;
+
 }

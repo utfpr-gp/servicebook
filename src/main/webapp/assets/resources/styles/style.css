@@ -39,6 +39,11 @@ p {
 .tertiary-color-text{
   color: #3f51b5;
 }
+
+.facebook-color-text {
+  color: #3A69B1;
+}
+
 .grey-text{
   color: rgb(117, 117, 117) !important;
 }
@@ -53,6 +58,10 @@ p {
 
 .secondary-background-color{
   background-color: rgb(51, 51, 51);
+}
+
+.tertiary-background-color{
+  background-color: rgb(28, 34, 49);
 }
 
 /* icons colors */
@@ -261,12 +270,27 @@ input[type=range]::-webkit-slider-runnable-track{
   background-color: #1c2231;
   border: solid white 4px;
 }
-.text-detail-request p{
-  line-height: 1rem;
+.text-detail-request p, .text-info-request.description-orcamento p, .text-info-request.description-job p{
+  line-height: 1.4rem;
 }
 .text-info-request{
   font-weight: 600;
   font-size: 130%;
+}
+
+.text-info-request.description-orcamento p{
+  font-weight: 500;
+
+}
+.text-info-request.description-job p{
+  font-weight: 400;
+}
+.star-icons.candidate {
+  margin: 0;
+  padding: 0;
+}
+.check-circle-candidate i{
+  font-size: 2em;
 }
 .hr-request-area{
   height: 7px;
@@ -293,6 +317,17 @@ input[type=range]::-webkit-slider-runnable-track{
   border: rgb(162, 116, 60) 10px solid;
   background-color: #53b1ed;
   color: white;
+}
+
+.card-candidate {
+  padding: 0;
+  border: #3f51b5 10px solid;
+  color: white;
+}
+
+.card-candidate  .title-card-resquest p{
+  padding: 0 15px;
+  text-transform: uppercase;
 }
 
 .card-resquest{
@@ -373,6 +408,12 @@ footer.page-footer {
   padding: 25px;
 }
 
+.name-header.client{
+  text-transform: uppercase;
+}
+.icons-area-request.client {
+  margin-top: 20px;
+}
 .info-headers{
   padding: 12px;
 }
@@ -416,6 +457,45 @@ footer.page-footer {
   border: solid black 1px;
 }
 
+.avatar {
+  height: 10rem;
+}
+
+.card-body {
+  min-height: 23rem;
+}
+
+.expertise-label {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 2rem;
+  padding: 0.5rem 1rem!important;
+  margin: 0.5rem;
+}
+
+.upper-case {
+  text-transform: uppercase;
+}
+
+.mb-1 {
+  margin-bottom: 1rem;
+}
+
+.mt-1 {
+  margin-top: 1rem;
+}
+
+.whatsapp-icon {
+  height: 2rem;
+}
+
+.whatsapp {
+  background-image: url("assets/resources/images/whatsapp-logo.png");
+}
+
+.p1 {
+  padding: 1rem;
+}
+
 @font-face {
   font-family: 'Material Icons';
   font-style: normal;
@@ -437,6 +517,12 @@ footer.page-footer {
   direction: ltr;
   -moz-font-feature-settings: 'liga';
   -moz-osx-font-smoothing: grayscale;
+}
+
+.material-icons.middle {
+  vertical-align: middle;
+  padding-right: 4px;
+  font-size: 3rem;
 }
 
 .middle-indicator{
@@ -471,6 +557,42 @@ a.middle-indicator-text{
   position: absolute;
   left: 20px;
   top: 90px;
+}
+
+textarea {
+  height: 100%;
+  resize: none;
+}
+.btn-save {
+  margin-right: 10px;
+}
+.formulario {
+  display: none;
+}
+.formulario .btn {
+  margin-left: 10px;
+}
+.exibir {
+  cursor: pointer;
+}
+#ocultar {
+  position: relative;
+  top: 8px;
+  padding: 0 10px;
+  font-size: 31px;
+  text-decoration: none;
+  color: #000 !important;
+}
+
+.progress-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.progress-bar .progress {
+  margin-right: 1rem;
+  margin-top: 14px;
 }
 
 @media only screen and (max-width : 992px) {
@@ -542,6 +664,22 @@ a.middle-indicator-text{
   padding-left: 10px;
 }
 
+.ui-helper-hidden-accessible{
+  display: none;
+}
+
+#ui-id-1{
+  /*display: block !important;*/
+  background-color: white;
+  position: absolute !important;
+  top: 210px !important;
+  left: 70px !important;
+  width: 950px !important;
+  height: auto;
+  margin: 0;
+  padding: 0;
+}
+
 #form-expertises input {
   position: absolute;
   left: -9999px;
@@ -560,16 +698,18 @@ a.middle-indicator-text{
   padding: 0 !important;
   margin-bottom: 10px;
   border: 1px solid #81c5f3;
-  height: 50px;
+  /*height: 50px;*/
+  height: 100px;
 }
 
 .card-expertise span,
 .card-expertise [type="checkbox"]+span:not(.lever){
   width: 100%;
-  height: 100%;
+  height: 100px;
   cursor: default;
   font-size: 20px;
   color: #333333;
+  padding: 30px 0;
 }
 
 .card-expertise-list {
@@ -589,6 +729,9 @@ a.middle-indicator-text{
 .expertise-icon i {
   font-size: 45px;
 }
+/*.name-expertise{*/
+/*  margin: 5px 0;*/
+/*}*/
 
 .modal-trigger {
   color: white;
@@ -598,6 +741,3 @@ a.middle-indicator-text{
   background: white;
   border: none;
 }
-
-
-

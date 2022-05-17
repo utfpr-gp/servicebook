@@ -4,24 +4,23 @@ package br.edu.utfpr.servicebook.model.entity;
 
 import javax.persistence.*;
 
-import br.edu.utfpr.servicebook.util.DateUtil;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
 /**
  * Classe para armazenar as informações necessárias para a classe auxiliar n x n
  */
+
 @Data
-@Table(name = "job_candidates")
 @NoArgsConstructor
+@EqualsAndHashCode(exclude={"jobRequest","professional"})
+
+@Table(name = "job_candidates")
 @Entity
 public class JobCandidate {
 
-	private static final long serialVersionUID = 1L; 
+	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	private JobCandidatePK id;
@@ -40,18 +39,16 @@ public class JobCandidate {
 	@ManyToOne
 	@MapsId("professionalId")
 	@JoinColumn(name = "professional_id")
-	private Professional professional;
+	private Individual individual;
 
-	public JobCandidate(JobRequest jobRequest, Professional professional){
+	public JobCandidate(JobRequest jobRequest, Individual individual) {
 		this.jobRequest = jobRequest;
-		this.professional = professional;
-		this.id = new JobCandidatePK(jobRequest.getId(), professional.getId());
+		this.individual = individual;
+		this.id = new JobCandidatePK(jobRequest.getId(), individual.getId());
 	}
 
 	@PrePersist
-	public void onPersist(){
+	public void onPersist() {
 		this.date = new Date();
 	}
-
-
 }

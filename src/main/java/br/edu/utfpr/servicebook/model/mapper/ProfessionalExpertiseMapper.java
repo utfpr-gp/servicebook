@@ -1,13 +1,17 @@
 package br.edu.utfpr.servicebook.model.mapper;
 
-import br.edu.utfpr.servicebook.model.dto.ProfessionalDTO;
+import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
 import br.edu.utfpr.servicebook.model.dto.ProfessionalExpertiseDTO;
 import br.edu.utfpr.servicebook.model.dto.ProfessionalExpertiseDTO2;
-import br.edu.utfpr.servicebook.model.entity.Professional;
+import br.edu.utfpr.servicebook.model.dto.ProfessionalSearchItemDTO;
+import br.edu.utfpr.servicebook.model.entity.Expertise;
+import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class ProfessionalExpertiseMapper {
@@ -28,4 +32,9 @@ public class ProfessionalExpertiseMapper {
         return mapper.map(dto, ProfessionalExpertise.class);
     }
 
+    public ProfessionalSearchItemDTO toSearchItemDto(Expertise entity, List<ExpertiseDTO> expertises){
+        ProfessionalSearchItemDTO dto = mapper.map(entity, ProfessionalSearchItemDTO.class);
+        dto.setExpertises(expertises);
+        return dto;
+    }
 }
