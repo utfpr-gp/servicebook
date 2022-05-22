@@ -4,12 +4,11 @@ import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.City;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.UserCode;
-import br.edu.utfpr.servicebook.model.entity.UserSms;
 import br.edu.utfpr.servicebook.model.mapper.CityMapper;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.UserCodeMapper;
-import br.edu.utfpr.servicebook.model.mapper.UserSmsMapper;
 import br.edu.utfpr.servicebook.service.*;
+import br.edu.utfpr.servicebook.util.NumberValidator;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,12 +48,6 @@ public class IndividualRegisterController {
     private UserCodeMapper userCodeMapper;
 
     @Autowired
-    private UserSmsService userSmsService;
-
-    @Autowired
-    private UserSmsMapper userSmsMapper;
-
-    @Autowired
     private CityService cityService;
 
     @Autowired
@@ -62,9 +55,6 @@ public class IndividualRegisterController {
 
     @Autowired
     private EmailSenderService emailSenderService;
-
-    @Autowired
-    private SmsSenderService smsSenderService;
 
     @Autowired
     private SmartValidator validator;
@@ -239,35 +229,9 @@ public class IndividualRegisterController {
             return this.userRegistrationErrorForwarding("4", dto, model, errors);
         }
 
-        Optional<Individual> oUser = individualService.findByPhoneNumber(dto.getPhoneNumber());
+        NumberValidator numberValidator = new NumberValidator(dto.getPhoneNumber());
 
-        if (oUser.isPresent()) {
-            errors.rejectValue("phoneNumber", "error.dto", "Telefone já cadastrado! Por favor, insira um número de telefone não cadastrado.");
-        }
-
-        if (errors.hasErrors()) {
-            return this.userRegistrationErrorForwarding("4", dto, model, errors);
-        }
-
-        ///// Enviar código de autenticação para telefone.
-
-
-        Optional<UserSms> oUserSms = userSmsService.findByPhoneNumber(dto.getPhoneNumber());
-
-        if (!oUserSms.isPresent()) {
-            String code = authenticationCodeGeneratorService.generateAuthenticationCode();
-
-            UserSmsDTO userSmsDTO = new UserSmsDTO(dto.getPhoneNumber(), code);
-            UserSms userSms = userSmsMapper.toEntity(userSmsDTO);
-
-            userSmsService.save(userSms);
-            smsSenderService.sendSmsToUser(dto.getPhoneNumber().replaceAll("[ ()-]", ""), "Servicebook: Código de autenticação: " + "\n\n\n" + code);
-        } else {
-            smsSenderService.sendSmsToUser(dto.getPhoneNumber().replaceAll("[ ()-]", ""), "Servicebook: Código de autenticação:" + "\n\n\n" + oUserSms.get().getCode());
-        }
-
-
-        //// Fim do método enviar código para o telefone
+        numberValidator.sendVerifySms();
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setPhoneNumber(dto.getPhoneNumber());
@@ -289,17 +253,11 @@ public class IndividualRegisterController {
         }
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
-        Optional<UserSms> oUserSms = userSmsService.findByPhoneNumber(sessionDTO.getPhoneNumber());
 
-        if (!oUserSms.isPresent()) {
-            errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de autenticação.");
-        }
+        NumberValidator numberValidator = new NumberValidator(sessionDTO.getPhoneNumber());
+        String smsStatusVerify = numberValidator.sendVerifyCode(dto.getCode());
 
-        if (errors.hasErrors()) {
-            return this.userSmsErrorForwarding("5", dto, model, errors);
-        }
-
-        if (!dto.getCode().equals(oUserSms.get().getCode())) {
+        if (!smsStatusVerify.equals("approved")) {
             errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de autenticação.");
         }
 
@@ -308,6 +266,14 @@ public class IndividualRegisterController {
         }
 
         sessionDTO.setPhoneVerified(true);
+
+        Optional<Individual> oUser = individualService.findByPhoneNumber(dto.getPhoneNumber());
+
+        if(oUser.isPresent()) {
+            Individual user = oUser.get();
+            user.setPhoneVerified(false);
+            individualService.save(user);
+        }
 
         redirectAttributes.addFlashAttribute("msg", "Telefone verificado com sucesso!");
 

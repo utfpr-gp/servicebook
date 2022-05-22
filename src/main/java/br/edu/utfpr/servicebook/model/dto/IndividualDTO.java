@@ -26,7 +26,7 @@ public class IndividualDTO extends UserDTO implements Serializable {
 
     private Date birthDate;
 
-    @Pattern(regexp = "^\\(?\\d{2}\\)?\\s?(\\d{4,5})-?(\\d{4})$", message = "Telefone inválido! Por favor, insira um número de telefone válido.", groups = IndividualDTO.RequestUserPhoneInfoGroupValidation.class)
+    @Pattern(regexp = "^\\(?\\d{2}\\)?\\s?(\\d{5})-?(\\d{4})$", message = "Telefone inválido! Por favor, insira um número de telefone válido.", groups = IndividualDTO.RequestUserPhoneInfoGroupValidation.class)
     private String phoneNumber;
 
     private String description;
