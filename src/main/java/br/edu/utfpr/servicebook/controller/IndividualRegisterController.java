@@ -1,5 +1,6 @@
 package br.edu.utfpr.servicebook.controller;
 
+import br.edu.utfpr.servicebook.jobs.EmailSenderJob;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.City;
 import br.edu.utfpr.servicebook.model.entity.Individual;
@@ -11,7 +12,10 @@ import br.edu.utfpr.servicebook.model.mapper.UserCodeMapper;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.quartz.*;
+import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -61,6 +65,8 @@ public class IndividualRegisterController {
 
     @Autowired
     private AuthenticationCodeGeneratorService authenticationCodeGeneratorService;
+    @Autowired
+    private SpringBeanJobFactory jobFactoryCDI;
 
     private String userRegistrationErrorForwarding(String step, IndividualDTO dto, Model model, BindingResult errors) {
         model.addAttribute("dto", dto);
@@ -107,6 +113,7 @@ public class IndividualRegisterController {
             RedirectAttributes redirectAttributes,
             Model model
     ) throws MessagingException {
+        //jobFactoryCDI
 
         if (errors.hasErrors()) {
             return this.userRegistrationErrorForwarding("1", dto, model, errors);
@@ -123,6 +130,7 @@ public class IndividualRegisterController {
         }
 
         Optional<UserCode> oUserCode = userCodeService.findByEmail(dto.getEmail());
+        String actualCode = "";
 
         if (!oUserCode.isPresent()) {
             String code = authenticationCodeGeneratorService.generateAuthenticationCode();
@@ -131,9 +139,30 @@ public class IndividualRegisterController {
             UserCode userCode = userCodeMapper.toEntity(userCodeDTO);
 
             userCodeService.save(userCode);
-            emailSenderService.sendEmailToServer(dto.getEmail(), "Servicebook: Código de autenticação.", "Código de autenticação:" + "\n\n\n" + code);
+            actualCode = code;
         } else {
-            emailSenderService.sendEmailToServer(dto.getEmail(), "Servicebook: Código de autenticação.", "Código de autenticação:" + "\n\n\n" + oUserCode.get().getCode());
+            actualCode = oUserCode.get().getCode();
+        }
+        Scheduler scheduler = null;
+        SchedulerFactory factory = new StdSchedulerFactory();
+        String email = dto.getEmail();
+        try {
+            JobDetail job = JobBuilder.newJob(EmailSenderJob.class)
+                    .withIdentity(EmailSenderJob.class.getSimpleName(), "group1").build();
+            job.getJobDataMap().put("emailDestinatario", email);
+            job.getJobDataMap().put("Codigo", actualCode);
+            Trigger trigger = getTrigger(EmailSenderJob.class.getSimpleName(), "group1");
+
+            scheduler = factory.getScheduler();
+            scheduler.setJobFactory(jobFactoryCDI);
+            scheduler.scheduleJob(job, trigger);
+
+            if (!scheduler.isStarted()) {
+                scheduler.start();
+            }
+
+        }catch (SchedulerException e){
+            System.out.println(e.getMessage());
         }
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
@@ -379,6 +408,17 @@ public class IndividualRegisterController {
         status.setComplete();
 
         return "redirect:/entrar";
+    }
+
+    private Trigger getTrigger(String name, String group) {
+        Trigger trigger = TriggerBuilder.newTrigger().withIdentity(name, group)
+                // FIXME startnow ativado somente para teste
+                .startNow()
+                //.withSchedule(CronScheduleBuilder.cronSchedule(cron))
+                // .withSchedule(simpleSchedule().withIntervalInSeconds(1).repeatForever())
+                // .withSchedule(simpleSchedule().withIntervalInHours(24 * 3).repeatForever())
+                .build();
+        return trigger;
     }
 
 }

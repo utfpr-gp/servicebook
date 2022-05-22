@@ -2,6 +2,7 @@ package br.edu.utfpr.servicebook;
 
 import br.edu.utfpr.servicebook.controller.IndexController;
 import br.edu.utfpr.servicebook.service.IndexService;
+import br.edu.utfpr.servicebook.util.quartz.AutoWiringSpringBeanJobFactory;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import org.modelmapper.ModelMapper;
@@ -10,7 +11,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 
 @SpringBootApplication
 @ServletComponentScan
@@ -44,5 +48,23 @@ public class ServicebookApplication {
                 "api_key", "546318655587864",
                 "api_secret", "UPEpuVA_PWlah9B5BrkZMx7E5VE"
         ));
+    }
+
+    @Bean
+    public SpringBeanJobFactory springBeanJobFactory(ApplicationContext applicationContext) {
+        AutoWiringSpringBeanJobFactory jobFactory = new AutoWiringSpringBeanJobFactory();
+        jobFactory.setApplicationContext(applicationContext);
+        return jobFactory;
+    }
+
+    @Bean
+    public SchedulerFactoryBean quartzScheduler(ApplicationContext applicationContext) {
+        SchedulerFactoryBean quartzScheduler = new SchedulerFactoryBean();
+
+        AutoWiringSpringBeanJobFactory jobFactory = new AutoWiringSpringBeanJobFactory();
+        jobFactory.setApplicationContext(applicationContext);
+        quartzScheduler.setJobFactory(jobFactory);
+
+        return quartzScheduler;
     }
 }
