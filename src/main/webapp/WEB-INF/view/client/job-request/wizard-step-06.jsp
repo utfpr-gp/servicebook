@@ -15,59 +15,77 @@
                     </div>
                 </c:if>
                 <div class="section">
-                    <div class="row">
-                        <h3 class="center grey-text"><strong>Último passo!</strong></h3>
-                        <p class="center grey-text text-form-dados">Não perca tempo ligando para vários profissionais. Preencha os dados abaixo e nós encontraremos os melhores para você!</p>
-                        <div class="row center">
-                            <div class="col s12 l6 offset-l3  input-field">
-                                <form method="post" action="requisicoes/passo-6">
-                                    <!--div class="row">
-                                        <div class="input-field col s12">
-                                            <input placeholder="00000-000"  value="<%--${dto.cep}--%>" id="cep" data-mask="00000-000" name="cep" type="text" class="validate">
-                                            <label for="cep">CEP</label>
-                                            <span id="error-cep" class="hide helper-text red-text darken-3"></span>
-                                        </div>
-                                        <div id="endereco-area" class="endereco-area col s12 hide">
-                                            <p><span id="rua">Rua 15 de novembro</span> - <span id="bairro">Centro</span> - <span id="cidade">Guarapuava</span> - <span id="uf">PR</span></p>
-                                        </div>
-                                    </div-->
-                                    <div class="row">
-                                        <div class="input-field col s12">
-                                            <input placeholder="João da Silva" id="nameClient" value="${dto.nameClient}" name="nameClient" type="text" class="validate">
-                                            <label for="nameClient">Nome</label>
+                    <div>
+                        <h4 class="center"><strong>Estes 3 profissionais tem a especialidade que procura!</strong></h4>
+                        <h5 class="center">Para ter acesso a lista completa de profissionais deste especialidade ou melhor, para receber o contato de apenas profissionais interessados e disponíveis para a data especificada, podendo você verificar a reputação dos mesmos e experiência, solicitar orçamento e por fim, avaliar o serviço prestado.</h5>
+                        <div class="container">
+                            <div class="section">
+                                <div class="row">
+                                    <div class="col s12">
+                                        <div class="row">
+                                            <c:if test="${not empty professionals}">
+                                                <c:forEach var="professional" items="${professionals}">
+                                                    <div class="col s12 m6">
+                                                        <div class="card-panel card-result blue lighten-1 white-text">
+                                                            <div class="card-body">
+                                                                <div class="row center-align">
+                                                                    <c:choose>
+                                                                        <c:when test="${professional.profilePicture != null}">
+                                                                            <img src="${professional.profilePicture}" class="avatar" alt="Foto de perfil">
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                            <img src="assets/resources/images/no-photo.png" class="avatar" alt="Sem foto de perfil">
+                                                                        </c:otherwise>
+                                                                    </c:choose>
+                                                                </div>
+                                                                <div class="row center-align">
+                                                                    <h5 class="truncate tooltipped" data-position="bottom" data-tooltip="${professional.name}">${professional.name}</h5>
+                                                                    <div class="divider"></div>
+                                                                </div>
+                                                                <div class="row center-align">
+                                                                    <c:forEach var="expertise" items="${professional.expertises}">
+                                                                        <div class="col expertise-label">${expertise.name}</div>
+                                                                    </c:forEach>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row center-align ">
+                                                                <a href="profissionais/detalhes/${professional.id}" class="waves-effect waves-light btn-large white blue-text text-lighten-1"><strong>Ver perfil</strong></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </c:forEach>
+                                            </c:if>
+                                            <c:if test="${empty professionals}">
+                                                <div class="container">
+                                                    <div class="row">
+                                                        <div class="col s12 spacing-buttons     ">
+                                                            <div class="none-profission center">
+                                                                <i class="material-icons large"> sentiment_dissatisfied </i>
+                                                                <p class="center text-form-dados">
+                                                                    Nenhum profissional encontrado!
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </c:if>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="input-field col s12">
-                                            <input placeholder="000.000.000-00" id="cpf" value="${dto.cpf}" name="cpf" type="text" class="validate">
-                                            <label for="cpf">CPF</label>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="input-field col s12">
-                                            <input placeholder="joao@email.com"  value="${dto.emailClient}" name="emailClient" id="emailClient" type="email" class="validate">
-                                            <label for="emailClient">Email</label>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="input-field col s12">
-                                            <input name="phone" id="phone" value="${dto.phone}" data-mask="(00) 00000-0000" placeholder="(00) 0000-0000" type="text" class="validate">
-                                            <label for="phone">DDD + Celular</label>
-                                            <span class="helper-text"> Vamos confirmar seu celular através de uma mensagem de texto</span>
-                                        </div>
-                                    </div>
-                                    <div class="col s6 m6 spacing-buttons">
-                                        <div class="center">
-                                            <a href="requisicoes?passo=5" class="waves-effect waves-light btn btn-gray" href="#!">Voltar</a>
-                                        </div>
-                                    </div>
-                                    <div class="col s6 m6 spacing-buttons">
-                                        <div class="center">
-                                            <button class="waves-effect waves-light btn">Finalizar</button>
-                                        </div>
-                                    </div>
-                                </form>
+                                </div>
                             </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="row center-align">
+                            <p> LOGIN PARA EFETIVAR O SEU PEDIDO E RECEBER OS CONTATOS DOS PROFISSIONAIS!</p>
+                            <a class="waves-effect waves-light btn" href="entrar">Entrar</a>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="row center-align">
+                            <p>VOCÊ AINDA NÃO TEM UMA CONTA?</p>
+                            <a class="waves-effect waves-light btn" href="cadastrar-se">Cadastrar-se</a>
                         </div>
                     </div>
                 </div>

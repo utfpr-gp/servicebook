@@ -2,11 +2,15 @@ package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
 import br.edu.utfpr.servicebook.model.dto.JobRequestDTO;
+import br.edu.utfpr.servicebook.model.dto.ProfessionalSearchItemDTO;
+import br.edu.utfpr.servicebook.model.entity.City;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
+import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
+import br.edu.utfpr.servicebook.service.CityService;
 import br.edu.utfpr.servicebook.service.ExpertiseService;
 import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobRequestService;
@@ -24,6 +28,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
@@ -66,6 +71,9 @@ public class JobRequestController {
 
     @Autowired
     private Cloudinary cloudinary;
+
+    @Autowired
+    private IndividualMapper individualMapper;
 
 
     public enum RequestDateSelect{
@@ -245,36 +253,30 @@ public class JobRequestController {
             sessionDTO.setImageSession((String)data.get("url"));
             log.debug("Passo 5 {}", sessionDTO);
 
-            return "redirect:/requisicoes?passo=6";
+            return "redirect:/requisicoes/passo=6";
         } else {
-            return "client/job-request/wizard-step-06";
+            return "redirect:/requisicoes/passo=6";
         }
 
 
     }
-    @PostMapping("/passo-6")
-    public String saveFormClientInfo(HttpSession httpSession, @Validated(JobRequestDTO.RequestClientInfoGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model){
+    @GetMapping("passo=6")
+    protected ModelAndView showProfessionals(HttpSession httpSession) {
+        ModelAndView mv = new ModelAndView("client/job-request/wizard-step-06");
 
-        if(errors.hasErrors()){
-            model.addAttribute("dto", dto);
-            model.addAttribute("errors", errors.getAllErrors());
-            log.debug("Passo 6 {}", errors.getAllErrors());
-            return "client/job-request/wizard-step-06";
-
-        }
-
-        //persiste na sessão
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
-        sessionDTO.setNameClient(dto.getNameClient());
-        sessionDTO.setCpf(dto.getCpf());
-        sessionDTO.setEmailClient(dto.getEmailClient());
-        sessionDTO.setPhone(dto.getPhone());
 
-        redirectAttributes.addFlashAttribute("email", dto.getEmailClient());
-        log.debug("Passo 6 {}", sessionDTO);
+        Optional<Expertise> expertise = expertiseService.findById(sessionDTO.getExpertiseId());
 
-        return "redirect:/requisicoes?passo=7";
+        List<Individual> professionals = individualService.findDistinctByTermIgnoreCase(expertise.get().getName());
 
+        List<ProfessionalSearchItemDTO> professionalSearchItemDTOS = professionals.stream().limit(3)
+                .map(s -> individualMapper.toSearchItemDto(s, individualService.getExpertises(s)))
+                .collect(Collectors.toList());
+
+        mv.addObject("professionals", professionalSearchItemDTOS);
+
+        return mv;
     }
     @PostMapping("/passo-7")
     public String saveFormVerification(HttpSession httpSession, JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
