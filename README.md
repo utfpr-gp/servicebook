@@ -2,7 +2,7 @@
 
 É um sistema para indicação e contratação de profissionais autônomos para execução de serviços.
 
-O sistema foi desenvolvido pela turma do segundo semestre de 2020 da disciplina de Web IV do curso de TSI da UTFPR -
+O sistema foi desenvolvido na disciplina de Web IV do curso de TSI da UTFPR -
 Universidade Tecnológica Federal do Paraná - Brasil.
 
 ## Protótipos de Tela
@@ -11,6 +11,7 @@ Universidade Tecnológica Federal do Paraná - Brasil.
 ## Tecnologias
 
 + Spring Boot
++ JSP
 + Materialize
 
 ## Ferramentas
@@ -18,6 +19,7 @@ Universidade Tecnológica Federal do Paraná - Brasil.
 + IntelliJ IDEA
 + Tomcat
 + MySQL
++ H2
 + Maven
 
 ## Manual de Execução
@@ -34,16 +36,17 @@ Universidade Tecnológica Federal do Paraná - Brasil.
 
 ## Equipe
 
-* **Roni Fabio Banaszewski**
-* **Bruno José dos Santos Wogt**
-* **Cristhian Albary da Silba**
-* **Guilherme Henrique Nascimento**
-* **Lander Wilker Jesus do Nascimento**
-* **Mateus Vinicio Duartes Fernandes**
-* **Ricardo Martins de Oliveira**
-* **Ronaldo Goudinho dos Santos**
+* **Roni Fabio Banaszewski** (Professor)
+* **Bruno José dos Santos Wogt** (Turma 2020/2)
+* **Cristhian Albary da Silba** (Turma 2020/2)
+* **Guilherme Henrique Nascimento** (Turma 2020/2)
+* **Ronaldo Goudinho dos Santos** (Turma 2020/2)
+* **Amanda Karoline Carolino** (Turma 2021/1)
+* **André de Souza Aranda** (Turma 2021/1)
 
 ## Versão Corrente
 
 0.0.1 - Release de 13/04/2021
+0.0.2 - Release de 30/08/2021
+
 
