@@ -27,7 +27,7 @@ public class EmailSenderJob implements Job {
         try {
             emailSenderService.sendEmailToServer(emailDestinatario, "Service Book", code);
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            System.out.println(e.getMessage());
         }
     }
 }

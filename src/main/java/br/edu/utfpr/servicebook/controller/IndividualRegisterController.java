@@ -1,10 +1,8 @@
 package br.edu.utfpr.servicebook.controller;
 
-import br.edu.utfpr.servicebook.jobs.EmailSenderJob;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.City;
 import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.model.entity.UserCode;
 import br.edu.utfpr.servicebook.model.mapper.CityMapper;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
@@ -12,10 +10,7 @@ import br.edu.utfpr.servicebook.model.mapper.UserCodeMapper;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -61,12 +56,13 @@ public class IndividualRegisterController {
     private EmailSenderService emailSenderService;
 
     @Autowired
+    private QuartzService quartzService;
+
+    @Autowired
     private SmartValidator validator;
 
     @Autowired
     private AuthenticationCodeGeneratorService authenticationCodeGeneratorService;
-    @Autowired
-    private SpringBeanJobFactory jobFactoryCDI;
 
     private String userRegistrationErrorForwarding(String step, IndividualDTO dto, Model model, BindingResult errors) {
         model.addAttribute("dto", dto);
@@ -113,12 +109,11 @@ public class IndividualRegisterController {
             RedirectAttributes redirectAttributes,
             Model model
     ) throws MessagingException {
-        //jobFactoryCDI
 
         if (errors.hasErrors()) {
             return this.userRegistrationErrorForwarding("1", dto, model, errors);
         }
-
+        String email = dto.getEmail();
         Optional<Individual> oUser = individualService.findByEmail(dto.getEmail());
 
         if (oUser.isPresent()) {
@@ -143,27 +138,8 @@ public class IndividualRegisterController {
         } else {
             actualCode = oUserCode.get().getCode();
         }
-        Scheduler scheduler = null;
-        SchedulerFactory factory = new StdSchedulerFactory();
-        String email = dto.getEmail();
-        try {
-            JobDetail job = JobBuilder.newJob(EmailSenderJob.class)
-                    .withIdentity(EmailSenderJob.class.getSimpleName(), "group1").build();
-            job.getJobDataMap().put("emailDestinatario", email);
-            job.getJobDataMap().put("Codigo", actualCode);
-            Trigger trigger = getTrigger(EmailSenderJob.class.getSimpleName(), "group1");
 
-            scheduler = factory.getScheduler();
-            scheduler.setJobFactory(jobFactoryCDI);
-            scheduler.scheduleJob(job, trigger);
-
-            if (!scheduler.isStarted()) {
-                scheduler.start();
-            }
-
-        }catch (SchedulerException e){
-            System.out.println(e.getMessage());
-        }
+        quartzService.sendEmailToConfirmationCode(email, actualCode);
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setEmail(dto.getEmail());
@@ -409,16 +385,4 @@ public class IndividualRegisterController {
 
         return "redirect:/entrar";
     }
-
-    private Trigger getTrigger(String name, String group) {
-        Trigger trigger = TriggerBuilder.newTrigger().withIdentity(name, group)
-                // FIXME startnow ativado somente para teste
-                .startNow()
-                //.withSchedule(CronScheduleBuilder.cronSchedule(cron))
-                // .withSchedule(simpleSchedule().withIntervalInSeconds(1).repeatForever())
-                // .withSchedule(simpleSchedule().withIntervalInHours(24 * 3).repeatForever())
-                .build();
-        return trigger;
-    }
-
 }
