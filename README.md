@@ -43,10 +43,14 @@ Universidade Tecnológica Federal do Paraná - Brasil.
 * **Ronaldo Goudinho dos Santos** (Turma 2020/2)
 * **Amanda Karoline Carolino** (Turma 2021/1)
 * **André de Souza Aranda** (Turma 2021/1)
+* **Beatriz de Almeida Fernandes de Lima** (Turma 2021/2)
+* **Pedro Sezar da Rosa** (Turma 2021/2)
+* **Ricardo Martins de Oliveira** (Turma 2021/2)
 
 ## Versão Corrente
 
 0.0.1 - Release de 13/04/2021
 0.0.2 - Release de 30/08/2021
+0.0.3 - Release de 21/12/2021
 
 
