@@ -33,7 +33,7 @@
                         </c:if>
                         <div class="col s6 login-token">
                             <h6 class="header center login-logo-text">LOGIN POR RECEBIMENTO DE <br> CÓDIGO POR EMAIL</h6>
-                            <form class="login-form input-login" action="entrar/token" method="post">
+                            <form class="login-form input-login" action="login/email" method="post">
                                 <div class="row">
                                     <div class="input-field col offset-s1 m6 offset-m3  l6 offset-l3">
                                         <input id="email" name="email" type="text" value="${dto.email}" class="validate" placeholder="joao@gmail.com">

@@ -378,7 +378,7 @@ public class IndividualRegisterController {
         redirectAttributes.addFlashAttribute("msg", "Usuário cadastrado com sucesso! Realize o login no Servicebook!");
         status.setComplete();
 
-        return "redirect:/entrar";
+        return "redirect:/login";
     }
 
 }
