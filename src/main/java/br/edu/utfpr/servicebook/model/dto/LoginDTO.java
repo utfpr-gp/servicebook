@@ -14,12 +14,16 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ToString
 public class LoginDTO extends UserDTO implements Serializable {
+    @NotBlank(message = "Email inválido! Por favor, insira o email.", groups = LoginDTO.EmailGroupValidation.class)
+    @Email(message = "Email inválido! Por favor, insira um email válido.", groups = LoginDTO.EmailGroupValidation.class)
     private String email;
-    private UserCodeDTO token;
-    @NotBlank(message = "Email inválido! Por favor, insira o email.", groups = LoginDTO.RequestUserEmailInfoGroupValidation.class)
-    @Email(message = "Email inválido! Por favor, insira um email válido.", groups = LoginDTO.RequestUserEmailInfoGroupValidation.class)
 
-    public interface RequestUserEmailInfoGroupValidation {
+    @Pattern(regexp = "^([0-9]{6})$", message = "Código inválido! Por favor, insira o código de autenticação.", groups = LoginDTO.CodeGroupValidation.class)
+    private String code;
 
+    public interface EmailGroupValidation {
+    }
+
+    public interface CodeGroupValidation {
     }
 }
