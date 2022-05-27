@@ -72,15 +72,8 @@ public class ProfessionalExpertiseController {
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
-
         IndividualMinDTO professionalMinDTO = individualMapper.toMinDto(oProfessional.get());
-
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
-        List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
-                .map(professionalExpertise -> professionalExpertise.getExpertise())
-                .map(expertise -> expertiseMapper.toDto(expertise))
-                .collect(Collectors.toList());
-
         Optional<List<Expertise>> oExpertises = Optional.ofNullable(expertiseService.findAll());
 
         Optional<Long> jobs, ratings, comments;
@@ -135,7 +128,6 @@ public class ProfessionalExpertiseController {
                 .map(s -> expertiseMapper.toDto(s))
                 .collect(Collectors.toList());
 
-
         mv.addObject("individual", professionalMinDTO);
         mv.addObject("expertises", professionDTOs);
         mv.addObject("professionalExpertises", professionalExpertiseDTOs);
@@ -173,12 +165,6 @@ public class ProfessionalExpertiseController {
         }
 
         return oProfessional.get();
-    }
-
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
-    @ResponseBody
-    public List<Expertise> search(HttpServletRequest request) {
-        return expertiseService.search(request.getParameter("term"));
     }
 
 }

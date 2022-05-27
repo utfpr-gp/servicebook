@@ -123,6 +123,20 @@
                             </form>
                         </div>
                     </div>
+
+                    <div class="row no-margin center">
+                        <div class="col s12 no-margin no-padding input-field area-profission-select">
+                            <div class="row no-margin center">
+                                <div class="col s12 no-margin no-padding input-field area-profission-select">
+                                    <div class="spacing-buttons">
+                                        <a class="waves-effect waves-light btn" href="minha-conta/profissional/especialidades">
+                                            Adicionar Especialidades </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row no-margin">
                         <div class="col s12 no-margin no-padding">
                             <p class="header-verification tertiary-color-text center">ESTRELAS</p>
@@ -229,23 +243,11 @@
                         </button>
                     </div>
 
-<%--                    <div class="input-field col s12">--%>
-<%--                        <i class="material-icons prefix">textsms</i>--%>
-<%--                        <input name="keyword" type="text" id="autocomplete-input" class="autocomplete">--%>
-<%--                        <label for="autocomplete-input">Autocomplete</label>--%>
-<%--                    </div>--%>
-
-
-<%--                    <div id="project-label">Select a project (type &quot;j&quot; for a start):</div>--%>
-<%--                    <input id="project">--%>
-<%--                    <input type="hidden" id="project-id">--%>
-<%--                    <p id="project-description"></p>--%>
-
                     <div id="modal-expertises" class="modal">
                         <div class="modal-content ui-front">
                             <div class="row">
                                 <div class="col s9">
-                                    <h3>Escolha uma ou mais especialidades!</h3>
+                                    <h4>Escolha uma ou mais especialidades!</h4>
                                 </div>
                                 <div class="col s3">
                                     <button class="modal-close modal-expertise-close right">
@@ -259,24 +261,40 @@
                                     <div class="row">
                                         <div class="input-field col s12">
                                             <i class="material-icons prefix">work</i>
-                                            <input type="text" id="search-expertises" class="autocomplete">
-                                            <label for="search-expertises">Selecione sua especialidade</label>
+                                            <input type="text" id="txtBusca" class="autocomplete">
+                                            <label for="txtBusca">Selecione sua especialidade</label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <form class="s12" id="form-expertises" action="minha-conta/profissional/especialidades" method="post">
+                                    <ul id="search-expertises">
+                                        <c:forEach var="expertise" items="${expertises}">
+                                            <li>
+                                                <label class='card-expertise col s12 m10 offset-m1'>
+                                                    <input id='ids' name='ids' type='checkbox' class='reset-checkbox' value="${expertise.id}">
+                                                    <span class='center name-expertise'>
+                                                    <i class='material-icons'>work</i>
+                                                    ${expertise.name}
+                                                </span>
+                                                </label>
+                                            </li>
+                                        </c:forEach>
+                                    </ul>
 
-                            <form id="form-expertises" action="minha-conta/profissional/especialidades" method="post">
-                                <div id="result-expertises">
+                                        <%--                                <div id="result-expertises">--%>
 
-                                </div>
-                                <div class="input-field col s8 offset-s1">
-                                    <button id="submit-expertise" type="submit" class="btn waves-effect waves-light left">Salvar</button>
-                                </div>
-                                <div class="input-field col s3">
-                                    <a class="btn waves-effect waves-light modal-close">Fechar</a>
-                                </div>
-                            </form>
+                                        <%--                                </div>--%>
+                                    <div class="input-field col s8 offset-s1">
+                                        <button id="submit-expertise" type="submit" class="btn waves-effect waves-light left">Salvar</button>
+                                    </div>
+                                    <div class="input-field col s3">
+                                        <a class="btn waves-effect waves-light modal-close">Fechar</a>
+                                    </div>
+                                </form>
+                            </div>
+
 
                         </div>
                     </div>
@@ -289,52 +307,64 @@
 </t:professional>
 
 <script>
-    $("#form-expertises").hide();
 
-    $('#modal-expertises').ready(function () {
-        var terms=[];
-        var terms_id=[];
-        $( "#search-expertises" ).autocomplete({
-            minLength: 1,
-            source:  '${pageContext.request.contextPath}/minha-conta/profissional/especialidades/search',
+    $(function(){
+        $("#txtBusca").keyup(function(){
+            var texto = $(this).val();
 
-            select: function( event, ui ) {
-                $( "#search-expertises" ).val( ui.item.name );
-                $( "#search-expertises-id" ).val( ui.item.id );
-                $( "#project-name" ).html( ui.item.name );
-                $( "#ids" ).html( ui.item.id );
-                $( "#name-expertise" ).html( ui.item.name );
-
-                terms.push(ui.item.name);
-                terms_id.push(ui.item.id);
-
-                if(terms != ''){
-                    $("#form-expertises").show();
-                    $( "#ids" ).val( ui.item.id );
-                    let value_id = terms_id.slice(-1)
-                    $( "#result-expertises" )
-                        .prepend( "" +
-                            "<label class='card-expertise col s9 m5 offset-m1'> " +
-                            "<input id='ids' name='ids' type='checkbox' class='reset-checkbox' value='"+value_id+"'> <span class='center name-expertise'>"
-                            + "<i class='material-icons'>work</i>"
-                            +  terms.slice(-1)  +
-                            "</span> </label>")
-                }
-                return false;
-            }
-        })
-            .autocomplete( "instance" )._renderItem = function( ul, item ) {
-            return $( "<li>" )
-                .append( "<p class='teste_name'>" +  item.name + "</p>" )
-                .appendTo( ul );
-        };
-
-        $( "#submit-expertise" ).click(function() {
-            $('#modal-expertises').modal('close');
-            $( "#search-expertises" ).val( "" );
-            $( "#search-expertises-id" ).val( "" );
-            $( "#ids" ).html( "" );
-            $( "#name_expertise" ).html( "" );
+            $("#search-expertises li").css("display", "block");
+            $("#search-expertises li").each(function(){
+                if($(this).text().toUpperCase().indexOf(texto.toUpperCase()) < 0)
+                    $(this).css("display", "none");
+            });
         });
-    } );
+    });
+    <%--$("#form-expertises").hide();--%>
+
+    <%--$('#modal-expertises').ready(function () {--%>
+    <%--    var terms=[];--%>
+    <%--    var terms_id=[];--%>
+    <%--    $( "#search-expertises" ).autocomplete({--%>
+    <%--        minLength: 1,--%>
+    <%--        source:  '${pageContext.request.contextPath}/minha-conta/profissional/especialidades/search',--%>
+
+    <%--        select: function( event, ui ) {--%>
+    <%--            $( "#search-expertises" ).val( ui.item.name );--%>
+    <%--            $( "#search-expertises-id" ).val( ui.item.id );--%>
+    <%--            $( "#project-name" ).html( ui.item.name );--%>
+    <%--            $( "#ids" ).html( ui.item.id );--%>
+    <%--            $( "#name-expertise" ).html( ui.item.name );--%>
+
+    <%--            terms.push(ui.item.name);--%>
+    <%--            terms_id.push(ui.item.id);--%>
+
+    <%--            if(terms != ''){--%>
+    <%--                $("#form-expertises").show();--%>
+    <%--                $( "#ids" ).val( ui.item.id );--%>
+    <%--                let value_id = terms_id.slice(-1)--%>
+    <%--                $( "#result-expertises" )--%>
+    <%--                    .prepend( "" +--%>
+    <%--                        "<label class='card-expertise col s9 m5 offset-m1'> " +--%>
+    <%--                        "<input id='ids' name='ids' type='checkbox' class='reset-checkbox' value='"+value_id+"'> <span class='center name-expertise'>"--%>
+    <%--                        + "<i class='material-icons'>work</i>"--%>
+    <%--                        +  terms.slice(-1)  +--%>
+    <%--                        "</span> </label>")--%>
+    <%--            }--%>
+    <%--            return false;--%>
+    <%--        }--%>
+    <%--    })--%>
+    <%--        .autocomplete( "instance" )._renderItem = function( ul, item ) {--%>
+    <%--        return $( "<li>" )--%>
+    <%--            .append( "<p class='teste_name'>" +  item.name + "</p>" )--%>
+    <%--            .appendTo( ul );--%>
+    <%--    };--%>
+
+    <%--    $( "#submit-expertise" ).click(function() {--%>
+    <%--        $('#modal-expertises').modal('close');--%>
+    <%--        $( "#search-expertises" ).val( "" );--%>
+    <%--        $( "#search-expertises-id" ).val( "" );--%>
+    <%--        $( "#ids" ).html( "" );--%>
+    <%--        $( "#name_expertise" ).html( "" );--%>
+    <%--    });--%>
+    // } );
 </script>

@@ -34,11 +34,4 @@ public class ExpertiseService {
         this.expertiseRepository.deleteById(id);
     }
 
-    public List<Expertise> search(String keyword) {
-        if(keyword != null){
-            return this.expertiseRepository.search(keyword);
-        }
-        return expertiseRepository.findAll();
-    }
-
 }

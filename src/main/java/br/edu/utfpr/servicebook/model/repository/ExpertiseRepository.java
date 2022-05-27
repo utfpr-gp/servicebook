@@ -27,6 +27,4 @@ public interface ExpertiseRepository extends JpaRepository<Expertise, Long> {
 //    @Query("SELECT p FROM Expertise p WHERE p.name = :name")
 //    Optional<Expertise> findByName(@Param("name") String name);
 
-    @Query("SELECT distinct e FROM Expertise e where lower(e.name) like lower(concat('%', :keyword, '%'))")
-    List<Expertise> search(@Param("keyword") String keyword);
 }

@@ -142,9 +142,7 @@
                     </div>
 
                     <div class="row no-margin center">
-
                         <div class="col s12 no-margin no-padding input-field area-profission-select">
-
                             <div class="row no-margin center">
                                 <div class="col s12 no-margin no-padding input-field area-profission-select">
                                     <div class="spacing-buttons">
@@ -153,7 +151,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
