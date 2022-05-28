@@ -11,7 +11,10 @@ import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobContractedService;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 
+import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
+import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -69,22 +72,33 @@ public class ProfessionalController {
     }
 
     @GetMapping(value = "/busca")
-    protected ModelAndView showSearchResults(@RequestParam(value = "termo-da-busca") String searchTerm
-                                             ) throws Exception {
+    protected ModelAndView showSearchResults(
+            @RequestParam(value = "termo-da-busca") String searchTerm,
+            @RequestParam(value = "pag", defaultValue = "1") int page
+    ) throws Exception {
         ModelAndView mv = new ModelAndView("visitor/search-results");
-
+        Integer size = 10;
         List<City> cities = cityService.findAll();
         mv.addObject("cities", cities);
 
-        List<Individual> professionals = individualService.findDistinctByTermIgnoreCase(searchTerm);
+        Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
+        mv.addObject("logged", individual.isPresent());
+        if (!individual.isPresent()) {
+            page = 1;
+            size = 4;
+        }
 
+        Page<Individual> professionals = individualService.findDistinctByTermIgnoreCase(searchTerm, page, size);
         List<ProfessionalSearchItemDTO> professionalSearchItemDTOS = professionals.stream()
                 .map(s -> individualMapper.toSearchItemDto(s, individualService.getExpertises(s)))
                 .collect(Collectors.toList());
 
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(professionals, "/profissionais/busca");
+        System.out.println(paginationDTO.toString());
         mv.addObject("professionals", professionalSearchItemDTOS);
+        mv.addObject("pagination", paginationDTO);
         mv.addObject("searchTerm", searchTerm);
-        
+
         return mv;
     }
 

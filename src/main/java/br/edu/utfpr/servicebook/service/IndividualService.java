@@ -9,6 +9,8 @@ import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.repository.IndividualRepository;
 import br.edu.utfpr.servicebook.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -62,8 +64,9 @@ public class IndividualService {
         return this.individualRepository.findByPhoneNumber(phoneNumber);
     }
 
-    public List<Individual> findDistinctByTermIgnoreCase(String searchTerm){
-        return this.individualRepository.findDistinctByTermIgnoreCase(searchTerm);
+    public Page<Individual> findDistinctByTermIgnoreCase(String searchTerm, Integer page, Integer size){
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
+        return this.individualRepository.findDistinctByTermIgnoreCase(searchTerm, pageRequest);
     }
 
     public List<ExpertiseDTO> getExpertises(Individual professional){
