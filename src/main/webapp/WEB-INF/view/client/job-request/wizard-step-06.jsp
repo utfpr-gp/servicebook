@@ -16,7 +16,7 @@
                 </c:if>
                 <div class="section">
                     <div>
-                        <h4 class="center"><strong>Estes 3 profissionais tem a especialidade que procura!</strong></h4>
+                        <h4 class="center"><strong>Estes ${professionalsAmount} profissionais tem a especialidade que procura!</strong></h4>
                         <h5 class="center">Para ter acesso a lista completa de profissionais deste especialidade ou melhor, para receber o contato de apenas profissionais interessados e disponíveis para a data especificada, podendo você verificar a reputação dos mesmos e experiência, solicitar orçamento e por fim, avaliar o serviço prestado.</h5>
                         <div class="container">
                             <div class="section">

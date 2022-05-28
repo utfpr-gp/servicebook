@@ -203,7 +203,7 @@ public class JobRequestController {
             model.addAttribute("errors", errors.getAllErrors());
             log.debug("Passo 3 {}", dto);
             log.debug("Errors 3 {}", errors);
-            return "client/job-request/wizard-step-03+9";
+            return "client/job-request/wizard-step-03";
 
         }
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
@@ -255,7 +255,7 @@ public class JobRequestController {
 
             return "redirect:/requisicoes/passo=6";
         } else {
-            return "redirect:/requisicoes/passo=6";
+            return "client/job-request/wizard-step-06";
         }
 
 
@@ -275,6 +275,7 @@ public class JobRequestController {
                 .collect(Collectors.toList());
 
         mv.addObject("professionals", professionalSearchItemDTOS);
+        mv.addObject("professionalsAmount", professionalSearchItemDTOS.size());
 
         return mv;
     }
