@@ -21,8 +21,8 @@ public class EmailSenderJob implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
-        String emailDestinatario = (String) jobDataMap.get("emailDestinatario");
-        String code = (String) jobDataMap.get("Codigo");
+        String emailDestinatario = (String) jobDataMap.get("recipient");
+        String code = (String) jobDataMap.get("token");
 
         try {
             emailSenderService.sendEmailToServer(emailDestinatario, "Service Book", code);
