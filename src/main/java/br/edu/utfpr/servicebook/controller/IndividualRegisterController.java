@@ -255,9 +255,18 @@ public class IndividualRegisterController {
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
 
         NumberValidator numberValidator = new NumberValidator(sessionDTO.getPhoneNumber());
-        String smsStatusVerify = numberValidator.sendVerifyCode(dto.getCode());
 
-        if (!smsStatusVerify.equals("approved")) {
+        try {
+            numberValidator.sendVerifyCode(dto.getCode());
+        } catch (Exception e) {
+            errors.rejectValue("code", "error.dto", "Não foi possível verificar seu telefone no momento. Continue com o seu cadastro e tente novamente mais tarde.");
+        }
+
+        if (errors.hasErrors()) {
+            return this.userSmsErrorForwarding("5", dto, model, errors);
+        }
+
+        if (!numberValidator.isVerified()) {
             errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de autenticação.");
         }
 
