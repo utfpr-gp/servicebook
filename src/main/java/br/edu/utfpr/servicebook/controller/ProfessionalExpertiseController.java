@@ -128,8 +128,14 @@ public class ProfessionalExpertiseController {
                 .map(s -> expertiseMapper.toDto(s))
                 .collect(Collectors.toList());
 
+        List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
+                .map(professionalExpertise -> professionalExpertise.getExpertise())
+                .map(expertise -> expertiseMapper.toDto(expertise))
+                .collect(Collectors.toList());
+
         mv.addObject("individual", professionalMinDTO);
         mv.addObject("expertises", professionDTOs);
+//        mv.addObject("expertises", expertiseDTOs);
         mv.addObject("professionalExpertises", professionalExpertiseDTOs);
         return mv;
     }
@@ -156,7 +162,19 @@ public class ProfessionalExpertiseController {
         }
         return mv;
     }
-//
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable Expertise id, RedirectAttributes redirectAttributes) throws Exception {
+        log.debug("Removendo uma profissão com id {}", id);
+        Individual professional = this.getProfessional();
+
+        Optional <ProfessionalExpertise> optionalProfession = this.professionalExpertiseService.findByProfessionalAndExpertise(professional,id);
+        if(!optionalProfession.isPresent()){
+            throw new EntityNotFoundException("Erro ao remover, registro não encontrado para o id " + id);
+        }
+        this.professionalExpertiseService.delete(optionalProfession.get().getId());
+        return "redirect:/minha-conta/profissional/especialidades";
+    }
+
     private Individual getProfessional() throws Exception {
         Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
