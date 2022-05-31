@@ -12,6 +12,7 @@ import br.edu.utfpr.servicebook.util.NumberValidator;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -58,6 +59,15 @@ public class IndividualRegisterController {
 
     @Autowired
     private SmartValidator validator;
+
+    @Value("${twilio.account.sid}")
+    private String twilioAccountSid;
+
+    @Value("${twilio.auth.token}")
+    private String twilioAuthToken;
+
+    @Value("${twilio.verify.service.sid}")
+    private String twilioVerifyServiceSid;
 
     @Autowired
     private AuthenticationCodeGeneratorService authenticationCodeGeneratorService;
@@ -229,7 +239,7 @@ public class IndividualRegisterController {
             return this.userRegistrationErrorForwarding("4", dto, model, errors);
         }
 
-        NumberValidator numberValidator = new NumberValidator(dto.getPhoneNumber());
+        NumberValidator numberValidator = new NumberValidator(twilioAccountSid, twilioAuthToken, twilioVerifyServiceSid, dto.getPhoneNumber());
 
         numberValidator.sendVerifySms();
 
@@ -254,7 +264,7 @@ public class IndividualRegisterController {
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
 
-        NumberValidator numberValidator = new NumberValidator(sessionDTO.getPhoneNumber());
+        NumberValidator numberValidator = new NumberValidator(twilioAccountSid, twilioAuthToken, twilioVerifyServiceSid, sessionDTO.getPhoneNumber());
 
         try {
             numberValidator.sendVerifyCode(dto.getCode());
