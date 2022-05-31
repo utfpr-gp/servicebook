@@ -92,13 +92,53 @@ p {
 }
 
 .login-form{
-  margin: 40px;
+  margin: 40px 0;
 }
 
+.login-token{
+  background-color: #53b1ed;
+  height: 330px !important;
+  /*padding: 10px !important;*/
+}
+
+.login-email{
+  background-color: #1c2231;
+  height: 330px !important;
+}
+.login-logo-text{
+  color: white;
+  margin: 30px 0 !important;
+}
+
+.label-login{
+  color: white !important;
+  font-size: 1.1rem !important;
+}
+
+.btn-login{
+  margin-left: 70px !important;
+}
+
+.input-login{
+  margin: 60px 0 0;
+}
 .area-msg-email{
   background-color: #53b1ed;
   border: solid 2px #1c2231;
   padding: 35px !important;
+}
+.hr-login{
+  padding: 5px;
+  background-color: #53b1ed;
+  border: none;
+  width: 35%;
+  border-radius: 5px;
+}
+
+.text-register{
+  font-size: 1.2rem !important;
+  text-transform: uppercase;
+
 }
 
 .logo-icon{

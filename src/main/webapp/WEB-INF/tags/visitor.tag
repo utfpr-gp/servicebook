@@ -28,12 +28,12 @@
         </a>
 
         <ul class="right hide-on-med-and-down">
-            <li><a class="menu-itens" href="entrar">ENTRAR</a></li>
+            <li><a class="menu-itens" href="login">ENTRAR</a></li>
             <li><a class="menu-itens" href="bem-vindo">OFEREÇA SEUS SERVIÇOS</a></li>
         </ul>
 
         <ul id="nav-mobile" class="sidenav">
-            <li><a class="menu-itens" href="entrar">ENTRAR</a></li>
+            <li><a class="menu-itens" href="login">ENTRAR</a></li>
             <li><a class="menu-itens" href="bem-vindo">OFEREÇA SEUS SERVIÇOS</a></li>
         </ul>
 
