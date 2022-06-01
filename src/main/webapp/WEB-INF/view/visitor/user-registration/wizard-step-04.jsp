@@ -38,6 +38,14 @@
                             ou profissionais.
                         </h5>
 
+                        <div class="notice-sms">
+                            <p>Devs: para utilizar o serviço de SMS é necessário atualizar periodicamente o
+                            Auth Token da classe NumberValidator em application.properties.
+                            O Auth Token está disponível na conta <a href="https://console.twilio.com/">Twilio</a>
+                            que pode ser acessada pelo e-mail <strong>webiv.tsi@gmail.com</strong>
+                            com a senha <strong>D3s3nv0lv1m3nt0_</strong></p>
+                        </div>
+
                         <form method="post" action="cadastrar-se/passo-4">
                             <div class="row center spacing-buttons">
                                 <div class="input-field col s12 l6 offset-l3 spacing-buttons">

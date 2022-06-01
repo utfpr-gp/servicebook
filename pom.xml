@@ -25,6 +25,14 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
+        <!-- Phone -->
+        <!-- https://mvnrepository.com/artifact/link-here -->
+        <dependency>
+            <groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio</artifactId>
+            <version>8.29.1</version>
+        </dependency>
+
         <!-- Web  -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -18,20 +18,16 @@
                 <div class="section">
                     <div class="row">
                         <c:choose>
-                            <c:when test="${dto.id == null}">
+                            <c:when test="${dto.phoneNumber == null}">
 
                                 <h3 class="center secondary-color-text">
                                     Vamos validar o seu número de celular?
                                 </h3>
                                 <h5 class="center secondary-color-text">
-                                    Enviamos um código para o seu WhatsApp.
+                                    Enviamos um código para o seu telefone.
                                 </h5>
                                 <h5 class="center secondary-color-text">
                                     Por favor, digite o código para validar o seu celular!
-                                </h5>
-
-                                <h5 class="center secondary-color-text">
-                                    O código de autenticação enviado por email também é valido!
                                 </h5>
 
                                 <form method="post" action="cadastrar-se/passo-5">
@@ -74,10 +70,6 @@
                                 </h5>
                                 <h5 class="center secondary-color-text">
                                     Por favor, digite o código para validar o seu celular!
-                                </h5>
-
-                                <h5 class="center secondary-color-text">
-                                    O código de autenticação enviado por email também é valido!
                                 </h5>
 
                                 <form method="post" action="cadastrar-se/passo-5">

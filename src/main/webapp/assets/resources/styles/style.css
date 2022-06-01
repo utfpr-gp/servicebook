@@ -681,6 +681,21 @@ textarea {
 
 }
 
+
+.notice-sms{
+  color: rgb(202 138 4);
+  background-color: rgb(254 249 195);
+  font-size: 0.75em;
+  padding: 0 10px;
+  width: 75%;
+  margin: auto;
+  border-radius: 5px;
+}
+
+.notice-sms strong {
+  font-weight: bolder;
+}
+
 #profile-picture {
   margin-bottom: 20px;
   width: 200px;
@@ -781,3 +796,4 @@ textarea {
   background: white;
   border: none;
 }
+

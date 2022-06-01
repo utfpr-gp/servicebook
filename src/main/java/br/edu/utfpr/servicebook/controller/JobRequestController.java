@@ -235,6 +235,7 @@ public class JobRequestController {
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         sessionDTO.setImageFile(dto.getImageFile());
 
+        System.out.println(sessionDTO.getExpertiseId());
 
         if(isValidateImage(dto.getImageFile())){
             File jobImage = Files.createTempFile("temp", dto.getImageFile().getOriginalFilename()).toFile();
