@@ -26,12 +26,12 @@ public class JobContracted {
 	private String comments;
 
 	private int rating;
-	
+
 	@NonNull
 	@OneToOne
 	@JoinColumn(name = "job_request")
 	private JobRequest jobRequest;
-	
+
 	@NonNull
 	@OneToOne
 	@JoinColumn(name = "professional")

@@ -22,7 +22,6 @@ p {
 }
 
 .menu-itens{
-  font-size: 110%;
   margin-top: 15px;
   color: #53b1ed;
 }
@@ -93,13 +92,53 @@ p {
 }
 
 .login-form{
-  margin: 40px;
+  margin: 40px 0;
 }
 
+.login-token{
+  background-color: #53b1ed;
+  height: 330px !important;
+  /*padding: 10px !important;*/
+}
+
+.login-email{
+  background-color: #1c2231;
+  height: 330px !important;
+}
+.login-logo-text{
+  color: white;
+  margin: 30px 0 !important;
+}
+
+.label-login{
+  color: white !important;
+  font-size: 1.1rem !important;
+}
+
+.btn-login{
+  margin-left: 70px !important;
+}
+
+.input-login{
+  margin: 60px 0 0;
+}
 .area-msg-email{
   background-color: #53b1ed;
   border: solid 2px #1c2231;
   padding: 35px !important;
+}
+.hr-login{
+  padding: 5px;
+  background-color: #53b1ed;
+  border: none;
+  width: 35%;
+  border-radius: 5px;
+}
+
+.text-register{
+  font-size: 1.2rem !important;
+  text-transform: uppercase;
+
 }
 
 .logo-icon{
@@ -642,6 +681,7 @@ textarea {
 
 }
 
+
 .notice-sms{
   color: rgb(202 138 4);
   background-color: rgb(254 249 195);
@@ -655,3 +695,105 @@ textarea {
 .notice-sms strong {
   font-weight: bolder;
 }
+
+#profile-picture {
+  margin-bottom: 20px;
+  width: 200px;
+}
+
+[type="checkbox"].reset-checkbox,
+[type="checkbox"].reset-checkbox:checked,
+[type="checkbox"].reset-checkbox:not(checked) {
+  opacity: 1;
+  position: relative;
+}
+
+[type="checkbox"].reset-checkbox+span::before,
+[type="checkbox"].reset-checkbox+span::after,
+[type="checkbox"].reset-checkbox:checked+span::before,
+[type="checkbox"].reset-checkbox:checked+span::after {
+  display: none;
+}
+
+[type="checkbox"].reset-checkbox+span:not(.lever) {
+  padding-left: 10px;
+}
+
+.ui-helper-hidden-accessible{
+  display: none;
+}
+
+#ui-id-1{
+  /*display: block !important;*/
+  background-color: white;
+  position: absolute !important;
+  top: 210px !important;
+  left: 70px !important;
+  width: 950px !important;
+  height: auto;
+  margin: 0;
+  padding: 0;
+}
+
+#form-expertises input {
+  position: absolute;
+  left: -9999px;
+}
+
+#form-expertises input:checked + span {
+  background: #81c5f3;
+}
+
+#form-expertises i {
+  position: relative;
+  top: 5px;
+}
+
+.card-expertise {
+  padding: 0 !important;
+  margin-bottom: 10px;
+  border: 1px solid #81c5f3;
+  /*height: 50px;*/
+  height: 100px;
+}
+
+.card-expertise span,
+.card-expertise [type="checkbox"]+span:not(.lever){
+  width: 100%;
+  height: 100px;
+  cursor: default;
+  font-size: 20px;
+  color: #333333;
+  padding: 30px 0;
+}
+
+.card-expertise-list {
+  font-size: 20px;
+  margin: 10px;
+  border: 1px solid #81c5f3;
+}
+
+.card-expertise-list strong {
+  text-transform: uppercase;
+}
+
+.expertise-icon {
+  font-size: 80px;
+}
+
+.expertise-icon i {
+  font-size: 45px;
+}
+/*.name-expertise{*/
+/*  margin: 5px 0;*/
+/*}*/
+
+.modal-trigger {
+  color: white;
+}
+
+.modal-expertise-close {
+  background: white;
+  border: none;
+}
+

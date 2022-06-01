@@ -39,14 +39,14 @@ public class JobRequest {
 	@ManyToOne
 	@JoinColumn(name = "expertise_id")
 	private Expertise expertise;
-	
+
 	@NonNull
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	
 	@NonNull
 	private String description;
-	
+
 	@NonNull
 	private int quantityCandidatorsMax;
 
@@ -60,7 +60,7 @@ public class JobRequest {
 	private boolean clientConfirmation;
 	
 	private boolean professionalConfirmation;
-	
+
 	@OneToMany(mappedBy = "jobRequest", cascade = CascadeType.REMOVE)
 	private Set<JobImages> jobImages = new HashSet<>();
 	

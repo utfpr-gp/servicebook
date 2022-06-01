@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook.service;
 
 import br.edu.utfpr.servicebook.model.entity.Expertise;
+import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.repository.ExpertiseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,4 +33,5 @@ public class ExpertiseService {
     public void delete(Long id) {
         this.expertiseRepository.deleteById(id);
     }
+
 }
