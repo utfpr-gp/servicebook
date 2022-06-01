@@ -6,6 +6,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Calendar;
 import java.util.Date;
 
 @Data
@@ -27,6 +28,12 @@ public class UserCode {
     @Column(unique = true)
     private String code;
 
-    @NonNull
     private Date expiredDate;
+
+    @PrePersist
+    public void onSave(){
+        Date today = new Date();
+        Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
+        this.expiredDate = tomorrow;
+    }
 }
