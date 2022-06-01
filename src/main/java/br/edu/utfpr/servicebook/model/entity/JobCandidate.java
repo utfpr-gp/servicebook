@@ -18,9 +18,9 @@ import java.util.Date;
 
 @Table(name = "job_candidates")
 @Entity
-public class JobCandidate  {
+public class JobCandidate {
 
-	private static final long serialVersionUID = 1L; 
+	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	private JobCandidatePK id;
@@ -41,14 +41,14 @@ public class JobCandidate  {
 	@JoinColumn(name = "professional_id")
 	private Individual individual;
 
-	public JobCandidate(JobRequest jobRequest, Individual individual){
+	public JobCandidate(JobRequest jobRequest, Individual individual) {
 		this.jobRequest = jobRequest;
 		this.individual = individual;
 		this.id = new JobCandidatePK(jobRequest.getId(), individual.getId());
 	}
 
 	@PrePersist
-	public void onPersist(){
+	public void onPersist() {
 		this.date = new Date();
 	}
 }
