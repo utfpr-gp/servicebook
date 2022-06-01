@@ -6,6 +6,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Data
 @Table(name = "users_code")
@@ -26,4 +27,6 @@ public class UserCode {
     @Column(unique = true)
     private String code;
 
+    @NonNull
+    private Date expiredDate;
 }
