@@ -255,7 +255,7 @@ public class JobRequestController {
 
             return "redirect:/requisicoes/passo=6";
         } else {
-            return "client/job-request/wizard-step-06";
+            return "redirect:/requisicoes/passo=6";
         }
 
 

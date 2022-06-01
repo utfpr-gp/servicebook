@@ -71,7 +71,7 @@ public class ClientController {
     public ModelAndView show() throws Exception {
         ModelAndView mv = new ModelAndView("client/my-requests");
 
-        Optional<Individual> individual = individualService.findByEmail(CurrentUserUtil.getCurrentClientUser());
+        Optional<Individual> individual = individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
 
         if (!individual.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -101,7 +101,7 @@ public class ClientController {
     @DeleteMapping("/meus-pedidos/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
-        Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!individual.isPresent()) {
             throw new IOException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -130,7 +130,7 @@ public class ClientController {
     public ModelAndView showDetailsRequest(@PathVariable Optional<Long> id) throws Exception {
         ModelAndView mv = new ModelAndView("client/details-request");
 
-        Optional<Individual> client = (individualService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> client = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!client.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -178,7 +178,7 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!individual.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -219,7 +219,7 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!individual.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -260,7 +260,7 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> client = (individualService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> client = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!client.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -301,7 +301,7 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> client = (individualService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> client = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!client.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -345,7 +345,7 @@ public class ClientController {
     @PatchMapping("/encerra-pedido/{id}")
     public String updateRequest(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
-        Optional<Individual> oClient = (individualService.findByEmail(CurrentUserUtil.getCurrentClientUser()));
+        Optional<Individual> oClient = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oClient.isPresent()) {
             throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
