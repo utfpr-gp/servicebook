@@ -58,6 +58,9 @@ public class IndividualRegisterController {
     private EmailSenderService emailSenderService;
 
     @Autowired
+    private QuartzService quartzService;
+
+    @Autowired
     private SmartValidator validator;
 
     @Value("${twilio.account.sid}")
@@ -128,7 +131,7 @@ public class IndividualRegisterController {
         if (errors.hasErrors()) {
             return this.userRegistrationErrorForwarding("1", dto, model, errors);
         }
-
+        String email = dto.getEmail();
         Optional<Individual> oUser = individualService.findByEmail(dto.getEmail());
 
         if (oUser.isPresent()) {
@@ -140,6 +143,7 @@ public class IndividualRegisterController {
         }
 
         Optional<UserCode> oUserCode = userCodeService.findByEmail(dto.getEmail());
+        String actualCode = "";
 
         if (!oUserCode.isPresent()) {
             String code = authenticationCodeGeneratorService.generateAuthenticationCode();
@@ -148,10 +152,12 @@ public class IndividualRegisterController {
             UserCode userCode = userCodeMapper.toEntity(userCodeDTO);
 
             userCodeService.save(userCode);
-            emailSenderService.sendEmailToServer(dto.getEmail(), "Servicebook: Código de autenticação.", "Código de autenticação:" + "\n\n\n" + code);
+            actualCode = code;
         } else {
-            emailSenderService.sendEmailToServer(dto.getEmail(), "Servicebook: Código de autenticação.", "Código de autenticação:" + "\n\n\n" + oUserCode.get().getCode());
+            actualCode = oUserCode.get().getCode();
         }
+
+        quartzService.sendEmailToConfirmationCode(email, actualCode);
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setEmail(dto.getEmail());
@@ -400,5 +406,4 @@ public class IndividualRegisterController {
 
         return "redirect:/login";
     }
-
 }

@@ -25,12 +25,20 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
+
+        <!-- Quartz -->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.3.2</version>
+
         <!-- Phone -->
         <!-- https://mvnrepository.com/artifact/link-here -->
         <dependency>
             <groupId>com.twilio.sdk</groupId>
             <artifactId>twilio</artifactId>
             <version>8.29.1</version>
+
         </dependency>
 
         <!-- Web  -->
