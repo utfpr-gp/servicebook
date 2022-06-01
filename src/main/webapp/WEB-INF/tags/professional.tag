@@ -68,9 +68,10 @@
 <script src="assets/libraries/materialize/js/materialize.min.js"></script>
 <script src="assets/resources/scripts/main.js"></script>
 <script src="assets/resources/scripts/init.js"></script>
+<script src="assets/resources/scripts/profession.js"></script>
 
 
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+<%--<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>--%>
 
 </body>
 </html>

@@ -780,6 +780,13 @@ textarea {
 .expertise-icon {
   font-size: 80px;
 }
+.delete-exerpertise{
+  text-align: right;
+  height: 50px;
+}
+.delete-exerpertise-professional i {
+  color: grey;
+}
 
 .expertise-icon i {
   font-size: 45px;

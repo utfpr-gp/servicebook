@@ -1,9 +1,7 @@
 package br.edu.utfpr.servicebook.model.mapper;
 
-import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
-import br.edu.utfpr.servicebook.model.dto.ProfessionalExpertiseDTO;
-import br.edu.utfpr.servicebook.model.dto.ProfessionalExpertiseDTO2;
-import br.edu.utfpr.servicebook.model.dto.ProfessionalSearchItemDTO;
+import br.edu.utfpr.servicebook.model.dto.*;
+import br.edu.utfpr.servicebook.model.entity.City;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
@@ -24,6 +22,7 @@ public class ProfessionalExpertiseMapper {
 
     public ProfessionalExpertiseDTO2 toResponseDTO(ProfessionalExpertise entity) {
         ProfessionalExpertiseDTO2 dto = mapper.map(entity, ProfessionalExpertiseDTO2.class);
+        dto.setId(entity.getId());
         dto.setName(entity.getExpertise().getName());
         return dto;
     }

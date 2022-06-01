@@ -211,28 +211,49 @@
                         </div>
                     </div>
 
+                    <div id="modal-delete" class="modal">
+                        <div class="modal-content">
+                            <form action="" method="post">
 
+                                <input type="hidden" name="_method" value="DELETE"/>
+
+                                <div class="modal-content">
+                                    <h4>Você tem certeza que deseja remover <strong id="strong-name"></strong> das suas especialidades?</h4>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
+                                    <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                     <div class="col s12">
                         <div class="row expertises">
                             <c:forEach var="professionalExpertises" items="${professionalExpertises}">
-                            <div class="col s12 m5 offset-m1 card-expertise-list row">
-                                <div class="col s3 expertise-icon">
-                                    <i class="material-icons">work</i>
+                                <div class="col s12 m5 offset-m1 card-expertise-list row">
+                                    <div class="col s2 delete-exerpertise expertise-icon">
+                                        <i class="material-icons">work</i>
+                                    </div>
+                                    <div class="col s8">
+                                        <p class="center">
+                                            <strong>
+                                                    ${professionalExpertises.name}
+                                            </strong>
+                                        </p>
+                                    </div>
+                                    <div class="col s2 delete-exerpertise expertise-icon">
+                                        <a href="#modal-delete" id="delete-exerpertise-professional" class="myclass waves-effect waves-teal btn-flat delete-exerpertise-professional modal-trigger"
+                                           data-url="${pageContext.request.contextPath}/minha-conta/profissional/especialidades/${professionalExpertises.id.expertiseId}"
+                                           data-name="${professionalExpertises.name}"><i class="myclass material-icons">delete</i></a>
+                                    </div>
+                                    <div class="col s12 right">
+                                        <p class="center">
+                                            Descrição da especialidade
+                                        </p>
+                                    </div>
                                 </div>
-                                <div class="col s8">
-                                    <p class="center">
-                                        <strong>
-                                            ${professionalExpertises.name}
-                                        </strong>
-                                    </p>
-                                </div>
-                                <div class="col s9 right">
-                                    <p class="center">
-                                        Descrição da especialidade
-                                    </p>
-                                </div>
-                            </div>
                             </c:forEach>
+
                         </div>
                     </div>
                     <div class="center spacing-buttons">
@@ -283,9 +304,7 @@
                                         </c:forEach>
                                     </ul>
 
-                                        <%--                                <div id="result-expertises">--%>
 
-                                        <%--                                </div>--%>
                                     <div class="input-field col s8 offset-s1">
                                         <button id="submit-expertise" type="submit" class="btn waves-effect waves-light left">Salvar</button>
                                     </div>
@@ -319,4 +338,8 @@
             });
         });
     });
+
+    $(".myclass").hover(function(e) {
+        $(this).css("color",e.type === "mouseenter"?"red":"grey")
+    })
 </script>
