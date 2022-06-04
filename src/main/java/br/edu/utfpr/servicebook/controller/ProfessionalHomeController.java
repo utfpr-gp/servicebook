@@ -78,14 +78,14 @@ public class ProfessionalHomeController {
     @GetMapping
     public ModelAndView showMyAccountProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> id) throws Exception {
         log.debug("ServiceBook: Minha conta.");
-
+        boolean isClient = false;
         Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        IndividualMinDTO professionalMinDTO = individualMapper.toMinDto(oProfessional.get());
+        IndividualDTO professionalMinDTO = individualMapper.toDto(oProfessional.get());
 
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
         List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
@@ -97,6 +97,7 @@ public class ProfessionalHomeController {
 
         mv.addObject("individual", professionalMinDTO);
         mv.addObject("expertises", expertiseDTOs);
+        mv.addObject("isClient", isClient);
 
         Optional<Long> jobs, ratings, comments;
 

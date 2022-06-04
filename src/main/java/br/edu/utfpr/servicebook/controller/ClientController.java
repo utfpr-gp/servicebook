@@ -78,7 +78,7 @@ public class ClientController {
         }
 
         IndividualDTO clientDTO = individualMapper.toDto(individual.get());
-        mv.addObject("client", clientDTO);
+        mv.addObject("individual", clientDTO);
 
         List<JobRequest> jobRequests = jobRequestService.findByClientOrderByDateCreatedDesc(individual.get());
 

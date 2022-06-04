@@ -68,11 +68,14 @@ public class ProfessionalExpertiseController {
     public ModelAndView showExpertises(@RequestParam(required = false, defaultValue = "0") Optional<Long> id)  throws Exception {
         Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
         ModelAndView mv = new ModelAndView("professional/my-expertises");
+        boolean isClient = false;
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
-        IndividualMinDTO professionalMinDTO = individualMapper.toMinDto(oProfessional.get());
+//        IndividualMinDTO professionalMinDTO = individualMapper.toMinDto(oProfessional.get());
+        IndividualDTO professionalMinDTO = individualMapper.toDto(oProfessional.get());
+
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
         Optional<List<Expertise>> oExpertises = Optional.ofNullable(expertiseService.findAll());
 
@@ -113,6 +116,7 @@ public class ProfessionalExpertiseController {
         mv.addObject("jobs", jobs.get());
         mv.addObject("ratings", ratings.get());
         mv.addObject("comments", comments.get());
+        mv.addObject("isClient", isClient);
 
         if (!oExpertises.isPresent()) {
             throw new Exception("Nenhuma expecialidade encontrada");
