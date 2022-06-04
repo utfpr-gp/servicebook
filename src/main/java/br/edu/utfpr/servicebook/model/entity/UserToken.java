@@ -42,6 +42,6 @@ public class UserToken {
 	private String type;
 	
 	@NonNull
-	private Date expired_date;
+	private Date expiredDate;
 	
 }

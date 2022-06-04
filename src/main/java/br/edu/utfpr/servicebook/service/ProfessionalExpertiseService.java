@@ -3,6 +3,7 @@ package br.edu.utfpr.servicebook.service;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
+import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertisePK;
 import br.edu.utfpr.servicebook.model.repository.ProfessionalExpertiseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,15 @@ public class ProfessionalExpertiseService {
 
     public List<ProfessionalExpertise> findByProfessional(Individual individual) {
         return this.professionalExpertiseRepository.findByProfessional(individual);
+    }
+
+
+    public ProfessionalExpertise save(ProfessionalExpertise professionalExpertise) {
+        return this.professionalExpertiseRepository.save(professionalExpertise);
+    }
+
+    public void delete(ProfessionalExpertisePK professional_id){
+        professionalExpertiseRepository.deleteById(professional_id);
     }
 
 }

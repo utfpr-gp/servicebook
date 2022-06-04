@@ -79,6 +79,4 @@ public class IndividualService {
         return expertisesDTO;
     }
 
-
-
 }
