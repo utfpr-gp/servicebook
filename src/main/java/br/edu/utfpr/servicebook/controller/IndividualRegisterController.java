@@ -158,6 +158,7 @@ public class IndividualRegisterController {
         }
 
         quartzService.sendEmailToConfirmationCode(email, actualCode);
+        quartzService.verifyExpiredTokenEmailJob(actualCode);
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setEmail(dto.getEmail());
