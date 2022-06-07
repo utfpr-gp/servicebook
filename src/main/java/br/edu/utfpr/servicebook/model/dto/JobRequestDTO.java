@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -36,8 +37,8 @@ public class JobRequestDTO implements Serializable {
     @NotBlank(message = "A Descrição não pode ser vazia.", groups = RequestDescriptionGroupValidation.class)
     private String description;
 
-    private MultipartFile imageFile;
-    private String imageSession;
+    public List<MultipartFile> images;
+    private List<String> imagesSession;
 
 //    @NotBlank(message = "O campo CEP é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
 //    @Pattern(regexp="\\d{5}-?\\d{3}",message="Por favor, preencha um CEP válido", groups = RequestClientInfoGroupValidation.class)
