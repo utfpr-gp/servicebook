@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface IndividualRepository extends JpaRepository<Individual, Long> {
@@ -43,7 +44,13 @@ public interface IndividualRepository extends JpaRepository<Individual, Long> {
             "lower(p.name) like lower(concat('%', :term, '%'))" +
             "or lower(p.description) like lower(concat('%', :term, '%')) " +
             "or lower(pe.expertise.name) like lower(concat('%', :term, '%'))")
-    Page<Individual> findDistinctByTermIgnoreCase(
+    Page<Individual> findDistinctByTermIgnoreCaseWithPagination(
             String term,
             Pageable pageable);
+
+    @Query("select distinct p from Individual p left join ProfessionalExpertise pe on p.id = pe.professional.id where " +
+            "lower(p.name) like lower(concat('%', :term, '%'))" +
+            "or lower(p.description) like lower(concat('%', :term, '%')) " +
+            "or lower(pe.expertise.name) like lower(concat('%', :term, '%'))")
+    List<Individual> findDistinctByTermIgnoreCase(String term);
 }
