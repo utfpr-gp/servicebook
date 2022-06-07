@@ -11,10 +11,10 @@ public class CurrentUserUtil {
         return professional1;
     }
 
-    public static String getCurrentClientUser(){
-
-        String clientUser = "cliente1@gmail.com";
-
-        return clientUser;
-    }
+//    public static String getCurrentClientUser(){
+//
+//        String clientUser = "cliente1@gmail.com";
+//
+//        return clientUser;
+//    }
 }

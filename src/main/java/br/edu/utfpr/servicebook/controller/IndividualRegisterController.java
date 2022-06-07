@@ -3,15 +3,16 @@ package br.edu.utfpr.servicebook.controller;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.City;
 import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.model.entity.UserCode;
 import br.edu.utfpr.servicebook.model.mapper.CityMapper;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.UserCodeMapper;
 import br.edu.utfpr.servicebook.service.*;
+import br.edu.utfpr.servicebook.util.NumberValidator;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -57,7 +58,19 @@ public class IndividualRegisterController {
     private EmailSenderService emailSenderService;
 
     @Autowired
+    private QuartzService quartzService;
+
+    @Autowired
     private SmartValidator validator;
+
+    @Value("${twilio.account.sid}")
+    private String twilioAccountSid;
+
+    @Value("${twilio.auth.token}")
+    private String twilioAuthToken;
+
+    @Value("${twilio.verify.service.sid}")
+    private String twilioVerifyServiceSid;
 
     @Autowired
     private AuthenticationCodeGeneratorService authenticationCodeGeneratorService;
@@ -70,6 +83,13 @@ public class IndividualRegisterController {
     }
 
     private String userCodeErrorForwarding(String step, UserCodeDTO dto, Model model, BindingResult errors) {
+        model.addAttribute("dto", dto);
+        model.addAttribute("errors", errors.getAllErrors());
+
+        return "visitor/user-registration/wizard-step-0" + step;
+    }
+
+    private String userSmsErrorForwarding(String step, UserSmsDTO dto, Model model, BindingResult errors) {
         model.addAttribute("dto", dto);
         model.addAttribute("errors", errors.getAllErrors());
 
@@ -111,7 +131,7 @@ public class IndividualRegisterController {
         if (errors.hasErrors()) {
             return this.userRegistrationErrorForwarding("1", dto, model, errors);
         }
-
+        String email = dto.getEmail();
         Optional<Individual> oUser = individualService.findByEmail(dto.getEmail());
 
         if (oUser.isPresent()) {
@@ -123,6 +143,7 @@ public class IndividualRegisterController {
         }
 
         Optional<UserCode> oUserCode = userCodeService.findByEmail(dto.getEmail());
+        String actualCode = "";
 
         if (!oUserCode.isPresent()) {
             String code = authenticationCodeGeneratorService.generateAuthenticationCode();
@@ -131,10 +152,12 @@ public class IndividualRegisterController {
             UserCode userCode = userCodeMapper.toEntity(userCodeDTO);
 
             userCodeService.save(userCode);
-            emailSenderService.sendEmailToServer(dto.getEmail(), "Servicebook: Código de autenticação.", "Código de autenticação:" + "\n\n\n" + code);
+            actualCode = code;
         } else {
-            emailSenderService.sendEmailToServer(dto.getEmail(), "Servicebook: Código de autenticação.", "Código de autenticação:" + "\n\n\n" + oUserCode.get().getCode());
+            actualCode = oUserCode.get().getCode();
         }
+
+        quartzService.sendEmailToConfirmationCode(email, actualCode);
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setEmail(dto.getEmail());
@@ -222,17 +245,9 @@ public class IndividualRegisterController {
             return this.userRegistrationErrorForwarding("4", dto, model, errors);
         }
 
-        Optional<Individual> oUser = individualService.findByPhoneNumber(dto.getPhoneNumber());
+        NumberValidator numberValidator = new NumberValidator(twilioAccountSid, twilioAuthToken, twilioVerifyServiceSid, dto.getPhoneNumber());
 
-        if (oUser.isPresent()) {
-            errors.rejectValue("phoneNumber", "error.dto", "Telefone já cadastrado! Por favor, insira um número de telefone não cadastrado.");
-        }
-
-        if (errors.hasErrors()) {
-            return this.userRegistrationErrorForwarding("4", dto, model, errors);
-        }
-
-        ///// Enviar código de autenticação para telefone.
+        numberValidator.sendVerifySms();
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setPhoneNumber(dto.getPhoneNumber());
@@ -243,36 +258,47 @@ public class IndividualRegisterController {
     @PostMapping("/passo-5")
     public String saveUserPhoneCode(
             HttpSession httpSession,
-            @Validated(UserCodeDTO.RequestUserCodeInfoGroupValidation.class) UserCodeDTO dto,
+            @Validated(UserSmsDTO.RequestUserSmsInfoGroupValidation.class) UserSmsDTO dto,
             BindingResult errors,
             RedirectAttributes redirectAttributes,
             Model model
     ) {
 
         if (errors.hasErrors()) {
-            return this.userCodeErrorForwarding("5", dto, model, errors);
+            return this.userSmsErrorForwarding("5", dto, model, errors);
         }
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
-        Optional<UserCode> oUserCode = userCodeService.findByEmail(sessionDTO.getEmail());
 
-        if (!oUserCode.isPresent()) {
+        NumberValidator numberValidator = new NumberValidator(twilioAccountSid, twilioAuthToken, twilioVerifyServiceSid, sessionDTO.getPhoneNumber());
+
+        try {
+            numberValidator.sendVerifyCode(dto.getCode());
+        } catch (Exception e) {
+            errors.rejectValue("code", "error.dto", "Não foi possível verificar seu telefone no momento. Continue com o seu cadastro e tente novamente mais tarde.");
+        }
+
+        if (errors.hasErrors()) {
+            return this.userSmsErrorForwarding("5", dto, model, errors);
+        }
+
+        if (!numberValidator.isVerified()) {
             errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de autenticação.");
         }
 
         if (errors.hasErrors()) {
-            return this.userCodeErrorForwarding("5", dto, model, errors);
-        }
-
-        if (!dto.getCode().equals(oUserCode.get().getCode())) {
-            errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de autenticação.");
-        }
-
-        if (errors.hasErrors()) {
-            return this.userCodeErrorForwarding("5", dto, model, errors);
+            return this.userSmsErrorForwarding("5", dto, model, errors);
         }
 
         sessionDTO.setPhoneVerified(true);
+
+        Optional<Individual> oUser = individualService.findByPhoneNumber(dto.getPhoneNumber());
+
+        if(oUser.isPresent()) {
+            Individual user = oUser.get();
+            user.setPhoneVerified(false);
+            individualService.save(user);
+        }
 
         redirectAttributes.addFlashAttribute("msg", "Telefone verificado com sucesso!");
 
@@ -378,7 +404,6 @@ public class IndividualRegisterController {
         redirectAttributes.addFlashAttribute("msg", "Usuário cadastrado com sucesso! Realize o login no Servicebook!");
         status.setComplete();
 
-        return "redirect:/entrar";
+        return "redirect:/login";
     }
-
 }

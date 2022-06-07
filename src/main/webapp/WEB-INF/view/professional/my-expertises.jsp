@@ -103,28 +103,12 @@
                         </div>
                     </div>
                     <div class="row no-margin center">
-
-                        <div class="col s12 no-margin no-padding input-field area-profission-select">
-
-                            <div class="row no-margin center">
-                                <div class="col s12 no-margin no-padding input-field area-profission-select">
-                                    <div class="spacing-buttons">
-                                        <a class="waves-effect waves-light btn" href="minha-conta/cliente">
-                                            Acessar como cliente </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="row no-margin center">
-
                         <div class="col s12 no-margin no-padding input-field area-profission-select">
                             <p class="header-verification tertiary-color-text">
                                 ESPECIALIDADES
                             </p>
 
-                            <form method="get" action="minha-conta/profissional" id="form-expertise">
+                            <form method="get" action="minha-conta" id="form-expertise">
                                 <div class="input-field col s12 no-padding white-text">
                                     <select name="id" id="select-expertise">
                                         <option value="0">Todas as Especialidades</option>
@@ -137,7 +121,6 @@
                                 </div>
                                 <button type="submit" hidden></button>
                             </form>
-
                         </div>
                     </div>
 
@@ -160,7 +143,7 @@
                             <div class="row secondary-background-color no-margin">
                                 <div class="col s12 white-text center">
                                     <div class="row tooltipped" data-position="bottom"
-                                         data-tooltip="${professionalExpertiseRating != null ? professionalExpertiseRating : individual.rating} estrela (s).">
+                                         data-tooltip="${professionalExpertiseRating != null ? professionalExpertiseRating : professional.rating} estrela (s).">
 
                                         <c:if test="${professionalExpertiseRating == null}">
                                             <c:forEach var="star" begin="1" end="5">
@@ -221,58 +204,120 @@
                     </a>
                     <div class="row">
                         <div class="col s12">
-                            <h2 class="secondary-color-text">Anúncios de serviços</h2>
+                            <h2 class="secondary-color-text">Minhas especialidades</h2>
                             <blockquote class="light-blue lighten-5 info-headers">
-                                <p>
-                                    Abaixo você encontra os pedidos disponíveis no momento. Clique nos quadros para mais
-                                    detalhes.
-                                </p>
+                                <p> Se você é especialista em algum ou alguns serviços e deseja receber solicitações para realização destes tipos de serviços, por favor, nos informe as suas especialidades profissionais de acordo com as suportadas pelo SERVICEBOOK que logo você começará a receber pedido dos clientes.</p>
                             </blockquote>
                         </div>
-                        <div class="col s12">
-                            <div class="row">
-                                <div class="container center">
-                                    <a href="minha-conta/profissional" class="waves-effect waves-light btn"><i class="material-icons right">sync</i>ATUALIZAR</a>
+                    </div>
+
+                    <div id="modal-delete" class="modal">
+                        <div class="modal-content">
+                            <form action="" method="post">
+
+                                <input type="hidden" name="_method" value="DELETE"/>
+
+                                <div class="modal-content">
+                                    <h4>Você tem certeza que deseja remover <strong id="strong-name"></strong> das suas especialidades?</h4>
                                 </div>
-
-                                <ul class="tabs tabs-fixed-width center">
-                                    <li class="tab">
-                                        <a id="tab-default" data-url="minha-conta/profissional/disponiveis"
-                                           href="#disponiveis">
-                                            DISPONÍVEIS
-                                        </a>
-                                    </li>
-                                    <li class="tab">
-                                        <a data-url="minha-conta/profissional/em-disputa" href="#emDisputa">
-                                            EM DISPUTA
-                                        </a>
-                                    </li>
-                                    <li class="tab">
-                                        <a data-url="minha-conta/profissional/para-fazer" href="#paraFazer">
-                                            PARA FAZER
-                                        </a>
-                                    </li>
-                                    <li class="tab">
-                                        <a data-url="minha-conta/profissional/executados" href="#executados">
-                                            EXECUTADOS
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div id="disponiveis" class="col s12">
-
-                            </div>
-                            <div id="emDisputa" class="col s12">
-
-                            </div>
-                            <div id="paraFazer" class="col s12">
-
-                            </div>
-                            <div id="executados" class="col s12">
-
-                            </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
+                                    <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
+                    <div class="col s12">
+                        <div class="row expertises">
+                            <c:forEach var="professionalExpertises" items="${professionalExpertises}">
+                                <div class="col s12 m5 offset-m1 card-expertise-list row">
+                                    <div class="col s2 delete-exerpertise expertise-icon">
+                                        <i class="material-icons">work</i>
+                                    </div>
+                                    <div class="col s8">
+                                        <p class="center">
+                                            <strong>
+                                                    ${professionalExpertises.name}
+                                            </strong>
+                                        </p>
+                                    </div>
+                                    <div class="col s2 delete-exerpertise expertise-icon">
+                                        <a href="#modal-delete" id="delete-exerpertise-professional" class="myclass waves-effect waves-teal btn-flat delete-exerpertise-professional modal-trigger"
+                                           data-url="${pageContext.request.contextPath}/minha-conta/profissional/especialidades/${professionalExpertises.id.expertiseId}"
+                                           data-name="${professionalExpertises.name}"><i class="myclass material-icons">delete</i></a>
+                                    </div>
+                                    <div class="col s12 right">
+                                        <p class="center">
+                                            Descrição da especialidade
+                                        </p>
+                                    </div>
+                                </div>
+                            </c:forEach>
+
+                        </div>
+                    </div>
+                    <div class="center spacing-buttons">
+                        <button  class="waves-effect waves-light btn">
+                            <a href="#modal-expertises" class="modal-trigger">
+                                Adicionar nova especialidade
+                            </a>
+                        </button>
+                    </div>
+
+                    <div id="modal-expertises" class="modal">
+                        <div class="modal-content ui-front">
+                            <div class="row">
+                                <div class="col s9">
+                                    <h4>Escolha uma ou mais especialidades!</h4>
+                                </div>
+                                <div class="col s3">
+                                    <button class="modal-close modal-expertise-close right">
+                                        <i class="material-icons">close</i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col s12">
+                                    <div class="row">
+                                        <div class="input-field col s12">
+                                            <i class="material-icons prefix">work</i>
+                                            <input type="text" id="txtBusca" class="autocomplete">
+                                            <label for="txtBusca">Selecione sua especialidade</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <form class="s12" id="form-expertises" action="minha-conta/profissional/especialidades" method="post">
+                                    <ul id="search-expertises">
+                                        <c:forEach var="expertise" items="${expertises}">
+                                            <li>
+                                                <label class='card-expertise col s12 m10 offset-m1'>
+                                                    <input id='ids' name='ids' type='checkbox' class='reset-checkbox' value="${expertise.id}">
+                                                    <span class='center name-expertise'>
+                                                    <i class='material-icons'>work</i>
+                                                    ${expertise.name}
+                                                </span>
+                                                </label>
+                                            </li>
+                                        </c:forEach>
+                                    </ul>
+
+
+                                    <div class="input-field col s8 offset-s1">
+                                        <button id="submit-expertise" type="submit" class="btn waves-effect waves-light left">Salvar</button>
+                                    </div>
+                                    <div class="input-field col s3">
+                                        <a class="btn waves-effect waves-light modal-close">Fechar</a>
+                                    </div>
+                                </form>
+                            </div>
+
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </main>
@@ -281,31 +326,20 @@
 </t:professional>
 
 <script>
-    $(document).ready(function () {
-        $('#disponiveis').load($('.tab .active').attr("data-url"), function (result) {
-            window.location.hash = "#disponiveis";
-            $('#tab-default').click();
+
+    $(function(){
+        $("#txtBusca").keyup(function(){
+            var texto = $(this).val();
+
+            $("#search-expertises li").css("display", "block");
+            $("#search-expertises li").each(function(){
+                if($(this).text().toUpperCase().indexOf(texto.toUpperCase()) < 0)
+                    $(this).css("display", "none");
+            });
         });
     });
 
-    $('#select-expertise').formSelect();
-
-    $('#select-expertise').change(function () {
-        $('#form-expertise').submit();
-    });
-
-    $('.tab a').click(function (e) {
-        e.preventDefault();
-
-        let url = $(this).attr("data-url");
-        let href = this.hash;
-        window.location.hash = href;
-
-        let urlParams = new URLSearchParams(window.location.search);
-        let id = (urlParams.has('id')) ? urlParams.get('id') : 0;
-        url += '?id=' + id;
-
-        $(href).load(url, function (result) {
-        });
-    });
+    $(".myclass").hover(function(e) {
+        $(this).css("color",e.type === "mouseenter"?"red":"grey")
+    })
 </script>
