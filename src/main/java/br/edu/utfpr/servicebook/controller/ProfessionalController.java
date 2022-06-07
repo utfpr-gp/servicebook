@@ -103,6 +103,7 @@ public class ProfessionalController {
         PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(professionals, "/profissionais/busca?termo-da-busca="+ searchTerm);
         mv.addObject("professionals", professionalSearchItemDTOS);
         mv.addObject("pagination", paginationDTO);
+        mv.addObject("isParam", true);
         mv.addObject("searchTerm", searchTerm);
 
         return mv;

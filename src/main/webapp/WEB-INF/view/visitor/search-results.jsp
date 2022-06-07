@@ -70,7 +70,7 @@
                     </c:if>
                     <c:if test="${logged == true}">
                         <div class="container col s12 center-align">
-                            <t:pagination-tab-ajax pagination="${pagination}"></t:pagination-tab-ajax>
+                            <t:pagination pagination="${pagination}"></t:pagination>
                         </div>
                     </c:if>
                 </div>
