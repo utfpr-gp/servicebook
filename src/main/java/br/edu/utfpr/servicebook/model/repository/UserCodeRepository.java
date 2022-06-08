@@ -13,4 +13,6 @@ public interface UserCodeRepository extends JpaRepository<UserCode, Long> {
 
     Optional<UserCode> findByEmailAndCode(String email, String code);
 
+    void deleteAll();
+
 }

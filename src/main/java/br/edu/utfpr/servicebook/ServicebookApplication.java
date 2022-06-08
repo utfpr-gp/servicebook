@@ -2,6 +2,7 @@ package br.edu.utfpr.servicebook;
 
 import br.edu.utfpr.servicebook.controller.IndexController;
 import br.edu.utfpr.servicebook.service.IndexService;
+import br.edu.utfpr.servicebook.service.UserCodeService;
 import br.edu.utfpr.servicebook.util.quartz.AutoWiringSpringBeanJobFactory;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -22,6 +23,9 @@ public class ServicebookApplication {
 
     @Autowired
     IndexService indexService;
+
+    @Autowired
+    public UserCodeService userCodeService;
 
     public static void main(String[] args) {
         SpringApplication.run(ServicebookApplication.class, args);
@@ -66,5 +70,10 @@ public class ServicebookApplication {
         quartzScheduler.setJobFactory(jobFactory);
 
         return quartzScheduler;
+    }
+
+    @Bean
+    public void cleanEmailCodes() {
+        userCodeService.deleteAll();
     }
 }

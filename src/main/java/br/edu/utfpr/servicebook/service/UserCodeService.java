@@ -32,4 +32,8 @@ public class UserCodeService {
     public Optional<UserCode> findByEmailAndCode(String email, String code) {
         return this.userCodeRepository.findByEmailAndCode(email, code);
     }
+
+    public void deleteAll() {
+        userCodeRepository.deleteAll();
+    }
 }

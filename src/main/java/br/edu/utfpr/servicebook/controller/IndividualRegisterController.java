@@ -75,6 +75,8 @@ public class IndividualRegisterController {
     @Autowired
     private AuthenticationCodeGeneratorService authenticationCodeGeneratorService;
 
+
+
     private String userRegistrationErrorForwarding(String step, IndividualDTO dto, Model model, BindingResult errors) {
         model.addAttribute("dto", dto);
         model.addAttribute("errors", errors.getAllErrors());
@@ -160,6 +162,7 @@ public class IndividualRegisterController {
         quartzService.sendEmailToConfirmationCode(email, actualCode);
         quartzService.verifyExpiredTokenEmailJob(actualCode);
 
+
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setEmail(dto.getEmail());
 
@@ -213,7 +216,6 @@ public class IndividualRegisterController {
             RedirectAttributes redirectAttributes,
             Model model
     ) {
-
         if (errors.hasErrors()) {
             return this.userRegistrationErrorForwarding("3", dto, model, errors);
         }

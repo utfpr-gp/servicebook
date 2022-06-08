@@ -27,10 +27,17 @@ public class QuartzService {
     private static final String TOKEN = "token";
     private static final String GROUP = "group1";
     private static final String USER_CODE = "userCode";
+
     @PostConstruct
     public void init() {
         scheduler = null;
         factory = new StdSchedulerFactory();
+        try {
+            scheduler = factory.getScheduler();
+            scheduler.setJobFactory(jobFactoryCDI);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void sendEmailToConfirmationCode(String email, String emailCode) {
@@ -41,8 +48,6 @@ public class QuartzService {
             job.getJobDataMap().put(TOKEN, emailCode);
             Trigger trigger = getTrigger(EmailSenderJob.class.getSimpleName(), GROUP);
 
-            scheduler = factory.getScheduler();
-            scheduler.setJobFactory(jobFactoryCDI);
             scheduler.scheduleJob(job, trigger);
 
             if (!scheduler.isStarted()) {
@@ -60,8 +65,6 @@ public class QuartzService {
                     .withIdentity(VerifyExpiredTokenEmailJob.class.getSimpleName(), GROUP).build();
             job.getJobDataMap().put(USER_CODE, code);
             Trigger trigger = getTriggerPerDay(VerifyExpiredTokenEmailJob.class.getSimpleName(), GROUP);
-            scheduler = factory.getScheduler();
-            scheduler.setJobFactory(jobFactoryCDI);
             scheduler.scheduleJob(job, trigger);
 
         }catch (SchedulerException e){
