@@ -119,6 +119,10 @@ public class ProfessionalController {
             throw new EntityNotFoundException("Profissional não encontrado.");
         }
 
+
+        Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        mv.addObject("logged", individual.isPresent());
+
         List<ExpertiseDTO> expertisesDTO = individualService.getExpertises(oProfessional.get());
 
         IndividualDTO professionalDTO = individualMapper.toDto(oProfessional.get());
