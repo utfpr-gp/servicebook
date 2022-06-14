@@ -7,6 +7,7 @@ import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.DateUtil;
+import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import org.slf4j.Logger;
@@ -25,8 +26,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -67,8 +70,11 @@ public class ClientController {
     @Autowired
     private JobContractedMapper jobContractedMapper;
 
+    @Autowired
+    private WizardSessionUtil<JobRequestDTO> wizardSessionUtil;
+
     @GetMapping
-    public ModelAndView show() throws Exception {
+    public ModelAndView show(HttpSession httpSession) throws Exception {
         ModelAndView mv = new ModelAndView("client/my-requests");
 
         Optional<Individual> individual = individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
@@ -79,6 +85,18 @@ public class ClientController {
 
         IndividualDTO clientDTO = individualMapper.toDto(individual.get());
         mv.addObject("client", clientDTO);
+
+        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
+        Optional<Individual> optionalIndividual = individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
+
+        if(sessionDTO.getExpertiseId() != null && sessionDTO.getDescription() != null) {
+            sessionDTO.setClientId(optionalIndividual.get().getId());
+//            sessionDTO.setStatus("Requested");
+            JobRequest jobRequest = jobRequestMapper.toEntity(sessionDTO);
+            jobRequest.setStatus(JobRequest.Status.valueOf(sessionDTO.getStatus()));
+            jobRequest.setIndividual(optionalIndividual.get());
+            jobRequestService.save(jobRequest);
+        }
 
         List<JobRequest> jobRequests = jobRequestService.findByClientOrderByDateCreatedDesc(individual.get());
 
@@ -270,7 +288,7 @@ public class ClientController {
         Page<JobCandidate> jobCandidatePage = null;
         List<JobCandidateMinDTO> jobCandidateDTOs = null;
 
-         jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.TO_DO, client.get(),pageRequest);
+        jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.TO_DO, client.get(),pageRequest);
 
         jobCandidateDTOs = jobCandidatePage.stream()
                 .map(jobCandidate -> {
