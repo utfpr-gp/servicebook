@@ -72,17 +72,18 @@
                         INTERESSE NO SERVIÇO, DISPONÍVEL PARA A DATA ESPECIFICADA E COM EXPERIÊNCIA NO TIPO DE
                         SERVIÇO QUE VOCÊ PRECISA!
                     </p>
-
-                    <a class="waves-effect waves-light btn" href="entrar">Entrar</a>
+                    <c:if test="${logged == false}">
+                        <a class="waves-effect waves-light btn" href="entrar">Entrar</a>
+                    </c:if>
                 </div>
+                <c:if test="${logged == false}">
+                    <div class="divider"></div>
 
-                <div class="divider"></div>
-
-                <div class="row center-align">
-                    <p>VOCÊ AINDA NÃO TEM UMA CONTA?</p>
-                    <a class="waves-effect waves-light btn" href="cadastrar-se">Cadastrar-se</a>
-                </div>
-
+                    <div class="row center-align">
+                        <p>VOCÊ AINDA NÃO TEM UMA CONTA?</p>
+                        <a class="waves-effect waves-light btn" href="cadastrar-se">Cadastrar-se</a>
+                    </div>
+                </c:if>
             </div>
         </div>
 
