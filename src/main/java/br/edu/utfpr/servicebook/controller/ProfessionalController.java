@@ -11,7 +11,11 @@ import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobContractedService;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 
+import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
+import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -39,6 +43,12 @@ public class ProfessionalController {
 
     @Autowired
     private IndividualMapper individualMapper;
+
+    @Value("${pagination.size}")
+    private Integer paginationSize;
+
+    @Value("${pagination.size.visitor}")
+    private Integer paginationSizeVisitor;
 
     @GetMapping
     protected ModelAndView showAll() throws Exception {
@@ -68,23 +78,47 @@ public class ProfessionalController {
         return mv;
     }
 
+    /**
+     * Retorna a lista de profissionais de acordo com o termo de busca.
+     * Se estiver logado, o usuário poderá ter acesso a todos os profissionais de acordo com a sua busca.
+     * Caso seja um visitante, terá acesso a apenas 4 profissionais.
+     * @param searchTerm
+     * @param page
+     * @return
+     * @throws Exception
+     */
     @GetMapping(value = "/busca")
-    protected ModelAndView showSearchResults(@RequestParam(value = "termo-da-busca") String searchTerm
-                                             ) throws Exception {
+    protected ModelAndView showSearchResults(
+            @RequestParam(value = "termo-da-busca") String searchTerm,
+            @RequestParam(value = "pag", defaultValue = "1") int page
+    ) throws Exception {
         ModelAndView mv = new ModelAndView("visitor/search-results");
 
+        //quando o usuário está logado, o tamanho da página é maior de quando é visitante
+        Integer size = this.paginationSize;
         List<City> cities = cityService.findAll();
         mv.addObject("cities", cities);
 
-        List<Individual> professionals = individualService.findDistinctByTermIgnoreCase(searchTerm);
+        Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        mv.addObject("logged", individual.isPresent());
 
+        //quando o usuário é visitante, apresenta apenas 4 resultados, por isso que sempre será a primeira página
+        if (!individual.isPresent()) {
+            page = 1;
+            size = this.paginationSizeVisitor;
+        }
+
+        Page<Individual> professionals = individualService.findDistinctByTermIgnoreCaseWithPagination(searchTerm, page, size);
         List<ProfessionalSearchItemDTO> professionalSearchItemDTOS = professionals.stream()
                 .map(s -> individualMapper.toSearchItemDto(s, individualService.getExpertises(s)))
                 .collect(Collectors.toList());
 
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(professionals, "/profissionais/busca?termo-da-busca="+ searchTerm);
         mv.addObject("professionals", professionalSearchItemDTOS);
+        mv.addObject("pagination", paginationDTO);
+        mv.addObject("isParam", true);
         mv.addObject("searchTerm", searchTerm);
-        
+
         return mv;
     }
 
@@ -97,6 +131,10 @@ public class ProfessionalController {
         if(!oProfessional.isPresent()) {
             throw new EntityNotFoundException("Profissional não encontrado.");
         }
+
+
+        Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        mv.addObject("logged", individual.isPresent());
 
         List<ExpertiseDTO> expertisesDTO = individualService.getExpertises(oProfessional.get());
 
