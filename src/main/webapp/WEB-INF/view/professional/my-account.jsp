@@ -7,8 +7,7 @@
 
         <main>
             <div class="row">
-                <t:side-panel></t:side-panel>
-
+                <t:side-panel individual="${user}" dataIndividual="${dataIndividual}"></t:side-panel>
                 <div class="col m10 offset-m1 l9">
                     <a id="show-area-perfil"
                        class="hide-on-large-only show-area-perfil waves-effect waves-light btn btn-floating grey darken-3 z-depth-A">
@@ -17,6 +16,7 @@
                     <div class="row">
                         <div class="col s12">
                             <h2 class="secondary-color-text">Anúncios de serviços</h2>
+                            ${professionalExpertiseRating}
                             <blockquote class="light-blue lighten-5 info-headers">
                                 <p>
                                     Abaixo você encontra os pedidos disponíveis no momento. Clique nos quadros para mais

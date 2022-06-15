@@ -1,5 +1,7 @@
 <%@tag description="Template para painel lateral" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@attribute name="individual" type="br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO" %>
+<%@attribute name="dataIndividual" type="br.edu.utfpr.servicebook.util.sidePanel.SidePanelItensDTO" %>
 
     <div class="col s12 l3 hide-on-med-and-down no-padding" id="area-perfil">
         <div class="row primary-background-color area-perfil no-margin">
@@ -96,7 +98,6 @@
 
             </div>
         </div>
-<%--        <c:if test="${requestScope['javax.servlet.forward.request_uri'] == '/servicebook/minha-conta/cliente'}">--%>
         <c:if test="${isClient != false}">
             <div class="row no-margin center">
                 <div class="col s12 no-margin no-padding input-field area-profission-select">
@@ -107,7 +108,6 @@
                 </div>
             </div>
         </c:if>
-
 
         <c:if test="${isClient == false}">
             <div class="row no-margin center">
@@ -199,7 +199,7 @@
                     <p class="header-verification tertiary-color-text center">SERVIÇOS REALIZADOS</p>
                     <div class="row secondary-background-color no-margin">
                         <h5 class="info-headers no-margin center white-text center">
-                            <strong>${jobs}</strong>
+                            <strong>${dataIndividual.jobs}</strong>
                         </h5>
                     </div>
                 </div>
@@ -207,7 +207,7 @@
                     <p class="header-verification tertiary-color-text center">AVALIAÇÕES</p>
                     <div class="row secondary-background-color no-margin">
                         <h5 class="info-headers no-margin center white-text center">
-                            <strong>${ratings}</strong>
+                            <strong>${dataIndividual.ratings}</strong>
                         </h5>
                     </div>
                 </div>
@@ -215,12 +215,11 @@
                     <p class="header-verification tertiary-color-text center">COMENTÁRIOS</p>
                     <div class="row secondary-background-color no-margin">
                         <h5 class="info-headers no-margin center white-text center">
-                            <strong>${comments}</strong>
+                            <strong>${dataIndividual.comments}</strong>
                         </h5>
                     </div>
                 </div>
             </div>
         </c:if>
-
     </div>
 

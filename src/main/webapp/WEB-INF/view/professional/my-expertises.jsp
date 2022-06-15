@@ -8,7 +8,7 @@
         <main>
             <div class="row">
 
-                <t:side-panel></t:side-panel>
+                <t:side-panel individual="${user}" dataIndividual="${dataIndividual}"></t:side-panel>
 
                 <div class="col m10 offset-m1 l9">
                     <a id="show-area-perfil"

@@ -6,9 +6,10 @@ import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
-import br.edu.utfpr.servicebook.util.DateUtil;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -72,13 +71,14 @@ public class ClientController {
         ModelAndView mv = new ModelAndView("client/my-requests");
 
         Optional<Individual> individual = individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
-
         if (!individual.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
         IndividualDTO clientDTO = individualMapper.toDto(individual.get());
-        mv.addObject("individual", clientDTO);
+
+        SidePanelIndividualDTO sidePanelIndividualDTO = SidePanelUtil.getSidePanelDTO(clientDTO);
+        mv.addObject("user", sidePanelIndividualDTO);
 
         List<JobRequest> jobRequests = jobRequestService.findByClientOrderByDateCreatedDesc(individual.get());
 
@@ -136,7 +136,10 @@ public class ClientController {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
         IndividualDTO individualDTO = individualMapper.toDto(client.get());
-        mv.addObject("client", individualDTO);
+//        mv.addObject("client", individualDTO);
+
+        SidePanelIndividualDTO sidePanelIndividualDTO = SidePanelUtil.getSidePanelDTO(individualDTO);
+        mv.addObject("user", sidePanelIndividualDTO);
 
         Optional<JobRequest> job = jobRequestService.findById(id.get());
 
@@ -165,6 +168,8 @@ public class ClientController {
                 .collect(Collectors.toList());
 
         mv.addObject("candidates", jobCandidatesDTOs);
+        boolean isClient = true;
+        mv.addObject("isClient", isClient);
 
         return mv;
     }
