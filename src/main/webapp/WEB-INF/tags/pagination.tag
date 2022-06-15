@@ -16,7 +16,7 @@ usando & ou ? na concatenação -->
 
     <c:if test="${pagination.totalPages > 1}">
         <ul class="pagination">
-            <li class="waves-effect ${(pagination.currentPage < 1) ? 'disabled': ''}">
+            <li class="waves-effect" style="${(pagination.currentPage < 1) ? 'display:none': ''}">
                 <a href="${pageContext.request.contextPath}${relativePath}${symbol}pag=${pagination.currentPage}"><i class="material-icons">chevron_left</i></a>
             </li>
 
@@ -25,7 +25,7 @@ usando & ou ? na concatenação -->
                     <a href="${pageContext.request.contextPath}${relativePath}${symbol}pag=${i}">${i}</a>
                 </li>
             </c:forEach>
-            <li class="waves-effect ${(pagination.currentPage + 1 >= pagination.totalPages) ? 'disabled': ''}"><a href="${pageContext.request.contextPath}${relativePath}${symbol}pag=${pagination.currentPage + 2}"><i class="material-icons">chevron_right</i></a></li>
+            <li class="waves-effect" style="${(pagination.currentPage + 1 >= pagination.totalPages) ? 'display:none': ''}"><a href="${pageContext.request.contextPath}${relativePath}${symbol}pag=${pagination.currentPage + 2}"><i class="material-icons">chevron_right</i></a></li>
         </ul>
     </c:if>
 </div>

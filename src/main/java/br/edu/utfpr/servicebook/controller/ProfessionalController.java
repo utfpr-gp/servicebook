@@ -78,18 +78,31 @@ public class ProfessionalController {
         return mv;
     }
 
+    /**
+     * Retorna a lista de profissionais de acordo com o termo de busca.
+     * Se estiver logado, o usuário poderá ter acesso a todos os profissionais de acordo com a sua busca.
+     * Caso seja um visitante, terá acesso a apenas 4 profissionais.
+     * @param searchTerm
+     * @param page
+     * @return
+     * @throws Exception
+     */
     @GetMapping(value = "/busca")
     protected ModelAndView showSearchResults(
             @RequestParam(value = "termo-da-busca") String searchTerm,
             @RequestParam(value = "pag", defaultValue = "1") int page
     ) throws Exception {
         ModelAndView mv = new ModelAndView("visitor/search-results");
+
+        //quando o usuário está logado, o tamanho da página é maior de quando é visitante
         Integer size = this.paginationSize;
         List<City> cities = cityService.findAll();
         mv.addObject("cities", cities);
 
         Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
         mv.addObject("logged", individual.isPresent());
+
+        //quando o usuário é visitante, apresenta apenas 4 resultados, por isso que sempre será a primeira página
         if (!individual.isPresent()) {
             page = 1;
             size = this.paginationSizeVisitor;
