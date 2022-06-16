@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook;
 
 import br.edu.utfpr.servicebook.controller.IndexController;
+import br.edu.utfpr.servicebook.filter.JobRequestFilter;
 import br.edu.utfpr.servicebook.service.IndexService;
 import br.edu.utfpr.servicebook.util.quartz.AutoWiringSpringBeanJobFactory;
 import com.cloudinary.Cloudinary;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -66,5 +68,17 @@ public class ServicebookApplication {
         quartzScheduler.setJobFactory(jobFactory);
 
         return quartzScheduler;
+    }
+
+    @Bean
+    public FilterRegistrationBean<JobRequestFilter> jobRequestFilter(){
+        FilterRegistrationBean<JobRequestFilter> registrationBean
+                = new FilterRegistrationBean<>();
+
+        registrationBean.setFilter(new JobRequestFilter());
+        registrationBean.addUrlPatterns("/minha-conta/*");
+        registrationBean.setOrder(1);
+
+        return registrationBean;
     }
 }
