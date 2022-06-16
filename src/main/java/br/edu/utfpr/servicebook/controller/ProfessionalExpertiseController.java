@@ -16,6 +16,9 @@ import br.edu.utfpr.servicebook.service.JobContractedService;
 import br.edu.utfpr.servicebook.service.ProfessionalExpertiseService;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelItensDTO;
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelProfessionalExpertiseRatingDTO;
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,19 +71,22 @@ public class ProfessionalExpertiseController {
     public ModelAndView showExpertises(@RequestParam(required = false, defaultValue = "0") Optional<Long> id)  throws Exception {
         Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
         ModelAndView mv = new ModelAndView("professional/my-expertises");
+        boolean isClient = false;
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
-        IndividualMinDTO professionalMinDTO = individualMapper.toMinDto(oProfessional.get());
+        IndividualDTO professionalMinDTO = individualMapper.toDto(oProfessional.get());
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
         Optional<List<Expertise>> oExpertises = Optional.ofNullable(expertiseService.findAll());
 
-        Optional<Long> jobs, ratings, comments;
+        SidePanelItensDTO sidePanelItensDTO = null;
         if (!id.isPresent() || id.get() == 0L) {
-            jobs = jobContractedService.countByProfessional(oProfessional.get());
-            comments = jobContractedService.countCommentsByProfessional(oProfessional.get());
-            ratings = jobContractedService.countRatingByProfessional(oProfessional.get());
+            sidePanelItensDTO = SidePanelUtil.sidePanelItensDTO(
+                    jobContractedService.countByProfessional(oProfessional.get()),
+                    jobContractedService.countCommentsByProfessional(oProfessional.get()),
+                    jobContractedService.countRatingByProfessional(oProfessional.get())
+            );
 
             mv.addObject("id", 0L);
         } else {
@@ -99,20 +105,19 @@ public class ProfessionalExpertiseController {
             if (!oProfessionalExpertise.isPresent()) {
                 throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
             }
-
-            Optional<Integer> professionalExpertiseRating = professionalExpertiseService.selectRatingByProfessionalAndExpertise(oProfessional.get().getId(), oExpertise.get().getId());
-
-            jobs = jobContractedService.countByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get());
-            comments = jobContractedService.countCommentsByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get());
-            ratings = jobContractedService.countRatingByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get());
-
+//            Optional<Integer> professionalExpertiseRating = professionalExpertiseService.selectRatingByProfessionalAndExpertise(oProfessional.get().getId(), oExpertise.get().getId());
+            SidePanelProfessionalExpertiseRatingDTO sidePanelProfessionalExpertiseRatingDTO = SidePanelUtil.sidePanelProfessionalExpertiseRatingDTO( professionalExpertiseService.selectRatingByProfessionalAndExpertise(oProfessional.get().getId(), oExpertise.get().getId()));
+            sidePanelItensDTO = SidePanelUtil.sidePanelItensDTO(
+                    jobContractedService.countByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get()),
+                    jobContractedService.countCommentsByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get()),
+                    jobContractedService.countRatingByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get())
+            );
             mv.addObject("id", id.get());
-            mv.addObject("professionalExpertiseRating", professionalExpertiseRating.get());
+            mv.addObject("professionalExpertiseRating", sidePanelProfessionalExpertiseRatingDTO);
         }
 
-        mv.addObject("jobs", jobs.get());
-        mv.addObject("ratings", ratings.get());
-        mv.addObject("comments", comments.get());
+        mv.addObject("dataIndividual", sidePanelItensDTO);
+        mv.addObject("isClient", isClient);
 
         if (!oExpertises.isPresent()) {
             throw new Exception("Nenhuma expecialidade encontrada");
@@ -121,21 +126,14 @@ public class ProfessionalExpertiseController {
         List<ProfessionalExpertiseDTO2> professionalExpertiseDTOs = professionalExpertises.stream()
                                                                     .map(s -> professionalExpertiseMapper.toResponseDTO(s))
                                                                     .collect(Collectors.toList());
-
         List<Expertise> professionPage = expertiseService.findAll();
 
-        List<ExpertiseDTO> professionDTOs = professionPage.stream()
+        List<ExpertiseDTO> expertiseDTOs = professionPage.stream()
                 .map(s -> expertiseMapper.toDto(s))
                 .collect(Collectors.toList());
 
-        List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
-                .map(professionalExpertise -> professionalExpertise.getExpertise())
-                .map(expertise -> expertiseMapper.toDto(expertise))
-                .collect(Collectors.toList());
-
         mv.addObject("individual", professionalMinDTO);
-        mv.addObject("expertises", professionDTOs);
-//        mv.addObject("expertises", expertiseDTOs);
+        mv.addObject("expertises", expertiseDTOs);
         mv.addObject("professionalExpertises", professionalExpertiseDTOs);
         return mv;
     }
