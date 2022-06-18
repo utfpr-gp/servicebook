@@ -61,10 +61,18 @@
                                     </div>
                                 </div>
                             </c:if>
-
-
                         </div>
                     </div>
+                    <c:if test="${logged == false}">
+                        <div class="container">
+                            <p class="center-align">Entre ou cadastre-se para ter acesso ao demais profissionais</p>
+                        </div>
+                    </c:if>
+                    <c:if test="${logged == true}">
+                        <div class="container col s12 center-align">
+                            <t:pagination pagination="${pagination}" isParam="${isParam}"></t:pagination>
+                        </div>
+                    </c:if>
                 </div>
             </div>
         </div>

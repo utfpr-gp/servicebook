@@ -8,21 +8,22 @@ import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelItensDTO;
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelProfessionalExpertiseRatingDTO;
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -78,16 +79,16 @@ public class ProfessionalHomeController {
     @GetMapping
     public ModelAndView showMyAccountProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> id) throws Exception {
         log.debug("ServiceBook: Minha conta.");
-
+        boolean isClient = false;
         Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        IndividualMinDTO professionalMinDTO = individualMapper.toMinDto(oProfessional.get());
-
+        IndividualDTO professionalMinDTO = individualMapper.toDto(oProfessional.get());
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
+
         List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
                 .map(professionalExpertise -> professionalExpertise.getExpertise())
                 .map(expertise -> expertiseMapper.toDto(expertise))
@@ -95,15 +96,20 @@ public class ProfessionalHomeController {
 
         ModelAndView mv = new ModelAndView("professional/my-account");
 
-        mv.addObject("individual", professionalMinDTO);
         mv.addObject("expertises", expertiseDTOs);
+        mv.addObject("isClient", isClient);
 
-        Optional<Long> jobs, ratings, comments;
+        SidePanelIndividualDTO sidePanelIndividualDTO = SidePanelUtil.getSidePanelDTO(professionalMinDTO);
+        mv.addObject("user", sidePanelIndividualDTO);
+
+        SidePanelItensDTO sidePanelItensDTO = null;
 
         if (!id.isPresent() || id.get() == 0L) {
-            jobs = jobContractedService.countByProfessional(oProfessional.get());
-            comments = jobContractedService.countCommentsByProfessional(oProfessional.get());
-            ratings = jobContractedService.countRatingByProfessional(oProfessional.get());
+            sidePanelItensDTO = SidePanelUtil.sidePanelItensDTO(
+                    jobContractedService.countByProfessional(oProfessional.get()),
+                    jobContractedService.countCommentsByProfessional(oProfessional.get()),
+                    jobContractedService.countRatingByProfessional(oProfessional.get())
+            );
 
             mv.addObject("id", 0L);
         } else {
@@ -123,19 +129,18 @@ public class ProfessionalHomeController {
                 throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
             }
 
-            Optional<Integer> professionalExpertiseRating = professionalExpertiseService.selectRatingByProfessionalAndExpertise(oProfessional.get().getId(), oExpertise.get().getId());
-
-            jobs = jobContractedService.countByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get());
-            comments = jobContractedService.countCommentsByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get());
-            ratings = jobContractedService.countRatingByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get());
+//            Optional<Integer> professionalExpertiseRating = professionalExpertiseService.selectRatingByProfessionalAndExpertise(oProfessional.get().getId(), oExpertise.get().getId());
+            SidePanelProfessionalExpertiseRatingDTO sidePanelProfessionalExpertiseRatingDTO = SidePanelUtil.sidePanelProfessionalExpertiseRatingDTO( professionalExpertiseService.selectRatingByProfessionalAndExpertise(oProfessional.get().getId(), oExpertise.get().getId()));
+            sidePanelItensDTO = SidePanelUtil.sidePanelItensDTO(
+                    jobContractedService.countByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get()),
+                    jobContractedService.countCommentsByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get()),
+                    jobContractedService.countRatingByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get())
+            );
 
             mv.addObject("id", id.get());
-            mv.addObject("professionalExpertiseRating", professionalExpertiseRating.get());
+            mv.addObject("professionalExpertiseRating", sidePanelProfessionalExpertiseRatingDTO);
         }
-
-        mv.addObject("jobs", jobs.get());
-        mv.addObject("ratings", ratings.get());
-        mv.addObject("comments", comments.get());
+        mv.addObject("dataIndividual", sidePanelItensDTO);
 
         return mv;
     }
@@ -400,13 +405,14 @@ public class ProfessionalHomeController {
         }
 
         IndividualDTO professionalDTO = individualMapper.toDto(oProfessional.get());
+        IndividualDTO professionalMinDTO = individualMapper.toDto(oProfessional.get());
 
         List<JobContracted> jobContracted = jobContractedService.findByIdProfessional(professionalDTO.getId());
         List<JobContractedDTO> jobContractedDTOs = jobContracted.stream()
                 .map(contracted -> jobContractedMapper.toResponseDto(contracted))
                 .collect(Collectors.toList());
 
-        mv.addObject("professional", professionalDTO);
+        mv.addObject("individual", professionalMinDTO);
         mv.addObject("jobContracted", jobContractedDTOs);
 
         return mv;
