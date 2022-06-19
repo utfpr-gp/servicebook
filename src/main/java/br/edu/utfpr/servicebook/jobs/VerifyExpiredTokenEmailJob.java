@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -22,14 +24,15 @@ public class VerifyExpiredTokenEmailJob implements Job {
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
-        String code = (String) jobDataMap.get("userCode");
-
         try {
             //deletar codigo expirado
-            Optional<UserCode> userCode = userCodeService.findByCode(code);
-            userCodeService.deleteById(userCode.get().getId());
-
+            List<UserCode> userCode = userCodeService.findAll();
+            Date now = new Date(new Date().getTime());
+            for (UserCode s : userCode) {
+                Date expiredDate = new Date(s.getExpiredDate().getTime());
+                if (now.compareTo(expiredDate) > 0)
+                    userCodeService.deleteById(s.getId());
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

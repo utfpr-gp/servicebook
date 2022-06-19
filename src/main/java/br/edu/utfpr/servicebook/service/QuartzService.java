@@ -26,7 +26,6 @@ public class QuartzService {
     private static final String RECIPIENT = "recipient";
     private static final String TOKEN = "token";
     private static final String GROUP = "group1";
-    private static final String USER_CODE = "userCode";
 
     @PostConstruct
     public void init() {
@@ -59,12 +58,12 @@ public class QuartzService {
         }
     }
 
-    public void verifyExpiredTokenEmailJob(String code) {
+    public void verifyExpiredTokenEmailJob() {
         try{
             JobDetail job = JobBuilder.newJob(VerifyExpiredTokenEmailJob.class)
                     .withIdentity(VerifyExpiredTokenEmailJob.class.getSimpleName(), GROUP).build();
-            job.getJobDataMap().put(USER_CODE, code);
-            Trigger trigger = getTriggerPerDay(VerifyExpiredTokenEmailJob.class.getSimpleName(), GROUP);
+
+            Trigger trigger = getTriggerOnFriday(VerifyExpiredTokenEmailJob.class.getSimpleName(), GROUP);
             scheduler.scheduleJob(job, trigger);
 
         }catch (SchedulerException e){
@@ -83,14 +82,13 @@ public class QuartzService {
         return trigger;
     }
 
-    private Trigger getTriggerPerDay(String name, String group) {
-        Date today = new Date();
-        Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
+    private Trigger getTriggerOnFriday(String name, String group) {
         Trigger trigger = TriggerBuilder.newTrigger().withIdentity(name, group)
-                .startAt(tomorrow)
+                .startNow()
                 //.withSchedule(CronScheduleBuilder.cronSchedule(cron))
                 //.withSchedule(simpleSchedule().withIntervalInSeconds(1).repeatForever())
-                //.withSchedule(simpleSchedule().withIntervalInSeconds(24))
+                //Executa toda Sexta as 10:15am
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 15 10 ? * 6"))
                 .build();
         return trigger;
     }
