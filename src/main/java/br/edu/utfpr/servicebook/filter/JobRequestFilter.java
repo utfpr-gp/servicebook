@@ -1,23 +1,25 @@
 package br.edu.utfpr.servicebook.filter;
 
 import java.io.IOException;
+import java.util.Optional;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import br.edu.utfpr.servicebook.model.entity.Expertise;
+import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
+import br.edu.utfpr.servicebook.model.repository.IndividualRepository;
+import br.edu.utfpr.servicebook.service.ExpertiseService;
 import br.edu.utfpr.servicebook.service.JobRequestService;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import br.edu.utfpr.servicebook.model.dto.JobRequestDTO;
 import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.SmartValidator;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -39,6 +41,12 @@ public class JobRequestFilter implements Filter {
 
     @Autowired
     private JobRequestMapper jobRequestMapper;
+
+    @Autowired
+    private IndividualRepository individualService;
+
+    @Autowired
+    private ExpertiseService expertiseService;
 
     /**
      * Usado para validar manualmente o DTO que contém anotações de validações
@@ -74,12 +82,26 @@ public class JobRequestFilter implements Filter {
             Se estiver válido, salva no BD e deixar a requisição seguir seu fluxo..
             Caso contrário, deixar a requisição seguir seu fluxo.
          */
-        if(!errors.hasErrors()){
+        if(!errors.hasErrors() && jobRequestDTO.getDescription() != null){
+
+            jobRequestDTO.setStatus(String.valueOf(JobRequest.Status.AVAILABLE));
+
+            Optional<Individual> optionalIndividual = individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
+
+            Optional<Expertise> optionalExpertise = expertiseService.findById(jobRequestDTO.getExpertiseId());
+
             //salva no BD
             JobRequest jr = jobRequestMapper.toEntity(jobRequestDTO);
+
+            jr.setIndividual(optionalIndividual.get());
+
+            jr.setExpertise(optionalExpertise.get());
+
             jobRequestService.save(jr);
 
             //TODO redirecionar para a página de aviso de sucesso de cadastro de um jobRequest
+            HttpServletResponse res = (HttpServletResponse) response;
+            res.sendRedirect("/servicebook/requisicoes/pedido-recebido");
         }
 
         //antes do chain - executa na requisição

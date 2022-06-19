@@ -14,6 +14,7 @@ import br.edu.utfpr.servicebook.service.CityService;
 import br.edu.utfpr.servicebook.service.ExpertiseService;
 import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobRequestService;
+import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.DateUtil;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import com.cloudinary.Cloudinary;
@@ -280,6 +281,21 @@ public class JobRequestController {
 
         return mv;
     }
+
+    @GetMapping("pedido-recebido")
+    protected ModelAndView showMessageSuccessful(HttpSession httpSession) {
+        ModelAndView mv = new ModelAndView("client/job-requested");
+
+        Optional<Individual> individual = individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
+
+        mv.addObject("client", individual.get().getName());
+
+        //apaga a sessão
+        httpSession.invalidate();
+
+        return mv;
+    }
+
     @PostMapping("/passo-7")
     public String saveFormVerification(HttpSession httpSession, JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
 

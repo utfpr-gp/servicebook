@@ -3,12 +3,12 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:client title="Solicitação recebida">
+<t:client title="Pedido recebido">
     <jsp:body>
         <main>
             <div class="container">
                 <div class="section">
-                    <h4 class="center">Olá ${clientName}, recebemos seu pedido!</h4>
+                    <h4 class="center">Olá ${client}, recebemos seu pedido!</h4>
                     <h5 class="center">
                         Acompanhe seu pedido para ter acesso aos dados dos profissionais que se candidataram ao seu pedido.
                     </h5>

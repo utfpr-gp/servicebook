@@ -6,8 +6,6 @@ import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
-import br.edu.utfpr.servicebook.util.DateUtil;
-import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import org.slf4j.Logger;
@@ -70,11 +68,8 @@ public class ClientController {
     @Autowired
     private JobContractedMapper jobContractedMapper;
 
-    @Autowired
-    private WizardSessionUtil<JobRequestDTO> wizardSessionUtil;
-
     @GetMapping
-    public ModelAndView show(HttpSession httpSession) throws Exception {
+    public ModelAndView show() throws Exception {
         ModelAndView mv = new ModelAndView("client/my-requests");
 
         Optional<Individual> individual = individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
@@ -85,18 +80,6 @@ public class ClientController {
 
         IndividualDTO clientDTO = individualMapper.toDto(individual.get());
         mv.addObject("client", clientDTO);
-
-        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
-        Optional<Individual> optionalIndividual = individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
-
-        if(sessionDTO.getExpertiseId() != null && sessionDTO.getDescription() != null) {
-            sessionDTO.setClientId(optionalIndividual.get().getId());
-//            sessionDTO.setStatus("Requested");
-            JobRequest jobRequest = jobRequestMapper.toEntity(sessionDTO);
-            jobRequest.setStatus(JobRequest.Status.valueOf(sessionDTO.getStatus()));
-            jobRequest.setIndividual(optionalIndividual.get());
-            jobRequestService.save(jobRequest);
-        }
 
         List<JobRequest> jobRequests = jobRequestService.findByClientOrderByDateCreatedDesc(individual.get());
 
