@@ -24,7 +24,7 @@
             <div class="container">
                 <div class="section">
                     <div class="row center-align">
-                        <a class="waves-effect waves-light btn" href="minha-conta/cliente">ACompanhe seu pedido</a>
+                        <a class="waves-effect waves-light btn" href="minha-conta/cliente">Acompanhe seu pedido</a>
                     </div>
                 </div>
             </div>

@@ -71,43 +71,70 @@ public class JobRequestFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpSession httpSession = req.getSession();
 
-        JobRequestDTO jobRequestDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
+        //verifica se tem um jobRequest na sessão. Caso não tenha, o método retornará um jobRequest null.
+        JobRequestDTO jobRequestDTO = wizardSessionUtil.getWizardStateOrNull(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         System.out.println(jobRequestDTO);
 
-        //valida o jobRequestDTO para ver se está completo.
-        Errors errors = new BeanPropertyBindingResult(jobRequestDTO, "jobRequestDTO");
-        validator.validate(jobRequestDTO, errors);
+        /*
+            Verifica se o usuário está logado quando há requisição de serviço preenchida.
+            Caso não esteja, deixa a requisição seguir o seu fluxo
+        */
+        Optional<Individual> oIndividual = null;
+        if(jobRequestDTO != null){
+            oIndividual = individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
+        }
 
         /*
-            Se estiver válido, salva no BD e deixar a requisição seguir seu fluxo..
-            Caso contrário, deixar a requisição seguir seu fluxo.
+            Apenas analisa se houver ordem de serviço e usuário logado.
          */
-        if(!errors.hasErrors() && jobRequestDTO.getDescription() != null){
+        if(jobRequestDTO != null && oIndividual.isPresent()){
 
-            jobRequestDTO.setStatus(String.valueOf(JobRequest.Status.AVAILABLE));
+            //valida o jobRequestDTO para ver se está completo.
+            Errors errors = new BeanPropertyBindingResult(jobRequestDTO, "jobRequestDTO");
+            validator.validate(jobRequestDTO, errors);
 
-            Optional<Individual> optionalIndividual = individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
+            /*
+                Se estiver válido, verifica se o id do expertise existe no BD.
+                Caso contrário, insere como um erro.
+             */
+            Optional<Expertise> oExpertise = null;
+            if(jobRequestDTO != null){
+                 oExpertise = expertiseService.findById(jobRequestDTO.getExpertiseId());
+                 if(!oExpertise.isPresent()){
+                     errors.rejectValue("expertiseId", "A especialidade informada não foi encontrada!");
+                 }
+            }
 
-            Optional<Expertise> optionalExpertise = expertiseService.findById(jobRequestDTO.getExpertiseId());
+            /*
+                Se estiver válido, salva no BD.
+                Caso contrário, informa o erro ao usuário em relação a ordem de serviço cadastrada.
+            */
+            if(!errors.hasErrors()){
 
-            //salva no BD
-            JobRequest jr = jobRequestMapper.toEntity(jobRequestDTO);
+                jobRequestDTO.setStatus(String.valueOf(JobRequest.Status.AVAILABLE));
 
-            jr.setIndividual(optionalIndividual.get());
+                //salva no BD
+                JobRequest jr = jobRequestMapper.toEntity(jobRequestDTO);
+                jr.setIndividual(oIndividual.get());
+                jr.setExpertise(oExpertise.get());
+                jobRequestService.save(jr);
+            }
 
-            jr.setExpertise(optionalExpertise.get());
+            /*
+               Se o jobRequest não estiver vazio e com erro, guarda esta informação para ser apresentado para o usuário.
+               Significa que o usuário preencheu um jobRequest, mas houve um erro de validação.
+               Portanto, é incluído um parâmetro na rota para informar o erro ao usuário.
+             */
+            String query = errors.hasErrors() ? "?erro=true" : "";
+            System.out.println(errors);
 
-            jobRequestService.save(jr);
-
-            //TODO redirecionar para a página de aviso de sucesso de cadastro de um jobRequest
+            //redirecionar para a página de aviso de sucesso de cadastro de um jobRequest
             HttpServletResponse res = (HttpServletResponse) response;
-            res.sendRedirect("/servicebook/requisicoes/pedido-recebido");
+            res.sendRedirect(((HttpServletRequest) request).getContextPath() + "/requisicoes/pedido-recebido" + query);
         }
 
         //antes do chain - executa na requisição
         chain.doFilter(request, response);
         //depois do chain - executa na resposta do servidor
     }
-
-
 }

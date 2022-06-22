@@ -76,7 +76,7 @@ public class ServicebookApplication {
                 = new FilterRegistrationBean<>();
 
         registrationBean.setFilter(new JobRequestFilter());
-        registrationBean.addUrlPatterns("/minha-conta/*");
+        registrationBean.addUrlPatterns("/minha-conta/cliente");
         registrationBean.setOrder(1);
 
         return registrationBean;
