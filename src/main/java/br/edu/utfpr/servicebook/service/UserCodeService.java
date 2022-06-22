@@ -34,7 +34,7 @@ public class UserCodeService {
     public Optional<UserCode> findByEmailAndCode(String email, String code) {
         return this.userCodeRepository.findByEmailAndCode(email, code);
     }
-    public List<UserCode> findAll() {
-        return this.userCodeRepository.findAll();
+    public List<UserCode> findAllByExpiredDateLessThan(Date date) {
+        return this.userCodeRepository.findAllByExpiredDateLessThan(date);
     }
 }

@@ -158,9 +158,7 @@ public class IndividualRegisterController {
         } else {
             actualCode = oUserCode.get().getCode();
         }
-
         quartzService.sendEmailToConfirmationCode(email, actualCode);
-        quartzService.verifyExpiredTokenEmailJob();
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setEmail(dto.getEmail());

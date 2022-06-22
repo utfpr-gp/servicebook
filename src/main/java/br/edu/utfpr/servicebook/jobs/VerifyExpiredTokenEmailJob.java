@@ -26,12 +26,10 @@ public class VerifyExpiredTokenEmailJob implements Job {
     public void execute(JobExecutionContext context) throws JobExecutionException {
         try {
             //deletar codigo expirado
-            List<UserCode> userCode = userCodeService.findAll();
             Date now = new Date(new Date().getTime());
+            List<UserCode> userCode = userCodeService.findAllByExpiredDateLessThan(now);
             for (UserCode s : userCode) {
-                Date expiredDate = new Date(s.getExpiredDate().getTime());
-                if (now.compareTo(expiredDate) > 0)
-                    userCodeService.deleteById(s.getId());
+                userCodeService.deleteById(s.getId());
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
