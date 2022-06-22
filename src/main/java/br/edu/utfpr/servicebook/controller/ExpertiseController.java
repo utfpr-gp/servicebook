@@ -8,6 +8,9 @@ import br.edu.utfpr.servicebook.service.ExpertiseService;
 
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +21,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.File;
+import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -40,6 +48,9 @@ public class ExpertiseController {
 
     @Autowired
     private ExpertiseMapper expertiseMapper;
+
+    @Autowired
+    private Cloudinary cloudinary;
 
     @GetMapping
     public ModelAndView showForm(HttpServletRequest request,
@@ -61,6 +72,7 @@ public class ExpertiseController {
         return mv;
     }
 
+    @SneakyThrows
     @PostMapping
     public ModelAndView save(@Valid ExpertiseDTO dto, BindingResult errors, RedirectAttributes redirectAttributes){
         for(FieldError e: errors.getFieldErrors()){
@@ -73,8 +85,13 @@ public class ExpertiseController {
 
         Optional<Expertise> optionalProfession = expertiseService.findByName(dto.getName());
 
-        if (!optionalProfession.isPresent()) {
+        if (!optionalProfession.isPresent() && isValidateImage(dto.getIcon())) {
+            File jobImage = Files.createTempFile("temp", dto.getIcon().getOriginalFilename()).toFile();
+            dto.getIcon().transferTo(jobImage);
+            Map data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "images"));
+
             Expertise profession = expertiseMapper.toEntity(dto);
+            profession.setPathIcon((String) data.get("url"));
             expertiseService.save(profession);
             List<Expertise> professions = expertiseService.findAll();
             List<ExpertiseDTO> professionDTOs = professions.stream()
@@ -143,6 +160,16 @@ public class ExpertiseController {
         return mv;
     }
 
+    public boolean isValidateImage(MultipartFile image){
+        List<String> contentTypes = Arrays.asList("image/svg");
 
+        for(int i = 0; i < contentTypes.size(); i++){
+            if(image.getContentType().toLowerCase().startsWith(contentTypes.get(i))){
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 }

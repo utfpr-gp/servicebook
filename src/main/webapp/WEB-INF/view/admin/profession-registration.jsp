@@ -16,15 +16,28 @@
                                 <a class="waves-effect waves-light btn" href="especialidades">Novo</a>
                             </div>
                         </div>
-                        <form action="especialidades" method="post">
+                        <form action="especialidades" method="post" enctype="multipart/form-data">
                             <input name="id" type="hidden" value="${dto.id}">
                             <div class="col s12 l4 offset-l4 input-field range-quantity">
 
-                                    <div class="input-field  col s12">
+                                <div class="input-field">
                                         <i class="material-icons prefix primary-color-text">work</i>
                                         <input placeholder="Pedreiro" type="text" id="autocomplete-input" name="name" class="autocomplete" value="${dto.name}">
                                         <label for="autocomplete-input">Especialidade</label>
+                                </div>
+                                <div class="input-field">
+                                    <textarea id="description" class="materialize-textarea" name="description" value="${dto.description}" placeholder="Realiza serviços de consertos em geral"></textarea>
+                                    <label for="description">Descrição</label>
+                                </div>
+                                <div class="file-field input-field">
+                                    <div class="btn">
+                                        <span>Choose File</span>
+                                        <input type="file" value="${dto.icon}" name="icon" accept=".svg">
                                     </div>
+                                    <div class="file-path-wrapper">
+                                        <input class="file-path validate" placeholder="icon.svg"  type="text">
+                                    </div>
+                                </div>
 
                             </div>
                             <div class="col s6 offset-m6 spacing-buttons">
