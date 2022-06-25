@@ -37,8 +37,5 @@ public class JobCandidateService {
     public Page<JobCandidate> findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable) {
         return this.jobCandidateRepository.findByJobRequest_StatusAndJobRequest_ExpertiseAndIndividual(status, expertise, individual, pageable);
     }
-    public JobCandidate save(JobCandidate jobCandidate){
-        return jobCandidateRepository.save(jobCandidate);
-    }
 
 }

@@ -71,5 +71,4 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
 
     Page<JobCandidate> findByJobRequest_StatusAndJobRequest_Individual(JobRequest.Status status, Individual individual, Pageable pageable);
 
-    JobCandidate save(JobCandidate jobCandidate);
 }
