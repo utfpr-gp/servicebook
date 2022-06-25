@@ -7,10 +7,7 @@ import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.UserCode;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.UserCodeMapper;
-import br.edu.utfpr.servicebook.service.AuthenticationCodeGeneratorService;
-import br.edu.utfpr.servicebook.service.EmailSenderService;
-import br.edu.utfpr.servicebook.service.IndividualService;
-import br.edu.utfpr.servicebook.service.UserCodeService;
+import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +51,9 @@ public class LoginController {
 
     @Autowired
     private UserCodeMapper userCodeMapper;
+
+    @Autowired
+    private QuartzService quartzService;
     private static final Logger log = LoggerFactory.getLogger(LoginController.class);
 
     @GetMapping
@@ -122,7 +122,7 @@ public class LoginController {
             Model model
     ) throws MessagingException {
         log.debug("ServiceBook: Login por Token.");
-
+        System.out.println("OIIIIIIII");
         if (errors.hasErrors()) {
             return this.emailErrorForwarding(dto, model, errors);
         }
@@ -145,9 +145,11 @@ public class LoginController {
             UserCode userCode = new UserCode(dto.getEmail(), code);
             userCodeService.save(userCode);
 
-            emailSenderService.sendEmailToServer(dto.getEmail(), "Servicebook: Código de autenticação.", "Código de autenticação:" + "\n\n\n" + code);
+            quartzService.sendEmailToConfirmationCode(dto.getEmail(), code);
+
         } else {
-            emailSenderService.sendEmailToServer(dto.getEmail(), "Servicebook: Código de autenticação.", "Código de autenticação:" + "\n\n\n" + oUserCode.get().getCode());
+            quartzService.sendEmailToConfirmationCode(dto.getEmail(), oUserCode.get().getCode());
+
         }
 
         //salva o email na sessão
