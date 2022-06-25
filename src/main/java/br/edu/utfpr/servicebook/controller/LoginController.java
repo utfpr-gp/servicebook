@@ -122,7 +122,6 @@ public class LoginController {
             Model model
     ) throws MessagingException {
         log.debug("ServiceBook: Login por Token.");
-        System.out.println("OIIIIIIII");
         if (errors.hasErrors()) {
             return this.emailErrorForwarding(dto, model, errors);
         }
