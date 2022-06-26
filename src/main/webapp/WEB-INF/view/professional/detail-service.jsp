@@ -84,11 +84,14 @@
                                     <a class="waves-effect waves-light btn  pink darken-1" href="#!">Excluir</a>
                                 </div>
                             </div>
-                            <div class="col s6 m6 spacing-buttons">
-                                <div class="center">
-                                    <button class="waves-effect waves-light btn">Quero me candidatar</button>
+                            <form action="candidaturas" method="post">
+                                <input name="id" type="hidden" value="${job.id}">
+                                <div class="col s6 m6 spacing-buttons">
+                                    <div class="center">
+                                        <button class="waves-effect waves-light btn">Quero me candidatar</button>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>

@@ -38,4 +38,8 @@ public class JobCandidateService {
         return this.jobCandidateRepository.findByJobRequest_StatusAndJobRequest_ExpertiseAndIndividual(status, expertise, individual, pageable);
     }
 
+    public JobCandidate save(JobCandidate entity){
+        return jobCandidateRepository.save(entity);
+    }
+
 }
