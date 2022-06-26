@@ -39,24 +39,26 @@
                                 <c:otherwise>
                                     <div class="col s12">
                                         <div class="row center expertises">
-                                            <div class="col s12 m5 offset-m1 card-expertise-list row">
-                                                <div class="col s2 delete-exerpertise expertise-icon">
-                                                    <i class="material-icons">work</i>
-                                                </div>
-                                                <div class="col s8">
-                                                    <p class="center">
-                                                        <strong>
-                                                                ${professionalExpertises.name}
-                                                        </strong>
-                                                    </p>
-                                                </div>
+                                            <c:forEach var="professionalExpertises" items="${professionalExpertises}">
+                                                <div class="col s12 m5 offset-m1 card-expertise-list row">
+                                                    <div class="col s2 delete-exerpertise expertise-icon">
+                                                        <i class="material-icons">work</i>
+                                                    </div>
+                                                    <div class="col s8">
+                                                        <p class="center">
+                                                            <strong>
+                                                                    ${professionalExpertises.name}
+                                                            </strong>
+                                                        </p>
+                                                    </div>
 
-                                                <div class="col s12 right">
-                                                    <p class="center">
-                                                        Descrição da especialidade
-                                                    </p>
+                                                    <div class="col s12 right">
+                                                        <p class="center">
+                                                            Descrição da especialidade
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </c:forEach>
                                         </div>
                                     </div>
                                 </c:otherwise>
@@ -64,25 +66,11 @@
 
                             <div class="center spacing-buttons">
 
-
-                                <c:choose>
-                                    <c:when test="${empty professionalExpertises}">
-                                        <button  class="waves-effect waves-light btn">
-                                            <a href="#modal-expertises" class="modal-trigger">
-                                                Adicionar especialidade
-                                            </a>
-                                        </button>
-
-                                    </c:when>
-                                    <c:otherwise>
-                                        <button  class="waves-effect waves-light btn">
-                                            <a href="#modal-expertises" class="modal-trigger">
-                                                Alterar especialidade
-                                            </a>
-                                        </button>
-                                    </c:otherwise>
-                                </c:choose>
-
+                                <button  class="waves-effect waves-light btn">
+                                    <a href="#modal-expertises" class="modal-trigger">
+                                        Adicionar especialidade
+                                    </a>
+                                </button>
                             </div>
                         </div>
 
@@ -136,7 +124,7 @@
                                 <c:forEach var="expertise" items="${expertises}">
                                     <li>
                                         <label class='card-expertise col s12 m10 offset-m1'>
-                                            <input id='ids' name='ids' type='radio' class='reset-checkbox' value="${expertise.id}">
+                                            <input id='ids' name='ids' type='checkbox' class='reset-checkbox' value="${expertise.id}">
                                             <span class='center name-expertise'>
                                                     <i class='material-icons'>work</i>
                                                     ${expertise.name}

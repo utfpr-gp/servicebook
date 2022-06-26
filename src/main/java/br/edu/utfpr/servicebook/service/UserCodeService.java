@@ -5,6 +5,8 @@ import br.edu.utfpr.servicebook.model.repository.UserCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,5 +34,7 @@ public class UserCodeService {
     public Optional<UserCode> findByEmailAndCode(String email, String code) {
         return this.userCodeRepository.findByEmailAndCode(email, code);
     }
-
+    public List<UserCode> findAllByExpiredDateLessThan(Date date) {
+        return this.userCodeRepository.findAllByExpiredDateLessThan(date);
+    }
 }

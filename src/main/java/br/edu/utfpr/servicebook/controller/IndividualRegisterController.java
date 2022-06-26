@@ -129,7 +129,7 @@ public class IndividualRegisterController {
             @RequestParam(value = "passo", required = false, defaultValue = "1") Long step,
             HttpSession httpSession,
             Model model
-    ) {
+    ) throws Exception{
 
         if (step < 1 || step > 9) {
             step = 1L;
@@ -148,11 +148,19 @@ public class IndividualRegisterController {
 
             ProfessionalExpertiseDTO professionalExpertiseDTO= wizardSessionUtilExpertise.getWizardState(httpSession, ProfessionalExpertiseDTO.class, WizardSessionUtil.KEY_EXERPERTISES);
 
+            List<Expertise> documentList = new ArrayList<>();
+
             if(professionalExpertiseDTO.getIds() != null){
                 for (int id : professionalExpertiseDTO.getIds()) {
-                    Optional<Expertise> oExpertises = oExpertises = expertiseService.findById((Long.valueOf(id)));
-                    model.addAttribute("professionalExpertises", oExpertises.get());
+                    Optional<Expertise> oExpertises =  expertiseService.findById((Long.valueOf(id)));
+                    if (!oExpertises.isPresent()) {
+                        throw new Exception("Não existe essa especialidade!");
+                    }
+
+                    documentList.add(oExpertises.get());
                 }
+
+                model.addAttribute("professionalExpertises", documentList);
             }
         }
 
@@ -198,7 +206,6 @@ public class IndividualRegisterController {
         } else {
             actualCode = oUserCode.get().getCode();
         }
-
         quartzService.sendEmailToConfirmationCode(email, actualCode);
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
@@ -254,7 +261,6 @@ public class IndividualRegisterController {
             RedirectAttributes redirectAttributes,
             Model model
     ) {
-
         if (errors.hasErrors()) {
             return this.userRegistrationErrorForwarding("3", dto, model, errors);
         }
@@ -423,14 +429,24 @@ public class IndividualRegisterController {
             RedirectAttributes redirectAttributes,
             Model model,
             IndividualDTO individualDTO
-    ){
+    )throws Exception{
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         Individual user = individualMapper.toEntity(sessionDTO);
 
-
         List<Integer> ids = dto.getIds();
-        ProfessionalExpertiseDTO professionalExpertiseDTO= wizardSessionUtilExpertise.getWizardState(httpSession, ProfessionalExpertiseDTO.class, WizardSessionUtil.KEY_EXERPERTISES);
-        professionalExpertiseDTO.setIds(ids);
+
+        if(ids != null){
+            for (int id : ids) {
+                Optional<Expertise> oExpertises =  expertiseService.findById((Long.valueOf(id)));
+                if (!oExpertises.isPresent()) {
+                    throw new Exception("Não existe essa especialidade!");
+                }
+
+                ProfessionalExpertiseDTO professionalExpertiseDTO= wizardSessionUtilExpertise.getWizardState(httpSession, ProfessionalExpertiseDTO.class, WizardSessionUtil.KEY_EXERPERTISES);
+                professionalExpertiseDTO.setIds(ids);
+            }
+        }
+
 
         return "redirect:/cadastrar-se?passo=8";
     }
@@ -443,7 +459,7 @@ public class IndividualRegisterController {
             Model model,
             RedirectAttributes redirectAttributes,
             SessionStatus status
-    ) {
+    )throws Exception {
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         ProfessionalExpertiseDTO professionalExpertiseDTO= wizardSessionUtilExpertise.getWizardState(httpSession, ProfessionalExpertiseDTO.class, WizardSessionUtil.KEY_EXERPERTISES);
@@ -461,11 +477,16 @@ public class IndividualRegisterController {
         }
 
         Individual user = individualMapper.toEntity(sessionDTO);
-        individualService.save(user);
 
         for (int id : professionalExpertiseDTO.getIds()) {
             Optional<Expertise> e = expertiseService.findById((Long.valueOf(id)));
-            ProfessionalExpertise p = professionalExpertiseService.save(new ProfessionalExpertise(user, e.get()));
+            if (!e.isPresent()) {
+                throw new Exception("Não existe essa especialidade!");
+            }
+
+            ProfessionalExpertise professionalExpertise = new ProfessionalExpertise(user, e.get());
+
+            individualService.saveExpertisesIndividual(user, professionalExpertise);
         }
 
         redirectAttributes.addFlashAttribute("msg", "Usuário cadastrado com sucesso! Realize o login no Servicebook!");
