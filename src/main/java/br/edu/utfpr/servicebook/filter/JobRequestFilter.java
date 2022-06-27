@@ -67,13 +67,11 @@ public class JobRequestFilter implements Filter {
             ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
 
-        System.out.println("Filtro de JobRequest");
         HttpServletRequest req = (HttpServletRequest) request;
         HttpSession httpSession = req.getSession();
 
         //verifica se tem um jobRequest na sessão. Caso não tenha, o método retornará um jobRequest null.
         JobRequestDTO jobRequestDTO = wizardSessionUtil.getWizardStateOrNull(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
-        System.out.println(jobRequestDTO);
 
         /*
             Verifica se o usuário está logado quando há requisição de serviço preenchida.
