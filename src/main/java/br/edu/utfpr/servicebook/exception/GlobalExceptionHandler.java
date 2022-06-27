@@ -60,10 +60,23 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(value = InvalidParamsException.class)
-	public String invalidException(HttpServletRequest req, Exception e) throws Exception {
+	public ModelAndView invalidException(HttpServletRequest req, Exception e) throws Exception {
 
 		log.error("[URL] : {}", req.getRequestURL(), e);
-		return "error/4xx";
+
+		ModelAndView mv = new ModelAndView();
+
+		if(e.getMessage() != null) {
+			mv.addObject("message", e.getMessage());
+			mv.addObject("url", req.getRequestURL());
+			mv.setViewName("error/error-handler");
+
+			return mv;
+		}
+
+		mv.setViewName("error/error/4xx");
+
+		return mv;
 	}
 
 	/**
@@ -76,10 +89,23 @@ public class GlobalExceptionHandler {
 	 * @throws Exception
 	 */
 	@ExceptionHandler(value = EntityNotFoundException.class)
-	public String entityNotFound(HttpServletRequest req, Exception e) throws Exception {
+	public ModelAndView entityNotFound(HttpServletRequest req, Exception e) throws Exception {
 
 		log.error("[URL] : {}", req.getRequestURL(), e);
-		return "error/not-found";
+
+		ModelAndView mv = new ModelAndView();
+
+		if(e.getMessage() != null) {
+			mv.addObject("message", e.getMessage());
+			mv.addObject("url", req.getRequestURL());
+			mv.setViewName("error/error-handler");
+
+			return mv;
+		}
+
+		mv.setViewName("error/not-found");
+
+		return mv;
 	}
 
 	/**
