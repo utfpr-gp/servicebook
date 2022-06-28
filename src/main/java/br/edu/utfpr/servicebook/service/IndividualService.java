@@ -7,10 +7,14 @@ import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
 import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.repository.IndividualRepository;
+import br.edu.utfpr.servicebook.model.repository.ProfessionalExpertiseRepository;
 import br.edu.utfpr.servicebook.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +25,8 @@ public class IndividualService {
     @Autowired
     private IndividualRepository individualRepository;
 
+    @Autowired
+    private ProfessionalExpertiseRepository professionalExpertiseRepository;
     @Autowired
     private ProfessionalExpertiseService professionalExpertiseService;
 
@@ -66,6 +72,11 @@ public class IndividualService {
         return this.individualRepository.findDistinctByTermIgnoreCase(searchTerm);
     }
 
+    public Page<Individual> findDistinctByTermIgnoreCaseWithPagination(String searchTerm, Integer page, Integer size){
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
+        return this.individualRepository.findDistinctByTermIgnoreCaseWithPagination(searchTerm, pageRequest);
+    }
+
     public List<ExpertiseDTO> getExpertises(Individual professional){
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(professional);
 
@@ -77,6 +88,12 @@ public class IndividualService {
         }
 
         return expertisesDTO;
+    }
+
+    @Transactional
+    public void saveExpertisesIndividual(Individual individual, ProfessionalExpertise professionalExpertise) {
+        individualRepository.save(individual);
+        professionalExpertiseRepository.save(professionalExpertise);
     }
 
 }

@@ -29,6 +29,9 @@ public class ServicebookApplication {
     @Autowired
     IndexService indexService;
 
+    @Autowired
+    QuartzService quartzService;
+
     public static void main(String[] args) {
         SpringApplication.run(ServicebookApplication.class, args);
     }
@@ -84,5 +87,11 @@ public class ServicebookApplication {
         registrationBean.setOrder(1);
 
         return registrationBean;
+    }
+    
+    @EventListener(ApplicationStartedEvent.class)
+    public void cleanEmailCodes() {
+        System.out.println("Cleaning old email codes");
+        quartzService.verifyExpiredTokenEmailJob();
     }
 }

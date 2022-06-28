@@ -14,6 +14,7 @@ public class WizardSessionUtil<T> {
     public static final String KEY_ERROR_JOB_REQUEST = "KEY_ERROR_JOB_REQUEST";
 
     public static final String KEY_LOGIN = "loginUser";
+    public static final String KEY_EXERPERTISES = "wizardExerpertises";
     public T getWizardState(HttpSession httpSession, Class<T> clazz, String wizard) {
 
         T wizardDTO = (T) httpSession.getAttribute(wizard);

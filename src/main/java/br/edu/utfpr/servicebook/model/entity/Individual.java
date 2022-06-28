@@ -10,8 +10,8 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"professional"})
-@ToString(exclude = {"candidatures"})
+@EqualsAndHashCode(exclude = {"jobRequest", "candidatures"})
+@ToString(exclude = {"candidatures", "jobRequest"})
 
 @Table(name = "individuals")
 @Entity
