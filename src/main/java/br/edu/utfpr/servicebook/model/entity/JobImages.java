@@ -28,6 +28,7 @@ public class JobImages {
 	
 	@ManyToOne
 	@JoinColumn(name = "job_request_id")
+	@NonNull
 	private JobRequest jobRequest;
 	
 	@NonNull

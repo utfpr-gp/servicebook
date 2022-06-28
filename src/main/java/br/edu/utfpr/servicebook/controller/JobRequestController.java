@@ -6,6 +6,7 @@ import br.edu.utfpr.servicebook.model.dto.ProfessionalSearchItemDTO;
 import br.edu.utfpr.servicebook.model.entity.City;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.Individual;
+import br.edu.utfpr.servicebook.model.entity.JobImages;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
@@ -14,6 +15,7 @@ import br.edu.utfpr.servicebook.service.CityService;
 import br.edu.utfpr.servicebook.service.ExpertiseService;
 import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobRequestService;
+import br.edu.utfpr.servicebook.service.JobImagesService;
 import br.edu.utfpr.servicebook.util.DateUtil;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import com.cloudinary.Cloudinary;
@@ -37,6 +39,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -50,6 +53,9 @@ public class JobRequestController {
 
     @Autowired
     private JobRequestService jobRequestService;
+
+    @Autowired
+    private JobImagesService jobImagesService;
 
     @Autowired
     private IndividualService individualService;
@@ -237,28 +243,55 @@ public class JobRequestController {
     }
     @PostMapping("/passo-5")
     public String saveFormImagePath(HttpSession httpSession, RedirectAttributes redirectAttributes, JobRequestDTO dto, Model model) throws IOException {
+        try {
+            if (dto.images.get(0).getOriginalFilename().equals("")) {
+                redirectAttributes.addFlashAttribute("errors", "Nenhuma imagem enviada.");
+                return "redirect:/requisicoes?passo=5";
+            }
 
+            JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
 
-        //persiste na sessão
-        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
-        sessionDTO.setImageFile(dto.getImageFile());
+            List<String> successImages = new ArrayList<>();
+            List<String> invalidImages = new ArrayList<>();
 
-        System.out.println(sessionDTO.getExpertiseId());
+            for (MultipartFile image : dto.getImages()) {
+                if (isValidateImage(image)) {
+                    File jobImage = Files.createTempFile("temp", image.getOriginalFilename()).toFile();
+                    image.transferTo(jobImage);
+                    Map data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "jobs"));
 
-        if(isValidateImage(dto.getImageFile())){
-            File jobImage = Files.createTempFile("temp", dto.getImageFile().getOriginalFilename()).toFile();
-            dto.getImageFile().transferTo(jobImage);
-            Map data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "jobs"));
+                    successImages.add((String) data.get("url"));
+                } else {
+                    invalidImages.add("Não foi possível anexar o arquivo " + image.getOriginalFilename() + ".");
+                }
+            }
 
+            if (!successImages.isEmpty())
+                sessionDTO.setImagesSession(successImages);
 
-            sessionDTO.setImageSession((String)data.get("url"));
-            log.debug("Passo 5 {}", sessionDTO);
+            if (!invalidImages.isEmpty())
+                redirectAttributes.addFlashAttribute("errors", invalidImages);
 
-            return "redirect:/requisicoes/passo=6";
-        } else {
-            return "redirect:/requisicoes/passo=6";
+            return "redirect:/requisicoes?passo=5";
         }
+        catch (Exception e){
+            redirectAttributes.addFlashAttribute("errors", "Um erro inesperado aconteceu. Tente novamente!");
+            return "redirect:/requisicoes?passo=5";
+        }
+    }
+    @DeleteMapping("/session/image/{url}")
+    public String deleteImageSession(@PathVariable String url, HttpSession httpSession, RedirectAttributes redirectAttributes, JobRequestDTO dto, Model model) throws IOException {
 
+        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
+
+        for (String path : sessionDTO.getImagesSession()) {
+            if(path.contains(url)) {
+                int index = sessionDTO.getImagesSession().indexOf(path);
+                sessionDTO.getImagesSession().remove(index);
+                return "Imagem apagada.";
+            }
+        }
+        return "Não foi possível apagar imagem.";
 
     }
     @GetMapping("passo=6")
@@ -296,13 +329,17 @@ public class JobRequestController {
 
         sessionDTO.setClientConfirmation(true);
         sessionDTO.setDateCreated(DateUtil.getToday());
-        sessionDTO.setStatus("Requerido");
+        sessionDTO.setStatus("AVAILABLE");
         log.debug("Passo 7 {}", sessionDTO);
         JobRequest jobRequest = jobRequestMapper.toEntity(sessionDTO);
         jobRequest.setIndividual(client);
         jobRequest.setExpertise(exp);
         //jobRequest.setImage(sessionDTO.getImageSession());
         jobRequestService.save(jobRequest);
+        for (String path : sessionDTO.getImagesSession()) {
+            JobImages jobImage = new JobImages(jobRequest, path);
+            jobImagesService.save(jobImage);
+        }
         redirectAttributes.addFlashAttribute("msg", "Requisição confirmada!");
         status.setComplete();
         return "redirect:/requisicoes?passo=8";

@@ -9,8 +9,8 @@
             <div class="container">
                 <c:if test="${not empty errors}">
                     <div class="card-panel red">
-                        <c:forEach var="e" items="${errors}">
-                            <span class="white-text">${e.getDefaultMessage()}</span><br>
+                        <c:forEach var="error" items="${errors}">
+                            <span class="white-text">${error}</span><br>
                         </c:forEach>
                     </div>
                 </c:if>
@@ -26,13 +26,28 @@
                                     <div class="col s12 m6 offset-m3 l4 offset-l4 ">
                                         <div class="file-field input-field">
                                             <div class="btn">
-                                                <span>Choose File</span>
-                                                <input type="file" value="${dto.imageFile}" name="imageFile" accept=".jpg, .jpeg, .png">
+                                                <span>Escolha as Imagens</span>
+                                                <input type="file" name="images" multiple="multiple" accept=".jpg, .jpeg, .png">
                                             </div>
                                             <div class="file-path-wrapper">
                                                 <input class="file-path validate" placeholder="image.jpg"  type="text">
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="col s12 m6 offset-m3 l4 offset-l4 ">
+                                        <div class="spacing-buttons">
+                                            <button class="waves-effect waves-light btn btn-validate" >Adicionar</button>
+                                        </div>
+                                    </div>
+                                    <div class="gallery" id="galley">
+                                        <c:if test="${not empty dto.getImagesSession()}" >
+                                            <c:forEach items="${dto.getImagesSession()}" var="image">
+                                                <div class="box-image">
+                                                    <img src="${image}">
+                                                    <a class="waves-effect waves-light" onclick="deleteImage('${image}')"><i class="material-icons">delete_forever</i></a>
+                                                </div>
+                                            </c:forEach>
+                                        </c:if>
                                     </div>
                                     <div class="col s6 m6 spacing-buttons">
                                         <div class="center">
@@ -41,7 +56,7 @@
                                     </div>
                                     <div class="col s6 m6 spacing-buttons">
                                         <div class="center">
-                                            <button class="waves-effect waves-light btn" >Próximo</button>
+                                            <a href="requisicoes/passo=6" class="waves-effect waves-light btn" href="#!">Próximo</a>
                                         </div>
                                     </div>
                                 </form>
@@ -54,3 +69,5 @@
 
     </jsp:body>
 </t:client>
+
+<script src="assets/resources/scripts/job-image.js"></script>
