@@ -1,15 +1,16 @@
 package br.edu.utfpr.servicebook.controller;
 
+import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.*;
-import br.edu.utfpr.servicebook.model.entity.City;
-import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.model.entity.UserCode;
-import br.edu.utfpr.servicebook.model.mapper.CityMapper;
-import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
-import br.edu.utfpr.servicebook.model.mapper.UserCodeMapper;
+import br.edu.utfpr.servicebook.model.entity.*;
+import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.service.*;
+import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.NumberValidator;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelItensDTO;
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelProfessionalExpertiseRatingDTO;
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,11 +21,18 @@ import org.springframework.validation.SmartValidator;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.mail.MessagingException;
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -35,7 +43,8 @@ public class IndividualRegisterController {
 
     @Autowired
     private WizardSessionUtil<IndividualDTO> wizardSessionUtil;
-
+    @Autowired
+    private WizardSessionUtil<ProfessionalExpertiseDTO> wizardSessionUtilExpertise;
     @Autowired
     private IndividualService individualService;
 
@@ -75,7 +84,17 @@ public class IndividualRegisterController {
     @Autowired
     private AuthenticationCodeGeneratorService authenticationCodeGeneratorService;
 
+    @Autowired
+    private ExpertiseService expertiseService;
 
+    @Autowired
+    private ExpertiseMapper expertiseMapper;
+
+    @Autowired
+    private ProfessionalExpertiseService professionalExpertiseService;
+
+    @Autowired
+    private ProfessionalExpertiseMapper professionalExpertiseMapper;
 
     private String userRegistrationErrorForwarding(String step, IndividualDTO dto, Model model, BindingResult errors) {
         model.addAttribute("dto", dto);
@@ -110,10 +129,39 @@ public class IndividualRegisterController {
             @RequestParam(value = "passo", required = false, defaultValue = "1") Long step,
             HttpSession httpSession,
             Model model
-    ) {
+    ) throws Exception{
 
-        if (step < 1 || step > 8) {
+        if (step < 1 || step > 9) {
             step = 1L;
+        }
+
+        if(step == 8){
+            List<Expertise> professionPage = expertiseService.findAll();
+            List<ExpertiseDTO> expertiseDTOs = professionPage.stream()
+                    .map(s -> expertiseMapper.toDto(s))
+                    .collect(Collectors.toList());
+
+            IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
+
+            model.addAttribute("individual", sessionDTO);
+            model.addAttribute("expertises", expertiseDTOs);
+
+            ProfessionalExpertiseDTO professionalExpertiseDTO= wizardSessionUtilExpertise.getWizardState(httpSession, ProfessionalExpertiseDTO.class, WizardSessionUtil.KEY_EXERPERTISES);
+
+            List<Expertise> documentList = new ArrayList<>();
+
+            if(professionalExpertiseDTO.getIds() != null){
+                for (int id : professionalExpertiseDTO.getIds()) {
+                    Optional<Expertise> oExpertises =  expertiseService.findById((Long.valueOf(id)));
+                    if (!oExpertises.isPresent()) {
+                        throw new Exception("Não existe essa especialidade!");
+                    }
+
+                    documentList.add(oExpertises.get());
+                }
+
+                model.addAttribute("professionalExpertises", documentList);
+            }
         }
 
         IndividualDTO dto = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
@@ -375,6 +423,35 @@ public class IndividualRegisterController {
     }
 
     @PostMapping("/passo-8")
+    public String saveExpertises(
+            HttpSession httpSession,
+            ProfessionalExpertiseDTO dto,
+            RedirectAttributes redirectAttributes,
+            Model model,
+            IndividualDTO individualDTO
+    )throws Exception{
+        IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
+        Individual user = individualMapper.toEntity(sessionDTO);
+
+        List<Integer> ids = dto.getIds();
+
+        if(ids != null){
+            for (int id : ids) {
+                Optional<Expertise> oExpertises =  expertiseService.findById((Long.valueOf(id)));
+                if (!oExpertises.isPresent()) {
+                    throw new Exception("Não existe essa especialidade!");
+                }
+
+                ProfessionalExpertiseDTO professionalExpertiseDTO= wizardSessionUtilExpertise.getWizardState(httpSession, ProfessionalExpertiseDTO.class, WizardSessionUtil.KEY_EXERPERTISES);
+                professionalExpertiseDTO.setIds(ids);
+            }
+        }
+
+
+        return "redirect:/cadastrar-se?passo=8";
+    }
+
+    @PostMapping("/passo-9")
     public String saveUser(
             HttpSession httpSession,
             IndividualDTO dto,
@@ -382,9 +459,10 @@ public class IndividualRegisterController {
             Model model,
             RedirectAttributes redirectAttributes,
             SessionStatus status
-    ) {
+    )throws Exception {
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
+        ProfessionalExpertiseDTO professionalExpertiseDTO= wizardSessionUtilExpertise.getWizardState(httpSession, ProfessionalExpertiseDTO.class, WizardSessionUtil.KEY_EXERPERTISES);
 
         validator.validate(sessionDTO, errors, new Class[]{
                 IndividualDTO.RequestUserEmailInfoGroupValidation.class,
@@ -399,7 +477,17 @@ public class IndividualRegisterController {
         }
 
         Individual user = individualMapper.toEntity(sessionDTO);
-        individualService.save(user);
+
+        for (int id : professionalExpertiseDTO.getIds()) {
+            Optional<Expertise> e = expertiseService.findById((Long.valueOf(id)));
+            if (!e.isPresent()) {
+                throw new Exception("Não existe essa especialidade!");
+            }
+
+            ProfessionalExpertise professionalExpertise = new ProfessionalExpertise(user, e.get());
+
+            individualService.saveExpertisesIndividual(user, professionalExpertise);
+        }
 
         redirectAttributes.addFlashAttribute("msg", "Usuário cadastrado com sucesso! Realize o login no Servicebook!");
         status.setComplete();
