@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook;
 
 import br.edu.utfpr.servicebook.controller.IndexController;
+import br.edu.utfpr.servicebook.filter.JobRequestFilter;
 import br.edu.utfpr.servicebook.service.IndexService;
 import br.edu.utfpr.servicebook.service.QuartzService;
 import br.edu.utfpr.servicebook.service.UserCodeService;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.ApplicationContext;
@@ -75,6 +77,18 @@ public class ServicebookApplication {
         return quartzScheduler;
     }
 
+    @Bean
+    public FilterRegistrationBean<JobRequestFilter> jobRequestFilter(){
+        FilterRegistrationBean<JobRequestFilter> registrationBean
+                = new FilterRegistrationBean<>();
+
+        registrationBean.setFilter(new JobRequestFilter());
+        registrationBean.addUrlPatterns("/minha-conta/cliente");
+        registrationBean.setOrder(1);
+
+        return registrationBean;
+    }
+    
     @EventListener(ApplicationStartedEvent.class)
     public void cleanEmailCodes() {
         System.out.println("Cleaning old email codes");

@@ -1,5 +1,6 @@
 package br.edu.utfpr.servicebook.controller;
 
+import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
 import br.edu.utfpr.servicebook.model.dto.JobRequestDTO;
 import br.edu.utfpr.servicebook.model.dto.ProfessionalSearchItemDTO;
@@ -14,6 +15,7 @@ import br.edu.utfpr.servicebook.service.CityService;
 import br.edu.utfpr.servicebook.service.ExpertiseService;
 import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobRequestService;
+import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.DateUtil;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import com.cloudinary.Cloudinary;
@@ -280,40 +282,62 @@ public class JobRequestController {
 
         return mv;
     }
+
+    /**
+     * Apresenta a página de sucesso ou falha, quando o usuário preenche uma requisição de serviço como visitante e só
+     * depois que realizao login na aplicação.
+     * Esta requisição de serviço é pega da sessão e então, é salva no BD e o usuário é encaminhado para este endereço.
+     * TODO apresentar uma mensagem de erro genérica no JSP caso error seja true
+     * @param isError informa se houve falha na persistência ou validação da requisição de serviço.
+     * @param httpSession
+     * @return
+     */
+    @GetMapping("pedido-recebido")
+    protected ModelAndView showMessageSuccessful(@RequestParam(value = "erro", required = false, defaultValue = "false") boolean isError, HttpSession httpSession) {
+        System.out.println("Parâmetro erro: " + isError);
+        ModelAndView mv = new ModelAndView("client/job-requested");
+
+        Optional<Individual> individual = individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
+
+        mv.addObject("client", individual.get().getName());
+
+        //apaga a sessão
+        httpSession.invalidate();
+
+        return mv;
+    }
+
     @PostMapping("/passo-7")
     public String saveFormVerification(HttpSession httpSession, JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
 
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
-        Expertise exp = null;
-        log.debug("Passo Name {}", sessionDTO.getNameClient());
-        Individual client = new Individual(sessionDTO.getNameClient(), sessionDTO.getEmailClient(), sessionDTO.getPhone(), sessionDTO.getCpf());
-        individualService.save(client);
+
         Optional<Expertise> oExpertise = expertiseService.findById(sessionDTO.getExpertiseId());
 
-        if(oExpertise.isPresent()){
-            exp = oExpertise.get();
+        if(!oExpertise.isPresent()){
+            throw new InvalidParamsException("A especilidade informada não foi encontrada!");
         }
 
+        Expertise exp = oExpertise.get();
         sessionDTO.setClientConfirmation(true);
         sessionDTO.setDateCreated(DateUtil.getToday());
         sessionDTO.setStatus("Requerido");
+
         log.debug("Passo 7 {}", sessionDTO);
         JobRequest jobRequest = jobRequestMapper.toEntity(sessionDTO);
-        jobRequest.setIndividual(client);
         jobRequest.setExpertise(exp);
+
         //jobRequest.setImage(sessionDTO.getImageSession());
         jobRequestService.save(jobRequest);
         redirectAttributes.addFlashAttribute("msg", "Requisição confirmada!");
         status.setComplete();
         return "redirect:/requisicoes?passo=8";
-
-
     }
+
     @PostMapping("/passo-8")
     public String formConfirmation(HttpSession httpSession, BindingResult errors,JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
         return "redirect:/requisicoes";
     }
-
 
     public boolean isValidateImage(MultipartFile image){
         List<String> contentTypes = Arrays.asList("image/png", "image/jpg", "image/jpeg");

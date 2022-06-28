@@ -78,7 +78,7 @@
                     <div>
                         <div class="row center-align">
                             <p> LOGIN PARA EFETIVAR O SEU PEDIDO E RECEBER OS CONTATOS DOS PROFISSIONAIS!</p>
-                            <a class="waves-effect waves-light btn" href="entrar">Entrar</a>
+                            <a class="waves-effect waves-light btn" href="login">Entrar</a>
                         </div>
 
                         <div class="divider"></div>
