@@ -26,7 +26,7 @@
                                         <label for="autocomplete-input">Especialidade</label>
                                 </div>
                                 <div class="input-field">
-                                    <textarea id="description" class="materialize-textarea" name="description" value="${dto.description}" placeholder="Realiza serviços de consertos em geral"></textarea>
+                                    <textarea id="description" class="materialize-textarea" name="description" value="${dto.description}" placeholder="Realiza serviços de consertos em geral">${dto.description}</textarea>
                                     <label for="description">Descrição</label>
                                 </div>
                                 <div class="file-field input-field">
@@ -89,6 +89,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>NOME</th>
+                                        <th>ICONE</th>
                                         <th>EDITAR</th>
                                         <th>EXCLUIR</th>
                                     </tr>
@@ -98,6 +99,7 @@
                                         <tr>
                                             <td>${p.id}</td>
                                             <td>${p.name}</td>
+                                            <td><img class="circle" src="${p.pathIcon}"></td>
                                             <td><a href="especialidades/${p.id}" class="btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">edit</i></a></td>
                                             <td><a href="#modal-delete" class="btn-floating btn-small waves-effect waves-light red modal-trigger" data-url="${pageContext.request.contextPath}/especialidades/${p.id}" data-name="${p.name}"><i class="material-icons">delete_forever</i></a></td>
                                         </tr>

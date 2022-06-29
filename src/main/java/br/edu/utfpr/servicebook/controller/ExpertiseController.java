@@ -29,6 +29,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
@@ -72,7 +73,6 @@ public class ExpertiseController {
         return mv;
     }
 
-    @SneakyThrows
     @PostMapping
     public ModelAndView save(@Valid ExpertiseDTO dto, BindingResult errors, RedirectAttributes redirectAttributes){
         for(FieldError e: errors.getFieldErrors()){
@@ -85,24 +85,47 @@ public class ExpertiseController {
 
         Optional<Expertise> optionalProfession = expertiseService.findByName(dto.getName());
 
-        if (!optionalProfession.isPresent() && isValidateImage(dto.getIcon())) {
-            File jobImage = Files.createTempFile("temp", dto.getIcon().getOriginalFilename()).toFile();
-            dto.getIcon().transferTo(jobImage);
-            Map data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "images"));
-
-            Expertise profession = expertiseMapper.toEntity(dto);
-            profession.setPathIcon((String) data.get("url"));
-            expertiseService.save(profession);
-            List<Expertise> professions = expertiseService.findAll();
-            List<ExpertiseDTO> professionDTOs = professions.stream()
-                    .map(s -> expertiseMapper.toDto(s))
-                    .collect(Collectors.toList());
-            redirectAttributes.addFlashAttribute("msg", "Profissão salva com sucesso!");
-        } else {
-            errors.rejectValue("name", "error.dto", "A profissão já está cadastrada.");
-            return errorFowarding(dto, errors);
+        if(!isValidateImage(dto.getIcon())) {
+            errors.rejectValue("pathIcon", "error.dto", "Formato de imagem invalido");
         }
-        return new ModelAndView("redirect:especialidades");
+
+       try {
+           if (!optionalProfession.isPresent()) {
+               File jobImage = Files.createTempFile("temp", dto.getIcon().getOriginalFilename()).toFile();
+               dto.getIcon().transferTo(jobImage);
+               Map data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "images"));
+
+               Expertise profession = expertiseMapper.toEntity(dto);
+               profession.setPathIcon((String) data.get("url"));
+               expertiseService.save(profession);
+               List<Expertise> professions = expertiseService.findAll();
+               List<ExpertiseDTO> professionDTOs = professions.stream()
+                       .map(s -> expertiseMapper.toDto(s))
+                       .collect(Collectors.toList());
+               redirectAttributes.addFlashAttribute("msg", "Profissão salva com sucesso!");
+
+               return new ModelAndView("redirect:especialidades");
+           }
+
+           File jobImage = Files.createTempFile("temp", dto.getIcon().getOriginalFilename()).toFile();
+           dto.getIcon().transferTo(jobImage);
+           Map data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "images"));
+
+           Expertise profession = expertiseMapper.toEntity(dto);
+           profession.setPathIcon((String) data.get("url"));
+           expertiseService.save(profession);
+           List<Expertise> professions = expertiseService.findAll();
+           List<ExpertiseDTO> professionDTOs = professions.stream()
+                   .map(s -> expertiseMapper.toDto(s))
+                   .collect(Collectors.toList());
+           redirectAttributes.addFlashAttribute("msg", "Profissão atualizada com sucesso!");
+
+           return new ModelAndView("redirect:especialidades");
+
+       }catch (IOException exception) {
+           errors.rejectValue("name", "error.dto", "A profissão já está cadastrada.");
+           return errorFowarding(dto, errors);
+       }
     }
 
     @GetMapping("/{id}")

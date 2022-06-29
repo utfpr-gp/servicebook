@@ -24,4 +24,6 @@ public class ExpertiseDTO implements Serializable {
     private String description;
 
     private MultipartFile icon;
+
+    private String pathIcon;
 }
