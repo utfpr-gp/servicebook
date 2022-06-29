@@ -59,7 +59,9 @@ public class ExpertiseController {
                                  @RequestParam(value = "siz", defaultValue = "5") int size,
                                  @RequestParam(value = "ord", defaultValue = "name") String order,
                                  @RequestParam(value = "dir", defaultValue = "ASC") String direction){
+
         ModelAndView mv = new ModelAndView("admin/profession-registration");
+
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
         Page<Expertise> expertisePage = expertiseService.findAll(pageRequest);
 
@@ -73,8 +75,17 @@ public class ExpertiseController {
         return mv;
     }
 
+    /**
+     * Persiste uma especialidade com ícone .svg.
+     * Caso não haja tal especialidade no BD, ele persiste.
+     * @param dto
+     * @param errors
+     * @param redirectAttributes
+     * @return
+     */
     @PostMapping
     public ModelAndView save(@Valid ExpertiseDTO dto, BindingResult errors, RedirectAttributes redirectAttributes){
+
         for(FieldError e: errors.getFieldErrors()){
             log.info(e.getField() + " -> " + e.getCode());
         }
@@ -83,49 +94,36 @@ public class ExpertiseController {
             return errorFowarding(dto, errors);
         }
 
-        Optional<Expertise> optionalProfession = expertiseService.findByName(dto.getName());
-
         if(!isValidateImage(dto.getIcon())) {
             errors.rejectValue("pathIcon", "error.dto", "Formato de imagem invalido");
+            return errorFowarding(dto, errors);
         }
 
-       try {
-           if (!optionalProfession.isPresent()) {
-               File jobImage = Files.createTempFile("temp", dto.getIcon().getOriginalFilename()).toFile();
-               dto.getIcon().transferTo(jobImage);
-               Map data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "images"));
+        Optional<Expertise> oExpertise = expertiseService.findByName(dto.getName());
 
-               Expertise profession = expertiseMapper.toEntity(dto);
-               profession.setPathIcon((String) data.get("url"));
-               expertiseService.save(profession);
-               List<Expertise> professions = expertiseService.findAll();
-               List<ExpertiseDTO> professionDTOs = professions.stream()
-                       .map(s -> expertiseMapper.toDto(s))
-                       .collect(Collectors.toList());
-               redirectAttributes.addFlashAttribute("msg", "Profissão salva com sucesso!");
+        if (oExpertise.isPresent()) {
+            errors.rejectValue(null, "A especialidade já está cadastrada!");
+            return errorFowarding(dto, errors);
+        }
 
-               return new ModelAndView("redirect:especialidades");
-           }
+        Map data = null;
+        try {
+            File jobImage = Files.createTempFile("temp", dto.getIcon().getOriginalFilename()).toFile();
+            dto.getIcon().transferTo(jobImage);
+            data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "images"));
 
-           File jobImage = Files.createTempFile("temp", dto.getIcon().getOriginalFilename()).toFile();
-           dto.getIcon().transferTo(jobImage);
-           Map data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "images"));
+        }catch (IOException exception) {
+            errors.rejectValue("name", "error.dto", "Houve um erro ao manipular o ícone.");
+            return errorFowarding(dto, errors);
+        }
 
-           Expertise profession = expertiseMapper.toEntity(dto);
-           profession.setPathIcon((String) data.get("url"));
-           expertiseService.save(profession);
-           List<Expertise> professions = expertiseService.findAll();
-           List<ExpertiseDTO> professionDTOs = professions.stream()
-                   .map(s -> expertiseMapper.toDto(s))
-                   .collect(Collectors.toList());
-           redirectAttributes.addFlashAttribute("msg", "Profissão atualizada com sucesso!");
+        Expertise expertise = expertiseMapper.toEntity(dto);
+        expertise.setPathIcon(data != null ? (String) data.get("url") : "");
+        expertiseService.save(expertise);
 
-           return new ModelAndView("redirect:especialidades");
+        redirectAttributes.addFlashAttribute("msg", "Profissão salva com sucesso!");
 
-       }catch (IOException exception) {
-           errors.rejectValue("name", "error.dto", "A profissão já está cadastrada.");
-           return errorFowarding(dto, errors);
-       }
+        return new ModelAndView("redirect:especialidades");
     }
 
     @GetMapping("/{id}")
@@ -134,19 +132,21 @@ public class ExpertiseController {
                                           @RequestParam(value = "siz", defaultValue = "4") int size,
                                           @RequestParam(value = "ord", defaultValue = "name") String order,
                                           @RequestParam(value = "dir", defaultValue = "ASC") String direction){
+
         ModelAndView mv = new ModelAndView("admin/profession-registration");
 
         if(id < 0){
             throw new InvalidParamsException("O identificador não pode ser negativo.");
         }
 
-        Optional<Expertise> optionalProfession = expertiseService.findById(id);
+        Optional<Expertise> oExpertise = expertiseService.findById(id);
 
-        if(!optionalProfession.isPresent()){
-            throw new EntityNotFoundException("O aluno não foi encontrado pelo id informado.");
+        if(!oExpertise.isPresent()){
+            throw new EntityNotFoundException("A especialidade não foi encontrada!");
         }
-        ExpertiseDTO professionDTO = expertiseMapper.toDto(optionalProfession.get());
-        mv.addObject("dto", professionDTO);
+
+        ExpertiseDTO expertiseDTO = expertiseMapper.toDto(oExpertise.get());
+        mv.addObject("dto", expertiseDTO);
 
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
         Page<Expertise> professionPage = expertiseService.findAll(pageRequest);
