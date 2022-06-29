@@ -24,8 +24,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -206,7 +208,7 @@ public class ClientController {
                     return jobRequestMapper.toFullDto(jobRequest, Optional.ofNullable(0L));
                 }).collect(Collectors.toList());
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/meus-pedidos/disponiveis");
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/cliente/meus-pedidos/disponiveis");
 
         ModelAndView mv = new ModelAndView("client/job-request/tabs/available-jobs-report");
         mv.addObject("pagination", paginationDTO);
@@ -247,7 +249,7 @@ public class ClientController {
                     return jobCandidateMapper.toMinDto(jobCandidate, Optional.ofNullable(0L));
                 }).collect(Collectors.toList());
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/meus-pedidos/em-orcamento");
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/cliente/meus-pedidos/em-orcamento");
 
         ModelAndView mv = new ModelAndView("client/job-request/tabs/disputed-jobs-report");
         mv.addObject("pagination", paginationDTO);
@@ -275,7 +277,7 @@ public class ClientController {
         Page<JobCandidate> jobCandidatePage = null;
         List<JobCandidateMinDTO> jobCandidateDTOs = null;
 
-         jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.TO_DO, client.get(),pageRequest);
+        jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.TO_DO, client.get(),pageRequest);
 
         jobCandidateDTOs = jobCandidatePage.stream()
                 .map(jobCandidate -> {
@@ -288,7 +290,7 @@ public class ClientController {
                     return jobCandidateMapper.toMinDto(jobCandidate, Optional.ofNullable(0L));
                 }).collect(Collectors.toList());
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/meus-pedidos/para-fazer");
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/cliente/meus-pedidos/para-fazer");
 
         ModelAndView mv = new ModelAndView("client/job-request/tabs/todo-jobs-report");
         mv.addObject("pagination", paginationDTO);
@@ -330,7 +332,7 @@ public class ClientController {
                 })
                 .collect(Collectors.toList());
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobContractedPage, "/minha-conta/meus-pedidos/executados");
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobContractedPage, "/minha-conta/cliente/meus-pedidos/executados");
 
         ModelAndView mv = new ModelAndView("client/job-request/tabs/executed-jobs-report");
 

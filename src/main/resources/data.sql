@@ -84,6 +84,7 @@ INSERT INTO job_requests
 VALUES ('false', '2021-01-01', '2021-01-01', 'Preciso de um Encanador 1!', 'true', '5', 'AVAILABLE', '1', '1'),
        ('false', '2021-01-01', '2021-01-02', 'Preciso de um Encanador 2!', 'true', '10', 'AVAILABLE', '1', '1'),
        ('false', '2021-01-01', '2021-01-07', 'Preciso de um Encanador 3!', 'true', '15', 'AVAILABLE', '1', '1'),
+       ('false', '2021-01-01', '2021-01-07', 'Preciso de um Encanador 30!', 'true', '15', 'AVAILABLE', '1', '1'),
        ('false', '2021-01-01', '2021-01-08', 'Preciso de um Encanador 4!', 'true', '20', 'TO_DO', '1', '1'), -- 4
        ('false', '2021-01-01', '2021-01-08', 'Preciso de um Encanador 5!', 'true', '20', 'CLOSED', '1', '1'),
        ('false', '2021-01-01', '2021-01-08', 'Preciso de um Encanador 6!', 'true', '20', 'CLOSED', '1', '1'),

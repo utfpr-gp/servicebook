@@ -17,7 +17,7 @@ public class JobRequestDTO implements Serializable {
 
     private Long id;
 
-    @NotNull(message = "Especialidade inválida! Por favor, selecione uma especialidade profissional.", groups = RequestExpertiseGroupValidation.class)
+    @NotNull(message = "Especialidade inválida! Por favor, selecione uma especialidade de um profissional.", groups = RequestExpertiseGroupValidation.class)
     private Long expertiseId;
 
     private Long clientId;
@@ -43,21 +43,21 @@ public class JobRequestDTO implements Serializable {
 //    @Pattern(regexp="\\d{5}-?\\d{3}",message="Por favor, preencha um CEP válido", groups = RequestClientInfoGroupValidation.class)
 //    private String cep;
 
-    @NotBlank(message = "O campo Nome é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
-    @Pattern(regexp="^(\\s?[A-ZÀ-Ú][a-zà-ú]*)+(\\s[a-zà-ú]*)?(\\s[A-ZÀ-Ú][a-zà-ú]*)+",message="Por favor, preencha um nome válido", groups = RequestClientInfoGroupValidation.class)
-    private String nameClient;
-
-    @Email(message = "O campo E-mail é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
-    @Pattern(regexp="\\w+@\\w+\\.\\w{3}(\\.\\w{2})?",message="Por favor, preencha um e-mail válido", groups = RequestClientInfoGroupValidation.class)
-    private String emailClient;
-
-    @NotBlank(message = "O campo Celular é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
-    @Pattern(regexp="^\\(?\\d{2}\\)?\\s?(9\\d{4})-?(\\d{4})",message="Por favor, preencha um celular válido, deve possuir o 9 após o DDD", groups = RequestClientInfoGroupValidation.class)
-    private String phone;
-
-    @NotBlank(message = "O campo CPF é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
-    @CPF(message = "O CPF é inválido!", groups = RequestClientInfoGroupValidation.class)
-    private String cpf;
+//    @NotBlank(message = "O campo Nome é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
+//    @Pattern(regexp="^(\\s?[A-ZÀ-Ú][a-zà-ú]*)+(\\s[a-zà-ú]*)?(\\s[A-ZÀ-Ú][a-zà-ú]*)+",message="Por favor, preencha um nome válido", groups = RequestClientInfoGroupValidation.class)
+//    private String nameClient;
+//
+//    @Email(message = "O campo E-mail é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
+//    @Pattern(regexp="\\w+@\\w+\\.\\w{3}(\\.\\w{2})?",message="Por favor, preencha um e-mail válido", groups = RequestClientInfoGroupValidation.class)
+//    private String emailClient;
+//
+//    @NotBlank(message = "O campo Celular é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
+//    @Pattern(regexp="^\\(?\\d{2}\\)?\\s?(9\\d{4})-?(\\d{4})",message="Por favor, preencha um celular válido, deve possuir o 9 após o DDD", groups = RequestClientInfoGroupValidation.class)
+//    private String phone;
+//
+//    @NotBlank(message = "O campo CPF é de preenchimento obrigatório", groups = RequestClientInfoGroupValidation.class)
+//    @CPF(message = "O CPF é inválido!", groups = RequestClientInfoGroupValidation.class)
+//    private String cpf;
 
     private Boolean clientConfirmation;
 
