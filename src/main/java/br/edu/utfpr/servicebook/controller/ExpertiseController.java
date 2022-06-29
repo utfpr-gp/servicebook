@@ -144,10 +144,16 @@ public class ExpertiseController {
         if(!oExpertise.isPresent()){
             throw new EntityNotFoundException("A especialidade não foi encontrada!");
         }
-
+        String icon = oExpertise.get().getPathIcon();
         ExpertiseDTO expertiseDTO = expertiseMapper.toDto(oExpertise.get());
         mv.addObject("dto", expertiseDTO);
+        mv.addObject("icon", icon);
+        String[] urlExplode = icon.split("/");
 
+        String id_icon = urlExplode[urlExplode.length-1];
+        System.out.println("idIcon = " + id_icon);
+        mv.addObject("idIcon", id_icon);
+        System.out.println("icon = " + icon);
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
         Page<Expertise> professionPage = expertiseService.findAll(pageRequest);
 
@@ -162,17 +168,23 @@ public class ExpertiseController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
         log.debug("Removendo uma profissão com id {}", id);
         Optional <Expertise> optionalProfession = this.expertiseService.findById(id);
+        ExpertiseDTO expertiseDTO = expertiseMapper.toDto(optionalProfession.get());
 
         if(!optionalProfession.isPresent()){
             throw new EntityNotFoundException("Erro ao remover, registro não encontrado para o id " + id);
         }
 
-        this.expertiseService.delete(id);
-        redirectAttributes.addFlashAttribute("msg", "Profissão removida com sucesso!");
-        return "redirect:/especialidades";
+        try{
+            this.expertiseService.delete(id);
+            redirectAttributes.addFlashAttribute("msg", "Profissão removida com sucesso!");
+            return "redirect:/especialidades";
+        }catch (Exception exception) {
+            redirectAttributes.addFlashAttribute("msgError", "Profissão não pode ser removida pois já esta sendo utilizada por profissionais!");
+            return "redirect:/especialidades";
+        }
     }
 
     public ModelAndView errorFowarding(ExpertiseDTO dto, BindingResult errors) {

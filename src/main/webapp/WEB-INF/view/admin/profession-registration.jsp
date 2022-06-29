@@ -31,11 +31,11 @@
                                 </div>
                                 <div class="file-field input-field">
                                     <div class="btn">
-                                        <span>Choose File</span>
-                                        <input type="file" value="${dto.icon}" name="icon" accept=".svg">
+                                        <span>Adicionar ícone</span>
+                                        <input type="file" value="${icon}" name="icon" accept=".svg">
                                     </div>
                                     <div class="file-path-wrapper">
-                                        <input class="file-path validate" placeholder="icon.svg"  type="text">
+                                        <input class="file-path validate" placeholder="icon.svg"  type="text" value="${idIcon}">
                                     </div>
                                 </div>
 
@@ -50,6 +50,15 @@
                                     <div class="col s12 l4 offset-l4">
                                         <div class="card-panel green lighten-1 msg-view center-align">
                                             <span class="white-text">${msg}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:if>
+                            <c:if test="${not empty msgError}">
+                                <div class="row">
+                                    <div class="col s12 l4 offset-l4">
+                                        <div class="card-panel red msg-view center-align">
+                                            <span class="white-text">${msgError}</span>
                                         </div>
                                     </div>
                                 </div>
