@@ -94,6 +94,12 @@ public class ExpertiseController {
             return errorFowarding(dto, errors);
         }
 
+        if(!isValidateImage(dto.getIcon())) {
+            errors.rejectValue("icon", "dto.icon", "Formato do icone inválido");
+            return errorFowarding(dto, errors);
+        }
+
+
         Optional<Expertise> oExpertise = expertiseService.findByName(dto.getName());
         if (oExpertise.isPresent()) {
             errors.rejectValue(null, "A especialidade já está cadastrada!");
