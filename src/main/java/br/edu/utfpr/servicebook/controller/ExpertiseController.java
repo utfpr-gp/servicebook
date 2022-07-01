@@ -187,7 +187,6 @@ public class ExpertiseController {
     }
 
     public boolean isValidateImage(MultipartFile image){
-        System.out.println("image = " + image.getContentType());
         List<String> contentTypes = Arrays.asList("image/svg");
 
         for(int i = 0; i < contentTypes.size(); i++){
