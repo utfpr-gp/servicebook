@@ -21,6 +21,7 @@ public class ExpertiseDTO implements Serializable {
     @NotBlank(message = "O nome da especialidade é obrigatório")
     private String name;
 
+    @NotBlank(message = "Descrição é obrigatório")
     private String description;
 
     private MultipartFile icon;

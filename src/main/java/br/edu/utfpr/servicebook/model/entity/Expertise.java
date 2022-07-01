@@ -34,7 +34,9 @@ public class Expertise {
 	@Column(unique = true)
 	private String name;
 
+	@NonNull
 	private String description;
 
+	@NonNull
 	private String pathIcon;
 }

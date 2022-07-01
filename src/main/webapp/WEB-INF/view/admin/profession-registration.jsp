@@ -32,11 +32,15 @@
                                 <div class="file-field input-field">
                                     <div class="btn">
                                         <span>Adicionar ícone</span>
-                                        <input type="file" value="${icon}" name="icon" accept=".svg">
+                                        <input type="file" value="${dto.icon}" name="icon" accept=".svg">
                                     </div>
                                     <div class="file-path-wrapper">
                                         <input class="file-path validate" placeholder="icon.svg"  type="text" value="${idIcon}">
                                     </div>
+                                </div>
+
+                                <div class="col s10 offset-s1 spacing-buttons">
+                                    <img src="${icon}" width="100%" class="materialboxed">
                                 </div>
 
                             </div>
@@ -108,7 +112,9 @@
                                         <tr>
                                             <td>${p.id}</td>
                                             <td>${p.name}</td>
-                                            <td><img class="circle" src="${p.pathIcon}"></td>
+                                            <td>
+                                                <img class="circle" src="${p.pathIcon}" height="24" width="24">
+                                            </td>
                                             <td><a href="especialidades/${p.id}" class="btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">edit</i></a></td>
                                             <td><a href="#modal-delete" class="btn-floating btn-small waves-effect waves-light red modal-trigger" data-url="${pageContext.request.contextPath}/especialidades/${p.id}" data-name="${p.name}"><i class="material-icons">delete_forever</i></a></td>
                                         </tr>

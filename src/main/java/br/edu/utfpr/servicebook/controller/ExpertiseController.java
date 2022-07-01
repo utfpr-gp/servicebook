@@ -94,13 +94,7 @@ public class ExpertiseController {
             return errorFowarding(dto, errors);
         }
 
-        if(!isValidateImage(dto.getIcon())) {
-            errors.rejectValue("pathIcon", "error.dto", "Formato de imagem invalido");
-            return errorFowarding(dto, errors);
-        }
-
         Optional<Expertise> oExpertise = expertiseService.findByName(dto.getName());
-
         if (oExpertise.isPresent()) {
             errors.rejectValue(null, "A especialidade já está cadastrada!");
             return errorFowarding(dto, errors);
@@ -116,9 +110,8 @@ public class ExpertiseController {
             errors.rejectValue("name", "error.dto", "Houve um erro ao manipular o ícone.");
             return errorFowarding(dto, errors);
         }
-
+        dto.setPathIcon(data != null ? (String) data.get("url") : oExpertise.get().getPathIcon());
         Expertise expertise = expertiseMapper.toEntity(dto);
-        expertise.setPathIcon(data != null ? (String) data.get("url") : "");
         expertiseService.save(expertise);
 
         redirectAttributes.addFlashAttribute("msg", "Profissão salva com sucesso!");
@@ -151,9 +144,7 @@ public class ExpertiseController {
         String[] urlExplode = icon.split("/");
 
         String id_icon = urlExplode[urlExplode.length-1];
-        System.out.println("idIcon = " + id_icon);
         mv.addObject("idIcon", id_icon);
-        System.out.println("icon = " + icon);
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
         Page<Expertise> professionPage = expertiseService.findAll(pageRequest);
 
@@ -196,6 +187,7 @@ public class ExpertiseController {
     }
 
     public boolean isValidateImage(MultipartFile image){
+        System.out.println("image = " + image.getContentType());
         List<String> contentTypes = Arrays.asList("image/svg");
 
         for(int i = 0; i < contentTypes.size(); i++){
