@@ -2,6 +2,7 @@ package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.dto.IndividualMinDTO;
 import br.edu.utfpr.servicebook.model.dto.JobCandidateDTO;
+import br.edu.utfpr.servicebook.model.dto.JobCandidateMinDTO;
 import br.edu.utfpr.servicebook.model.dto.JobRequestMinDTO;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.JobCandidate;
@@ -15,6 +16,8 @@ import br.edu.utfpr.servicebook.service.JobRequestService;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -69,5 +72,25 @@ public class JobCandidateController {
         redirectAttributes.addFlashAttribute("msg", "Candidatura realizada com sucesso!");
 
         return new ModelAndView("redirect:minha-conta/profissional");
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
+
+        Optional<Individual> oindividual = individualService.findByEmail(currentUserEmail);
+        if(!oindividual.isPresent()){
+            throw new EntityNotFoundException("O usuário não foi encontrado!");
+        }
+
+        Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(id, oindividual.get().getId());
+        if(!oJobCandidate.isPresent()) {
+            throw new EntityNotFoundException("Candidatura não encontrada!");
+        }
+
+        jobCandidateService.delete(id, oindividual.get().getId());
+        redirectAttributes.addFlashAttribute("msg", "Candidatura cancelada com sucesso!");
+
+        return "redirect:/minha-conta/profissional#emDisputa";
     }
 }

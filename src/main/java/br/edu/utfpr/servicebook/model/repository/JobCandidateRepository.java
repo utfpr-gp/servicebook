@@ -4,6 +4,9 @@ import br.edu.utfpr.servicebook.model.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -71,4 +74,12 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
 
     Page<JobCandidate> findByJobRequest_StatusAndJobRequest_Individual(JobRequest.Status status, Individual individual, Pageable pageable);
 
+    @Transactional
+    @Modifying
+    @Query("delete from JobCandidate j where j.jobRequest.id = ?1 and j.individual.id = ?2")
+    void deleteById(Long jobId, Long individualId);
+
+
+    @Query("select j from JobCandidate j where j.jobRequest.id = ?1 and j.individual.id = ?2")
+    Optional<JobCandidate> findByJobIdAndIndividualId(Long jobId, Long individualId);
 }
