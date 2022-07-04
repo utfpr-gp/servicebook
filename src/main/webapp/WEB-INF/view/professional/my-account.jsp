@@ -25,6 +25,15 @@
                             </blockquote>
                         </div>
                         <div class="col s12">
+                            <c:if test="${not empty msg}">
+                                <div class="row">
+                                    <div class="col s12 l4 offset-l4">
+                                        <div class="card-panel green lighten-1 msg-view center-align">
+                                            <span class="white-text">${msg}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:if>
                             <div class="row">
                                 <div class="container center">
                                     <a href="minha-conta/profissional" class="waves-effect waves-light btn"><i class="material-icons right">sync</i>ATUALIZAR</a>

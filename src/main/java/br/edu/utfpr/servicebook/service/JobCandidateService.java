@@ -42,4 +42,11 @@ public class JobCandidateService {
         return jobCandidateRepository.save(entity);
     }
 
+    public void delete(Long jobId, Long individualId) {
+        jobCandidateRepository.deleteById(jobId, individualId);
+    }
+
+    public Optional<JobCandidate> findById(Long jobId, Long individualId) {
+        return jobCandidateRepository.findByJobIdAndIndividualId(jobId, individualId);
+    }
 }
