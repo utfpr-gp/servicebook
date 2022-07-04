@@ -31,11 +31,11 @@ public class IndexService {
     IndividualRepository clientRepository;
 
     public void initialize(){
-        Expertise expertise1 = new Expertise("Encanador");
-        Expertise expertise2 = new Expertise("Eletricista");
-        Expertise expertise3 = new Expertise("Pintor");
-        Expertise expertise4 = new Expertise("Jardineiro");
-        Expertise expertise5 = new Expertise("Pedreiro");
+        Expertise expertise1 = new Expertise("Encanador", "realiza serviço como encanador", "https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg");
+        Expertise expertise2 = new Expertise("Eletricista", "realiza serviço como eletricista", "https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg");
+        Expertise expertise3 = new Expertise("Pintor", "realiza serviço como pintor", "https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg");
+        Expertise expertise4 = new Expertise("Jardineiro", "realiza serviço como jardineiro", "https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg");
+        Expertise expertise5 = new Expertise("Pedreiro", "realiza serviço como pedreiro", "https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg");
         expertiseRepository.saveAll(Arrays.asList(expertise1, expertise2, expertise3, expertise4, expertise5));
 
         Individual individual1 = new Individual("Darth Vader", "darth_vader@mail.com", "Senha123", "(42)9 9999-9999", CPFUtil.geraCPF());
