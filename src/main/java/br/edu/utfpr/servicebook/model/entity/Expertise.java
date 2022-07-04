@@ -26,6 +26,12 @@ public class Expertise {
 
 	private static final long serialVersionUID = 1L;
 
+	public Expertise(String name, String description, String pathIcon){
+		this.name = name;
+		this.description = description;
+		this.pathIcon = pathIcon;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -34,9 +40,9 @@ public class Expertise {
 	@Column(unique = true)
 	private String name;
 
-	@NonNull
+	@Column(nullable = false)
 	private String description;
 
-	@NonNull
+	@Column(nullable = false)
 	private String pathIcon;
 }

@@ -95,14 +95,14 @@ public class ExpertiseController {
         }
 
         if(!isValidateImage(dto.getIcon())) {
-            errors.rejectValue("icon", "dto.icon", "Formato do icone inválido");
+            errors.rejectValue("icon", "dto.icon", "Por favor, envie um ícone no formato SVG.");
             return errorFowarding(dto, errors);
         }
 
 
         Optional<Expertise> oExpertise = expertiseService.findByName(dto.getName());
         if (oExpertise.isPresent()) {
-            errors.rejectValue(null, "A especialidade já está cadastrada!");
+            errors.rejectValue("name", "error.dto", "A especialidade já está cadastrada!");
             return errorFowarding(dto, errors);
         }
 
@@ -143,14 +143,17 @@ public class ExpertiseController {
         if(!oExpertise.isPresent()){
             throw new EntityNotFoundException("A especialidade não foi encontrada!");
         }
+
         String icon = oExpertise.get().getPathIcon();
         ExpertiseDTO expertiseDTO = expertiseMapper.toDto(oExpertise.get());
         mv.addObject("dto", expertiseDTO);
         mv.addObject("icon", icon);
-        String[] urlExplode = icon.split("/");
 
-        String id_icon = urlExplode[urlExplode.length-1];
-        mv.addObject("idIcon", id_icon);
+        String[] urlExplode = icon.split("/");
+        String idIcon = urlExplode[urlExplode.length-1];
+
+        mv.addObject("idIcon", idIcon);
+
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
         Page<Expertise> professionPage = expertiseService.findAll(pageRequest);
 
@@ -203,5 +206,4 @@ public class ExpertiseController {
 
         return false;
     }
-
 }
