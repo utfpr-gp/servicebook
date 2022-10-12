@@ -1,39 +1,54 @@
 package br.edu.utfpr.servicebook.model.entity;
 
-import java.sql.Date;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import javax.persistence.*;
+
+import lombok.*;
+
+import java.util.Date;
 
 /**
  * Classe para armazenar as informações necessárias para a classe auxiliar n x n
  */
+
 @Data
-@Table(name = "job_candidates")
 @NoArgsConstructor
-@RequiredArgsConstructor
+@EqualsAndHashCode(exclude={"jobRequest","professional"})
+
+@Table(name = "job_candidates")
 @Entity
 public class JobCandidate {
 
-	private static final long serialVersionUID = 1L; 
-	
+	private static final long serialVersionUID = 1L;
+
 	@EmbeddedId
 	private JobCandidatePK id;
-	
-	@NonNull
+
 	private boolean isQuit;
-	
-	@NonNull
+
 	private boolean chosenByBudget;
-	
-	@NonNull
-	private Date date; 
-	
+
+	private Date date;
+
+	@ManyToOne
+	@MapsId("jobRequestId")
+	@JoinColumn(name = "job_id")
+	private JobRequest jobRequest;
+
+	@ManyToOne
+	@MapsId("professionalId")
+	@JoinColumn(name = "professional_id")
+	private Individual individual;
+
+	public JobCandidate(JobRequest jobRequest, Individual individual) {
+		this.jobRequest = jobRequest;
+		this.individual = individual;
+		this.id = new JobCandidatePK(jobRequest.getId(), individual.getId());
+	}
+
+	@PrePersist
+	public void onPersist() {
+		this.date = new Date();
+	}
 }

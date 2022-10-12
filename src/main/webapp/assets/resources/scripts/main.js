@@ -5,8 +5,8 @@ $(document).ready(function (){
         $('#img-city').attr("src", selectedCountry);
     });
 
-    $(document).on('input change', '#input-range', function() {
-        $('#value-input-range').html( $(this).val() );
+    $('#quantityCandidatorsMax').on('input', function() {
+        $('#value-input-range').html($(this).val());
     });
 
     //Tempo de exibição de mensagens

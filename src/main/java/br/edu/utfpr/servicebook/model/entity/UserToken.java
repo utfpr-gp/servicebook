@@ -1,6 +1,6 @@
 package br.edu.utfpr.servicebook.model.entity;
 
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -42,6 +42,6 @@ public class UserToken {
 	private String type;
 	
 	@NonNull
-	private Date expired_date;
+	private Date expiredDate;
 	
 }

@@ -3,6 +3,10 @@ package br.edu.utfpr.servicebook.exception;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -39,11 +43,40 @@ public class GlobalExceptionHandler {
 		return mv;
 	}
 
+	/**
+	 * Disparado quando não é possível encontrar os dados do usuário na sessão.
+	 * AccessDeniedException é lançado pelo Spring ao acessar rota sem permissão
+	 * AuthenticationCredentialsNotFoundException lançado pelo desenvolvedor ao não encontrar o usuário na sesão
+	 * @param e
+	 * @return
+	 */
+	@ExceptionHandler({AuthenticationCredentialsNotFoundException.class, AccessDeniedException.class})
+	public ModelAndView handleException(HttpServletRequest req, AuthenticationCredentialsNotFoundException e) {
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("message", e.getMessage());
+		mv.addObject("url", req.getRequestURL());
+		mv.setViewName("error/error-handler");
+		return mv;
+	}
+
 	@ExceptionHandler(value = InvalidParamsException.class)
-	public String invalidException(HttpServletRequest req, Exception e) throws Exception {
+	public ModelAndView invalidException(HttpServletRequest req, Exception e) throws Exception {
 
 		log.error("[URL] : {}", req.getRequestURL(), e);
-		return "error/4xx";
+
+		ModelAndView mv = new ModelAndView();
+
+		if(e.getMessage() != null) {
+			mv.addObject("message", e.getMessage());
+			mv.addObject("url", req.getRequestURL());
+			mv.setViewName("error/error-handler");
+
+			return mv;
+		}
+
+		mv.setViewName("error/error/4xx");
+
+		return mv;
 	}
 
 	/**
@@ -56,10 +89,23 @@ public class GlobalExceptionHandler {
 	 * @throws Exception
 	 */
 	@ExceptionHandler(value = EntityNotFoundException.class)
-	public String entityNotFound(HttpServletRequest req, Exception e) throws Exception {
+	public ModelAndView entityNotFound(HttpServletRequest req, Exception e) throws Exception {
 
 		log.error("[URL] : {}", req.getRequestURL(), e);
-		return "error/not-found";
+
+		ModelAndView mv = new ModelAndView();
+
+		if(e.getMessage() != null) {
+			mv.addObject("message", e.getMessage());
+			mv.addObject("url", req.getRequestURL());
+			mv.setViewName("error/error-handler");
+
+			return mv;
+		}
+
+		mv.setViewName("error/not-found");
+
+		return mv;
 	}
 
 	/**

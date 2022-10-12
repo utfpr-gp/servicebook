@@ -1,71 +1,86 @@
 package br.edu.utfpr.servicebook.model.entity;
 
-import java.sql.Date;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import br.edu.utfpr.servicebook.util.DateUtil;
+import lombok.*;
 
 @Data
 @Table(name = "job_requests")
 @NoArgsConstructor
 @RequiredArgsConstructor
+@EqualsAndHashCode(exclude={"individual", "jobCandidates", "jobContracted", "expertise", "jobImages"})
+@ToString(exclude={"individual", "jobCandidates", "jobContracted", "expertise", "jobImages"})
 @Entity
 public class JobRequest {
+	/**
+	 * AVAILABLE: disponível para candidaturas e permanece neste estado também durante o recebimento de candidaturas
+	 * BUDGET: passa para este estado quando alcançado o total de candidaturas esperado ou quando o cliente encerra o recebimento de candidaturas
+	 * TO_DO: o profissional foi escolhido para fazer o serviço e o serviço ainda não foi realizado
+	 * CLOSED: o serviço foi realizado
+	 */
+	public enum Status {
+		AVAILABLE, BUDGET, TO_DO, CLOSED
+	};
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "client_id")
-	private Client client;
+	private Individual individual;
 	
 	@ManyToOne
 	@JoinColumn(name = "expertise_id")
 	private Expertise expertise;
-	
+
 	@NonNull
-	private String status;
+	@Enumerated(EnumType.STRING)
+	private Status status;
 	
 	@NonNull
 	private String description;
-	
+
 	@NonNull
 	private int quantityCandidatorsMax;
-	
-	@NonNull
-	private Date dateProximity;
-	
-	@NonNull
+
+	@Temporal(TemporalType.DATE)
 	private Date dateCreated;
-	
+
+	@Temporal(TemporalType.DATE)
 	@NonNull
 	private Date dateExpired;
-	
-	@NonNull
+
 	private boolean clientConfirmation;
 	
-	@NonNull
 	private boolean professionalConfirmation;
-	
-	@OneToMany(mappedBy = "jobRequest")
+
+	@OneToMany(mappedBy = "jobRequest", cascade = CascadeType.REMOVE)
 	private Set<JobImages> jobImages = new HashSet<>();
 	
-	@OneToOne(mappedBy = "jobRequest")
+	@OneToOne(mappedBy = "jobRequest", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
 	private JobContracted jobContracted;
+
+	@OneToMany(mappedBy = "jobRequest", cascade = CascadeType.REMOVE)
+	Set<JobCandidate> jobCandidates = new HashSet<>();
+
+	@PrePersist
+	public void onPersist(){
+		final Date now = new Date();
+		this.dateCreated = now;
+		this.dateExpired = now;
+		this.status = Status.AVAILABLE;
+	}
+
+	@PreUpdate
+	public void onUpdate(){
+
+	}
 	
 }

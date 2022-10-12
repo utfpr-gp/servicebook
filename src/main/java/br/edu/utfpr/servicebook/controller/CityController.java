@@ -179,7 +179,7 @@ public class CityController {
 
         String[] urlExplode = urlImage.split("/");
 
-        String id_image = urlExplode[8];
+        String id_image = urlExplode[urlExplode.length-1];
         mv.addObject("idImage", id_image);
 
 
