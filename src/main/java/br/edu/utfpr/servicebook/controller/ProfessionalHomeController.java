@@ -129,16 +129,15 @@ public class ProfessionalHomeController {
                 throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
             }
 
-//            Optional<Integer> professionalExpertiseRating = professionalExpertiseService.selectRatingByProfessionalAndExpertise(oProfessional.get().getId(), oExpertise.get().getId());
-            SidePanelProfessionalExpertiseRatingDTO sidePanelProfessionalExpertiseRatingDTO = SidePanelUtil.sidePanelProfessionalExpertiseRatingDTO( professionalExpertiseService.selectRatingByProfessionalAndExpertise(oProfessional.get().getId(), oExpertise.get().getId()));
+            mv.addObject("id", id.get());
+            Integer ratingOnExpertise = oProfessionalExpertise.get().getRating();
+            mv.addObject("professionalExpertiseRating", ratingOnExpertise);
+
             sidePanelItensDTO = SidePanelUtil.sidePanelItensDTO(
                     jobContractedService.countByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get()),
                     jobContractedService.countCommentsByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get()),
                     jobContractedService.countRatingByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get())
             );
-
-            mv.addObject("id", id.get());
-            mv.addObject("professionalExpertiseRating", sidePanelProfessionalExpertiseRatingDTO);
         }
         mv.addObject("dataIndividual", sidePanelItensDTO);
 
