@@ -23,9 +23,12 @@ public class EmailSenderJob implements Job {
         JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
         String emailDestinatario = (String) jobDataMap.get("recipient");
         String code = (String) jobDataMap.get("token");
+        String link = (String) jobDataMap.get("link");
+
+        String text = "Código de acesso: " + code + " ou acesso o link: " + link;
 
         try {
-            emailSenderService.sendEmailToServer(emailDestinatario, "Service Book", code);
+            emailSenderService.sendEmailToServer(emailDestinatario, "Service Book", text);
         } catch (MessagingException e) {
             System.out.println(e.getMessage());
         }

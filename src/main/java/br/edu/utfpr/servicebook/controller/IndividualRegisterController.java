@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
@@ -206,7 +207,9 @@ public class IndividualRegisterController {
         } else {
             actualCode = oUserCode.get().getCode();
         }
-        quartzService.sendEmailToConfirmationCode(email, actualCode);
+
+        String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/login-by-token-email/" + actualCode;
+        quartzService.sendEmailToConfirmationCode(email, actualCode, tokenLink);
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setEmail(dto.getEmail());

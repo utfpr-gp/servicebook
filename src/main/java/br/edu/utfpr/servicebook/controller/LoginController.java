@@ -20,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
@@ -103,6 +104,37 @@ public class LoginController {
     }
 
     /**
+     * Retorna a página do usuário após verificar token de login.
+     * @return
+     * @throws IOException
+     */
+    @GetMapping("/login-by-token-email/{code}")
+    public String loginByTokenEmail(
+            @PathVariable("code") String code,
+            @Validated(LoginDTO.CodeGroupValidation.class) LoginDTO dto,
+            BindingResult errors,
+            Model model
+    ) throws IOException {
+        if (errors.hasErrors()) {
+            return this.codeErrorForwarding(dto, model, errors);
+        }
+
+        Optional<UserCode> oUserCode = userCodeService.findByCode(code);
+
+        if (!oUserCode.isPresent()) {
+            errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de autenticação.");
+            return this.codeErrorForwarding(dto, model, errors);
+        }
+
+        if (!dto.getCode().equals(oUserCode.get().getCode())) {
+            errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de autenticação.");
+            return this.codeErrorForwarding(dto, model, errors);
+        }
+
+        return "redirect:/minha-conta/cliente";
+    }
+
+    /**
      * Valida e persiste o email na sessão.
      *
      * @param httpSession
@@ -144,10 +176,12 @@ public class LoginController {
             UserCode userCode = new UserCode(dto.getEmail(), code);
             userCodeService.save(userCode);
 
-            quartzService.sendEmailToConfirmationCode(dto.getEmail(), code);
+            String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/login-by-token-email/" + code;
+            quartzService.sendEmailToConfirmationCode(dto.getEmail(), code, tokenLink);
 
         } else {
-            quartzService.sendEmailToConfirmationCode(dto.getEmail(), oUserCode.get().getCode());
+            String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/login-by-token-email/" + oUserCode.get().getCode();
+            quartzService.sendEmailToConfirmationCode(dto.getEmail(), oUserCode.get().getCode(), tokenLink);
 
         }
 

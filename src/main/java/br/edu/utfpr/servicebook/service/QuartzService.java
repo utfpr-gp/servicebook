@@ -25,6 +25,7 @@ public class QuartzService {
     private SchedulerFactory factory;
     private static final String RECIPIENT = "recipient";
     private static final String TOKEN = "token";
+    private static final String LINK = "link";
     private static final String GROUP = "group1";
 
     @PostConstruct
@@ -39,12 +40,13 @@ public class QuartzService {
         }
     }
 
-    public void sendEmailToConfirmationCode(String email, String emailCode) {
+    public void sendEmailToConfirmationCode(String email, String emailCode, String link) {
         try {
             JobDetail job = JobBuilder.newJob(EmailSenderJob.class)
                     .withIdentity(EmailSenderJob.class.getSimpleName(), GROUP).build();
             job.getJobDataMap().put(RECIPIENT, email);
             job.getJobDataMap().put(TOKEN, emailCode);
+            job.getJobDataMap().put(LINK, link);
             Trigger trigger = getTrigger(EmailSenderJob.class.getSimpleName(), GROUP);
 
             scheduler.scheduleJob(job, trigger);
