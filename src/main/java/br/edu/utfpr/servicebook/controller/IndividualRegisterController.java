@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-//TESTE COMMIT LUCAS AURELIO
 @Controller
 @Slf4j
 @RequestMapping("/cadastrar-se")
@@ -167,6 +166,17 @@ public class IndividualRegisterController {
         IndividualDTO dto = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         model.addAttribute("dto", dto);
         return "visitor/user-registration/wizard-step-0" + step;
+    }
+
+    private void clearAllFields(IndividualDTO dto, ProfessionalExpertiseDTO professionalDTO) {
+        dto.setName("");
+        dto.setPassword("");
+        dto.setRepassword("");
+        dto.setPhoneNumber("");
+        dto.setEmail("");
+        dto.setCpf("");
+
+        professionalDTO.setIds(null);
     }
 
     @PostMapping("/passo-1")
@@ -478,19 +488,21 @@ public class IndividualRegisterController {
 
         Individual user = individualMapper.toEntity(sessionDTO);
 
-        for (int id : professionalExpertiseDTO.getIds()) {
-            Optional<Expertise> e = expertiseService.findById((Long.valueOf(id)));
-            if (!e.isPresent()) {
-                throw new Exception("Não existe essa especialidade!");
+        if (professionalExpertiseDTO.getIds() != null)
+            for (int id : professionalExpertiseDTO.getIds()) {
+                Optional<Expertise> e = expertiseService.findById((Long.valueOf(id)));
+                if (!e.isPresent()) {
+                    throw new Exception("Não existe essa especialidade!");
+                }
+
+                ProfessionalExpertise professionalExpertise = new ProfessionalExpertise(user, e.get());
+
+                individualService.saveExpertisesIndividual(user, professionalExpertise);
             }
-
-            ProfessionalExpertise professionalExpertise = new ProfessionalExpertise(user, e.get());
-
-            individualService.saveExpertisesIndividual(user, professionalExpertise);
-        }
 
         redirectAttributes.addFlashAttribute("msg", "Usuário cadastrado com sucesso! Realize o login no Servicebook!");
         status.setComplete();
+        this.clearAllFields(sessionDTO, professionalExpertiseDTO);
 
         return "redirect:/login";
     }
