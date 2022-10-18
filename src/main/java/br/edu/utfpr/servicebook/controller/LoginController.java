@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.Optional;
 
 @RequestMapping("/login")
-@SessionAttributes("loginUser")
 @Controller
 public class LoginController {
 
@@ -177,11 +176,11 @@ public class LoginController {
             userCodeService.save(userCode);
 
             String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/login-by-token-email/" + code;
-            quartzService.sendEmailToConfirmationCode(dto.getEmail(), code, tokenLink);
+            quartzService.sendEmailWithAuthenticatationCode(dto.getEmail(), code, tokenLink);
 
         } else {
             String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/login-by-token-email/" + oUserCode.get().getCode();
-            quartzService.sendEmailToConfirmationCode(dto.getEmail(), oUserCode.get().getCode(), tokenLink);
+            quartzService.sendEmailWithAuthenticatationCode(dto.getEmail(), oUserCode.get().getCode(), tokenLink);
 
         }
 
