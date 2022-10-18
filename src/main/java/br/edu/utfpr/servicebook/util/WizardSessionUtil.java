@@ -15,6 +15,15 @@ public class WizardSessionUtil<T> {
 
     public static final String KEY_LOGIN = "loginUser";
     public static final String KEY_EXERPERTISES = "wizardExerpertises";
+
+    /**
+     * Retorna um objeto DTO para armazenar os dados do Wizard na sessão.
+     * Caso não exista este DTO, ele é criado e retornado.
+     * @param httpSession
+     * @param clazz nome da classe do DTO
+     * @param wizard nome da chave do atributo na sessão
+     * @return
+     */
     public T getWizardState(HttpSession httpSession, Class<T> clazz, String wizard) {
 
         T wizardDTO = (T) httpSession.getAttribute(wizard);
@@ -31,10 +40,27 @@ public class WizardSessionUtil<T> {
         return wizardDTO;
     }
 
+    /**
+     * Retorna um objeto DTO para armazenar os dados do Wizard na sessão.
+     * Caso não exista este DTO, retorna nulo.
+     * @param httpSession
+     * @param clazz nome da classe do DTO
+     * @param wizard nome da chave do atributo na sessão
+     * @return
+     */
     public T getWizardStateOrNull(HttpSession httpSession, Class<T> clazz, String wizard) {
 
         T wizardDTO = (T) httpSession.getAttribute(wizard);
 
         return wizardDTO;
+    }
+
+    /**
+     * Remove o atributo da sessão
+     * @param httpSession
+     * @param wizard nome da chave do atributo na sessão
+     */
+    public void removeWizardState(HttpSession httpSession, String wizard) {
+        httpSession.removeAttribute(wizard);
     }
 }

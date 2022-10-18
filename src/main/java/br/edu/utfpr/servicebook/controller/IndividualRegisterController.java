@@ -1,16 +1,11 @@
 package br.edu.utfpr.servicebook.controller;
 
-import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.service.*;
-import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.NumberValidator;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelItensDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelProfessionalExpertiseRatingDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,14 +16,10 @@ import org.springframework.validation.SmartValidator;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.mail.MessagingException;
-import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,13 +28,14 @@ import java.util.stream.Collectors;
 @Controller
 @Slf4j
 @RequestMapping("/cadastrar-se")
-@SessionAttributes("wizard")
 public class IndividualRegisterController {
 
     @Autowired
     private WizardSessionUtil<IndividualDTO> wizardSessionUtil;
+
     @Autowired
     private WizardSessionUtil<ProfessionalExpertiseDTO> wizardSessionUtilExpertise;
+
     @Autowired
     private IndividualService individualService;
 
@@ -168,15 +160,13 @@ public class IndividualRegisterController {
         return "visitor/user-registration/wizard-step-0" + step;
     }
 
-    private void clearAllFields(IndividualDTO dto, ProfessionalExpertiseDTO professionalDTO) {
-        dto.setName("");
-        dto.setPassword("");
-        dto.setRepassword("");
-        dto.setPhoneNumber("");
-        dto.setEmail("");
-        dto.setCpf("");
+    /**
+     * Remove os dados do cadastro corrente da sessão a fim de permitir um novo cadastro.
+     */
+    private void resetSessionAttributes(HttpSession httpSession) {
 
-        professionalDTO.setIds(null);
+        wizardSessionUtil.removeWizardState(httpSession, WizardSessionUtil.KEY_WIZARD_USER);
+        wizardSessionUtil.removeWizardState(httpSession, WizardSessionUtil.KEY_EXERPERTISES);
     }
 
     @PostMapping("/passo-1")
@@ -488,7 +478,8 @@ public class IndividualRegisterController {
 
         Individual user = individualMapper.toEntity(sessionDTO);
 
-        if (professionalExpertiseDTO.getIds() != null)
+        /* Faz a busca pelas especialidades informadas e relaciona ao profissional */
+        if (professionalExpertiseDTO.getIds() != null) {
             for (int id : professionalExpertiseDTO.getIds()) {
                 Optional<Expertise> e = expertiseService.findById((Long.valueOf(id)));
                 if (!e.isPresent()) {
@@ -496,13 +487,12 @@ public class IndividualRegisterController {
                 }
 
                 ProfessionalExpertise professionalExpertise = new ProfessionalExpertise(user, e.get());
-
                 individualService.saveExpertisesIndividual(user, professionalExpertise);
             }
+        }
 
         redirectAttributes.addFlashAttribute("msg", "Usuário cadastrado com sucesso! Realize o login no Servicebook!");
-        status.setComplete();
-        this.clearAllFields(sessionDTO, professionalExpertiseDTO);
+        this.resetSessionAttributes(httpSession);
 
         return "redirect:/login";
     }
