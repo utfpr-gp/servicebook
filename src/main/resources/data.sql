@@ -52,8 +52,6 @@ VALUES ('profissional1@gmail.com', 'true', 'Nome do Primeiro Profissional', '(42
         'https://i.imgur.com/owhNAKK.png', 'true', '1', 1),
        ('profissional3@gmail.com', 'true', 'Nome do Terceiro Profissional', '(42) 99999-9995', 'false',
         null, 'false', '1', 3),
-       ('camilaes2404@gmail.com', 'true', 'camila', '(42) 99999-9997', 'false',
-        null, 'false', '1', 3),
        ('profissional4@gmail.com', 'true', 'Nome do Quarto Profissional', '(42) 99999-9996', 'true',
         'https://i.imgur.com/owhNAKK.png', 'true', '1', 2);
 
