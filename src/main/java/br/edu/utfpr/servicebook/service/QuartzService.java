@@ -64,13 +64,14 @@ public class QuartzService {
      * @param emailCode
      * @param link
      */
-    public void sendEmailWithAuthenticatationCode(String email, String emailCode, String link) {
+    public void sendEmailWithAuthenticatationCode(String email, String emailCode, String link, String user) {
         try {
             JobDetail job = JobBuilder.newJob(SendEmailToAuthenticateJob.class)
                     .withIdentity(SendEmailToAuthenticateJob.class.getSimpleName(), GROUP).build();
             job.getJobDataMap().put(SendEmailToAuthenticateJob.RECIPIENT_KEY, email);
             job.getJobDataMap().put(SendEmailToAuthenticateJob.CODE_KEY, emailCode);
             job.getJobDataMap().put(SendEmailToAuthenticateJob.LINK_KEY, link);
+            job.getJobDataMap().put(SendEmailToAuthenticateJob.USER, user);
 
             Trigger trigger = getTrigger(SendEmailToAuthenticateJob.class.getSimpleName(), GROUP);
 

@@ -176,11 +176,11 @@ public class LoginController {
             userCodeService.save(userCode);
 
             String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/login-by-token-email/" + code;
-            quartzService.sendEmailWithAuthenticatationCode(dto.getEmail(), code, tokenLink);
+            quartzService.sendEmailWithAuthenticatationCode(dto.getEmail(), code, tokenLink, oUser.get().getName());
 
         } else {
             String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/login-by-token-email/" + oUserCode.get().getCode();
-            quartzService.sendEmailWithAuthenticatationCode(dto.getEmail(), oUserCode.get().getCode(), tokenLink);
+            quartzService.sendEmailWithAuthenticatationCode(dto.getEmail(), oUserCode.get().getCode(), tokenLink, oUser.get().getName());
 
         }
 

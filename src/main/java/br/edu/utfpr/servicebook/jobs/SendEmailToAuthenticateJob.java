@@ -16,6 +16,7 @@ public class SendEmailToAuthenticateJob implements Job {
     public static final String RECIPIENT_KEY = "recipient";
     public static final String CODE_KEY = "token";
     public static final String LINK_KEY = "link";
+    public static final String USER = "user";
 
     @Autowired
     private EmailSenderService emailSenderService;
@@ -27,8 +28,9 @@ public class SendEmailToAuthenticateJob implements Job {
         String email = (String) jobDataMap.get(SendEmailToAuthenticateJob.RECIPIENT_KEY);
         String code = (String) jobDataMap.get(SendEmailToAuthenticateJob.CODE_KEY);
         String link = (String) jobDataMap.get(SendEmailToAuthenticateJob.LINK_KEY);
+        String user = (String) jobDataMap.get(SendEmailToAuthenticateJob.USER);
 
-        String text = "Olá <br> <p>Segue o código de acesso: " + code + ".</p> " +
+        String text = "Olá " + user + "!, <br> <p>Segue o código de acesso: " + code + ".</p> " +
                 "<p> Você pode também se autenticar clicando no link: " + link + "</p>";
 
         try {
