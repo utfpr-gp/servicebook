@@ -1,8 +1,8 @@
 package br.edu.utfpr.servicebook.service;
 
-import br.edu.utfpr.servicebook.jobs.EmailSenderJob;
+import br.edu.utfpr.servicebook.jobs.SendEmailToAuthenticateJob;
+import br.edu.utfpr.servicebook.jobs.SendEmailWithVerificationCodeJob;
 import br.edu.utfpr.servicebook.jobs.VerifyExpiredTokenEmailJob;
-import br.edu.utfpr.servicebook.model.entity.UserCode;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +10,6 @@ import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.swing.text.html.Option;
-
-import java.util.Date;
-import java.util.Optional;
-
-import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
 @Service
 public class QuartzService {
@@ -23,8 +17,7 @@ public class QuartzService {
     private SpringBeanJobFactory jobFactoryCDI;
     private Scheduler scheduler;
     private SchedulerFactory factory;
-    private static final String RECIPIENT = "recipient";
-    private static final String TOKEN = "token";
+
     private static final String GROUP = "group1";
 
     @PostConstruct
@@ -39,13 +32,48 @@ public class QuartzService {
         }
     }
 
-    public void sendEmailToConfirmationCode(String email, String emailCode) {
+    /**
+     * Envio do email com o código de validação da conta.
+     * @param email
+     * @param emailCode
+     * @param link
+     */
+    public void sendEmailToConfirmationCode(String email, String emailCode, String link) {
         try {
-            JobDetail job = JobBuilder.newJob(EmailSenderJob.class)
-                    .withIdentity(EmailSenderJob.class.getSimpleName(), GROUP).build();
-            job.getJobDataMap().put(RECIPIENT, email);
-            job.getJobDataMap().put(TOKEN, emailCode);
-            Trigger trigger = getTrigger(EmailSenderJob.class.getSimpleName(), GROUP);
+            JobDetail job = JobBuilder.newJob(SendEmailWithVerificationCodeJob.class)
+                    .withIdentity(SendEmailWithVerificationCodeJob.class.getSimpleName(), GROUP).build();
+            job.getJobDataMap().put(SendEmailWithVerificationCodeJob.RECIPIENT_KEY, email);
+            job.getJobDataMap().put(SendEmailWithVerificationCodeJob.CODE_KEY, emailCode);
+
+            Trigger trigger = getTrigger(SendEmailWithVerificationCodeJob.class.getSimpleName(), GROUP);
+
+            scheduler.scheduleJob(job, trigger);
+
+            if (!scheduler.isStarted()) {
+                scheduler.start();
+            }
+
+        }catch (SchedulerException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Envio do email com o código e link para autenticação.
+     * @param email
+     * @param emailCode
+     * @param link
+     */
+    public void sendEmailWithAuthenticatationCode(String email, String emailCode, String link, String user) {
+        try {
+            JobDetail job = JobBuilder.newJob(SendEmailToAuthenticateJob.class)
+                    .withIdentity(SendEmailToAuthenticateJob.class.getSimpleName(), GROUP).build();
+            job.getJobDataMap().put(SendEmailToAuthenticateJob.RECIPIENT_KEY, email);
+            job.getJobDataMap().put(SendEmailToAuthenticateJob.CODE_KEY, emailCode);
+            job.getJobDataMap().put(SendEmailToAuthenticateJob.LINK_KEY, link);
+            job.getJobDataMap().put(SendEmailToAuthenticateJob.USER_KEY, user);
+
+            Trigger trigger = getTrigger(SendEmailToAuthenticateJob.class.getSimpleName(), GROUP);
 
             scheduler.scheduleJob(job, trigger);
 
