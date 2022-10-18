@@ -71,7 +71,7 @@ public class QuartzService {
             job.getJobDataMap().put(SendEmailToAuthenticateJob.RECIPIENT_KEY, email);
             job.getJobDataMap().put(SendEmailToAuthenticateJob.CODE_KEY, emailCode);
             job.getJobDataMap().put(SendEmailToAuthenticateJob.LINK_KEY, link);
-            job.getJobDataMap().put(SendEmailToAuthenticateJob.USER, user);
+            job.getJobDataMap().put(SendEmailToAuthenticateJob.USER_KEY, user);
 
             Trigger trigger = getTrigger(SendEmailToAuthenticateJob.class.getSimpleName(), GROUP);
 
