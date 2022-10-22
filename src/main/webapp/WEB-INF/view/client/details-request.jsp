@@ -133,7 +133,7 @@
                                             </p>
 
                                             <div class="center">
-                                                <p><a class="tertiary-color-text " href="#!">Detalhes</a></p>
+                                                <p><a class="tertiary-color-text " href="profissionais/detalhes/${jobCandidate.individual.getId()}">Detalhes</a></p>
                                             </div>
                                         </div>
                                     </div>
