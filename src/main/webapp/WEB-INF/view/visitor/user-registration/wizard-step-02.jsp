@@ -53,6 +53,16 @@
                                 </div>
                             </div>
                         </form>
+
+                        <div class="row center spacing-buttons">
+                            <div class="col s6 offset-s3">
+                                <div class="sendEmail">
+                                    <button class="waves-effect waves-light btn">
+                                        Reenviar email
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -60,3 +70,19 @@
 
     </jsp:body>
 </t:visitor>
+
+
+
+<script>
+    $('.sendEmail button').click(function () {
+        var settings = {
+            "url": "http://localhost:8080/servicebook/cadastrar-se/passo-1?email=${dto.email}",
+            "method": "POST",
+            "timeout": 0
+        };
+
+        $.ajax(settings).done(function (response) {
+            console.log("email reenviado!");
+        });
+    });
+</script>
