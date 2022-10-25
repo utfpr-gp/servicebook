@@ -21,7 +21,7 @@
                         </div>
                         <div class="col s6 m3 offset-m3 spacing-buttons">
                             <div class="center">
-                                <a class="waves-effect waves-light btn" href="entrar">Entrar</a>
+                                <a class="waves-effect waves-light btn" href="login">Entrar</a>
                             </div>
                         </div>
                         <div class="col s6 m3 spacing-buttons">
