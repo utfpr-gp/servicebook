@@ -80,6 +80,9 @@ public class ProfessionalExpertiseController {
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
         Optional<List<Expertise>> oExpertises = Optional.ofNullable(expertiseService.findAll());
 
+        professionalNotExpertise = oExpertises - professionalExpertises;
+        List<ProfessionalNotExpertise> professionalNotExpertise = professionalExpertiseService.findNotProfessionalExpertises(oProfessional.get());
+
         SidePanelItensDTO sidePanelItensDTO = null;
         if (!id.isPresent() || id.get() == 0L) {
             sidePanelItensDTO = SidePanelUtil.sidePanelItensDTO(
