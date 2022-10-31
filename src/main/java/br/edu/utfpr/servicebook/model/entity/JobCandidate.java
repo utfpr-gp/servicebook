@@ -5,7 +5,9 @@ package br.edu.utfpr.servicebook.model.entity;
 import javax.persistence.*;
 
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -30,6 +32,8 @@ public class JobCandidate {
 	private boolean chosenByBudget;
 
 	private Date date;
+
+	private Date hiredDate;
 
 	@ManyToOne
 	@MapsId("jobRequestId")

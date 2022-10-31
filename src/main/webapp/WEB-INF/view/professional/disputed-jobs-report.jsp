@@ -66,6 +66,10 @@
                             <a href="" class="waves-effect waves-light btn spacing-buttons">
                                 Detalhes
                             </a>
+
+                            <c:if test="${job.hiredDate == null}">
+                                <a href="#modal-hired" data-url="${pageContext.request.contextPath}/candidaturas/contratacao/${job.jobRequest.id}" data-name="${city.name}" class="waves-effect waves-light btn spacing-buttons modal-trigger">Contratação</a>
+                            </c:if>
                             <a href="#modal-delete" data-url="${pageContext.request.contextPath}/candidaturas/${job.jobRequest.id}" data-name="${city.name}" class="waves-effect waves-light btn spacing-buttons red modal-trigger">Desistir</a>
                         </div>
                     </div>
@@ -85,6 +89,38 @@
                     <div class="modal-footer">
                         <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
                         <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="modal-hired" class="modal">
+            <div class="modal-content center" style="padding: 45px !important;">
+                <span id="confirmHiredButton" class="btn waves-effect waves-light gray">Confirmar contratação</span>
+                <span id="confirmNotHiredButton" class="btn-flat waves-effect waves-light btn btn-gray">Não aceitar contratação</span>
+                <form id="confirm-hired" action="" method="post" style="display: none">
+                    <input type="hidden" name="_method" value="POST"/>
+                    <input type="hidden" name="chosenByBudget" value="true"/>
+
+                    <div class="modal-content">
+                        <span>Adicione abaixo a data para a realização do serviço e confirme sua ação:</span>
+                        <input type="date" id="hired-date-form-confirm" name="hiredDate">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
+                        <button type="submit" class="modal-close btn waves-effect waves-light gray">Confirmar</button>
+                    </div>
+                </form>
+                <form id="confirm-not-hired" action="" method="post" style="display: none">
+                    <input type="hidden" name="_method" value="POST"/>
+                    <input type="hidden" name="chosenByBudget" value="false"/>
+
+                    <div class="modal-content">
+                        <span>Pedido será salvo como não contratado, confirme sua ação!</span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
+                        <button type="submit" class="modal-close btn waves-effect waves-light gray">Confirmar</button>
                     </div>
                 </form>
             </div>
@@ -109,6 +145,16 @@
                 modal.find('#strong-name').text(name);
             }
 
+        });
+
+        $('#confirmHiredButton').click(function () {
+            $("#confirm-hired").show();
+            $("#confirm-not-hired").hide();
+        });
+
+        $('#confirmNotHiredButton').click(function () {
+            $("#confirm-not-hired").show();
+            $("#confirm-hired").hide();
         });
     });
 </script>

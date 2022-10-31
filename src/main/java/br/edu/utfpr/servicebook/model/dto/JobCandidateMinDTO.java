@@ -13,6 +13,8 @@ public class JobCandidateMinDTO implements Serializable {
 
     private Long id;
     private String date;
+    private String hiredDate;
+    private Boolean chosenByBudget;
     private JobRequestFullDTO jobRequest;
 
 }
