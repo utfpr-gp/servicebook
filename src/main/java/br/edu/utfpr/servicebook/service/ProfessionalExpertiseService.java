@@ -29,10 +29,6 @@ public class ProfessionalExpertiseService {
         return this.professionalExpertiseRepository.findByProfessional(individual);
     }
 
-    public List<ProfessionalNotExpertise> findProfessionalNotExpertises(Individual individual) {
-        return this.professionalExpertiseRepository.findProfessionalNotExpertises(individual);
-    }
-
     public ProfessionalExpertise save(ProfessionalExpertise professionalExpertise) {
         return this.professionalExpertiseRepository.save(professionalExpertise);
     }

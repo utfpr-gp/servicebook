@@ -125,7 +125,7 @@ public class ClientController {
         this.jobRequestService.delete(id);
         redirectAttributes.addFlashAttribute("msg", "Solicitação deletada!");
 
-        return "redirect:/minha-conta/meus-pedidos";
+        return "redirect:/minha-conta/cliente#disponiveis";
     }
 
     @GetMapping("/meus-pedidos/{id}")

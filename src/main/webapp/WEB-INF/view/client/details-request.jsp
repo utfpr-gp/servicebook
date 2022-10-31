@@ -44,11 +44,11 @@
                                     </div>
                                 </div>
                             </c:if>
-                        <div class="col s12 m6 l3">
+                        <!-- <div class="col s12 m6 l3">
                             <div class="center">
-                                <a href="#!" class="spacing-buttons waves-effect waves-light btn">Excluir o pedido</a>
+                                <a href="#!" class="spacing-buttons waves-effect waves-light btn">Ocultar o pedido</a>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="col s12 tertiary-color-text description-orcamento text-info-request">
                             <hr class="hr-request-area">
                             <p>Entre em contato com um ou mais profissionais que se interessaram em realizar o serviço para marcar um orçamento.</p>
@@ -134,6 +134,7 @@
 
                                             <div class="center">
                                                 <p><a class="tertiary-color-text " href="#!">Detalhes</a></p>
+                                                <a href="#modal-delete" data-url="${pageContext.request.contextPath}/minha-conta/cliente/meus-pedidos/${jobRequest.id}" data-name="${jobRequest.description}" class="waves-effect waves-light btn modal-trigger">Ocultar</a>
                                             </div>
                                         </div>
                                     </div>
@@ -142,7 +143,6 @@
 
                             </c:forEach>
                         </c:if>
-
                     </div>
                 </div>
                         </div>
@@ -164,6 +164,37 @@
                     </form>
                 </div>
             </div>
+
+            <div id="modal-delete" class="modal">
+                <div class="modal-content">
+                  <form action="" method="post">
+                    <!-- <form action="${pageContext.request.contextPath}/minha-conta/meus-pedidos/encerra-pedido/${jobRequest.id}" method="post"></form> -->
+                    <input type="hidden" name="_method" value="DELETE" />
+        
+                    <div class="modal-content">
+                      <h4>
+                        Você tem certeza que deseja ocultar
+                        <strong id="strong-name"></strong>?
+                      </h4>
+                    </div>
+                    
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="modal-close btn-flat waves-effect waves-light btn btn-gray"
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        type="submit"
+                        class="modal-close btn waves-effect waves-light gray"
+                      >
+                        Sim
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
 
         </main>
 

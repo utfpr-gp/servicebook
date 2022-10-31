@@ -39,8 +39,4 @@ public interface ProfessionalExpertiseRepository extends JpaRepository<Professio
      * @return
      */
     List<ProfessionalExpertise> findByProfessional(Individual individual);
-
-    // @Query("SELECT pe.expertise FROM ProfessionalExpertise pe WHERE pe.professional.id = :professional_id AND pe.expertise.id = :expertise_id")
-    // List<ProfessionalExpertise> findProfessionalNotExpertises(Individual individual);
-
 }
