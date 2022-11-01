@@ -118,7 +118,7 @@
                                 </c:if>
                               </p>
                               <div class="center">
-                                <p><a class="tertiary-color-text " href="minha-conta/cliente/meus-pedidos/${jobCandidate.id}/detalhes">Detalhes</a></p>
+                                <p><a class="tertiary-color-text " href="minha-conta/cliente/meus-pedidos/${jobRequest.id}/detalhes/${jobCandidate.id}">Detalhes</a></p>
                               </div>
                             </div>
                           </div>

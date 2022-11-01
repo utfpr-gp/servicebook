@@ -131,7 +131,6 @@ public class ClientController {
     @GetMapping("/meus-pedidos/{id}")
     public ModelAndView showDetailsRequest(@PathVariable Optional<Long> id) throws Exception {
         ModelAndView mv = new ModelAndView("client/details-request");
-
         mv.addObject("user", this.getSidePanelUser());
 
         Optional<JobRequest> job = jobRequestService.findById(id.get());
@@ -167,10 +166,12 @@ public class ClientController {
         return mv;
     }
 
-    @GetMapping("/meus-pedidos/{id}/detalhes")
-    public ModelAndView showDetailsRequestCandidate(@PathVariable Optional<Long> id) throws Exception {
+    @GetMapping("/meus-pedidos/{jobId}/detalhes/{candidateId}")
+    public ModelAndView showDetailsRequestCandidate(@PathVariable Optional<Long> jobId, @PathVariable Optional<Long> candidateId) throws Exception {
       ModelAndView mv = new ModelAndView("client/details-request-candidate");
       mv.addObject("user", this.getSidePanelUser());
+      mv.addObject("jobId", jobId);
+      mv.addObject("candidateId", candidateId);
 
 
       return mv;
@@ -393,7 +394,6 @@ public class ClientController {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
         IndividualDTO individualDTO = individualMapper.toDto(client.get());
-//        mv.addObject("client", individualDTO);
 
         return SidePanelUtil.getSidePanelDTO(individualDTO);
     }

@@ -8,8 +8,10 @@ uri="http://java.sun.com/jsp/jstl/core" %>
     <main>
       <div class="row">
         <t:side-panel individual="${user}"></t:side-panel>
+        <div>${candidateId}</div>
+        <div>${jobId}</div>
+        <div></div>
       </div>
-      detalhes candidato
     </main>
   </jsp:body>
 </t:client>
