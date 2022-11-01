@@ -55,6 +55,7 @@ VALUES ('profissional1@gmail.com', 'true', 'Nome do Primeiro Profissional', '(42
        ('profissional4@gmail.com', 'true', 'Nome do Quarto Profissional', '(42) 99999-9996', 'true',
         'https://i.imgur.com/owhNAKK.png', 'true', '1', 2);
 
+
 INSERT INTO individuals (cpf, description, gender, birth_date, id)
 VALUES ('982.988.640-93', 'Descrição profissional 1', 'MASCULINE', '2003-01-01', '1'),
        ('998.045.450-47', 'Descrição profissional 2', 'MASCULINE', '2000-01-01', '2'),

@@ -49,7 +49,6 @@
                         </div>
                     </a>
                 </div>
-
                 <div class="divider"></div>
 
                 <div class="row center-align">
