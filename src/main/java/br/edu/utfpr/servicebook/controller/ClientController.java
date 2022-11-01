@@ -132,16 +132,7 @@ public class ClientController {
     public ModelAndView showDetailsRequest(@PathVariable Optional<Long> id) throws Exception {
         ModelAndView mv = new ModelAndView("client/details-request");
 
-        Optional<Individual> client = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
-
-        if (!client.isPresent()) {
-            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
-        }
-        IndividualDTO individualDTO = individualMapper.toDto(client.get());
-//        mv.addObject("client", individualDTO);
-
-        SidePanelIndividualDTO sidePanelIndividualDTO = SidePanelUtil.getSidePanelDTO(individualDTO);
-        mv.addObject("user", sidePanelIndividualDTO);
+        mv.addObject("user", this.getSidePanelUser());
 
         Optional<JobRequest> job = jobRequestService.findById(id.get());
 
@@ -174,6 +165,15 @@ public class ClientController {
         mv.addObject("isClient", isClient);
 
         return mv;
+    }
+
+    @GetMapping("/meus-pedidos/{id}/detalhes")
+    public ModelAndView showDetailsRequestCandidate(@PathVariable Optional<Long> id) throws Exception {
+      ModelAndView mv = new ModelAndView("client/details-request-candidate");
+      mv.addObject("user", this.getSidePanelUser());
+
+
+      return mv;
     }
 
     @GetMapping("/meus-pedidos/disponiveis")
@@ -385,4 +385,16 @@ public class ClientController {
         return "redirect:/minha-conta/meus-pedidos?tab=paraOrcamento";
     }
 
+
+    private SidePanelIndividualDTO getSidePanelUser() throws Exception {
+      Optional<Individual> client = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+
+        if (!client.isPresent()) {
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+        IndividualDTO individualDTO = individualMapper.toDto(client.get());
+//        mv.addObject("client", individualDTO);
+
+        return SidePanelUtil.getSidePanelDTO(individualDTO);
+    }
 }
