@@ -73,7 +73,12 @@
 
 <script>
     $('.sendEmail').click(function (){
-        $.post("cadastrar-se/passo-1", { email:"${dto.email}"})
-        alert("email reenviado para ${dto.email}");
+        $.post("cadastrar-se/passo-1", { email:"${dto.email}"}).done(function(){
+            swal({
+                title: "Deu certo!",
+                text: "Foi enviado um email para ${dto.email}.",
+                icon: "success",
+            });
+        });
     });
 </script>
