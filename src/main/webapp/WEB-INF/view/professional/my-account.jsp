@@ -52,6 +52,11 @@
                                         </a>
                                     </li>
                                     <li class="tab">
+                                        <a data-url="minha-conta/profissional/para-contratar" href="#paraContratar">
+                                            PARA CONTRATAR
+                                        </a>
+                                    </li>
+                                    <li class="tab">
                                         <a data-url="minha-conta/profissional/para-fazer" href="#paraFazer">
                                             PARA FAZER
                                         </a>
@@ -67,6 +72,9 @@
 
                             </div>
                             <div id="emDisputa" class="col s12">
+
+                            </div>
+                            <div id="paraContratar" class="col s12">
 
                             </div>
                             <div id="paraFazer" class="col s12">

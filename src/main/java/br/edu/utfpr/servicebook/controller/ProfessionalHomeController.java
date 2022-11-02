@@ -268,6 +268,68 @@ public class ProfessionalHomeController {
         return mv;
     }
 
+    @GetMapping("/para-contratar")
+    public ModelAndView showForHiredJobs(
+            HttpServletRequest request,
+            @RequestParam(required = false, defaultValue = "0") Long id,
+            @RequestParam(value = "pag", defaultValue = "1") int page,
+            @RequestParam(value = "siz", defaultValue = "3") int size,
+            @RequestParam(value = "ord", defaultValue = "id") String order,
+            @RequestParam(value = "dir", defaultValue = "ASC") String direction
+    ) throws Exception {
+
+        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+
+        if (!oProfessional.isPresent()) {
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
+        Page<JobCandidate> jobCandidatePage = null;
+        List<JobCandidateMinDTO> jobCandidateDTOs = null;
+
+        if (id == 0) {
+            jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndProfessional(JobRequest.Status.TO_HIRED, oProfessional.get(), pageRequest);
+        } else {
+            if (id < 0) {
+                throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
+            }
+
+            Optional<Expertise> oExpertise = expertiseService.findById(id);
+
+            if (!oExpertise.isPresent()) {
+                throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
+            }
+
+            Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oProfessional.get(), oExpertise.get());
+
+            if (!oProfessionalExpertise.isPresent()) {
+                throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
+            }
+
+            jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status.TO_HIRED, oExpertise.get(), oProfessional.get(), pageRequest);
+        }
+
+        jobCandidateDTOs = jobCandidatePage.stream()
+                .map(jobCandidate -> {
+                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobCandidate.getJobRequest());
+
+                    if (totalCandidates.isPresent()) {
+                        return jobCandidateMapper.toMinDto(jobCandidate, totalCandidates);
+                    }
+
+                    return jobCandidateMapper.toMinDto(jobCandidate, Optional.ofNullable(0L));
+                }).collect(Collectors.toList());
+
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/profissional/para-contratar");
+
+        ModelAndView mv = new ModelAndView("professional/to-hired-jobs-report");
+        mv.addObject("pagination", paginationDTO);
+        mv.addObject("jobs", jobCandidateDTOs);
+
+        return mv;
+    }
+
     @GetMapping("/para-fazer")
     public ModelAndView showTodoJobs(
             HttpServletRequest request,
@@ -456,6 +518,8 @@ public class ProfessionalHomeController {
         int currentCandidates = jb.getJobCandidates().size();
         int percentCandidatesApplied = (int)(((double)currentCandidates / (double)maxCandidates) * 100);
 
+        boolean isAvailableJobRequest = jb.getStatus().equals(JobRequest.Status.AVAILABLE) && jb.isClientConfirmation();
+
         mv.addObject("job", jobFull);
         mv.addObject("client", client);
         mv.addObject("city", city.getName());
@@ -463,6 +527,7 @@ public class ProfessionalHomeController {
         mv.addObject("candidatesApplied", currentCandidates);
         mv.addObject("maxCandidates", maxCandidates);
         mv.addObject("percentCandidatesApplied", percentCandidatesApplied);
+        mv.addObject("isAvailableJobRequest", isAvailableJobRequest);
         return mv;
     }
 

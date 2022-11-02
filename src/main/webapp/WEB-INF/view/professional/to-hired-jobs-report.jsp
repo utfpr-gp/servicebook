@@ -66,7 +66,7 @@
                             <a href="minha-conta/profissional/detalhes-servico/${job.jobRequest.id}" class="waves-effect waves-light btn spacing-buttons">
                                 Detalhes
                             </a>
-                            <a href="#modal-delete" data-url="${pageContext.request.contextPath}/candidaturas/${job.jobRequest.id}" data-name="${city.name}" class="waves-effect waves-light btn spacing-buttons red modal-trigger">Desistir</a>
+                            <a href="#modal-delete" data-url="${pageContext.request.contextPath}/candidaturas/${job.jobRequest.id}" class="waves-effect waves-light btn spacing-buttons red modal-trigger">Desistir</a>
                         </div>
                     </div>
                 </div>
