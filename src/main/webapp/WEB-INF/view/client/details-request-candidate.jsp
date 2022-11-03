@@ -41,14 +41,27 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           </div>
       </div>
       <div class="tertiary-background-color white-text center-align no-margin">
-          <p class="upper-case job-details-professional-name">${jobCandidate.name}</p>
+          <p class="upper-case job-details-professional-name">
+            
+            ${jobCandidate.name}
+          </p>
       </div>
 
       <div class="container">
           <div class="section">
             <div class="row center-align">
-              <div class="col s6">${jobCandidate.email}</div>
-              <div class="col s6">${jobCandidate.phoneNumber}</div>
+              <div class="col s6">
+                <i class="left material-icons">email</i>
+                <span class="left">
+                  ${jobCandidate.email}
+                </span>
+              </div>
+              <div class="col s6">
+                <i class="left material-icons">local_phone</i>
+                <span class="left">
+                  ${jobCandidate.phoneNumber}
+                </span>
+              </div>
             </div>
               <div class="row center-align">
                   <p class="contact-item center dark-color-text">${jobCandidate.description}</p>
@@ -70,7 +83,15 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 
               <div class="row center-align">
                 <p class="contact-item center dark-color-text">Ative para marcar que foi solicitado um orçamento</p>
-            </div>
+                <div class="switch">
+                  <label>
+                    <input type="checkbox">
+                    <span class="lever"></span>
+                  </label>
+                </div>
+              </div>
+              <div class="row center-align">
+              </div>
           </div>
       </div>
 

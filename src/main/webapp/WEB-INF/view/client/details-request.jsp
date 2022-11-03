@@ -57,7 +57,7 @@
                     <c:forEach var="jobCandidate" items="${candidates}">
                       <div class="col s12 l4">
                         <div class="card-panel card-candidate">
-                          <div class="row">
+                          <div class="row ${(jobCandidate.chosenByBudget) ? 'primary-background-color': ''} no-margin">
                             <div class="col s12 icons-area-request center padding">
                               <div class="row">
                                 <div class="col s6 center">
@@ -96,6 +96,7 @@
                             <div class="col s12">
                               <div class="center title-card-resquest">
                                 <p class="truncate">${jobCandidate.individual.name}</p>
+                                
                               </div>
                               <p class="contact-item center-block dark-color-text">
                                 <c:if test="${jobCandidate.individual.emailVerified}">
