@@ -83,12 +83,10 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 
               <div class="row center-align">
                 <p class="contact-item center dark-color-text">Ative para marcar que foi solicitado um orçamento</p>
-                <div class="switch">
-                  <label>
-                    <input type="checkbox">
-                    <span class="lever"></span>
-                  </label>
-                </div>
+                <!-- abre modal -->
+                <button class="btn">
+                  Orçamento
+                </button>
               </div>
               <div class="row center-align">
               </div>
