@@ -4,11 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 @Service
@@ -20,8 +20,13 @@ public class EmailSenderService {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Async
-    public void sendEmail(String to, String subject, String text) {
+    /**
+     * Envia um email com texto simples.
+     * @param to
+     * @param subject
+     * @param text
+     */
+    public void sendTextEmail(String to, String subject, String text) {
         SimpleMailMessage mail = new SimpleMailMessage();
 
         mail.setTo(to);
@@ -30,16 +35,22 @@ public class EmailSenderService {
 
         mailSender.send(mail);
     }
-    @Async
-    public void sendEmailToServer(String to, String subject, String text) throws MessagingException {
-        MimeMessage mail = mailSender.createMimeMessage();
-        MimeMessageHelper message = new MimeMessageHelper(mail);
 
-        message.setTo(to);
+    /**
+     * Envia um email com HTML
+     * @param to
+     * @param subject
+     * @param html
+     * @throws MessagingException
+     */
+    public void sendHTMLEmail(String to, String subject, String html) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+
+        message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
         message.setSubject(subject);
-        message.setText(text);
+        message.setContent(html, "text/html; charset=utf-8");
 
-        mailSender.send(mail);
+        mailSender.send(message);
     }
 
 }
