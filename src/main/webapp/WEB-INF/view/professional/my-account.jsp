@@ -53,7 +53,7 @@
                                     </li>
                                     <li class="tab">
                                         <a data-url="minha-conta/profissional/para-contratar" href="#paraContratar">
-                                            PARA CONTRATAR
+                                            PARA CONFIRMAR
                                         </a>
                                     </li>
                                     <li class="tab">
