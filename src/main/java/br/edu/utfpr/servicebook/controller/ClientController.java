@@ -169,9 +169,17 @@ public class ClientController {
     @GetMapping("/meus-pedidos/{jobId}/detalhes/{candidateId}")
     public ModelAndView showDetailsRequestCandidate(@PathVariable Optional<Long> jobId, @PathVariable Optional<Long> candidateId) throws Exception {
       ModelAndView mv = new ModelAndView("client/details-request-candidate");
-      mv.addObject("user", this.getSidePanelUser());
-      mv.addObject("jobId", jobId);
-      mv.addObject("candidateId", candidateId);
+      // mv.addObject("user", this.getSidePanelUser());
+
+      Optional<Individual> oindividual = individualService.findById(candidateId.get());
+      Optional<JobCandidate> jobCandidate = jobCandidateService.findById(jobId.get(), oindividual.get().getId());
+      JobCandidateDTO jobCandidateDTO = jobCandidateMapper.toDto(jobCandidate.get());
+
+      mv.addObject("jobCandidate", jobCandidateDTO.getIndividual());
+
+      // Optional<JobRequest> oJobRequest = jobRequestService.findById(jobId.get());
+      // JobRequestFullDTO jobDTO = jobRequestMapper.toFullDto(oJobRequest.get());
+      // mv.addObject("jobRequest", jobDTO);
 
 
       return mv;
