@@ -80,9 +80,6 @@ public class ProfessionalExpertiseController {
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
         Optional<List<Expertise>> oExpertises = Optional.ofNullable(expertiseService.findAll());
 
-        professionalNotExpertise = oExpertises - professionalExpertises;
-        List<ProfessionalNotExpertise> professionalNotExpertise = professionalExpertiseService.findNotProfessionalExpertises(oProfessional.get());
-
         SidePanelItensDTO sidePanelItensDTO = null;
         if (!id.isPresent() || id.get() == 0L) {
             sidePanelItensDTO = SidePanelUtil.sidePanelItensDTO(
@@ -129,7 +126,7 @@ public class ProfessionalExpertiseController {
         List<ProfessionalExpertiseDTO2> professionalExpertiseDTOs = professionalExpertises.stream()
                                                                     .map(s -> professionalExpertiseMapper.toResponseDTO(s))
                                                                     .collect(Collectors.toList());
-        List<Expertise> professionPage = expertiseService.findAll();
+        List<Expertise> professionPage = expertiseService.findExpertiseNotExist(getProfessional().getId());
 
         List<ExpertiseDTO> expertiseDTOs = professionPage.stream()
                 .map(s -> expertiseMapper.toDto(s))
