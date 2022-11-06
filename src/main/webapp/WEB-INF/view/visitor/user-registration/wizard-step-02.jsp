@@ -71,18 +71,14 @@
     </jsp:body>
 </t:visitor>
 
-
-
 <script>
-    $('.sendEmail button').click(function () {
-        var settings = {
-            "url": "http://localhost:8080/servicebook/cadastrar-se/passo-1?email=${dto.email}",
-            "method": "POST",
-            "timeout": 0
-        };
-
-        $.ajax(settings).done(function (response) {
-            console.log("email reenviado!");
+    $('.sendEmail').click(function (){
+        $.post("cadastrar-se/passo-1", { email:"${dto.email}"}).done(function(){
+            swal({
+                title: "Deu certo!",
+                text: "Foi enviado um email para ${dto.email}.",
+                icon: "success",
+            });
         });
     });
 </script>

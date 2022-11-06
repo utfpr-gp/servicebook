@@ -57,6 +57,7 @@
 
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="assets/libraries/materialize/js/materialize.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="assets/resources/scripts/main.js"></script>
 <script src="assets/resources/scripts/init.js"></script>
 
