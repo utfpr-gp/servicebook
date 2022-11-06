@@ -27,14 +27,18 @@
             <h4 class="left logo-text">ServiceBook</h4>
         </a>
 
+
+        
         <ul class="right hide-on-med-and-down">
             <li><a class="menu-itens" href="login">ENTRAR</a></li>
-            <li><a class="menu-itens" href="bem-vindo">OFEREÇA SEUS SERVIÇOS</a></li>
+            <li><a class="menu-itens" href="cadastrar-se">CADASTRE-SE</a></li>
         </ul>
+
+        <button class="click-scroll right" onclick="rolar('panel-heading');">Como Funciona?</button>
 
         <ul id="nav-mobile" class="sidenav">
             <li><a class="menu-itens" href="login">ENTRAR</a></li>
-            <li><a class="menu-itens" href="bem-vindo">OFEREÇA SEUS SERVIÇOS</a></li>
+            <li><a class="menu-itens" href="cadastrar-se">CADASTRE-SE</a></li>
         </ul>
 
         <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
@@ -59,3 +63,9 @@
 
 </body>
 </html>
+
+<script type="text/javascript">
+    function rolar(objID) {
+        this.location = "#" + objID;
+    }
+</script>
