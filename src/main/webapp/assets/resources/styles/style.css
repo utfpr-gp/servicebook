@@ -819,3 +819,16 @@ textarea {
   border: none;
 }
 
+.click-scroll {
+    font-weight: bold;
+    margin: 2rem 12rem 0 2rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid black;
+}
+
+.click-scroll:hover {
+  background-color: #b3b3b3;
+  transition: 0.5s;
+}
+
