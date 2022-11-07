@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.io.IOException;
+
 @RequestMapping("/minha-conta/profissional")
 @Controller
 public class ProfessionalHomeController {
@@ -197,7 +200,7 @@ public class ProfessionalHomeController {
                     return jobRequestMapper.toFullDto(jobRequest, Optional.ofNullable(0L));
                 }).collect(Collectors.toList());
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/profissional/disponiveis");
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobRequestPage, "minha-conta/profissional/#disponiveis");
 
         ModelAndView mv = new ModelAndView("professional/available-jobs-report");
         mv.addObject("pagination", paginationDTO);
@@ -418,6 +421,30 @@ public class ProfessionalHomeController {
     }
 
 
+    
+    @DeleteMapping("/detalhes-servico/{id}")
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
+
+        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+
+        if (!oProfessional.isPresent()) {
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+                
+        ModelAndView mv = new ModelAndView("professional/detail-service");
+        Optional<JobRequest> oProfessional = jobRequestService.findById(id);
+        if (!oProfessional.isPresent()) {
+            throw new Exception("O trabalho não foi encontrado em nosso sistema!");
+        }
+
+        individualService.delete(id, oindividual.get().getId());
+        redirectAttributes.addFlashAttribute("msg", "Card removido com sucesso!");
+
+        return "redirect:/minha-conta/profissional/#disponiveis";
+    }
+    
+    
     @GetMapping("/detalhes-servico/{id}")
     public ModelAndView showAvailableDetailJobs(
             @PathVariable Long id
@@ -428,7 +455,7 @@ public class ProfessionalHomeController {
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
-
+                
         ModelAndView mv = new ModelAndView("professional/detail-service");
         Optional<JobRequest> oJob = jobRequestService.findById(id);
 
@@ -465,5 +492,5 @@ public class ProfessionalHomeController {
         mv.addObject("percentCandidatesApplied", percentCandidatesApplied);
         return mv;
     }
-
 }
+

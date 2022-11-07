@@ -47,7 +47,8 @@
                 <div class="container">
                     <div class="progress-bar">
                         <div class="progress">
-                            <div class="determinate" style="width: ${percentCandidatesApplied}%"></div>
+                            <div class="determinate"></div>
+                            <!-- <div class="determinate" style="width: ${percentCandidatesApplied}%"></div> -->
                         </div>
                         <p>${candidatesApplied}/${maxCandidates}</p>
                     </div>
@@ -81,9 +82,13 @@
                             </div>
                             <div class="col s6 m6 spacing-buttons">
                                 <div class="center">
-                                    <a class="waves-effect waves-light btn  pink darken-1" href="#!">Excluir</a>
+                                    <a
+                                    href="#modal-delete"
+                                    data-url="${pageContext.request.contextPath}/minha-conta/profissional/detalhes-servico/${jobRequest.description}"
+                                    data-name="${jobRequest.description}"
+                                    class="waves-effect waves-light btn modal-trigger">Não quero</a>
+                                    
                                 </div>
-                            </div>
                             <form action="candidaturas" method="post">
                                 <input name="id" type="hidden" value="${job.id}">
                                 <div class="col s6 m6 spacing-buttons">
@@ -96,7 +101,27 @@
                     </div>
                 </div>
             </div>
+
+            <div id="modal-delete" class="modal">
+                <div class="modal-content">
+                    <form action="" method="post">
+    
+                        <input type="hidden" name="_method" value="DELETE"/>
+    
+                        <div class="modal-content">
+                            <h4>Você tem certeza que deseja excluir <strong id="strong-name"></strong>?</h4>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
+                            <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        </div>
         </main>
 
     </jsp:body>
 </t:professional>
+
