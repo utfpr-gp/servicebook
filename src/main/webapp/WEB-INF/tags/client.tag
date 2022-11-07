@@ -32,7 +32,7 @@
         <ul class="right hide-on-med-and-down">
 <%--            <li><a class="menu-itens" href="#!">SOLICITAÇÕES</a></li>--%>
             <li>
-                <a class='dropdown-trigger btn' href='#' data-target='dropdown1'>Minha Conta <i class="tiny material-icons">arrow_drop_down</i></a>
+                <a class='dropdown-trigger btn' href='#' data-target='dropdown1'>Minha Conta <i class="tiny material-icons right">arrow_drop_down</i></a>
                 <ul id='dropdown1' class='dropdown-content'>
                     <li><a href="#!">Como cliente</a></li>
                     <li><a href="#!">Como profissional</a></li>
@@ -41,7 +41,7 @@
             </li>
 
             <li>
-                <a class='dropdown-trigger btn' href='#' data-target='dropdown2'>${individual.name}<i class="tiny material-icons">arrow_drop_down</i></a>
+                <a class='dropdown-trigger btn' href='#' data-target='dropdown2'>${individual.name}<i class="tiny material-icons right">arrow_drop_down</i></a>
                 <ul id='dropdown2' class='dropdown-content'>
                     <li><a href="#!">Meu perfil</a></li>
                     <li class="divider" tabindex="-1"></li>

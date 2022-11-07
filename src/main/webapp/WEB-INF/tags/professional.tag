@@ -36,11 +36,29 @@
         </a>
 
         <ul class="right hide-on-med-and-down">
-            <li><a class="menu-itens dropdown-trigger" href="#!" data-target="dropdown1">ORDEM DE SERVIÇOS<i
+<%--            <li><a class="menu-itens dropdown-trigger" href="#!" data-target="dropdown1">ORDEM DE SERVIÇOS<i--%>
                     class="material-icons right">arrow_drop_down</i></a></li>
-            <li><a class="menu-itens" href="minha-conta/profissional">MINHA CONTA</a></li>
-            <li><a class="menu-itens" href="#!">SAIR</a></li>
+            <li>
+                <a class='dropdown-trigger btn' href='#' data-target='dropdown'>Minha Conta <i class="tiny material-icons right">arrow_drop_down</i></a>
+                <ul id='dropdown' class='dropdown-content'>
+                    <li><a href="#!">Como cliente</a></li>
+                    <li><a href="#!">Como profissional</a></li>
+                    <li><a href="#!">Como empresa</a></li>
+                </ul>
+            </li>
+
+            <li>
+                <a class='dropdown-trigger btn' href='#' data-target='dropdown2'>${individual.name}<i class="tiny material-icons right">arrow_drop_down</i></a>
+                <ul id='dropdown2' class='dropdown-content'>
+                    <li><a href="#!">Meu perfil</a></li>
+                    <li class="divider" tabindex="-1"></li>
+                    <li><a href="#!">Sair</a></li>
+                </ul>
+            </li>
+            <li><a href="#!"><i class="material-icons">notifications</i></a></li>
         </ul>
+        <button class="click-scroll right">Anunciar</button>
+
 
         <ul id="nav-mobile" class="sidenav">
             <li><a class="menu-itens" href="#!">ORDEM DE SERVIÇO</a></li>
