@@ -45,9 +45,19 @@
                                 </div>
                             </c:if>
                         <div class="col s12 m6 l3">
-                            <div class="center">
+                            <!-- <div class="center">
                                 <a href="#!" class="spacing-buttons waves-effect waves-light btn">Excluir o pedido</a>
-                            </div>
+                            </div> -->
+                            <div class="center">
+                                <a
+                                  href="#modal-delete"
+                                  data-url="${pageContext.request.contextPath}/minha-conta/cliente/meus-pedidos/${jobRequest.id}"
+                                  data-name="${jobRequest.description}"
+                                  class="waves-effect waves-light btn modal-trigger"
+                                  >Excluir o pedido</a
+                                >
+                              </div>
+
                         </div>
                         <div class="col s12 tertiary-color-text description-orcamento text-info-request">
                             <hr class="hr-request-area">
@@ -164,6 +174,34 @@
                     </form>
                 </div>
             </div>
+            <div id="modal-delete" class="modal">
+                <div class="modal-content">
+                  <form action="" method="post">
+                    <input type="hidden" name="_method" value="DELETE" />
+          
+                    <div class="modal-content">
+                      <h4>
+                        Você tem certeza que deseja excluir
+                        <strong id="strong-name"></strong>?
+                      </h4>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="modal-close btn-flat waves-effect waves-light btn btn-gray"
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        type="submit"
+                        class="modal-close btn waves-effect waves-light gray"
+                      >
+                        Sim
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
 
         </main>
 
