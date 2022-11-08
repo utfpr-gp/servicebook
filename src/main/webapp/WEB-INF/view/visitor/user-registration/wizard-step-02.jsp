@@ -53,6 +53,16 @@
                                 </div>
                             </div>
                         </form>
+
+                        <div class="row center spacing-buttons">
+                            <div class="col s6 offset-s3">
+                                <div class="sendEmail">
+                                    <button class="waves-effect waves-light btn">
+                                        Reenviar email
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -60,3 +70,15 @@
 
     </jsp:body>
 </t:visitor>
+
+<script>
+    $('.sendEmail').click(function (){
+        $.post("cadastrar-se/passo-1", { email:"${dto.email}"}).done(function(){
+            swal({
+                title: "Deu certo!",
+                text: "Foi enviado um email para ${dto.email}.",
+                icon: "success",
+            });
+        });
+    });
+</script>
