@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <t:professional title="Detalhes do serviço">
     <jsp:body>
@@ -84,14 +85,16 @@
                                     <a class="waves-effect waves-light btn  pink darken-1" href="#!">Excluir</a>
                                 </div>
                             </div>
-                            <form action="candidaturas" method="post">
-                                <input name="id" type="hidden" value="${job.id}">
-                                <div class="col s6 m6 spacing-buttons">
-                                    <div class="center">
-                                        <button class="waves-effect waves-light btn">Quero me candidatar</button>
+                            <c:if test="${isAvailableJobRequest}">
+                                <form action="candidaturas" method="post">
+                                    <input name="id" type="hidden" value="${job.id}">
+                                    <div class="col s6 m6 spacing-buttons">
+                                        <div class="center">
+                                            <button class="waves-effect waves-light btn">Quero me candidatar</button>
+                                        </div>
                                     </div>
-                                </div>
-                            </form>
+                                </form>
+                            </c:if>
                         </div>
                     </div>
                 </div>
