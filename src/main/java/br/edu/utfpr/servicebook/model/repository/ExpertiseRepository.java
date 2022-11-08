@@ -28,9 +28,9 @@ public interface ExpertiseRepository extends JpaRepository<Expertise, Long> {
 //    Optional<Expertise> findByName(@Param("name") String name);
 
 
-    `@Query("SELECT e FROM Expertise e WHERE NOT EXISTS (SELECT pe.id.expertiseId FROM ProfessionalExpertise pe " +
+    @Query("SELECT e FROM Expertise e WHERE NOT EXISTS (SELECT pe.id.expertiseId FROM ProfessionalExpertise pe " +
         "WHERE e.id = pe.id.expertiseId " +
         "AND pe.id.professionalId = :individual)")
-    List<Expertise> findExpertiseNotExist(@Param("individual") Long individual);`
+    List<Expertise> findExpertiseNotExist(@Param("individual") Long individual);
 
-}
+} 

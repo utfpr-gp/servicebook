@@ -37,6 +37,6 @@ public class ExpertiseService {
 
     public List<Expertise> findExpertiseNotExist(Long individual) {
         return this.expertiseRepository.findExpertiseNotExist(individual);
-    }
+    } 
 
 }

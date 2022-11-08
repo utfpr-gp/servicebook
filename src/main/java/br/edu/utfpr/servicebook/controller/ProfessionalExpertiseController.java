@@ -130,7 +130,7 @@ public class ProfessionalExpertiseController {
 
         List<ExpertiseDTO> expertiseDTOs = professionPage.stream()
                 .map(s -> expertiseMapper.toDto(s))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()); 
 
         mv.addObject("individual", professionalMinDTO);
         mv.addObject("expertises", expertiseDTOs);

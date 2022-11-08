@@ -36,5 +36,5 @@ public class ProfessionalExpertiseService {
     public void delete(ProfessionalExpertisePK professional_id){
         professionalExpertiseRepository.deleteById(professional_id);
     }
-
+ 
 }
