@@ -49,7 +49,7 @@ public class JobCandidateController {
     private IndividualService individualService;
 
     @PostMapping
-    public ModelAndView save(JobCandidateDTO dto, RedirectAttributes redirectAttributes) {
+    public ModelAndView save(JobCandidateDTO dto, RedirectAttributes redirectAttributes) throws Exception {
 
         //simula um usuário autenticado
         String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
@@ -66,8 +66,20 @@ public class JobCandidateController {
             throw new EntityNotFoundException("A ordem de serviço não foi encontrada!");
         }
 
+        int numberOfCandidacies = oJobRequest.get().getJobCandidates().size();
+        int maxCandidaciesAllowed = oJobRequest.get().getQuantityCandidatorsMax();
+        if (numberOfCandidacies == maxCandidaciesAllowed) {
+            throw new Exception("Essa ordem de serviço já atingiu o número máximo de candidaturas.");
+        }
+    
         JobCandidate jobCandidate = new JobCandidate(oJobRequest.get(), oindividual.get());
         jobCandidateService.save(jobCandidate);
+
+        boolean reachedMaxCandidaciesAllowed = numberOfCandidacies == (maxCandidaciesAllowed - 1);
+        if (reachedMaxCandidaciesAllowed) {
+            oJobRequest.get().setStatus(JobRequest.Status.BUDGET);
+            this.jobRequestService.save(oJobRequest.get());
+        }
 
         redirectAttributes.addFlashAttribute("msg", "Candidatura realizada com sucesso!");
 
