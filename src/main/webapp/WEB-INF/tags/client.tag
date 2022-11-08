@@ -34,16 +34,16 @@
             <li>
                 <a class='dropdown-trigger btn' href='#' data-target='dropdown1'>Minha Conta <i class="tiny material-icons right">arrow_drop_down</i></a>
                 <ul id='dropdown1' class='dropdown-content'>
-                    <li><a href="#!">Como cliente</a></li>
-                    <li><a href="#!">Como profissional</a></li>
-                    <li><a href="#!">Como empresa</a></li>
+                    <li><a href="minha-conta/cliente">Como cliente</a></li>
+                    <li><a href="minha-conta/profissional">Como profissional</a></li>
+                    <li><a href="minha-conta">Como empresa</a></li>
                 </ul>
             </li>
 
             <li>
                 <a class='dropdown-trigger btn' href='#' data-target='dropdown2'>${individual.name}<i class="tiny material-icons right">arrow_drop_down</i></a>
                 <ul id='dropdown2' class='dropdown-content'>
-                    <li><a href="#!">Meu perfil</a></li>
+                    <li><a href="minha-conta">Meu perfil</a></li>
                     <li class="divider" tabindex="-1"></li>
                     <li><a href="#!">Sair</a></li>
                 </ul>
@@ -55,7 +55,7 @@
 
         <ul id="nav-mobile" class="sidenav">
             <li><a class="menu-itens" href="#!">SOLICITAÇÕES</a></li>
-            <li><a class="menu-itens" href="#!">MINHA CONTA</a></li>
+            <li><a class="menu-itens" href="minha-conta">MINHA CONTA</a></li>
             <li><a class="menu-itens" href="#!">SAIR</a></li>
         </ul>
 
