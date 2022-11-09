@@ -141,6 +141,6 @@ public class JobCandidateController {
 
         redirectAttributes.addFlashAttribute("msg", "Pedido salvo com sucesso!");
 
-        return "redirect:/minha-conta/profissional#emDisputa";
+        return "redirect:/minha-conta/profissional/detalhes-servico/" + id;
     }
 }
