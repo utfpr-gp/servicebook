@@ -120,7 +120,7 @@ public class ProfessionalExpertiseController {
         mv.addObject("isClient", isClient);
 
         if (!oExpertises.isPresent()) {
-            throw new Exception("Nenhuma expecialidade encontrada");
+            throw new Exception("Nenhuma expecialidade encontrada"); 
         }
 
         List<ProfessionalExpertiseDTO2> professionalExpertiseDTOs = professionalExpertises.stream()
