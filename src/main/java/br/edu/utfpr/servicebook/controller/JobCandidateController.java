@@ -69,17 +69,13 @@ public class JobCandidateController {
         int numberOfCandidacies = oJobRequest.get().getJobCandidates().size();
         int maxCandidaciesAllowed = oJobRequest.get().getQuantityCandidatorsMax();
         if (numberOfCandidacies == maxCandidaciesAllowed) {
-            throw new Exception("Essa ordem de serviço já atingiu o número máximo de candidaturas.");
+            ModelAndView samePageView = new ModelAndView("redirect:minha-conta/profissional/detalhes-servico/" + dto.getId()); 
+            redirectAttributes.addFlashAttribute("maxCandidatesReachedMessage", "Essa ordem de serviço já atingiu o número máximo de candidaturas.");
+            return samePageView;
         }
     
         JobCandidate jobCandidate = new JobCandidate(oJobRequest.get(), oindividual.get());
         jobCandidateService.save(jobCandidate);
-
-        boolean reachedMaxCandidaciesAllowed = numberOfCandidacies == (maxCandidaciesAllowed - 1);
-        if (reachedMaxCandidaciesAllowed) {
-            oJobRequest.get().setStatus(JobRequest.Status.BUDGET);
-            this.jobRequestService.save(oJobRequest.get());
-        }
 
         redirectAttributes.addFlashAttribute("msg", "Candidatura realizada com sucesso!");
 
