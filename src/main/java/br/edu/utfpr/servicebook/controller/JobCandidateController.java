@@ -49,7 +49,7 @@ public class JobCandidateController {
     private IndividualService individualService;
 
     @PostMapping
-    public ModelAndView save(JobCandidateDTO dto, RedirectAttributes redirectAttributes) throws Exception {
+    public ModelAndView save(JobCandidateDTO dto, RedirectAttributes redirectAttributes) {
 
         //simula um usuário autenticado
         String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
