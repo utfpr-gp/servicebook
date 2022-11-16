@@ -44,9 +44,9 @@
                     </div>
                 </div>
             </div>
-            <c:if test="${not empty maxCandidatesReachedMessage}">
+            <c:if test="${not empty candidacyApplicationErrorMessage}">
                 <div class="card-panel red lighten-1 center-align">
-                    <span class="white-text">${maxCandidatesReachedMessage}</span>
+                    <span class="white-text">${candidacyApplicationErrorMessage}</span>
                 </div>
             </c:if>
             <div class="row">

@@ -70,7 +70,7 @@ public class JobCandidateController {
         int maxCandidaciesAllowed = oJobRequest.get().getQuantityCandidatorsMax();
         if (numberOfCandidacies == maxCandidaciesAllowed) {
             ModelAndView samePageView = new ModelAndView("redirect:minha-conta/profissional/detalhes-servico/" + dto.getId()); 
-            redirectAttributes.addFlashAttribute("maxCandidatesReachedMessage", "Essa ordem de serviço já atingiu o número máximo de candidaturas.");
+            redirectAttributes.addFlashAttribute("candidacyApplicationErrorMessage", "Essa ordem de serviço já atingiu o número máximo de candidaturas.");
             return samePageView;
         }
     
