@@ -2,12 +2,22 @@ package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
+import br.edu.utfpr.servicebook.model.dto.ProfessionalDTO;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
+import br.edu.utfpr.servicebook.model.entity.Individual;
+import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
+import br.edu.utfpr.servicebook.model.mapper.ProfessionalMapper;
 import br.edu.utfpr.servicebook.service.ExpertiseService;
-
+import br.edu.utfpr.servicebook.service.IndividualService;
+import br.edu.utfpr.servicebook.service.JobContractedService;
+import br.edu.utfpr.servicebook.service.ProfessionalExpertiseService;
+import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelItensDTO;
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
+
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import lombok.SneakyThrows;
@@ -32,6 +42,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -51,7 +62,19 @@ public class ExpertiseController {
     private ExpertiseMapper expertiseMapper;
 
     @Autowired
+    private ProfessionalExpertiseService professionalExpertiseService;
+
+    @Autowired
+    private JobContractedService jobContractedService;
+
+    @Autowired
     private Cloudinary cloudinary;
+
+    @Autowired
+    private IndividualService individualService;
+
+    @Autowired
+    private ProfessionalMapper professionalMapper;
 
     @GetMapping
     public ModelAndView showForm(HttpServletRequest request,
@@ -123,6 +146,50 @@ public class ExpertiseController {
         redirectAttributes.addFlashAttribute("msg", "Profissão salva com sucesso!");
 
         return new ModelAndView("redirect:especialidades");
+    }
+    
+    @GetMapping("/api/get-by-professional/{id}")
+    @ResponseBody
+    public HashMap<String, Object> getExpertiseData(@PathVariable("id") Long expertiseId) throws Exception {
+        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+
+        if (!oProfessional.isPresent()) {
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+        
+        if (expertiseId == 0L) {
+            ProfessionalDTO professional = professionalMapper.toResponseDto(oProfessional.get());
+            
+            HashMap<String, Object> professionalScopedSideBarResponse = new HashMap<>();
+            professionalScopedSideBarResponse.put("jobs", jobContractedService.countByProfessional(oProfessional.get()));
+            professionalScopedSideBarResponse.put("ratings", jobContractedService.countRatingByProfessional(oProfessional.get()));
+            professionalScopedSideBarResponse.put("comments", jobContractedService.countCommentsByProfessional(oProfessional.get()));
+            professionalScopedSideBarResponse.put("expertiseRating", professional.getRating());
+            
+            return professionalScopedSideBarResponse;
+        }
+
+        if (expertiseId < 0) {
+            throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
+        }
+
+        Optional<Expertise> oExpertise = expertiseService.findById(expertiseId);
+        if (!oExpertise.isPresent()) {
+            throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
+        }
+        
+        Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oProfessional.get(), oExpertise.get());
+        if (!oProfessionalExpertise.isPresent()) {
+            throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
+        }
+    
+        HashMap<String, Object> expertiseScopedSideBarResponse = new HashMap<>();
+        expertiseScopedSideBarResponse.put("jobs", jobContractedService.countByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get()));
+        expertiseScopedSideBarResponse.put("ratings", jobContractedService.countRatingByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get()));
+        expertiseScopedSideBarResponse.put("comments", jobContractedService.countCommentsByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get()));
+        expertiseScopedSideBarResponse.put("expertiseRating", oProfessionalExpertise.get().getRating());
+        
+        return expertiseScopedSideBarResponse;
     }
 
     @GetMapping("/{id}")
@@ -206,4 +273,6 @@ public class ExpertiseController {
 
         return false;
     }
+
+ 
 }
