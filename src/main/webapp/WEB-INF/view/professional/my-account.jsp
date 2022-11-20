@@ -92,20 +92,12 @@
     </jsp:body>
 </t:professional>
 
-<script src="assets/resources/scripts/expertise-sidepanel-ajax.js"></script>
-
 <script>
     $(document).ready(function () {
         $('#disponiveis').load($('.tab .active').attr("data-url"), function (result) {
             window.location.hash = "#disponiveis";
             $('#tab-default').click();
         });
-    });
-
-    $('#select-expertise').formSelect();
-
-    $('#select-expertise').change(function () {
-        $('#form-expertise').submit();
     });
 
     $('.tab a').click(function (e) {
