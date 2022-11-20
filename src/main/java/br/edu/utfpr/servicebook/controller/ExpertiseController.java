@@ -76,6 +76,9 @@ public class ExpertiseController {
     @Autowired
     private ProfessionalMapper professionalMapper;
 
+    @Autowired
+    private SidePanelUtil sidePanelUtil;
+
     @GetMapping
     public ModelAndView showForm(HttpServletRequest request,
                                  @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -150,46 +153,14 @@ public class ExpertiseController {
     
     @GetMapping("/api/get-by-professional/{id}")
     @ResponseBody
-    public HashMap<String, Object> getExpertiseData(@PathVariable("id") Long expertiseId) throws Exception {
+    public SidePanelItensDTO getExpertiseData(@PathVariable("id") Long expertiseId) throws Exception {
         Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
         
-        if (expertiseId == 0L) {
-            ProfessionalDTO professional = professionalMapper.toResponseDto(oProfessional.get());
-            
-            HashMap<String, Object> professionalScopedSideBarResponse = new HashMap<>();
-            professionalScopedSideBarResponse.put("jobs", jobContractedService.countByProfessional(oProfessional.get()));
-            professionalScopedSideBarResponse.put("ratings", jobContractedService.countRatingByProfessional(oProfessional.get()));
-            professionalScopedSideBarResponse.put("comments", jobContractedService.countCommentsByProfessional(oProfessional.get()));
-            professionalScopedSideBarResponse.put("expertiseRating", professional.getRating());
-            
-            return professionalScopedSideBarResponse;
-        }
-
-        if (expertiseId < 0) {
-            throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
-        }
-
-        Optional<Expertise> oExpertise = expertiseService.findById(expertiseId);
-        if (!oExpertise.isPresent()) {
-            throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
-        }
-        
-        Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oProfessional.get(), oExpertise.get());
-        if (!oProfessionalExpertise.isPresent()) {
-            throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
-        }
-    
-        HashMap<String, Object> expertiseScopedSideBarResponse = new HashMap<>();
-        expertiseScopedSideBarResponse.put("jobs", jobContractedService.countByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get()));
-        expertiseScopedSideBarResponse.put("ratings", jobContractedService.countRatingByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get()));
-        expertiseScopedSideBarResponse.put("comments", jobContractedService.countCommentsByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get()));
-        expertiseScopedSideBarResponse.put("expertiseRating", oProfessionalExpertise.get().getRating());
-        
-        return expertiseScopedSideBarResponse;
+        return sidePanelUtil.getSidePanelStats(oProfessional.get(), expertiseId);
     }
 
     @GetMapping("/{id}")
