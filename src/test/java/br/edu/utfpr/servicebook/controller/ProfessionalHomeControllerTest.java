@@ -10,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.servlet.ModelAndView;
 
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelItensDTO;
+
 import javax.persistence.EntityNotFoundException;
 import java.util.Map;
 import java.util.Optional;
@@ -24,29 +26,17 @@ public class ProfessionalHomeControllerTest {
     private ProfessionalHomeController controller;
 
     @Test
-    @DisplayName("Deve detectar a propriedade 'professionalExpertiseRating' no ModelAndView retornado")
+    @DisplayName("Deve detectar a propriedade 'dataIndividual.ratingScore' no ModelAndView retornado")
     public void professionalHomeViewHasRatingByExpertiseProperty() {
         try {
             Long expertiseId = 2L;
             ModelAndView mv = this.controller.showMyAccountProfessional(Optional.of(expertiseId));
             Map<String, Object> modelObjects = mv.getModel();
 
-            Assertions.assertTrue(modelObjects.containsKey("professionalExpertiseRating"));
-            Object professionalExpertiseRating = modelObjects.get("professionalExpertiseRating");
-            Assertions.assertEquals("Integer", professionalExpertiseRating.getClass().getSimpleName());
-        } catch (Exception e) {
-            log.debug("TEST ERROR:" + e.getMessage());
-            Assertions.fail();
-        }
-    }
-
-    @Test
-    @DisplayName("Não deve detectar a propriedade 'professionalExpertiseRating' nas chamadas sem expertise_Id")
-    public void professionalHomeViewDoesntHaveRatingPropertyOnCallWithoutId() {
-        try {
-            ModelAndView mv = this.controller.showMyAccountProfessional(Optional.empty());
-            Map<String, Object> modelObjects = mv.getModel();
-            Assertions.assertFalse(modelObjects.containsKey("professionalExpertiseRating"));
+            Assertions.assertTrue(modelObjects.containsKey("dataIndividual"));
+            Object dataIndividual = modelObjects.get("dataIndividual");
+            SidePanelItensDTO sidePanelItems = (SidePanelItensDTO) dataIndividual;
+            Assertions.assertEquals("Integer", sidePanelItems.getRatingScore().getClass().getSimpleName());
         } catch (Exception e) {
             log.debug("TEST ERROR:" + e.getMessage());
             Assertions.fail();
