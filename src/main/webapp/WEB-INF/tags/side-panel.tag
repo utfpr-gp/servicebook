@@ -167,9 +167,9 @@
                     <div class="row secondary-background-color no-margin">
                         <div class="col s12 white-text center">
                             <div class="row tooltipped" data-position="bottom"
-                                 data-tooltip="${professionalExpertiseRating != null ? professionalExpertiseRating : individual.rating} estrela (s).">
+                                 data-tooltip="${dataIndividual.ratingScore != 0 ? dataIndividual.ratingScore : individual.rating} estrela (s).">
 
-                                <c:if test="${professionalExpertiseRating == null}">
+                                <c:if test="${dataIndividual.ratingScore == 0}">
                                     <c:forEach var="star" begin="1" end="5">
                                         <c:if test="${star <= individual.rating}">
                                             <i class="expertise-rating-star material-icons yellow-text small">star</i>
@@ -180,12 +180,12 @@
                                     </c:forEach>
                                 </c:if>
 
-                                <c:if test="${professionalExpertiseRating != null}">
+                                <c:if test="${dataIndividual.ratingScore != 0}">
                                     <c:forEach var="star" begin="1" end="5">
-                                        <c:if test="${star <= professionalExpertiseRating}">
+                                        <c:if test="${star <= dataIndividual.ratingScore}">
                                             <i class="expertise-rating-star material-icons yellow-text small">star</i>
                                         </c:if>
-                                        <c:if test="${star > professionalExpertiseRating}">
+                                        <c:if test="${star > dataIndividual.ratingScore}">
                                             <i class="expertise-rating-star material-icons yellow-text small">star_border</i>
                                         </c:if>
                                     </c:forEach>
