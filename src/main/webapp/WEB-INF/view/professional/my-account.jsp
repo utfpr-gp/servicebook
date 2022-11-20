@@ -16,7 +16,7 @@
                     <div class="row">
                         <div class="col s12">
                             <h2 class="secondary-color-text">Anúncios de serviços</h2>
-                            ${professionalExpertiseRating}
+
                             <blockquote class="light-blue lighten-5 info-headers">
                                 <p>
                                     Abaixo você encontra os pedidos disponíveis no momento. Clique nos quadros para mais
