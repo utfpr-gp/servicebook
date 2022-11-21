@@ -38,6 +38,7 @@ public interface ProfessionalExpertiseRepository extends JpaRepository<Professio
      * @param individual
      * @return
      */
+
     List<ProfessionalExpertise> findByProfessional(Individual individual);
 
 }
