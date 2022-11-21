@@ -73,7 +73,69 @@
                             </div>
 
                         </div>
+
+                        <c:if test="${isJobToHired}">
+                            <div class="row">
+                                <div class="col s12">
+                                    <p class="text-area-info-cli primary-color-text">Confirmação do serviço:</p>
+                                </div>
+
+                                <form id="hiredForm" method="post">
+                                    <label>
+                                        <input id="confirmHired" name="chosenByBudget" type="radio" value="true"/>
+                                        <span>Confirmo a realização do serviço</span>
+                                    </label>
+
+                                    <label>
+                                        <input id="notConfirmHired" name="chosenByBudget" type="radio" value="false"/>
+                                        <span>Não poderei realizar o serviço</span>
+                                    </label>
+
+                                    <div class="row" id="confirmHiredForm" style="display: none; margin-top: 15px">
+                                        <p>Adicione abaixo a data para a realização do serviço e confirme sua ação:</p>
+                                        <input class="col s6" type="date" id="hiredDateFormConfirm" name="hiredDate">
+                                    </div>
+
+                                    <div class="row">
+                                        <a id="hiredFormButton" href="#modal-confirm-hired" data-url="${pageContext.request.contextPath}/candidaturas/contratacao/${job.id}" class="waves-effect waves-light btn spacing-buttons modal-trigger">Contratação</a>
+                                    </div>
+                                </form>
+
+                                <div id="modal-confirm-hired" class="modal">
+                                    <div class="modal-content">
+                                        <form action="" method="post">
+                                            <input type="hidden" name="_method" value="POST"/>
+                                            <input id="chosenByBudget" name="chosenByBudget" type="hidden" value=""/>
+                                            <input class="col s6" type="date" id="hiredDateFormConfirmModal" name="hiredDate" hidden>
+
+                                            <div class="modal-content" id="modal-content-confirm-hired" style="display: none">
+                                                <h5>Você tem certeza que deseja confirmar a contratação desse serviço?</h5>
+
+                                                <p class="no-margin"><strong>Descrição do serviço:</strong> ${job.description}</p>
+                                                <p class="no-margin"><strong>Cliente:</strong> ${client.name}</p>
+                                                <p class="no-margin"><strong>Data de realização:</strong> <span id="date-confirmed-span"></span></p>
+                                            </div>
+
+                                            <div class="modal-content" id="modal-content-not-confirm-hired" style="display: none">
+                                                <h4>Você tem certeza que deseja desistir da contratação desse serviço?</h4>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
+                                                <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:if>
+
                         <div class="row">
+                            <c:if test="${hasHiredDate}">
+                                <div class="col s12">
+                                    <p class="text-area-info-cli primary-color-text">Data de realização do serviço: ${jobCandidateHiredDate}</p>
+                                </div>
+                            </c:if>
+
                             <div class="col s12">
                                 <p class="text-area-info-cli primary-color-text">Descrição do serviço: ${job.description}</p>
                             </div>
@@ -103,3 +165,49 @@
 
     </jsp:body>
 </t:professional>
+
+<script>
+    $(document).ready(function() {
+        $('.modal').modal({
+            onOpenEnd: function (modal, trigger){
+                var url = $(trigger).data('url');
+                var name = $(trigger).data('name');
+
+                modal = $(modal);
+                var form = modal.find('form');
+                form.attr('action', url);
+                modal.find('#strong-name').text(name);
+            }
+
+        });
+
+        $('#hiredFormButton').attr("disabled", "disabled");
+
+        $('#confirmHired').click(function () {
+            $('#hiredFormButton').removeAttr("disabled");
+            $("#confirmHiredForm").show();
+        });
+
+        $('#notConfirmHired').click(function () {
+            $("#hiredDateFormConfirm").val(null);
+            $('#hiredFormButton').removeAttr("disabled");
+            $("#confirmHiredForm").hide();
+        });
+
+        $('#hiredFormButton').click(function () {
+            if ($("#confirmHired").is(":checked")) {
+                $("#date-confirmed-span").text($("#hiredDateFormConfirm").val());
+                $("#modal-content-confirm-hired").show();
+                $("#modal-content-not-confirm-hired").hide();
+
+                let date = $("#hiredDateFormConfirm").val();
+                $("#hiredDateFormConfirmModal").val(date);
+                $("#chosenByBudget").val(true);
+            } else {
+                $("#modal-content-confirm-hired").hide();
+                $("#modal-content-not-confirm-hired").show();
+                $("#chosenByBudget").val(false);
+            }
+        });
+    });
+</script>
