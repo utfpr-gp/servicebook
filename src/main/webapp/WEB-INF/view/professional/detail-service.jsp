@@ -106,13 +106,14 @@
                                         <form action="" method="post">
                                             <input type="hidden" name="_method" value="POST"/>
                                             <input id="chosenByBudget" name="chosenByBudget" type="hidden" value=""/>
+                                            <input class="col s6" type="date" id="hiredDateFormConfirmModal" name="hiredDate" hidden>
 
                                             <div class="modal-content" id="modal-content-confirm-hired" style="display: none">
                                                 <h5>Você tem certeza que deseja confirmar a contratação desse serviço?</h5>
 
                                                 <p class="no-margin"><strong>Descrição do serviço:</strong> ${job.description}</p>
                                                 <p class="no-margin"><strong>Cliente:</strong> ${client.name}</p>
-                                                <p class="no-margin"><strong>Data de realização:</strong> <input type="date" id="hiredDateFormConfirmModal" name="hiredDate" value=""></p>
+                                                <p class="no-margin"><strong>Data de realização:</strong> <span id="date-confirmed-span"></span></p>
                                             </div>
 
                                             <div class="modal-content" id="modal-content-not-confirm-hired" style="display: none">
@@ -195,6 +196,7 @@
 
         $('#hiredFormButton').click(function () {
             if ($("#confirmHired").is(":checked")) {
+                $("#date-confirmed-span").text($("#hiredDateFormConfirm").val());
                 $("#modal-content-confirm-hired").show();
                 $("#modal-content-not-confirm-hired").hide();
 
@@ -207,6 +209,5 @@
                 $("#chosenByBudget").val(false);
             }
         });
-
     });
 </script>
