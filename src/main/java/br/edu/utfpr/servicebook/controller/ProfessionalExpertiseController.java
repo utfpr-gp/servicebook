@@ -120,17 +120,17 @@ public class ProfessionalExpertiseController {
         mv.addObject("isClient", isClient);
 
         if (!oExpertises.isPresent()) {
-            throw new Exception("Nenhuma expecialidade encontrada");
+            throw new Exception("Nenhuma expecialidade encontrada"); 
         }
 
         List<ProfessionalExpertiseDTO2> professionalExpertiseDTOs = professionalExpertises.stream()
                                                                     .map(s -> professionalExpertiseMapper.toResponseDTO(s))
                                                                     .collect(Collectors.toList());
-        List<Expertise> professionPage = expertiseService.findAll();
+        List<Expertise> professionPage = expertiseService.findExpertiseNotExist(getProfessional().getId());
 
         List<ExpertiseDTO> expertiseDTOs = professionPage.stream()
                 .map(s -> expertiseMapper.toDto(s))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());  
 
         mv.addObject("individual", professionalMinDTO);
         mv.addObject("expertises", expertiseDTOs);
