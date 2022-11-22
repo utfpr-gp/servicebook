@@ -206,8 +206,14 @@ public class MyAccountController {
     public String saveUserEmailCode(
             @PathVariable Long id,
             @Validated(UserCodeDTO.RequestUserCodeInfoGroupValidation.class) UserCodeDTO dto,
+            BindingResult errors,
             RedirectAttributes redirectAttributes
     ) {
+
+        if (errors.hasErrors()) {
+            redirectAttributes.addFlashAttribute("msgError", "Houve um erro na verificação do código, verifique se digitou corretamente!");
+            return "redirect:/minha-conta/meu-email/{id}";
+        }
 
         Optional<Individual> oProfessional = this.individualService.findById(id);
 
