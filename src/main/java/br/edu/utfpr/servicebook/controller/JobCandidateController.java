@@ -68,6 +68,14 @@ public class JobCandidateController {
             throw new EntityNotFoundException("A ordem de serviço não foi encontrada!");
         }
 
+        int numberOfCandidacies = oJobRequest.get().getJobCandidates().size();
+        int maxCandidaciesAllowed = oJobRequest.get().getQuantityCandidatorsMax();
+        if (numberOfCandidacies == maxCandidaciesAllowed) {
+            ModelAndView samePageView = new ModelAndView("redirect:minha-conta/profissional/detalhes-servico/" + dto.getId()); 
+            redirectAttributes.addFlashAttribute("candidacyApplicationErrorMessage", "Essa ordem de serviço já atingiu o número máximo de candidaturas.");
+            return samePageView;
+        }
+    
         JobCandidate jobCandidate = new JobCandidate(oJobRequest.get(), oindividual.get());
         jobCandidateService.save(jobCandidate);
 

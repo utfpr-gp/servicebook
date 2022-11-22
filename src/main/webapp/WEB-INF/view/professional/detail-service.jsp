@@ -44,6 +44,11 @@
                     </div>
                 </div>
             </div>
+            <c:if test="${not empty candidacyApplicationErrorMessage}">
+                <div class="card-panel red lighten-1 center-align">
+                    <span class="white-text">${candidacyApplicationErrorMessage}</span>
+                </div>
+            </c:if>
             <div class="row">
                 <div class="container">
                     <div class="progress-bar">
@@ -155,7 +160,7 @@
                                             <button class="waves-effect waves-light btn">Quero me candidatar</button>
                                         </div>
                                     </div>
-                                </form>
+                                </form> 
                             </c:if>
                         </div>
                     </div>
