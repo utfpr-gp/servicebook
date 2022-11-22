@@ -23,6 +23,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,6 +34,8 @@ import java.util.stream.Collectors;
 public class ProfessionalHomeController {
 
     public static final Logger log = LoggerFactory.getLogger(ProfessionalHomeController.class);
+
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     @Autowired
     private IndividualService individualService;
@@ -487,6 +491,23 @@ public class ProfessionalHomeController {
         int percentCandidatesApplied = (int)(((double)currentCandidates / (double)maxCandidates) * 100);
 
         boolean isAvailableJobRequest = jb.getStatus().equals(JobRequest.Status.AVAILABLE) && jb.isClientConfirmation();
+        boolean isJobToHired = jb.getStatus().equals(JobRequest.Status.TO_HIRED);
+
+        Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(id, oProfessional.get().getId());
+
+        if (oJobCandidate.isPresent()) {
+            JobCandidate jobCandidate = oJobCandidate.get();
+            boolean hasHiredDate = false;
+
+            if (jobCandidate.getHiredDate() != null) {
+                String date = this.dateFormat.format(jobCandidate.getHiredDate());
+                hasHiredDate = true;
+
+                mv.addObject("jobCandidateHiredDate",  date);
+            }
+
+            mv.addObject("hasHiredDate",  hasHiredDate);
+        }
 
         mv.addObject("job", jobFull);
         mv.addObject("client", client);
@@ -496,6 +517,7 @@ public class ProfessionalHomeController {
         mv.addObject("maxCandidates", maxCandidates);
         mv.addObject("percentCandidatesApplied", percentCandidatesApplied);
         mv.addObject("isAvailableJobRequest", isAvailableJobRequest);
+        mv.addObject("isJobToHired", isJobToHired);
         return mv;
     }
 

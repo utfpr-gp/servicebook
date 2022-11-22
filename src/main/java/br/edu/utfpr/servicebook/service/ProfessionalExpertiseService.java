@@ -29,7 +29,6 @@ public class ProfessionalExpertiseService {
         return this.professionalExpertiseRepository.findByProfessional(individual);
     }
 
-
     public ProfessionalExpertise save(ProfessionalExpertise professionalExpertise) {
         return this.professionalExpertiseRepository.save(professionalExpertise);
     }
@@ -37,5 +36,5 @@ public class ProfessionalExpertiseService {
     public void delete(ProfessionalExpertisePK professional_id){
         professionalExpertiseRepository.deleteById(professional_id);
     }
-
+ 
 }
