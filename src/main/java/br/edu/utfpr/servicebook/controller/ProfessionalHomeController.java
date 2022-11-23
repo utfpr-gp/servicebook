@@ -422,27 +422,27 @@ public class ProfessionalHomeController {
 
 
     
-    @DeleteMapping("/detalhes-servico/{id}")
-    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
+    // @DeleteMapping("/detalhes-servico/{id}")
+    // public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    //     String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
 
-        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+    //     Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
-        if (!oProfessional.isPresent()) {
-            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
-        }
+    //     if (!oProfessional.isPresent()) {
+    //         throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+    //     }
                 
-        ModelAndView mv = new ModelAndView("professional/detail-service");
-        Optional<JobRequest> oProfessional = jobRequestService.findById(id);
-        if (!oProfessional.isPresent()) {
-            throw new Exception("O trabalho não foi encontrado em nosso sistema!");
-        }
+    //     ModelAndView mv = new ModelAndView("professional/detail-service");
+    //     Optional<JobRequest> oProfessional = jobRequestService.findById(id);
+    //     if (!oProfessional.isPresent()) {
+    //         throw new Exception("O trabalho não foi encontrado em nosso sistema!");
+    //     }
 
-        individualService.delete(id, oindividual.get().getId());
-        redirectAttributes.addFlashAttribute("msg", "Card removido com sucesso!");
+    //     individualService.delete(id, oindividual.get().getId());
+    //     redirectAttributes.addFlashAttribute("msg", "Card removido com sucesso!");
 
-        return "redirect:/minha-conta/profissional/#disponiveis";
-    }
+    //     return "redirect:/minha-conta/profissional/#disponiveis";
+    // }
     
     
     @GetMapping("/detalhes-servico/{id}")
@@ -492,5 +492,6 @@ public class ProfessionalHomeController {
         mv.addObject("percentCandidatesApplied", percentCandidatesApplied);
         return mv;
     }
+    
 }
 
