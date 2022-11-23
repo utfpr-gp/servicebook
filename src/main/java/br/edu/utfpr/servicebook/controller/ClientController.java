@@ -169,6 +169,10 @@ public class ClientController {
     @PatchMapping("/marcar-como-orcamento/{jobId}/{individualId}")
     public String markAsBudget(@PathVariable Long jobId, @PathVariable Long individualId, RedirectAttributes redirectAttributes) throws IOException {
       Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(jobId, individualId);
+      if (!oJobCandidate.isPresent()) {
+        throw new EntityNotFoundException("Candidato não encontrado");
+      }
+
       JobCandidate jobCandidate = oJobCandidate.get();
       jobCandidate.setChosenByBudget(!jobCandidate.isChosenByBudget());
       jobCandidateService.save(jobCandidate);
@@ -180,8 +184,16 @@ public class ClientController {
     public ModelAndView showDetailsRequestCandidate(@PathVariable Optional<Long> jobId, @PathVariable Optional<Long> candidateId) throws Exception {
       ModelAndView mv = new ModelAndView("client/details-request-candidate");
 
-      Optional<Individual> oindividual = individualService.findById(candidateId.get());
-      Optional<JobCandidate> jobCandidate = jobCandidateService.findById(jobId.get(), oindividual.get().getId());
+      Optional<Individual> oIndividual = individualService.findById(candidateId.get());
+      if (!oIndividual.isPresent()) {
+        throw new EntityNotFoundException("Individuo não encontrado");
+      }
+      
+      Optional<JobCandidate> jobCandidate = jobCandidateService.findById(jobId.get(), oIndividual.get().getId());
+      if (!jobCandidate.isPresent()) {
+        throw new EntityNotFoundException("Candidato não encontrado");
+      }
+
       JobCandidateDTO jobCandidateDTO = jobCandidateMapper.toDto(jobCandidate.get());
 
       mv.addObject("jobCandidate", jobCandidateDTO);
