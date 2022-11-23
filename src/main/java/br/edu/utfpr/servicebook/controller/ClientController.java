@@ -166,21 +166,25 @@ public class ClientController {
         return mv;
     }
 
+    @PatchMapping("/marcar-como-orcamento/{jobId}/{individualId}")
+    public String markAsBudget(@PathVariable Long jobId, @PathVariable Long individualId, RedirectAttributes redirectAttributes) throws IOException {
+      Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(jobId, individualId);
+      JobCandidate jobCandidate = oJobCandidate.get();
+      jobCandidate.setChosenByBudget(!jobCandidate.isChosenByBudget());
+      jobCandidateService.save(jobCandidate);
+
+      return "redirect:/minha-conta/cliente/meus-pedidos/"+jobId;
+    }
+
     @GetMapping("/meus-pedidos/{jobId}/detalhes/{candidateId}")
     public ModelAndView showDetailsRequestCandidate(@PathVariable Optional<Long> jobId, @PathVariable Optional<Long> candidateId) throws Exception {
       ModelAndView mv = new ModelAndView("client/details-request-candidate");
-      // mv.addObject("user", this.getSidePanelUser());
 
       Optional<Individual> oindividual = individualService.findById(candidateId.get());
       Optional<JobCandidate> jobCandidate = jobCandidateService.findById(jobId.get(), oindividual.get().getId());
       JobCandidateDTO jobCandidateDTO = jobCandidateMapper.toDto(jobCandidate.get());
 
-      mv.addObject("jobCandidate", jobCandidateDTO.getIndividual());
-
-      // Optional<JobRequest> oJobRequest = jobRequestService.findById(jobId.get());
-      // JobRequestFullDTO jobDTO = jobRequestMapper.toFullDto(oJobRequest.get());
-      // mv.addObject("jobRequest", jobDTO);
-
+      mv.addObject("jobCandidate", jobCandidateDTO);
 
       return mv;
     }
@@ -235,36 +239,36 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+      Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
-        if (!individual.isPresent()) {
-            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
-        }
+      if (!individual.isPresent()) {
+          throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+      }
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
-        Page<JobCandidate> jobCandidatePage = null;
-        List<JobCandidateMinDTO> jobCandidateDTOs = null;
+      PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
+      Page<JobCandidate> jobCandidatePage = null;
+      List<JobCandidateMinDTO> jobCandidateDTOs = null;
 
-        jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.BUDGET, individual.get(),pageRequest);
+      jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.BUDGET, individual.get(),pageRequest);
 
-        jobCandidateDTOs = jobCandidatePage.stream()
-                .map(jobCandidate -> {
-                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobCandidate.getJobRequest());
+      jobCandidateDTOs = jobCandidatePage.stream()
+              .map(jobCandidate -> {
+                  Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobCandidate.getJobRequest());
 
-                    if (totalCandidates.isPresent()) {
-                        return jobCandidateMapper.toMinDto(jobCandidate, totalCandidates);
-                    }
+                  if (totalCandidates.isPresent()) {
+                      return jobCandidateMapper.toMinDto(jobCandidate, totalCandidates);
+                  }
 
-                    return jobCandidateMapper.toMinDto(jobCandidate, Optional.ofNullable(0L));
-                }).collect(Collectors.toList());
+                  return jobCandidateMapper.toMinDto(jobCandidate, Optional.ofNullable(0L));
+              }).collect(Collectors.toList());
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/cliente/meus-pedidos/em-orcamento");
+      PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/cliente/meus-pedidos/em-orcamento");
 
-        ModelAndView mv = new ModelAndView("client/job-request/tabs/disputed-jobs-report");
-        mv.addObject("pagination", paginationDTO);
-        mv.addObject("jobs", jobCandidateDTOs);
+      ModelAndView mv = new ModelAndView("client/job-request/tabs/disputed-jobs-report");
+      mv.addObject("pagination", paginationDTO);
+      mv.addObject("jobs", jobCandidateDTOs);
 
-        return mv;
+      return mv;
     }
 
     @GetMapping("/meus-pedidos/para-fazer")

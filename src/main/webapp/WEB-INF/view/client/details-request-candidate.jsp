@@ -6,14 +6,13 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 <t:client title="Detalhes do candidato">
   <jsp:body>
     <main>
-        <!-- <t:side-panel individual="${user}"></t:side-panel> -->
         <div class="blue lighten-1">
           <div class="section no-pad-bot">
             <div class="container">
               <div class="row center-align">
                 <c:choose>
-                  <c:when test="${jobCandidate.profilePicture != null}">
-                    <img src="${jobCandidate.profilePicture}" class="avatar" alt="Foto de perfil">
+                  <c:when test="${jobCandidate.getIndividual().profilePicture != null}">
+                    <img src="${jobCandidate.getIndividual().profilePicture}" class="avatar" alt="Foto de perfil">
                   </c:when>
                   <c:otherwise>
                     <img src="assets/resources/images/no-photo.png" class="avatar" alt="Sem foto de perfil">
@@ -23,10 +22,10 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               <div class="row">
                 <div class="col s6">
                   <c:forEach var="star" begin="1" end="5">
-                    <c:if test="${star <= jobCandidate.rating}">
+                    <c:if test="${star <= jobCandidate.getIndividual().rating}">
                       <i class="material-icons yellow-text small">star</i>
                     </c:if>
-                    <c:if test="${star > jobCandidate.rating}">
+                    <c:if test="${star > jobCandidate.getIndividual().rating}">
                       <i class="material-icons yellow-text small">star_border</i>
                     </c:if>
                   </c:forEach>
@@ -43,7 +42,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
       <div class="tertiary-background-color white-text center-align no-margin">
           <p class="upper-case job-details-professional-name">
             
-            ${jobCandidate.name}
+            ${jobCandidate.getIndividual().name}
           </p>
       </div>
 
@@ -53,18 +52,18 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               <div class="col s6">
                 <i class="left material-icons">email</i>
                 <span class="left">
-                  ${jobCandidate.email}
+                  ${jobCandidate.getIndividual().email}
                 </span>
               </div>
               <div class="col s6">
                 <i class="left material-icons">local_phone</i>
                 <span class="left">
-                  ${jobCandidate.phoneNumber}
+                  ${jobCandidate.getIndividual().phoneNumber}
                 </span>
               </div>
             </div>
               <div class="row center-align">
-                  <p class="contact-item center dark-color-text">${jobCandidate.description}</p>
+                  <p class="contact-item center dark-color-text">${jobCandidate.getIndividual().description}</p>
               </div>
               <div class="row center-align">
                   <p class="contact-item center dark-color-text">Entre em contato com o profissional para solicitar um orçamento.</p>
@@ -82,11 +81,20 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               </div>
 
               <div class="row center-align">
-                <p class="contact-item center dark-color-text">Ative para marcar que foi solicitado um orçamento</p>
-                <!-- abre modal -->
-                <button class="btn">
-                  Orçamento
-                </button>
+                <p class="contact-item center dark-color-text">Solicitar ou cancelar orçamento</p>
+                <form action="minha-conta/cliente/marcar-como-orcamento/${jobCandidate.getJobRequest().id}/${jobCandidate.getIndividual().id}" method="post">
+                  <input type="hidden" name="_method" value="PATCH"/>
+                    <button type="submit" class="btn">
+                      <c:choose>
+                        <c:when test="${jobCandidate.chosenByBudget}">
+                          Cancelar orçamento
+                        </c:when>
+                        <c:otherwise>
+                          Marcar para orçamento
+                        </c:otherwise>
+                      </c:choose>
+                    </button>
+                </form>
               </div>
               <div class="row center-align">
               </div>
