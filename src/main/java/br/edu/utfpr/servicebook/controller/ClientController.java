@@ -153,7 +153,7 @@ public class ClientController {
         ExpertiseMinDTO expertiseDTO = expertiseMapper.toMinDto(expertise.get());
         mv.addObject("expertise", expertiseDTO);
 
-        List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequest(job.get());
+        List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequestOrderByChosenByBudgetDesc(job.get());
 
         List<JobCandidateDTO> jobCandidatesDTOs = jobCandidates.stream()
                 .map(candidate -> jobCandidateMapper.toDto(candidate))

@@ -72,6 +72,8 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
 
     List<JobCandidate> findByJobRequest(JobRequest jobRequest);
 
+    List<JobCandidate> findByJobRequestOrderByChosenByBudgetDesc(JobRequest jobRequest);
+
     Page<JobCandidate> findByJobRequest_StatusAndJobRequest_Individual(JobRequest.Status status, Individual individual, Pageable pageable);
 
     @Transactional
