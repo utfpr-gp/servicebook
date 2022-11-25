@@ -61,25 +61,16 @@
                             <div class="col s12 icons-area-request center padding">
                               <div class="row">
                                 <div class="col s8 center">
-                                  <c:choose>
-                                    <c:when test="${jobCandidate.chosenByBudget}">
-                                      <div class="left black-text">
-                                        <p>PARA ORÇAMENTO!</p>
-                                      </div>
-                                    </c:when>
-                                    <c:otherwise>
-                                      <div class="left star-icons candidate dark-color-text">
-                                        <c:forEach var="star" begin="1" end="5">
-                                          <c:if test="${star <= jobCandidate.individual.rating}">
-                                            <i class="material-icons dark-text small">star</i>
-                                          </c:if>
-                                          <c:if test="${star > jobCandidate.individual.rating}">
-                                            <i class="material-icons dark-text small">star_border</i>
-                                          </c:if>
-                                        </c:forEach>
-                                      </div>
-                                    </c:otherwise>
-                                  </c:choose>
+                                  <div class="left star-icons candidate dark-color-text">
+                                    <c:forEach var="star" begin="1" end="5">
+                                      <c:if test="${star <= jobCandidate.individual.rating}">
+                                        <i class="material-icons dark-text small">star</i>
+                                      </c:if>
+                                      <c:if test="${star > jobCandidate.individual.rating}">
+                                        <i class="material-icons dark-text small">star_border</i>
+                                      </c:if>
+                                    </c:forEach>
+                                  </div>
                                 </div>
                                 <div class="col s4">
                                   <div class="right check-circle-candidate">
@@ -105,7 +96,6 @@
                             <div class="col s12">
                               <div class="center title-card-resquest">
                                 <p class="truncate">${jobCandidate.individual.name}</p>
-                                
                               </div>
                               <p class="contact-item center-block dark-color-text">
                                 <c:if test="${jobCandidate.individual.emailVerified}">
