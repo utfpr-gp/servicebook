@@ -68,7 +68,7 @@ tagdir="/WEB-INF/tags" %>
             <div class="center">
               <a
                 href="#modal-delete"
-                data-url="${pageContext.request.contextPath}/candidaturas/desistir/${job.id}"
+                data-url="${pageContext.request.contextPath}/requisicoes/nao-quero/${job.id}"
                 class="waves-effect waves-light btn spacing-buttons red modal-trigger"
                 >Não quero</a
               >
@@ -91,11 +91,10 @@ tagdir="/WEB-INF/tags" %>
   <div id="modal-delete" class="modal">
     <div class="modal-content">
       <form action="" method="post">
-        <input type="hidden" name="_method" value="DELETE" />
 
         <div class="modal-content">
           <h4>
-            Você tem certeza que deseja desistir
+            Você tem certeza que deseja não se candidatar para este serviço?
             <strong id="strong-name"></strong>?
           </h4>
         </div>
