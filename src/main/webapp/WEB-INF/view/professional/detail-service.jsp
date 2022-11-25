@@ -149,9 +149,14 @@
                             </div>
                             <div class="col s6 m6 spacing-buttons">
                                 <div class="center">
-                                    <a class="waves-effect waves-light btn  pink darken-1" href="#!">Excluir</a>
+                                  <a
+                                    href="#modal-delete"
+                                    data-url="${pageContext.request.contextPath}/candidaturas/desistir/${job.id}"
+                                    class="waves-effect waves-light btn spacing-buttons red modal-trigger"
+                                    >Não quero</a
+                                  >
                                 </div>
-                            </div>
+                              </div>
                             <c:if test="${isAvailableJobRequest}">
                                 <form action="candidaturas" method="post">
                                     <input name="id" type="hidden" value="${job.id}">
@@ -166,6 +171,46 @@
                     </div>
                 </div>
             </div>
+            <!-- <div id="modal-delete" class="modal">
+                <div class="modal-content">        
+                        <div class="modal-content">
+                            <h4>Você tem certeza que deseja desistir <strong id="strong-name"></strong>?</h4>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
+                            <button type="button" class="modal-close btn waves-effect waves-light gray button-delete">Sim</button>
+                        </div>
+                </div>
+            </div> -->
+
+            <div id="modal-delete" class="modal">
+                <div class="modal-content">
+                  <form action="" method="post">
+                    <input type="hidden" name="_method" value="DELETE" />
+            
+                    <div class="modal-content">
+                      <h4>
+                        Você tem certeza que deseja desistir
+                        <strong id="strong-name"></strong>?
+                      </h4>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="modal-close btn-flat waves-effect waves-light btn btn-gray"
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        type="submit"
+                        class="modal-close btn waves-effect waves-light gray"
+                      >
+                        Sim
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
         </main>
 
     </jsp:body>
@@ -214,5 +259,14 @@
                 $("#chosenByBudget").val(false);
             }
         });
+
+        // $('.button-delete').click(function (){
+        // $.post("candidaturas", { id:"${job.id}"}).done(function(){
+        //     swal({
+        //         title: "Deu certo!",
+        //         text: "Você desistiu desse serviço",
+        //         icon: "success",
+        //     });
+        // });
     });
 </script>
