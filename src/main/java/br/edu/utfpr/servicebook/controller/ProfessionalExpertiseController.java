@@ -17,7 +17,6 @@ import br.edu.utfpr.servicebook.service.ProfessionalExpertiseService;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelItensDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelProfessionalExpertiseRatingDTO;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +66,9 @@ public class ProfessionalExpertiseController {
     @Autowired
     private ProfessionalExpertiseMapper professionalExpertiseMapper;
 
+    @Autowired
+    private SidePanelUtil sidePanelUtil;
+
     @GetMapping()
     public ModelAndView showExpertises(@RequestParam(required = false, defaultValue = "0") Optional<Long> id)  throws Exception {
         Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
@@ -80,43 +82,9 @@ public class ProfessionalExpertiseController {
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
         Optional<List<Expertise>> oExpertises = Optional.ofNullable(expertiseService.findAll());
 
-        SidePanelItensDTO sidePanelItensDTO = null;
-        if (!id.isPresent() || id.get() == 0L) {
-            sidePanelItensDTO = SidePanelUtil.sidePanelItensDTO(
-                    jobContractedService.countByProfessional(oProfessional.get()),
-                    jobContractedService.countCommentsByProfessional(oProfessional.get()),
-                    jobContractedService.countRatingByProfessional(oProfessional.get())
-            );
-
-            mv.addObject("id", 0L);
-        } else {
-            if (id.get() < 0) {
-                throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
-            }
-
-            Optional<Expertise> oExpertise = expertiseService.findById(id.get());
-
-            if (!oExpertise.isPresent()) {
-                throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
-            }
-
-            Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oProfessional.get(), oExpertise.get());
-
-            if (!oProfessionalExpertise.isPresent()) {
-                throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
-            }
-//            Optional<Integer> professionalExpertiseRating = professionalExpertiseService.selectRatingByProfessionalAndExpertise(oProfessional.get().getId(), oExpertise.get().getId());
-            SidePanelProfessionalExpertiseRatingDTO sidePanelProfessionalExpertiseRatingDTO = SidePanelUtil.sidePanelProfessionalExpertiseRatingDTO( professionalExpertiseService.selectRatingByProfessionalAndExpertise(oProfessional.get().getId(), oExpertise.get().getId()));
-            sidePanelItensDTO = SidePanelUtil.sidePanelItensDTO(
-                    jobContractedService.countByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get()),
-                    jobContractedService.countCommentsByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get()),
-                    jobContractedService.countRatingByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get())
-            );
-            mv.addObject("id", id.get());
-            mv.addObject("professionalExpertiseRating", sidePanelProfessionalExpertiseRatingDTO);
-        }
-
+        SidePanelItensDTO sidePanelItensDTO = sidePanelUtil.getSidePanelStats(oProfessional.get(), id.get());
         mv.addObject("dataIndividual", sidePanelItensDTO);
+        mv.addObject("id", id.orElse(0L));
         mv.addObject("isClient", isClient);
 
         if (!oExpertises.isPresent()) {
