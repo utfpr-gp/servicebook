@@ -30,13 +30,13 @@
 
         <ul class="right hide-on-med-and-down">
             <li><a class="menu-itens" href="#!">SOLICITAÇÕES</a></li>
-            <li><a class="menu-itens" href="#!">MINHA CONTA</a></li>
+            <li><a class="menu-itens" href="minha-conta">MINHA CONTA</a></li>
             <li><a class="menu-itens" href="#!">SAIR</a></li>
         </ul>
 
         <ul id="nav-mobile" class="sidenav">
             <li><a class="menu-itens" href="#!">SOLICITAÇÕES</a></li>
-            <li><a class="menu-itens" href="#!">MINHA CONTA</a></li>
+            <li><a class="menu-itens" href="minha-conta">MINHA CONTA</a></li>
             <li><a class="menu-itens" href="#!">SAIR</a></li>
         </ul>
 
