@@ -10,7 +10,6 @@ import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelItensDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelProfessionalExpertiseRatingDTO;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,70 +79,39 @@ public class ProfessionalHomeController {
     @Autowired
     private StateService stateService;
 
+    @Autowired
+    private SidePanelUtil sidePanelUtil;
+
     @GetMapping
     public ModelAndView showMyAccountProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> id) throws Exception {
         log.debug("ServiceBook: Minha conta.");
-        boolean isClient = false;
+   
         Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
-
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        IndividualDTO professionalMinDTO = individualMapper.toDto(oProfessional.get());
+        ModelAndView mv = new ModelAndView("professional/my-account");
+    
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
-
         List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
                 .map(professionalExpertise -> professionalExpertise.getExpertise())
                 .map(expertise -> expertiseMapper.toDto(expertise))
                 .collect(Collectors.toList());
 
-        ModelAndView mv = new ModelAndView("professional/my-account");
-
         mv.addObject("expertises", expertiseDTOs);
+
+        boolean isClient = false;
         mv.addObject("isClient", isClient);
 
+        IndividualDTO professionalMinDTO = individualMapper.toDto(oProfessional.get());
         SidePanelIndividualDTO sidePanelIndividualDTO = SidePanelUtil.getSidePanelDTO(professionalMinDTO);
         mv.addObject("user", sidePanelIndividualDTO);
 
-        SidePanelItensDTO sidePanelItensDTO = null;
+        SidePanelItensDTO sidePanelItensDTO = sidePanelUtil.getSidePanelStats(oProfessional.get(), id.get());
 
-        if (!id.isPresent() || id.get() == 0L) {
-            sidePanelItensDTO = SidePanelUtil.sidePanelItensDTO(
-                    jobContractedService.countByProfessional(oProfessional.get()),
-                    jobContractedService.countCommentsByProfessional(oProfessional.get()),
-                    jobContractedService.countRatingByProfessional(oProfessional.get())
-            );
-
-            mv.addObject("id", 0L);
-        } else {
-            if (id.get() < 0) {
-                throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
-            }
-
-            Optional<Expertise> oExpertise = expertiseService.findById(id.get());
-
-            if (!oExpertise.isPresent()) {
-                throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
-            }
-
-            Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oProfessional.get(), oExpertise.get());
-
-            if (!oProfessionalExpertise.isPresent()) {
-                throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
-            }
-
-            mv.addObject("id", id.get());
-            Integer ratingOnExpertise = oProfessionalExpertise.get().getRating();
-            mv.addObject("professionalExpertiseRating", ratingOnExpertise);
-
-            sidePanelItensDTO = SidePanelUtil.sidePanelItensDTO(
-                    jobContractedService.countByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get()),
-                    jobContractedService.countCommentsByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get()),
-                    jobContractedService.countRatingByProfessionalAndJobRequest_Expertise(oProfessional.get(), oExpertise.get())
-            );
-        }
         mv.addObject("dataIndividual", sidePanelItensDTO);
+        mv.addObject("id", id.orElse(0L));
 
         return mv;
     }
