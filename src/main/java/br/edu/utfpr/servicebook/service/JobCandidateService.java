@@ -49,4 +49,8 @@ public class JobCandidateService {
     public Optional<JobCandidate> findById(Long jobId, Long individualId) {
         return jobCandidateRepository.findByJobIdAndIndividualId(jobId, individualId);
     }
+
+    public List<JobCandidate> findByJobRequestOrderByChosenByBudgetDesc(JobRequest jobRequest) {
+      return this.jobCandidateRepository.findByJobRequestOrderByChosenByBudgetDesc(jobRequest);
+  }
 }

@@ -45,6 +45,10 @@ public class UserDTO implements Serializable {
     @Pattern(regexp = "^\\(?\\d{2}\\)?\\s?(\\d{4,5})-?(\\d{4})$", message = "Telefone inválido! Por favor, insira um número de telefone válido.", groups = UserDTO.RequestUserPhoneInfoGroupValidation.class)
     protected String phoneNumber;
 
+    public String getOnlyNumbersFromPhone() {
+      return getPhoneNumber().replaceAll("[^0-9]", "");
+  }
+
     protected boolean phoneVerified;
     protected boolean emailVerified;
     protected boolean profileVerified;

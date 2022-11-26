@@ -19,4 +19,7 @@ public class JobCandidateDTO implements Serializable {
     private IndividualMinDTO individual;
 
     private boolean toDO;
+    private boolean chosenByBudget;
+
+
 }
