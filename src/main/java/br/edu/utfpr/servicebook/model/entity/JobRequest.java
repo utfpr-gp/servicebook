@@ -61,6 +61,8 @@ public class JobRequest {
 	
 	private boolean professionalConfirmation;
 
+	private boolean reviewable;
+
 	@OneToMany(mappedBy = "jobRequest", cascade = CascadeType.REMOVE)
 	private Set<JobImages> jobImages = new HashSet<>();
 	
@@ -82,5 +84,12 @@ public class JobRequest {
 	public void onUpdate(){
 
 	}
-	
+
+	@PostLoad
+    private void postLoadFunction(){
+		final Date now = new Date();
+
+		boolean todaysDateIsAfterExpirationDate = now.compareTo(this.getDateExpired()) >= 0;
+        this.reviewable = todaysDateIsAfterExpirationDate;
+    }
 }
