@@ -84,9 +84,14 @@ public class ClientController {
 
         //TESTE PUSH NOTIFICATION - METODO QUE CADASTAR NO SSEMITER
         System.err.println("CLIETNECONTROLEER EMAIL DO USUARIO...l84    " + individual.get().getEmail());
-        pushNotificationService.enableNotifier(individual.get().getEmail());
+        //pushNotificationService.enableNotifier(individual.get().getEmail());
+
 
         //FAZER BUSCA DAS NOTIFICAÇÃO - METODO QUE BUSCA E RETORNA DO BANCO AS NOTIFICAÇÕES
+
+        //MANDANDO PARA VIEW SSEMITER STREAM
+        mv.addObject("notifications", pushNotificationService.enableNotifier(individual.get().getEmail()));
+
 
 
 

@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+### Twilio Credentials/ aplication.properties ###
+## !**/src/resources/application.properties

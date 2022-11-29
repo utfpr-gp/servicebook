@@ -2,6 +2,26 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@attribute name="title" %>
 
+<%@attribute name="notifica" type="br.edu.utfpr.servicebook.service.PushNotificationService" %>
+<script>
+    window.onload = function () {
+        console.log("notificação iniciando..." + ${notifica});
+        var eventSource = new EventSource(${notifica});
+
+        eventSource.addEventListener("pushNotifications", function (event){
+            console.log("escutando evento... ");
+            var pushData = JSON.parse(event.data);
+            addblock(pushData.title, pushData.text);
+        })
+        function addblock(title, text){
+            var t = document.createTextNode(title);
+            var para = document.createElement("p");
+            para.innerHTML = t +" " + text;
+            document.getElementById("pack").appendChild(para);
+        };
+    };
+</script>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -18,6 +38,15 @@
 </head>
 
 <body>
+
+
+<div class="row">
+    <h5>Teste de notificação</h5>
+    <div id="pack">${notifica}</div>
+</div>
+
+
+
 <nav class="nav-main" role="navigation">
     <div class="nav-wrapper container">
         <a id="logo-container" href="/servicebook" class="brand-logo">
