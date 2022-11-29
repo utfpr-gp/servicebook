@@ -3,13 +3,47 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<script>
+    window.onload = function () {
+        console.log("notificação iniciando..." + ${notifications});
+        var eventSource = new EventSource(${notifications});
+
+        eventSource.addEventListener("pushNotifications", function (event){
+            console.log("escutando evento... ");
+            var pushData = JSON.parse(event.data);
+            addblock(pushData.title, pushData.text);
+        })
+
+        eventSource.addEventListener('error', function(event){
+            console.log("error : " + event.currentTarget.readyState)
+            if(event.currentTarget.readyState == eventSource.CLOSED){
+
+            }else{
+                eventSource.close();
+            }
+        })
+
+        function addblock(title, text){
+            var t = document.createTextNode(title);
+            var para = document.createElement("p");
+            para.innerHTML = t +" " + text;
+            document.getElementById("pack").appendChild(para);
+        };
+    };
+</script>
 
 
-<t:client title="Minhas Solicitações" notifica="${notifications}">
+<t:client title="Minhas Solicitações">
     <jsp:body>
         <main>
             <div class="row">
                 <t:side-panel individual="${user}"></t:side-panel>
+
+                <div class="row">
+                    <h5>Teste de notificação</h5>
+                    <div id="pack"></div>
+                </div>
+
 
                 <div class="col m10 offset-m1 l9">
                     <a id="show-area-perfil"
