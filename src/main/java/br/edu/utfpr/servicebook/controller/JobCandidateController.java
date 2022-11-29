@@ -10,10 +10,10 @@ import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
 import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobCandidateService;
 import br.edu.utfpr.servicebook.service.JobRequestService;
-import br.edu.utfpr.servicebook.sse.EventSse;
-import br.edu.utfpr.servicebook.sse.SSEService;
+import br.edu.utfpr.servicebook.service.PushNotificationService;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +26,8 @@ import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Controller
@@ -50,7 +52,7 @@ public class JobCandidateController {
     private IndividualService individualService;
 
     @Autowired
-    private SSEService sseService;
+    private PushNotificationService pushNotificationService;
 
     @PostMapping
     public ModelAndView save(JobCandidateDTO dto, RedirectAttributes redirectAttributes) {
@@ -81,12 +83,27 @@ public class JobCandidateController {
         JobCandidate jobCandidate = new JobCandidate(oJobRequest.get(), oindividual.get());
         jobCandidateService.save(jobCandidate);
 
-        //Envio de notificação SSE
-        JobRequestDetailsDTO jobFull = jobRequestMapper.jobRequestDetailsDTO(oJobRequest.get());
 
-        //Envia a notificação - message(tipo de evento), descriptionServ(descrição serviço), fromProfessionalEmail(de qual proficional), toUserEmail(para qual cliente)
-        EventSse eventSse = new EventSse(EventSse.Status.NEW_CANDIDATURE, jobFull.getDescription().toString(), currentUserEmail, jobFull.getIndividual().getEmail());
-        sseService.send(eventSse);
+
+
+
+
+
+        //TESTE PUSH NOTIFICATION
+        System.err.println("DETALHE FUNCIONARIO  INDIVIDUAL CANDIDATE....l86  " +  oindividual.get().getEmail());
+        System.err.println("DETALHE CLIENTE  jobrequest CANDIDATE....l87  " +  oJobRequest.get().getIndividual().getEmail());
+
+        //criando notificação
+        pushNotificationService.dispatchToClient(oindividual, oJobRequest);
+
+
+
+
+
+
+
+
+
 
         redirectAttributes.addFlashAttribute("msg", "Candidatura realizada com sucesso!");
 

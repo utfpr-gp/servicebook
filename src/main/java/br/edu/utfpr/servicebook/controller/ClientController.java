@@ -70,6 +70,9 @@ public class ClientController {
     @Autowired
     private QuartzService quartzService;
 
+    @Autowired
+    PushNotificationService pushNotificationService;
+
     @GetMapping
     public ModelAndView show() throws Exception {
         ModelAndView mv = new ModelAndView("client/my-requests");
@@ -78,6 +81,17 @@ public class ClientController {
         if (!individual.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
+
+
+
+        //TESTE PUSH NOTIFICATION - METODO QUE CADASTAR NO SSEMITER
+        System.err.println("CLIETNECONTROLEER EMAIL DO USUARIO...l84    " + individual.get().getEmail());
+        pushNotificationService.enableNotifier(individual.get().getEmail());
+
+        //FAZER BUSCA DAS NOTIFICAÇÃO - METODO QUE BUSCA E RETORNA DO BANCO AS NOTIFICAÇÕES
+
+
+
 
         IndividualDTO clientDTO = individualMapper.toDto(individual.get());
 
