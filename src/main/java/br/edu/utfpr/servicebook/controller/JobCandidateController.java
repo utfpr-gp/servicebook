@@ -11,9 +11,10 @@ import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobCandidateService;
 import br.edu.utfpr.servicebook.service.JobRequestService;
 import br.edu.utfpr.servicebook.service.PushNotificationService;
+import br.edu.utfpr.servicebook.sse.EventSSE;
+import br.edu.utfpr.servicebook.sse.SSEService;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,8 +27,6 @@ import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Controller
@@ -53,6 +52,9 @@ public class JobCandidateController {
 
     @Autowired
     private PushNotificationService pushNotificationService;
+
+    @Autowired
+    private SSEService sseService;
 
     @PostMapping
     public ModelAndView save(JobCandidateDTO dto, RedirectAttributes redirectAttributes) {
@@ -83,27 +85,9 @@ public class JobCandidateController {
         JobCandidate jobCandidate = new JobCandidate(oJobRequest.get(), oindividual.get());
         jobCandidateService.save(jobCandidate);
 
-
-
-
-
-
-
-        //TESTE PUSH NOTIFICATION
-        System.err.println("DETALHE FUNCIONARIO  INDIVIDUAL CANDIDATE....l86  " +  oindividual.get().getEmail());
-        System.err.println("DETALHE CLIENTE  jobrequest CANDIDATE....l87  " +  oJobRequest.get().getIndividual().getEmail());
-
-        //criando notificação
-        pushNotificationService.dispatchToClient(oindividual, oJobRequest);
-
-
-
-
-
-
-
-
-
+        //Envia a notificação
+        EventSSE eventSSE = new EventSSE(EventSSE.Status.NEW_CANDIDATURE);
+        sseService.send(oindividual.get().getEmail(), eventSSE);
 
         redirectAttributes.addFlashAttribute("msg", "Candidatura realizada com sucesso!");
 

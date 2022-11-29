@@ -70,6 +70,7 @@
 <script src="assets/resources/scripts/init.js"></script>
 <script src="assets/resources/scripts/profession.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="assets/resources/scripts/sse.js"></script>
 
 
 <%--<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>--%>

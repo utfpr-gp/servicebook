@@ -59,6 +59,7 @@
 <script src="assets/libraries/materialize/js/materialize.min.js"></script>
 <script src="assets/resources/scripts/main.js"></script>
 <script src="assets/resources/scripts/init.js"></script>
+<script src="assets/resources/scripts/sse.js"></script>
 
 </body>
 </html>
