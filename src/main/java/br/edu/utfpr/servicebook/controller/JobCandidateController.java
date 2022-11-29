@@ -10,6 +10,7 @@ import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
 import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobCandidateService;
 import br.edu.utfpr.servicebook.service.JobRequestService;
+import br.edu.utfpr.servicebook.service.PushNotificationService;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -50,6 +51,9 @@ public class JobCandidateController {
     @Autowired
     private IndividualService individualService;
 
+    @Autowired
+    private PushNotificationService pushNotificationService;
+
     @PostMapping
     public ModelAndView save(JobCandidateDTO dto, RedirectAttributes redirectAttributes) {
 
@@ -71,13 +75,35 @@ public class JobCandidateController {
         int numberOfCandidacies = oJobRequest.get().getJobCandidates().size();
         int maxCandidaciesAllowed = oJobRequest.get().getQuantityCandidatorsMax();
         if (numberOfCandidacies == maxCandidaciesAllowed) {
-            ModelAndView samePageView = new ModelAndView("redirect:minha-conta/profissional/detalhes-servico/" + dto.getId()); 
+            ModelAndView samePageView = new ModelAndView("redirect:minha-conta/profissional/detalhes-servico/" + dto.getId());
             redirectAttributes.addFlashAttribute("candidacyApplicationErrorMessage", "Essa ordem de serviço já atingiu o número máximo de candidaturas.");
             return samePageView;
         }
-    
+
         JobCandidate jobCandidate = new JobCandidate(oJobRequest.get(), oindividual.get());
         jobCandidateService.save(jobCandidate);
+
+
+
+
+
+
+
+        //TESTE PUSH NOTIFICATION
+        System.err.println("DETALHE FUNCIONARIO  INDIVIDUAL CANDIDATE....l86  " +  oindividual.get().getEmail());
+        System.err.println("DETALHE CLIENTE  jobrequest CANDIDATE....l87  " +  oJobRequest.get().getIndividual().getEmail());
+
+        //criando notificação
+        pushNotificationService.dispatchToClient(oindividual, oJobRequest);
+
+
+
+
+
+
+
+
+
 
         redirectAttributes.addFlashAttribute("msg", "Candidatura realizada com sucesso!");
 
