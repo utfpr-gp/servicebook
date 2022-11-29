@@ -81,7 +81,7 @@ VALUES (1, 1, 1),
 INSERT INTO job_requests
 (client_confirmation, date_created, date_expired, description, professional_confirmation, quantity_candidators_max,
  status, client_id, expertise_id)
-VALUES ('false', '2021-01-01', '2021-01-01', 'Preciso de um Encanador 1!', 'true', '5', 'AVAILABLE', '1', '1'),
+VALUES ('false', '2021-01-01', '2021-01-01', 'Preciso de um Encanador 1!', 'true', '5', 'BUDGET', '2', '1'),
        ('false', '2021-01-01', '2021-01-02', 'Preciso de um Encanador 2!', 'true', '10', 'AVAILABLE', '1', '1'),
        ('false', '2021-01-01', '2021-01-07', 'Preciso de um Encanador 3!', 'true', '15', 'AVAILABLE', '1', '1'),
        ('true', '2021-01-01', '2021-01-07', 'Preciso de um Encanador 30!', 'true', '15', 'TO_HIRED', '1', '1'),

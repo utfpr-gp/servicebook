@@ -80,6 +80,18 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                   </a>
               </div>
 
+              <div>
+                <p class="contact-item center dark-color-text">Realizar serviço com este candidato?</p>
+                <div class="center">
+                  <div class="switch">
+                  <label> Não
+                    <input type="checkbox" id="botao">
+                    <span class="lever"></span>
+                    Sim</label>
+                  </div>
+                </div>
+              </div>
+
               <div class="row center-align">
                 <p class="contact-item center dark-color-text">Solicitar ou cancelar orçamento</p>
                 <form action="minha-conta/cliente/marcar-como-orcamento/${jobCandidate.getJobRequest().id}/${jobCandidate.getIndividual().id}" method="post">
@@ -104,3 +116,17 @@ uri="http://java.sun.com/jsp/jstl/core" %>
     </main>
   </jsp:body>
 </t:client>
+
+<script>
+  $('.lever').click(function (){
+    if(document.getElementById("botao").value == true){
+      $.post("contratacao/${jobCandidate.getIndividual().id}").done(function(){
+        swal({
+          title: "Deu certo!",
+          text: "${jobCandidate.getIndividual().name} Solicitado para relizar serviço",
+          icon: "success",
+        });
+      });
+    }
+  });
+</script>

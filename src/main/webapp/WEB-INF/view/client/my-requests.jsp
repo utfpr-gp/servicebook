@@ -54,8 +54,7 @@
                             <div id="disponiveis" class="col s12 no-padding">
 
                             </div>
-                            <div id="
-                            " class="col s12 no-padding">
+                            <div id="paraOrcamento" class="col s12 no-padding">
 
                             </div>
                             <div id="paraFazer" class="col s12 no-padding">
