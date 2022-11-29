@@ -2,6 +2,7 @@ package br.edu.utfpr.servicebook.service;
 
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
+import org.cloudinary.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -68,15 +69,14 @@ public class PushNotificationService {
 
         String emailClient = jobRequest.get().getIndividual().getEmail();
         String descricaoServ = jobRequest.get().getDescription();
-        String emailPrestador = individual.get().getName();
+        String nomePrestador = individual.get().getName();
 
-        String title = "Você tem uma nova candidatura para o serviço " + descricaoServ;
-        String text = emailPrestador + " se candidatou para o serviço";
+        String title = "Você tem uma nova candidatura para o serviço: " + descricaoServ;
+        String text = nomePrestador + "< se candidatou para o serviço";
 
-        //String eventFormatted = new JSONObject().put("title", title).put("text", text).toString();
-        //sourceNotificação(eventFormatted, emailClient);
+        String eventFormatted = new JSONObject().put("title", title).put("text", text).toString();
 
-        String eventFormatted = title + "\nl" + text;
+        //String eventFormatted = title + "\nl" + text;
 
         System.err.println("CRIADNO SSEMITER....L80 " + eventFormatted);
 
