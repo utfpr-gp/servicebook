@@ -32,7 +32,7 @@
                       <p>${jobRequest.description}</p>
                       <p>Pedido expedido em ${jobRequest.dateExpired}</p>
                     </div>
-                    <c:if test="${jobRequest.status != 'BUDGET'}">
+                    <c:if test="${jobRequest.status == 'AVAILABLE'}">
                       <div class="col s12 m6 l3">
                         <div class="center">
                           <a href="#modal-close" class="spacing-buttons waves-effect waves-light btn modal-trigger">Parar de receber propostas</a>
@@ -46,13 +46,32 @@
                     </div>
                     <div class="col s12 tertiary-color-text description-orcamento text-info-request">
                       <hr class="hr-request-area">
-                      <p>Entre em contato com um ou mais profissionais que se interessaram em realizar o serviço para marcar um orçamento.</p>
-                      <c:if test="${candidates.size() > 1}">
+                      <c:if test="${jobRequest.status == 'AVAILABLE'}">
+                        <p>Entre em contato com um ou mais profissionais que se interessaram em realizar o serviço para marcar um orçamento.</p>
+                        <c:if test="${candidates.size() > 1}">
                           <p>${candidates.size()} profissionais responderam a sua solicitação:</p>
-                      </c:if>
-                      <c:if test="${candidates.size() == 1}">
+                        </c:if>
+                        <c:if test="${candidates.size() == 1}">
                           <p>${candidates.size()} profissional respondeu a sua solicitação:</p>
+                        </c:if>
                       </c:if>
+                      <c:if test="${jobRequest.status == 'BUDGET'}">
+                        <p>Solicite e analise o(s) orçamento(s) para escolher o profissional que melhor atende a sua necessidade.</p>
+                      </c:if>
+                      <c:if test="${jobRequest.status == 'BUDGET'}">
+                        <p>Aguarde a confirmação do profissional para realizar o serviço.</p>
+                      </c:if>
+                      <c:if test="${jobRequest.status == 'TO_DO'}">
+                        <p>O profissional confirmou que realizará o serviço. Você poderá avaliar o profissional após a expiração da data combinada.</p>
+                      </c:if>
+                      <c:if test="${jobRequest.status == 'DOING'}">
+                        <p>Conforme a data de agendamento, este é o profissional que está realizando o serviço.
+                          Quando ele finalizar o serviço, informe o término e também faça a avaliação do profissional.</p>
+                      </c:if>
+                      <c:if test="${jobRequest.status == 'CLOSED'}">
+                        <p>Este é o profissional que realizou o serviço.</p>
+                      </c:if>
+
                     </div>
                     <c:forEach var="jobCandidate" items="${candidates}">
                       <div class="col s12 l6 xl4">
