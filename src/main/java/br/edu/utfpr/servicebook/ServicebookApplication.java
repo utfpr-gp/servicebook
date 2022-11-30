@@ -96,4 +96,10 @@ public class ServicebookApplication {
         System.out.println("updating jobs request with expired hired date");
         quartzService.updateJobRequestStatusWhenIsHiredDateExpired();
     }
+
+    @EventListener(ApplicationStartedEvent.class)
+    public void updateJobRequestStatusWhenIsHiredDateIsExpired() {
+        System.out.println("updating jobs request with expired hired date");
+        quartzService.updateJobRequestStatusWhenIsHiredDateExpired();
+    }
 }
