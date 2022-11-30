@@ -82,7 +82,6 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
     @Query("delete from JobCandidate j where j.jobRequest.id = ?1 and j.individual.id = ?2")
     void deleteById(Long jobId, Long individualId);
 
-
     @Query("select j from JobCandidate j where j.jobRequest.id = ?1 and j.individual.id = ?2")
     Optional<JobCandidate> findByJobIdAndIndividualId(Long jobId, Long individualId);
 
