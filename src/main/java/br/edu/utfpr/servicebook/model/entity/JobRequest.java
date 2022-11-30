@@ -25,7 +25,7 @@ public class JobRequest {
 	 * CLOSED: o serviço foi realizado
 	 */
 	public enum Status {
-		AVAILABLE, BUDGET, TO_HIRED, TO_DO, CLOSED
+		AVAILABLE, BUDGET, TO_HIRED, DOING, TO_DO, CLOSED
 	};
 
 	@Id

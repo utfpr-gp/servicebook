@@ -94,4 +94,10 @@ public class ServicebookApplication {
         System.out.println("Cleaning old email codes");
         quartzService.verifyExpiredTokenEmailJob();
     }
+
+    @EventListener(ApplicationStartedEvent.class)
+    public void updateJobRequestStatusWhenIsHiredDateIsExpired() {
+        System.out.println("updating jobs request with expired hired date");
+        quartzService.updateJobRequestStatusWhenIsHiredDateExpired();
+    }
 }
