@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,4 +85,7 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
 
     @Query("select j from JobCandidate j where j.jobRequest.id = ?1 and j.individual.id = ?2")
     Optional<JobCandidate> findByJobIdAndIndividualId(Long jobId, Long individualId);
+
+    @Query("select j from JobCandidate j where j.hiredDate <= ?1")
+    List<JobCandidate> findAllByHiredDateLessThan(Date date);
 }

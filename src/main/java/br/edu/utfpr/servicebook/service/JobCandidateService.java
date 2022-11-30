@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,4 +54,8 @@ public class JobCandidateService {
     public List<JobCandidate> findByJobRequestOrderByChosenByBudgetDesc(JobRequest jobRequest) {
       return this.jobCandidateRepository.findByJobRequestOrderByChosenByBudgetDesc(jobRequest);
   }
+
+    public List<JobCandidate> findAllByHiredDateLessThan(Date date) {
+        return this.jobCandidateRepository.findAllByHiredDateLessThan(date);
+    }
 }
