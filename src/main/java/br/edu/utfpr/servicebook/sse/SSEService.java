@@ -18,6 +18,7 @@ public class SSEService {
      * @param username
      * @return
      */
+
     public SseEmitter createChannel(String username) {
         SseEmitter emitter = new SseEmitter();
         emitterRepository.addEmitter(username, emitter);

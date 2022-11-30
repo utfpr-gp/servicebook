@@ -51,9 +51,6 @@ public class JobCandidateController {
     private IndividualService individualService;
 
     @Autowired
-    private PushNotificationService pushNotificationService;
-
-    @Autowired
     private SSEService sseService;
 
     @PostMapping
