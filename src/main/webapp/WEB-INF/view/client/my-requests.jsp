@@ -44,6 +44,11 @@
                                         PARA FAZER
                                     </a>
                                 </li>
+                                <li class="tab" id="3">
+                                    <a data-url="minha-conta/cliente/meus-pedidos/fazendo" href="#fazendo">
+                                        FAZENDO
+                                    </a>
+                                </li>
                                 <li class="tab" id="4">
                                     <a data-url="minha-conta/cliente/meus-pedidos/executados" href="#executados">
                                         CONCLUÍDOS
@@ -60,6 +65,7 @@
                             <div id="paraFazer" class="col s12 no-padding">
 
                             </div>
+                            <div id="fazendo" class="col s12 no-padding"></div>
                             <div id="executados" class="col s12 no-padding">
                             </div>
                         </div>

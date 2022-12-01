@@ -88,6 +88,7 @@ VALUES ('false', '2021-01-01', '2021-01-01', 'Preciso de um Encanador 1!', 'true
        ('false', '2021-01-01', '2021-01-08', 'Preciso de um Encanador 4!', 'true', '20', 'TO_DO', '1', '1'), -- 4
        ('false', '2021-01-01', '2021-01-08', 'Preciso de um Encanador 5!', 'true', '20', 'CLOSED', '1', '1'),
        ('false', '2021-01-01', '2021-01-08', 'Preciso de um Encanador 6!', 'true', '20', 'CLOSED', '1', '1'),
+       ('false', '2022-11-29', '2022-12-13', 'Preciso de um Encanador 7!', 'true', '20', 'DOING', '1', '1'),
        ('false', '2021-01-01', '2021-01-30', 'Preciso de um Eletricista 1!', 'true', '5', 'AVAILABLE', '3', '2'),
        ('false', '2021-01-01', '2021-02-02', 'Preciso de um Eletricista 2!', 'true', '10', 'AVAILABLE', '3', '2'),
        ('true', '2021-01-01', '2021-03-01', 'Preciso de um Eletricista 3!', 'true', '15', 'TO_HIRED', '4', '2'),
@@ -121,14 +122,17 @@ VALUES ('Ótimo Encanador!', '5', '4', '1'),
 
 
 
-INSERT INTO job_candidates (job_id, professional_id, chosen_by_budget, date, is_quit)
-VALUES ('1', '1', 'false', '2021-01-01', 'false'),
-       ('2', '1', 'false', '2021-01-02', 'false'),
-       ('4', '1', 'true', '2021-01-02', 'false'),
-       ('5', '1', 'false', '2021-01-29', 'false'),
-       ('6', '1', 'false', '2021-01-02', 'false'),
-       ('9', '1', 'true', '2021-01-02', 'false'),
-       ('10', '1', 'true', '2021-01-02', 'false'),
-       ('16', '1', 'true', '2021-01-02', 'false');
+INSERT INTO job_candidates (job_id, professional_id, chosen_by_budget, date, hired_date, is_quit)
+VALUES ('1', '1', 'false', '2021-01-01', null, 'false'),
+       ('1', '2', 'true', '2021-01-01', null, 'false'),
+       ('1', '5', 'false', '2021-01-01', null, 'false'),
+       ('2', '1', 'false', '2021-01-02', null, 'false'),
+       ('4', '1', 'true', '2021-01-02', null, 'false'),
+       ('5', '1', 'false', '2022-11-25', '2022-11-27', 'false'),
+       ('8', '1', 'false', '2022-11-30', '2022-12-13', 'false'),
+       ('6', '1', 'false', '2021-01-02', null, 'false'),
+       ('9', '1', 'true', '2021-01-02', null, 'false'),
+       ('10', '1', 'true', '2021-01-02', null, 'false'),
+       ('16', '1', 'true', '2021-01-02', null, 'false');
 
 

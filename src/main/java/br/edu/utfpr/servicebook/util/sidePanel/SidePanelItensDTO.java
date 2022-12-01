@@ -9,4 +9,5 @@ public class SidePanelItensDTO {
     private Long jobs;
     private Long comments;
     private Long ratings;
+    private Integer ratingScore;
 }
