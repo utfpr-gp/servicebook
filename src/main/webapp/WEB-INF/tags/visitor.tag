@@ -34,10 +34,11 @@
             <li><a class="menu-itens" href="cadastrar-se">CADASTRE-SE</a></li>
         </ul>
 
-        <button class="click-scroll right" onclick="rolar('panel-heading');">Como Funciona?</button>
+        <button class="click-scroll right hide-on-med-and-down" onclick="rolar('panel-heading');">Como Funciona?</button>
 
         <ul id="nav-mobile" class="sidenav">
             <li><a class="menu-itens" href="login">ENTRAR</a></li>
+            <li><a class="menu-itens" onclick="rolar('panel-heading');">COMO FUNCIONA?</a></li>
             <li><a class="menu-itens" href="cadastrar-se">CADASTRE-SE</a></li>
         </ul>
 

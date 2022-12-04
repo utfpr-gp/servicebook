@@ -1,5 +1,6 @@
 <%@tag description="Servicebook - Professional template" pageEncoding="UTF-8" %>
 <%@attribute name="title" %>
+<%@attribute name="individual" type="br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO" %>
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -35,38 +36,35 @@
             <h4 class="left logo-text">ServiceBook</h4>
         </a>
 
-        <ul class="right hide-on-med-and-down">
-<%--            <li><a class="menu-itens dropdown-trigger" href="#!" data-target="dropdown1">ORDEM DE SERVIÇOS<i--%>
-                    class="material-icons right">arrow_drop_down</i></a></li>
-            <li>
-                <a class='dropdown-trigger btn' href='#' data-target='dropdown'>Minha Conta <i class="tiny material-icons right">arrow_drop_down</i></a>
-                <ul id='dropdown' class='dropdown-content'>
-                    <li><a href="#!">Como cliente</a></li>
-                    <li><a href="#!">Como profissional</a></li>
-                    <li><a href="#!">Como empresa</a></li>
-                </ul>
-            </li>
+        <div class="right">
+<%--            <a class="left menu-itens" href="/servicebook/requisicoes?passo=1">ANUNCIAR</a>--%>
+            <ul class="right  hide-on-med-and-down">
+                <li>
+                    <a class='dropdown-trigger btn' href='#' data-target='dropdown'>Minha Conta profissional<i class="tiny material-icons right">arrow_drop_down</i></a>
+                    <ul id='dropdown' class='dropdown-content'>
+                        <li><a href="minha-conta/cliente">Como cliente</a></li>
+                        <li><a href="minha-conta">Como empresa</a></li>
+                    </ul>
+                </li>
 
-            <li>
-                <a class='dropdown-trigger btn' href='#' data-target='dropdown2'>${individual.name}<i class="tiny material-icons right">arrow_drop_down</i></a>
-                <ul id='dropdown2' class='dropdown-content'>
-                    <li><a href="minha-conta">Meu perfil</a></li>
-                    <li class="divider" tabindex="-1"></li>
-                    <li><a href="#!">Sair</a></li>
-                </ul>
-            </li>
-            <li><a href="#!"><i class="material-icons">notifications</i></a></li>
-        </ul>
-        <button class="click-scroll right">Anunciar</button>
-
+                <li>
+                    <a class='dropdown-trigger btn' href='#' data-target='dropdown2'>${individual.name}<i class="tiny material-icons right">arrow_drop_down</i></a>
+                    <ul id='dropdown2' class='dropdown-content'>
+                        <li><a href="/servicebook/minha-conta/perfil">Meu perfil</a></li>
+                        <li class="divider" tabindex="-1"></li>
+                        <li><a href="#!">Sair</a></li>
+                    </ul>
+                </li>
+                <li><a href="#!"><i class="material-icons">notifications</i></a></li>
+            </ul>
+        </div>
 
         <ul id="nav-mobile" class="sidenav">
-            <li><a class="menu-itens" href="#!">ORDEM DE SERVIÇO</a></li>
-            <li><a class="menu-itens" href="#!">MINHAS ORDEM</a></li>
-            <li><a class="menu-itens" href="minha-conta/profissional">MINHA CONTA</a></li>
+            <li><a class="menu-itens" href="passo-1">ANUNCIAR</a></li>
+            <li><a href="minha-conta/cliente">>Minha conta cliente</a></li>
+            <li><a href="minha-conta">Como empresa</a></li>
             <li><a class="menu-itens" href="#!">SAIR</a></li>
         </ul>
-
         <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
     </div>
 </nav>

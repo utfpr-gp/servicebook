@@ -756,6 +756,13 @@ textarea {
   top: 5px;
 }
 
+.menu-link{
+  font-size: 110%;
+  margin-top: 10px;
+  margin-right: 5rem;
+  color: #53b1ed;
+}
+
 .card-expertise {
   padding: 0 !important;
   margin-bottom: 10px;
