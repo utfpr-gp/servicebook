@@ -29,33 +29,34 @@
             <h4 class="left logo-text">ServiceBook</h4>
         </a>
 
-        <ul class="right hide-on-med-and-down">
-<%--            <li><a class="menu-itens" href="#!">SOLICITAÇÕES</a></li>--%>
-            <li>
-                <a class='dropdown-trigger btn' href='#' data-target='dropdown1'>Minha Conta <i class="tiny material-icons right">arrow_drop_down</i></a>
-                <ul id='dropdown1' class='dropdown-content'>
-                    <li><a href="minha-conta/cliente">Como cliente</a></li>
-                    <li><a href="minha-conta/profissional">Como profissional</a></li>
-                    <li><a href="minha-conta">Como empresa</a></li>
-                </ul>
-            </li>
+        <div class="right">
+            <a class="left menu-link" href="/servicebook/requisicoes?passo=1">ANUNCIAR</a>
+<%--            <button class="left click-scroll right" onclick="rolar('panel-heading');">Como Funciona?</button>--%>
+            <ul class="right  hide-on-med-and-down">
+                <li>
+                    <a class='dropdown-trigger btn' href='#' data-target='dropdown'>Minha Conta cliente<i class="tiny material-icons right">arrow_drop_down</i></a>
+                    <ul id='dropdown' class='dropdown-content'>
+                        <li><a href="minha-conta/profissional">Como profissional</a></li>
+                        <li><a href="minha-conta">Como empresa</a></li>
+                    </ul>
+                </li>
 
-            <li>
-                <a class='dropdown-trigger btn' href='#' data-target='dropdown2'>${individual.name}<i class="tiny material-icons right">arrow_drop_down</i></a>
-                <ul id='dropdown2' class='dropdown-content'>
-                    <li><a href="minha-conta">Meu perfil</a></li>
-                    <li class="divider" tabindex="-1"></li>
-                    <li><a href="#!">Sair</a></li>
-                </ul>
-            </li>
-            <li><a href="#!"><i class="material-icons">notifications</i></a></li>
-        </ul>
-
-        <button class="click-scroll right">Anunciar</button>
+                <li>
+                    <a class='dropdown-trigger btn' href='#' data-target='dropdown2'>${individual.name}<i class="tiny material-icons right">arrow_drop_down</i></a>
+                    <ul id='dropdown2' class='dropdown-content'>
+                        <li><a href="/servicebook/minha-conta/perfil">Meu perfil</a></li>
+                        <li class="divider" tabindex="-1"></li>
+                        <li><a href="#!">Sair</a></li>
+                    </ul>
+                </li>
+                <li><a href="#!"><i class="material-icons">notifications</i></a></li>
+            </ul>
+        </div>
 
         <ul id="nav-mobile" class="sidenav">
-            <li><a class="menu-itens" href="#!">SOLICITAÇÕES</a></li>
-            <li><a class="menu-itens" href="minha-conta">MINHA CONTA</a></li>
+            <li><a class="menu-itens" href="passo-1">ANUNCIAR</a></li>
+            <li><a href="minha-conta/profissional">Minha conta profissional</a></li>
+            <li><a href="minha-conta">Como empresa</a></li>
             <li><a class="menu-itens" href="#!">SAIR</a></li>
         </ul>
 
