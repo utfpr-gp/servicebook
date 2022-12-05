@@ -32,7 +32,7 @@
         <div class="right">
             <a class="left menu-link" href="/servicebook/requisicoes?passo=1">ANUNCIAR</a>
 <%--            <button class="left click-scroll right" onclick="rolar('panel-heading');">Como Funciona?</button>--%>
-            <ul class="right  hide-on-med-and-down">
+            <ul class="right nav-btn hide-on-med-and-down">
                 <li>
                     <a class='dropdown-trigger btn' href='#' data-target='dropdown'>Minha Conta cliente<i class="tiny material-icons right">arrow_drop_down</i></a>
                     <ul id='dropdown' class='dropdown-content'>
