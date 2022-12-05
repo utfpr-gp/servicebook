@@ -38,7 +38,7 @@
 
         <div class="right">
 <%--            <a class="left menu-itens" href="/servicebook/requisicoes?passo=1">ANUNCIAR</a>--%>
-            <ul class="right  hide-on-med-and-down">
+            <ul class="right nav-btn hide-on-med-and-down">
                 <li>
                     <a class='dropdown-trigger btn' href='#' data-target='dropdown'>Minha Conta profissional<i class="tiny material-icons right">arrow_drop_down</i></a>
                     <ul id='dropdown' class='dropdown-content'>
