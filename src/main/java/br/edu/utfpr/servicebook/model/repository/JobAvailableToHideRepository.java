@@ -12,5 +12,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface JobAvailableToHideRepository extends JpaRepository<JobAvailableToHide, JobRequestUserPK> {
+    @Query("select j from JobAvailableToHide j where j.date <= ?1")
+    List<JobAvailableToHide> findAllByDateLessThan(Date date);
 
+    @Modifying
+    @Query("delete from JobAvailableToHide j where j.id = ?1")
+    void deleteByJobAvailableId(JobRequestUserPK id);
 }

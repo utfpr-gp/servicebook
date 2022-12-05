@@ -23,5 +23,11 @@ public class JobAvailableToHideService {
         return jobAvailableToHideRepository.save(entity);
     }
 
+    public List<JobAvailableToHide> findAllByDateLessThan(Date date) {
+        return this.jobAvailableToHideRepository.findAllByDateLessThan(date);
+    }
 
+    public void deleteByJobAvailableId(JobRequestUserPK id) {
+        this.jobAvailableToHideRepository.deleteByJobAvailableId(id);
+    }
 }

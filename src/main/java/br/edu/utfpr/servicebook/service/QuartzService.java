@@ -149,4 +149,21 @@ public class QuartzService {
                 .build();
         return trigger;
     }
+
+    public void deleteJobsAvailableToHide() {
+        try{
+            JobDetail job = JobBuilder.newJob(DeleteJobAvailableToHideJob.class)
+                    .withIdentity(DeleteJobAvailableToHideJob.class.getSimpleName(), GROUP).build();
+
+            Trigger trigger = getTriggerEveryDay(DeleteJobAvailableToHideJob.class.getSimpleName(), GROUP);
+            scheduler.scheduleJob(job, trigger);
+
+            if (!scheduler.isStarted()) {
+                scheduler.start();
+            }
+
+        }catch (SchedulerException e){
+            System.out.println(e.getMessage());
+        }
+    }
 }
