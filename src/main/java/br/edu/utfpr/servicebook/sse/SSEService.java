@@ -1,12 +1,11 @@
 package br.edu.utfpr.servicebook.sse;
 
-import br.edu.utfpr.servicebook.model.entity.Individual;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class SSEService {
@@ -66,9 +65,12 @@ public class SSEService {
 
 
 
-    public Optional<EventSse> findByEmail(String toUserEmail) {
+    public List<EventSse> findByEmail(String toUserEmail) {
         return this.eventSeeRepository.findByEmail(toUserEmail);
     }
 
-
+    //ANTIGO METODO
+//    public List<EventSse> findByEmail(String toUserEmail) {
+//        return this.eventSeeRepository.findByEmail(toUserEmail);
+//    }
 }

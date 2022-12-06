@@ -89,10 +89,24 @@ public class ClientController {
 
         //FAZER BUSCA DAS NOTIFICAÇÃO - METODO QUE BUSCA E RETORNA DO BANCO AS NOTIFICAÇÕES
         //fazer laço para retornar na view
-        Optional<EventSse> eventSse = sseService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
-        System.err.println("BUSCANDO NO BANCO... " + sseService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
-        System.err.println("PASSANDO PARA VIEW EVENTSEE... " + eventSse);
-        mv.addObject("eventsse", eventSse);
+
+//        Optional<EventSse> eventSse = sseService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
+//        System.err.println("BUSCANDO NO BANCO... " + sseService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+//        System.err.println("PASSANDO PARA VIEW EVENTSEE... " + eventSse);
+//        mv.addObject("eventsse", eventSse);
+
+
+        //teste laço -- retornando lista na view
+
+//        List<EventSse> eventSses = (sseService.findByEmail(CurrentUserUtil.getCurrentUserEmail())).stream().map(eventSse -> {})
+          List<EventSse> eventSses = sseService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
+          System.err.println("BUSCANDO NO BANCO... " + sseService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+          System.err.println("PASSANDO PARA VIEW EVENTSEE... " + eventSses);
+          mv.addObject("eventsse", eventSses);
+
+
+
+
 
 
 
