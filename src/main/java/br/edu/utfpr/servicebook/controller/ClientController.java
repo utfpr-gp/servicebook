@@ -70,9 +70,6 @@ public class ClientController {
     @Autowired
     private QuartzService quartzService;
 
-    @Autowired
-    PushNotificationService pushNotificationService;
-
     @GetMapping
     public ModelAndView show() throws Exception {
         ModelAndView mv = new ModelAndView("client/my-requests");

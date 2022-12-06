@@ -10,7 +10,10 @@ import java.io.IOException;
 public class SSEService {
 
     @Autowired
-    private InMemorySseEmitterRepository emitterRepository;
+    private InMemorySseEmitterRepository inMemorySseEmitterRepository;
+
+    @Autowired
+    private EventSeeRepository eventSeeRepository;
 
     /**
      * Cria um SseEmitter para o canal com o usuário.
@@ -20,16 +23,17 @@ public class SSEService {
      */
 
     public SseEmitter createChannel(String username) {
-        SseEmitter emitter = new SseEmitter();
-        emitterRepository.addEmitter(username, emitter);
+        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);//verificar o uso do long para não dar timeout
+        inMemorySseEmitterRepository.addEmitter(username, emitter);
 
         // On Client connection completion, unregister client specific emitter
-        emitter.onCompletion(() -> this.emitterRepository.remove(username));
+        emitter.onCompletion(() -> this.inMemorySseEmitterRepository.remove(username));
 
         // On Client connection timeout, unregister and mark complete client specific emitter
         emitter.onTimeout(() -> {
             emitter.complete();
-            emitterRepository.remove(username);
+            inMemorySseEmitterRepository.remove(username);
+            System.err.println("SSEService> emitter.ontimeout... removeu: " + username );
         });
 
         return emitter;
@@ -38,17 +42,20 @@ public class SSEService {
     /**
      * Tenta enviar a mensagem para o cliente. Caso o cliente esteja offline, remove o emissor e guarda
      * a mensagem no banco de dados.
-     * @param memberId
-     * @param dto
+     * @param eventSseDto
      */
-    public void send(String memberId, EventSSE dto) {
-        emitterRepository.get(memberId).ifPresent(emitter -> {
+    public void send(EventSse eventSseDto) {
+        inMemorySseEmitterRepository.get(eventSseDto.getToUserEmail()).ifPresent(emitter -> {
             try {
-                emitter.send(dto);
+                emitter.send(eventSseDto);
+                System.err.println("enviando emiter: " + eventSseDto);
             } catch (IOException e) {
-                //TODO guarda a notificação no banco para enviar quando o usuário logar
-                emitterRepository.remove(memberId);
+                inMemorySseEmitterRepository.remove(eventSseDto.getToUserEmail());//esta removendo pois não esta logado
             }
         });
+        if (!inMemorySseEmitterRepository.get(eventSseDto.getToUserEmail()).isPresent()){
+            eventSeeRepository.save(eventSseDto);
+            System.err.println("salvando em banco emiter: " + eventSseDto);
+        }
     }
 }

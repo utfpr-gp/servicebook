@@ -10,13 +10,6 @@ public class CurrentUserUtil {
 
         //TESTE PUSH NOTIFICATION - ALTERADO O RETURN DE professional1 para clent2
 
-        return client2;
+        return professional2;
     }
-
-//    public static String getCurrentClientUser(){
-//
-//        String clientUser = "cliente1@gmail.com";
-//
-//        return clientUser;
-//    }
 }
