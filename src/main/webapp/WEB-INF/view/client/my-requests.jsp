@@ -68,7 +68,7 @@
                     </a>
 
                     <!-- Painel com as solicitações de serviços -->
-                    <div class="container">
+                    <div class="container" style="width: 80% !important;">
                         <div class="row">
                             <div class="col s12">
                                 <h2 class="secondary-color-text">Minhas Solicitações</h2>
@@ -97,6 +97,11 @@
                                     </a>
                                 </li>
                                 <li class="tab" id="3">
+                                    <a data-url="minha-conta/cliente/meus-pedidos/para-confirmar" href="#paraConfirmar">
+                                        PARA CONFIRMAR
+                                    </a>
+                                </li>
+                                <li class="tab" id="3">
                                     <a data-url="minha-conta/cliente/meus-pedidos/fazendo" href="#fazendo">
                                         FAZENDO
                                     </a>
@@ -117,6 +122,7 @@
                             <div id="paraFazer" class="col s12 no-padding">
 
                             </div>
+                            <div id="paraConfirmar" class="col s12 no-padding"></div>
                             <div id="fazendo" class="col s12 no-padding"></div>
                             <div id="executados" class="col s12 no-padding">
                             </div>
