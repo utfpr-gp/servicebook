@@ -167,26 +167,26 @@
                     <div class="row secondary-background-color no-margin">
                         <div class="col s12 white-text center">
                             <div class="row tooltipped" data-position="bottom"
-                                 data-tooltip="${professionalExpertiseRating != null ? professionalExpertiseRating : individual.rating} estrela (s).">
+                                 data-tooltip="${dataIndividual.ratingScore != 0 ? dataIndividual.ratingScore : individual.rating} estrela (s).">
 
-                                <c:if test="${professionalExpertiseRating == null}">
+                                <c:if test="${dataIndividual.ratingScore == 0}">
                                     <c:forEach var="star" begin="1" end="5">
                                         <c:if test="${star <= individual.rating}">
-                                            <i class="material-icons yellow-text small">star</i>
+                                            <i class="expertise-rating-star material-icons yellow-text small">star</i>
                                         </c:if>
                                         <c:if test="${star > individual.rating}">
-                                            <i class="material-icons yellow-text small">star_border</i>
+                                            <i class="expertise-rating-star material-icons yellow-text small">star_border</i>
                                         </c:if>
                                     </c:forEach>
                                 </c:if>
 
-                                <c:if test="${professionalExpertiseRating != null}">
+                                <c:if test="${dataIndividual.ratingScore != 0}">
                                     <c:forEach var="star" begin="1" end="5">
-                                        <c:if test="${star <= professionalExpertiseRating}">
-                                            <i class="material-icons yellow-text small">star</i>
+                                        <c:if test="${star <= dataIndividual.ratingScore}">
+                                            <i class="expertise-rating-star material-icons yellow-text small">star</i>
                                         </c:if>
-                                        <c:if test="${star > professionalExpertiseRating}">
-                                            <i class="material-icons yellow-text small">star_border</i>
+                                        <c:if test="${star > dataIndividual.ratingScore}">
+                                            <i class="expertise-rating-star material-icons yellow-text small">star_border</i>
                                         </c:if>
                                     </c:forEach>
                                 </c:if>
@@ -199,7 +199,7 @@
                     <p class="header-verification tertiary-color-text center">SERVIÇOS REALIZADOS</p>
                     <div class="row secondary-background-color no-margin">
                         <h5 class="info-headers no-margin center white-text center">
-                            <strong>${dataIndividual.jobs}</strong>
+                            <strong id="expertise-jobs">${dataIndividual.jobs}</strong>
                         </h5>
                     </div>
                 </div>
@@ -207,7 +207,7 @@
                     <p class="header-verification tertiary-color-text center">AVALIAÇÕES</p>
                     <div class="row secondary-background-color no-margin">
                         <h5 class="info-headers no-margin center white-text center">
-                            <strong>${dataIndividual.ratings}</strong>
+                            <strong id="expertise-ratings">${dataIndividual.ratings}</strong>
                         </h5>
                     </div>
                 </div>
@@ -215,11 +215,10 @@
                     <p class="header-verification tertiary-color-text center">COMENTÁRIOS</p>
                     <div class="row secondary-background-color no-margin">
                         <h5 class="info-headers no-margin center white-text center">
-                            <strong>${dataIndividual.comments}</strong>
+                            <strong id="expertise-comments">${dataIndividual.comments}</strong>
                         </h5>
                     </div>
                 </div>
             </div>
         </c:if>
     </div>
-

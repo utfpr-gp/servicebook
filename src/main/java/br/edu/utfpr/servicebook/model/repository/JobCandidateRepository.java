@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,6 +73,8 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
 
     List<JobCandidate> findByJobRequest(JobRequest jobRequest);
 
+    List<JobCandidate> findByJobRequestOrderByChosenByBudgetDesc(JobRequest jobRequest);
+
     Page<JobCandidate> findByJobRequest_StatusAndJobRequest_Individual(JobRequest.Status status, Individual individual, Pageable pageable);
 
     @Transactional
@@ -79,7 +82,9 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
     @Query("delete from JobCandidate j where j.jobRequest.id = ?1 and j.individual.id = ?2")
     void deleteById(Long jobId, Long individualId);
 
-
     @Query("select j from JobCandidate j where j.jobRequest.id = ?1 and j.individual.id = ?2")
     Optional<JobCandidate> findByJobIdAndIndividualId(Long jobId, Long individualId);
+
+    @Query("select j from JobCandidate j where j.hiredDate <= ?1")
+    List<JobCandidate> findAllByHiredDateLessThan(Date date);
 }

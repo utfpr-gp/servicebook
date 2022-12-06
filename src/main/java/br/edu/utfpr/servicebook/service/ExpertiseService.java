@@ -34,4 +34,9 @@ public class ExpertiseService {
         this.expertiseRepository.deleteById(id);
     }
 
+
+    public List<Expertise> findExpertiseNotExist(Long individual) {
+        return this.expertiseRepository.findExpertiseNotExist(individual);
+    } 
+
 }
