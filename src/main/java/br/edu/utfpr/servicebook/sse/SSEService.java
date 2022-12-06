@@ -1,10 +1,12 @@
 package br.edu.utfpr.servicebook.sse;
 
+import br.edu.utfpr.servicebook.model.entity.Individual;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 public class SSEService {
@@ -58,4 +60,12 @@ public class SSEService {
             System.err.println("salvando em banco emiter: " + eventSseDto);
         }
     }
+
+
+
+    public Optional<EventSse> findByEmail(String toUserEmail) {
+        return this.eventSeeRepository.findByEmail(toUserEmail);
+    }
+
+
 }

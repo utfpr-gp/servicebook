@@ -17,9 +17,6 @@ public class SSEController {
 
     public static final Logger log =
             LoggerFactory.getLogger(SSEController.class);
-
-    //public Map<String, SseEmitter> sseEmitters = new HashMap<>();
-
     @Autowired
     SSEService sseService;
 
@@ -29,14 +26,5 @@ public class SSEController {
         System.err.println("Subscrevendo: " + username);
         return sseService.createChannel(username);
     }
-
-   /* private void sendInitEvent(SseEmitter sseEmitter){
-        try {
-            sseEmitter.send(SseEmitter.event().name("INIT"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }*/
-
 }
 

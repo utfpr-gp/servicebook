@@ -81,13 +81,10 @@ public class JobCandidateController {
         JobCandidate jobCandidate = new JobCandidate(oJobRequest.get(), oindividual.get());
         jobCandidateService.save(jobCandidate);
 
+        //Envio de notificação SSE
         JobRequestDetailsDTO jobFull = jobRequestMapper.jobRequestDetailsDTO(oJobRequest.get());
-        //TODO - BUG - esta cadastrando como destino o email do prestador de serviço
-        //EventSse eventSse = new EventSse(EventSse.Status.NEW_CANDIDATURE);
-        System.err.println("l90..profissional..    " + oindividual.get().getEmail());
-        System.err.println("l91..cliente..    " + jobFull.getIndividual().getEmail());
 
-        //Envia a notificação - tipo do evneto / usuario de destino
+        //Envia a notificação - tipo do evento / usuario de destino
         EventSse eventSse = new EventSse(EventSse.Status.NEW_CANDIDATURE, jobFull.getIndividual().getEmail());
         sseService.send(eventSse);
 

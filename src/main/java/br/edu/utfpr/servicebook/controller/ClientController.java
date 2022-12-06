@@ -5,6 +5,7 @@ import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.service.*;
+import br.edu.utfpr.servicebook.sse.SSEService;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
@@ -70,6 +71,9 @@ public class ClientController {
     @Autowired
     private QuartzService quartzService;
 
+    @Autowired
+    private SSEService sseService;
+
     @GetMapping
     public ModelAndView show() throws Exception {
         ModelAndView mv = new ModelAndView("client/my-requests");
@@ -81,11 +85,14 @@ public class ClientController {
 
 
 
-        //TESTE PUSH NOTIFICATION - METODO QUE CADASTAR NO SSEMITER
-        System.err.println("CLIETNECONTROLEER EMAIL DO USUARIO...l84    " + individual.get().getEmail());
-        pushNotificationService.enableNotifier(individual.get().getEmail());
 
         //FAZER BUSCA DAS NOTIFICAÇÃO - METODO QUE BUSCA E RETORNA DO BANCO AS NOTIFICAÇÕES
+
+        //passar esse metodo abaixo em uma variavel ou objeto que esta retornando para view.
+        //sseService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
+
+
+
 
 
 

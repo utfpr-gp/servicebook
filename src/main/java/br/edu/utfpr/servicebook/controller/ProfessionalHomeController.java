@@ -474,31 +474,6 @@ public class ProfessionalHomeController {
 
         JobRequestDetailsDTO jobFull = jobRequestMapper.jobRequestDetailsDTO(jb);
 
-
-
-
-
-
-
-
-
-
-
-        //TESTE PUSH NOTIFICATION
-        System.err.println("DETALHE DO SERVIÇO (JOBFULL)....   " + jobFull);
-        System.err.println("DETALHE DO CLIENTE SERVIÇO......  " + jobFull.getIndividual().getEmail());
-
-
-
-
-
-
-
-
-
-
-
-
         Optional oClient, oCity, oState;
 
         oClient = individualService.findById(jobFull.getIndividual().getId());
