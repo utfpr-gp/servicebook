@@ -5,6 +5,7 @@ import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.service.*;
+import br.edu.utfpr.servicebook.sse.EventSse;
 import br.edu.utfpr.servicebook.sse.SSEService;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
@@ -87,13 +88,11 @@ public class ClientController {
 
 
         //FAZER BUSCA DAS NOTIFICAÇÃO - METODO QUE BUSCA E RETORNA DO BANCO AS NOTIFICAÇÕES
-
-        //passar esse metodo abaixo em uma variavel ou objeto que esta retornando para view.
-        //sseService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
-
-
-
-
+        //fazer laço para retornar na view
+        Optional<EventSse> eventSse = sseService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
+        System.err.println("BUSCANDO NO BANCO... " + sseService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        System.err.println("PASSANDO PARA VIEW EVENTSEE... " + eventSse);
+        mv.addObject("eventsse", eventSse);
 
 
 

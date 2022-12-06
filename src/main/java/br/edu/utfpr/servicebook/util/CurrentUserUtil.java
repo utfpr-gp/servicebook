@@ -10,6 +10,6 @@ public class CurrentUserUtil {
 
         //TESTE PUSH NOTIFICATION - ALTERADO O RETURN DE professional1 para clent2
 
-        return professional2;
+        return client2;
     }
 }

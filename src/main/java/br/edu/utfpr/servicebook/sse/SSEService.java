@@ -51,13 +51,16 @@ public class SSEService {
             try {
                 emitter.send(eventSseDto);
                 System.err.println("enviando emiter: " + eventSseDto);
+
+                eventSeeRepository.save(eventSseDto);
+                System.err.println("user online...salvando em banco emiter: " + eventSseDto);
             } catch (IOException e) {
                 inMemorySseEmitterRepository.remove(eventSseDto.getToUserEmail());//esta removendo pois não esta logado
             }
         });
         if (!inMemorySseEmitterRepository.get(eventSseDto.getToUserEmail()).isPresent()){
             eventSeeRepository.save(eventSseDto);
-            System.err.println("salvando em banco emiter: " + eventSseDto);
+            System.err.println("user offline...salvando em banco emiter: " + eventSseDto);
         }
     }
 

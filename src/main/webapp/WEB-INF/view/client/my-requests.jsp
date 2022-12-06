@@ -11,7 +11,9 @@
 
                 <div class="row">
                     <h5>Teste de notificação</h5>
-                    <div id="pack"></div>
+                    <div id="pack">
+                        ${eventsse}
+                    </div>
                 </div>
 
 
