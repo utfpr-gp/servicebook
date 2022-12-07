@@ -1,6 +1,7 @@
 <%@tag description="Template inicial" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@attribute name="title" %>
+<%@attribute name="user" type="br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO"%>
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -28,15 +29,35 @@
             <h4 class="left logo-text">ServiceBook</h4>
         </a>
 
-        <ul class="right hide-on-med-and-down">
-            <li><a class="menu-itens" href="#!">SOLICITAÇÕES</a></li>
-            <li><a class="menu-itens" href="minha-conta">MINHA CONTA</a></li>
-            <li><a class="menu-itens" href="#!">SAIR</a></li>
-        </ul>
+        <div class="right">
+            <a class="left menu-link" href="/servicebook/requisicoes?passo=1">ANUNCIAR</a>
+
+<%--            <button class="left click-scroll right" onclick="rolar('panel-heading');">Como Funciona?</button>--%>
+            <ul class="right nav-btn hide-on-med-and-down">
+                <li>
+                    <a class='dropdown-trigger btn' href='#' data-target='dropdown'>SOU CLIENTE<i class="tiny material-icons right">arrow_drop_down</i></a>
+                    <ul id='dropdown' class='dropdown-content'>
+                        <li><a href="minha-conta/profissional">Sou profissional</a></li>
+                        <li><a href="minha-conta">Sou empresa</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a class='dropdown-trigger btn truncate' href='#' data-target='dropdown2'>${user.name}<i class="tiny material-icons right">arrow_drop_down</i></a>
+                    <ul id='dropdown2' class='dropdown-content'>
+                        <li><a href="/servicebook/minha-conta/perfil">Meu perfil</a></li>
+                        <li class="divider" tabindex="-1"></li>
+                        <li><a href="#!">Sair</a></li>
+                    </ul>
+                </li>
+                <li><a href="#!"><i class="material-icons">notifications</i></a></li>
+            </ul>
+        </div>
 
         <ul id="nav-mobile" class="sidenav">
-            <li><a class="menu-itens" href="#!">SOLICITAÇÕES</a></li>
-            <li><a class="menu-itens" href="minha-conta">MINHA CONTA</a></li>
+            <li><a class="menu-itens" href="passo-1">ANUNCIAR</a></li>
+            <li><a href="minha-conta/profissional">Sou profissional</a></li>
+            <li><a href="minha-conta">Sou empresa</a></li>
             <li><a class="menu-itens" href="#!">SAIR</a></li>
         </ul>
 

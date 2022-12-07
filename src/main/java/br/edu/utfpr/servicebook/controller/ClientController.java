@@ -329,6 +329,48 @@ public class ClientController {
 
         return mv;
     }
+
+    @GetMapping("/meus-pedidos/para-confirmar")
+    public ModelAndView showForHiredJobs(
+            HttpServletRequest request,
+            @RequestParam(value = "pag", defaultValue = "1") int page,
+            @RequestParam(value = "siz", defaultValue = "3") int size,
+            @RequestParam(value = "ord", defaultValue = "id") String order,
+            @RequestParam(value = "dir", defaultValue = "ASC") String direction
+    ) throws Exception {
+
+        Optional<Individual> client = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+
+        if (!client.isPresent()) {
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
+        Page<JobCandidate> jobCandidatePage = null;
+        List<JobCandidateMinDTO> jobCandidateDTOs = null;
+
+        jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.TO_HIRED, client.get(),pageRequest);
+
+        jobCandidateDTOs = jobCandidatePage.stream()
+                .map(jobCandidate -> {
+                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobCandidate.getJobRequest());
+
+                    if (totalCandidates.isPresent()) {
+                        return jobCandidateMapper.toMinDto(jobCandidate, totalCandidates);
+                    }
+
+                    return jobCandidateMapper.toMinDto(jobCandidate, Optional.ofNullable(0L));
+                }).collect(Collectors.toList());
+
+        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/cliente/meus-pedidos/para-confirmar");
+
+        ModelAndView mv = new ModelAndView("client/job-request/tabs/to-hired-jobs-report");
+        mv.addObject("pagination", paginationDTO);
+        mv.addObject("jobs", jobCandidateDTOs);
+
+        return mv;
+    }
+
     @GetMapping("/meus-pedidos/fazendo")
     public ModelAndView showDoingJobs(
             HttpServletRequest request,
