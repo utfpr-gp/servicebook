@@ -26,11 +26,17 @@ public class EventSse {
     @Column(name = "message")
     private String message;
 
+    @Column(name = "descriptionServ")
+    private String descriptionServ;
+
     @Column(name = "localDateTime")
     private LocalDateTime localDateTime = LocalDateTime.now();
 
     @Column(name = "toUserEmail")
     private String toUserEmail;
+
+    @Column(name = "fromProfessionalEmail")
+    private String fromProfessionalEmail;
 
     @Column(name = "readStatus")
     private Boolean readStatus;
@@ -51,6 +57,14 @@ public class EventSse {
 
     public EventSse(Status message, String toUserEmail) {
         setMessage(getMessage(message)); // salva pegando o enum e convertendo para string
+        setToUserEmail(toUserEmail);
+        setReadStatus(false);
+    }
+
+    public EventSse(Status message, String descriptionServ, String fromProfessionalEmail, String toUserEmail) {
+        setMessage(getMessage(message)); // salva pegando o enum e convertendo para string
+        setDescriptionServ(descriptionServ);
+        setFromProfessionalEmail(fromProfessionalEmail);
         setToUserEmail(toUserEmail);
         setReadStatus(false);
     }

@@ -9,12 +9,56 @@
             <div class="row">
                 <t:side-panel individual="${user}"></t:side-panel>
 
+
+<%--                <div class="row">--%>
+<%--                    <h5>Teste de notificação</h5>--%>
+<%--                    <div id="pack">--%>
+<%--                        <c:forEach items="${eventsse}" var="event">--%>
+<%--                            <div class="row">--%>
+<%--                                    ${event}--%>
+<%--                            </div>--%>
+<%--                        </c:forEach>--%>
+<%--                    </div>--%>
+<%--                </div>--%>
+
                 <div class="row">
                     <h5>Teste de notificação</h5>
-                    <div id="pack">
-                        ${eventsse}
-                    </div>
+                    <div id="pack"></div>
                 </div>
+
+                <script>
+                    // bug esta chegando como abaixo no html
+                    //                     lista.push([{&#034;id&#034;:1);
+
+                    var lista = [];
+                    <c:forEach items="${eventsse}" var="p">
+                    lista.push(<c:out value="${p}"> </c:out>);
+                    console.log("foreach:.... ")
+                    </c:forEach>
+
+                    for (let i=0; i <= lista.length(); i++ ){
+                        var teste = JSON.parse(lista.pop(i));
+                        addblock(teste.id, teste.message);
+                        console.log("for json :.... ")
+                    }
+
+
+                    function addblock(title, text){
+                        var a = document.createElement("article");
+                        //title
+                        var h = document.createElement("h3");
+                        var t = document.createTextNode(title);
+                        h.appendChild(t);
+                        //paragraph
+                        var para = document.createElement("p");
+                        para.innerHTML = text;
+                        a.appendChild(h)
+                        a.appendChild(para);
+                        document.getElementById("pack").appendChild(a);
+                    };
+
+
+                </script>
 
 
                 <div class="col m10 offset-m1 l9">
