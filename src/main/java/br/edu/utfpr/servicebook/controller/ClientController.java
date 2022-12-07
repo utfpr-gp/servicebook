@@ -26,6 +26,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -198,7 +199,10 @@ public class ClientController {
 
       JobCandidateDTO jobCandidateDTO = jobCandidateMapper.toDto(jobCandidate.get());
 
+      boolean isAvailableToRating = jobCandidateDTO.getJobRequest().status.equals("DOING") || jobCandidateDTO.getJobRequest().status.equals("CLOSED");
+
       mv.addObject("jobCandidate", jobCandidateDTO);
+      mv.addObject("isAvailableToRating", isAvailableToRating);
 
       return mv;
     }
@@ -464,5 +468,42 @@ public class ClientController {
         IndividualDTO individualDTO = individualMapper.toDto(client.get());
 
         return SidePanelUtil.getSidePanelDTO(individualDTO);
+    }
+
+    @PatchMapping("/marcar-como-finalizado/{jobId}/{individualId}")
+    public String markAsClose(
+            @PathVariable Long jobId,
+            @PathVariable Long individualId,
+            JobCandidateMinDTO dto,
+            RedirectAttributes redirectAttributes) throws IOException {
+
+        Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(jobId, individualId);
+        if (!oJobCandidate.isPresent()) {
+            throw new EntityNotFoundException("Candidatura não encontrada");
+        }
+
+        JobCandidate jobCandidate = oJobCandidate.get();
+        Optional<JobRequest> oJobRequest = jobRequestService.findById(jobCandidate.getJobRequest().getId());
+        if(!oJobRequest.isPresent()) {
+            throw new EntityNotFoundException("Pedido não encontrado!");
+        }
+
+        if (dto.getIsQuit().equals(true)) {
+            jobCandidate.setQuit(dto.getIsQuit());
+            jobCandidateService.save(jobCandidate);
+
+            JobRequest jobRequest = oJobRequest.get();
+            jobRequest.setStatus(JobRequest.Status.CLOSED);
+            jobRequestService.save(jobRequest);
+        } else {
+            jobCandidate.setQuit(dto.getIsQuit());
+            jobCandidateService.save(jobCandidate);
+
+            JobRequest jobRequest = oJobRequest.get();
+            jobRequest.setStatus(JobRequest.Status.CLOSED);
+            jobRequestService.save(jobRequest);
+        }
+
+        return "redirect:/minha-conta/cliente#executados";
     }
 }

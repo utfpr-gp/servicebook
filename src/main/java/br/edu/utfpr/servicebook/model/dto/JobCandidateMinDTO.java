@@ -15,6 +15,7 @@ public class JobCandidateMinDTO implements Serializable {
     private String date;
     private String hiredDate;
     private Boolean chosenByBudget;
+    private Boolean isQuit;
     private JobRequestFullDTO jobRequest;
 
 }

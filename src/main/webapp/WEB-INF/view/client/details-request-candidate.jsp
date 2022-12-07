@@ -98,9 +98,120 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               </div>
               <div class="row center-align">
               </div>
+
+            <c:if test="${jobCandidate.getJobRequest().status == 'DOING'}">
+              <div>
+                <h5>Finalização do serviço:</h5>
+
+                <form id="closeJob" method="post">
+                  <label>
+                    <input id="confirmCloseJob" name="isToCloseJob" type="radio" value="true"/>
+                    <span>Serviço realizado</span>
+                  </label>
+
+                  <label>
+                    <input id="notConfirmCloseJob" name="isToCloseJob" type="radio" value="false"/>
+                    <span>Serviço não realizado</span>
+                  </label>
+
+                  <div class="row">
+                    <a id="closeJobButton" href="#modal-close-job" class="waves-effect waves-light btn spacing-buttons modal-trigger">Salvar</a>
+                  </div>
+                </form>
+
+                <div id="modal-close-job" class="modal">
+                  <div class="modal-content">
+                    <form action="minha-conta/cliente/marcar-como-finalizado/${jobCandidate.getJobRequest().id}/${jobCandidate.getIndividual().id}" method="post">
+                      <input type="hidden" name="_method" value="PATCH"/>
+                      <input id="isQuit" name="isQuit" type="hidden" value=""/>
+
+                      <div class="modal-content" id="modal-content-confirm-hired">
+                        <h5>Você tem certeza que deseja confirmar essa ação?</h5>
+                      </div>
+
+                      <div class="modal-footer">
+                        <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
+                        <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </c:if>
+
+            <c:if test="${isAvailableToRating}">
+              <div>
+                <h5>Avaliação:</h5>
+
+                <a href="javascript:void(0)" onclick="Avaliar(1)">
+                  <img width="50px" src="assets/resources/images/star0.png" id="s1"></a>
+
+                <a href="javascript:void(0)" onclick="Avaliar(2)">
+                  <img width="50px" src="assets/resources/images/star0.png" id="s2"></a>
+
+                <a href="javascript:void(0)" onclick="Avaliar(3)">
+                  <img width="50px" src="assets/resources/images/star0.png" id="s3"></a>
+
+                <a href="javascript:void(0)" onclick="Avaliar(4)">
+                  <img width="50px" src="assets/resources/images/star0.png" id="s4"></a>
+
+                <a href="javascript:void(0)" onclick="Avaliar(5)">
+                  <img width="50px" src="assets/resources/images/star0.png" id="s5"></a>
+
+                <div class="row" style="margin-top: 15px">
+                  <div class="input-field col s6">
+                    <textarea id="textarea1" class="materialize-textarea"></textarea>
+                    <label for="textarea1">Deixe um comentário</label>
+                  </div>
+
+                  <div class="col s12">
+                    <button class="waves-effect waves-light btn spacing-buttons">Salvar</button>
+                  </div>
+                </div>
+              </div>
+            </c:if>
           </div>
       </div>
 
     </main>
   </jsp:body>
 </t:client>
+
+
+<script src="assets/resources/scripts/client-rating-job-functions.js"></script>
+<script>
+  $(document).ready(function() {
+    $('.modal').modal({
+      onOpenEnd: function (modal, trigger){
+        var url = $(trigger).data('url');
+        var name = $(trigger).data('name');
+
+        modal = $(modal);
+        var form = modal.find('form');
+        form.attr('action', url);
+        modal.find('#strong-name').text(name);
+      }
+
+    });
+
+    $('#closeJobButton').attr("disabled", "disabled");
+
+    $('#confirmCloseJob').click(function () {
+      $('#closeJobButton').removeAttr("disabled");
+    });
+
+    $('#notConfirmCloseJob').click(function () {
+      $('#closeJobButton').removeAttr("disabled");
+    });
+
+    $('#closeJobButton').click(function () {
+      if ($("#confirmCloseJob").is(":checked")) {
+        console.log('trueeeee');
+        $("#isQuit").val(true);
+      } else {
+        console.log('falseeeee');
+        $("#isQuit").val(false);
+      }
+    });
+  });
+</script>
