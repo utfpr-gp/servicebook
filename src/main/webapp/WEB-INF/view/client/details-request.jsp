@@ -32,6 +32,7 @@
                       <p>${jobRequest.description}</p>
                       <p>Pedido expedido em ${jobRequest.dateExpired}</p>
                     </div>
+
                     <c:if test="${jobRequest.status == 'AVAILABLE'}">
                       <div class="col s12 m6 l3">
                         <div class="center">
@@ -39,11 +40,21 @@
                         </div>
                       </div>
                     </c:if>
+
+                    <c:if test="${jobRequest.status == 'DOING'}">
+                      <div class="col s12 m6 l3">
+                        <div class="center">
+                          <a class="spacing-buttons waves-effect waves-light btn modal-trigger">PEDIDO FINALIZADO</a>
+                        </div>
+                      </div>
+                    </c:if>
+
                     <div class="col s12 m6 l3">
                       <div class="center">
                         <a href="#!" class="spacing-buttons waves-effect waves-light btn">Excluir o pedido</a>
                       </div>
                     </div>
+
                     <div class="col s12 tertiary-color-text description-orcamento text-info-request">
                       <hr class="hr-request-area">
                       <c:if test="${jobRequest.status == 'AVAILABLE'}">

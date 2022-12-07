@@ -65,9 +65,17 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               <div class="row center-align">
                   <p class="contact-item center dark-color-text">${jobCandidate.getIndividual().description}</p>
               </div>
+
+            <c:if test="${jobCandidate.getJobRequest().status == 'AVAILABLE'}">
               <div class="row center-align">
                   <p class="contact-item center dark-color-text">Entre em contato com o profissional para solicitar um orçamento.</p>
               </div>
+            </c:if>
+            <c:if test="${jobCandidate.getJobRequest().status != 'AVAILABLE'}">
+              <div class="row center-align">
+                <p class="contact-item center dark-color-text">Entre em contato com o profissional.</p>
+              </div>
+            </c:if>
 
               <div class="row center-align">
                   <a href="https://web.whatsapp.com/send?phone=55${professional.getOnlyNumbersFromPhone()}" target="_blank">
@@ -80,6 +88,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                   </a>
               </div>
 
+            <c:if test="${jobCandidate.getJobRequest().status == 'AVAILABLE'}">
               <div class="row center-align">
                 <p class="contact-item center dark-color-text">Solicitar ou cancelar orçamento</p>
                 <form action="minha-conta/cliente/marcar-como-orcamento/${jobCandidate.getJobRequest().id}/${jobCandidate.getIndividual().id}" method="post">
@@ -96,11 +105,10 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                     </button>
                 </form>
               </div>
-              <div class="row center-align">
-              </div>
+            </c:if>
 
             <c:if test="${jobCandidate.getJobRequest().status == 'DOING'}">
-              <div>
+              <div class="row center-align">
                 <h5>Finalização do serviço:</h5>
 
                 <form id="closeJob" method="post">
@@ -139,8 +147,8 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               </div>
             </c:if>
 
-            <c:if test="${isAvailableToRating}">
-              <div>
+            <c:if test="${isAvailableToRating && jobCandidate.getJobRequest().status == 'CLOSED'}">
+              <div class="row center-align">
                 <h5>Avaliação:</h5>
 
                 <a href="javascript:void(0)" onclick="Avaliar(1)">
@@ -159,7 +167,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                   <img width="50px" src="assets/resources/images/star0.png" id="s5"></a>
 
                 <div class="row" style="margin-top: 15px">
-                  <div class="input-field col s6">
+                  <div class="input-field col s12 offset-m2 m8">
                     <textarea id="textarea1" class="materialize-textarea"></textarea>
                     <label for="textarea1">Deixe um comentário</label>
                   </div>
