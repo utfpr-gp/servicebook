@@ -44,7 +44,34 @@
                     <c:if test="${jobRequest.status == 'DOING'}">
                       <div class="col s12 m6 l3">
                         <div class="center">
-                          <a class="spacing-buttons waves-effect waves-light btn modal-trigger">PEDIDO FINALIZADO</a>
+                          <a id="closeJobButton" href="#modal-close-job" class="spacing-buttons waves-effect waves-light btn modal-trigger">PEDIDO FINALIZADO</a>
+                        </div>
+                      </div>
+
+                      <div id="modal-close-job" class="modal">
+                        <div class="modal-content">
+                          <form action="minha-conta/cliente/marcar-como-finalizado/${jobRequest.id}" method="post">
+                            <input type="hidden" name="_method" value="PATCH"/>
+
+                            <div class="modal-content" id="modal-content-confirm-hired">
+                              <h5>Finalização do pedido</h5>
+
+                              <label>
+                                <input id="confirmCloseJob" name="isQuit" type="radio" value="true"/>
+                                <span>Serviço foi finalizado</span>
+                              </label>
+
+                              <label>
+                                <input id="notConfirmCloseJob" name="isQuit" type="radio" value="false"/>
+                                <span>Serviço não foi finalizado</span>
+                              </label>
+                            </div>
+
+                            <div class="modal-footer">
+                              <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
+                              <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
+                            </div>
+                          </form>
                         </div>
                       </div>
                     </c:if>
@@ -179,3 +206,19 @@
     </main>
   </jsp:body>
 </t:client>
+<script>
+  $(document).ready(function() {
+    $('.modal').modal({
+      onOpenEnd: function (modal, trigger){
+        var url = $(trigger).data('url');
+        var name = $(trigger).data('name');
+
+        modal = $(modal);
+        var form = modal.find('form');
+        form.attr('action', url);
+        modal.find('#strong-name').text(name);
+      }
+
+    });
+  });
+</script>

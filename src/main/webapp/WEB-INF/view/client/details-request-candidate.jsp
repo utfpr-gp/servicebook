@@ -107,47 +107,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               </div>
             </c:if>
 
-            <c:if test="${jobCandidate.getJobRequest().status == 'DOING'}">
-              <div class="row center-align">
-                <h5>Finalização do serviço:</h5>
-
-                <form id="closeJob" method="post">
-                  <label>
-                    <input id="confirmCloseJob" name="isToCloseJob" type="radio" value="true"/>
-                    <span>Serviço realizado</span>
-                  </label>
-
-                  <label>
-                    <input id="notConfirmCloseJob" name="isToCloseJob" type="radio" value="false"/>
-                    <span>Serviço não realizado</span>
-                  </label>
-
-                  <div class="row">
-                    <a id="closeJobButton" href="#modal-close-job" class="waves-effect waves-light btn spacing-buttons modal-trigger">Salvar</a>
-                  </div>
-                </form>
-
-                <div id="modal-close-job" class="modal">
-                  <div class="modal-content">
-                    <form action="minha-conta/cliente/marcar-como-finalizado/${jobCandidate.getJobRequest().id}/${jobCandidate.getIndividual().id}" method="post">
-                      <input type="hidden" name="_method" value="PATCH"/>
-                      <input id="isQuit" name="isQuit" type="hidden" value=""/>
-
-                      <div class="modal-content" id="modal-content-confirm-hired">
-                        <h5>Você tem certeza que deseja confirmar essa ação?</h5>
-                      </div>
-
-                      <div class="modal-footer">
-                        <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
-                        <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </c:if>
-
-            <c:if test="${isAvailableToRating && jobCandidate.getJobRequest().status == 'CLOSED'}">
+            <c:if test="${jobCandidate.getJobRequest().status == 'CLOSED'}">
               <div class="row center-align">
                 <h5>Avaliação:</h5>
 
@@ -187,39 +147,3 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 
 
 <script src="assets/resources/scripts/client-rating-job-functions.js"></script>
-<script>
-  $(document).ready(function() {
-    $('.modal').modal({
-      onOpenEnd: function (modal, trigger){
-        var url = $(trigger).data('url');
-        var name = $(trigger).data('name');
-
-        modal = $(modal);
-        var form = modal.find('form');
-        form.attr('action', url);
-        modal.find('#strong-name').text(name);
-      }
-
-    });
-
-    $('#closeJobButton').attr("disabled", "disabled");
-
-    $('#confirmCloseJob').click(function () {
-      $('#closeJobButton').removeAttr("disabled");
-    });
-
-    $('#notConfirmCloseJob').click(function () {
-      $('#closeJobButton').removeAttr("disabled");
-    });
-
-    $('#closeJobButton').click(function () {
-      if ($("#confirmCloseJob").is(":checked")) {
-        console.log('trueeeee');
-        $("#isQuit").val(true);
-      } else {
-        console.log('falseeeee');
-        $("#isQuit").val(false);
-      }
-    });
-  });
-</script>

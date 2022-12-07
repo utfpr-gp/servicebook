@@ -199,10 +199,7 @@ public class ClientController {
 
       JobCandidateDTO jobCandidateDTO = jobCandidateMapper.toDto(jobCandidate.get());
 
-      boolean isAvailableToRating = jobCandidateDTO.getJobRequest().status.equals("DOING") || jobCandidateDTO.getJobRequest().status.equals("CLOSED");
-
       mv.addObject("jobCandidate", jobCandidateDTO);
-      mv.addObject("isAvailableToRating", isAvailableToRating);
 
       return mv;
     }
@@ -512,40 +509,28 @@ public class ClientController {
         return SidePanelUtil.getSidePanelDTO(individualDTO);
     }
 
-    @PatchMapping("/marcar-como-finalizado/{jobId}/{individualId}")
+    @PatchMapping("/marcar-como-finalizado/{jobId}")
     public String markAsClose(
             @PathVariable Long jobId,
-            @PathVariable Long individualId,
             JobCandidateMinDTO dto,
             RedirectAttributes redirectAttributes) throws IOException {
 
-        Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(jobId, individualId);
-        if (!oJobCandidate.isPresent()) {
-            throw new EntityNotFoundException("Candidatura não encontrada");
-        }
-
-        JobCandidate jobCandidate = oJobCandidate.get();
-        Optional<JobRequest> oJobRequest = jobRequestService.findById(jobCandidate.getJobRequest().getId());
+        Optional<JobRequest> oJobRequest = jobRequestService.findById(jobId);
         if(!oJobRequest.isPresent()) {
             throw new EntityNotFoundException("Pedido não encontrado!");
         }
 
-        if (dto.getIsQuit().equals(true)) {
-            jobCandidate.setQuit(dto.getIsQuit());
-            jobCandidateService.save(jobCandidate);
+        JobRequest jobRequest = oJobRequest.get();
+        List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequest(jobRequest);
 
-            JobRequest jobRequest = oJobRequest.get();
-            jobRequest.setStatus(JobRequest.Status.CLOSED);
-            jobRequestService.save(jobRequest);
-        } else {
-            jobCandidate.setQuit(dto.getIsQuit());
-            jobCandidateService.save(jobCandidate);
-
-            JobRequest jobRequest = oJobRequest.get();
-            jobRequest.setStatus(JobRequest.Status.CLOSED);
-            jobRequestService.save(jobRequest);
+        for (JobCandidate s : jobCandidates) {
+            s.setQuit(dto.getIsQuit());
+            jobCandidateService.save(s);
         }
 
-        return "redirect:/minha-conta/cliente#executados";
+        jobRequest.setStatus(JobRequest.Status.CLOSED);
+        jobRequestService.save(jobRequest);
+
+        return "redirect:/minha-conta/cliente/meus-pedidos/"+jobRequest.getId();
     }
 }
