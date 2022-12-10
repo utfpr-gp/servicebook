@@ -26,6 +26,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -506,5 +507,30 @@ public class ClientController {
         IndividualDTO individualDTO = individualMapper.toDto(client.get());
 
         return SidePanelUtil.getSidePanelDTO(individualDTO);
+    }
+
+    @PatchMapping("/marcar-como-finalizado/{jobId}")
+    public String markAsClose(
+            @PathVariable Long jobId,
+            JobCandidateMinDTO dto,
+            RedirectAttributes redirectAttributes) throws IOException {
+
+        Optional<JobRequest> oJobRequest = jobRequestService.findById(jobId);
+        if(!oJobRequest.isPresent()) {
+            throw new EntityNotFoundException("Pedido não encontrado!");
+        }
+
+        JobRequest jobRequest = oJobRequest.get();
+        List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequest(jobRequest);
+
+        for (JobCandidate s : jobCandidates) {
+            s.setQuit(dto.getIsQuit());
+            jobCandidateService.save(s);
+        }
+
+        jobRequest.setStatus(JobRequest.Status.CLOSED);
+        jobRequestService.save(jobRequest);
+
+        return "redirect:/minha-conta/cliente#executados";
     }
 }
