@@ -531,6 +531,6 @@ public class ClientController {
         jobRequest.setStatus(JobRequest.Status.CLOSED);
         jobRequestService.save(jobRequest);
 
-        return "redirect:/minha-conta/cliente/meus-pedidos/"+jobRequest.getId();
+        return "redirect:/minha-conta/cliente#executados";
     }
 }

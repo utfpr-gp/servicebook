@@ -69,7 +69,7 @@
 
                             <div class="modal-footer">
                               <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
-                              <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
+                              <button type="submit" disabled class="modal-close btn waves-effect waves-light gray" id="confirm-job-modal-button">Sim</button>
                             </div>
                           </form>
                         </div>
@@ -217,8 +217,17 @@
         var form = modal.find('form');
         form.attr('action', url);
         modal.find('#strong-name').text(name);
-      }
 
+        $('#confirmCloseJob').click(function (){
+          $('#confirm-job-modal-button').attr('disabled', false);
+        });
+
+        $('#notConfirmCloseJob').click(function (){
+          $('#confirm-job-modal-button').attr('disabled', false);
+        });
+      }
     });
+
+
   });
 </script>

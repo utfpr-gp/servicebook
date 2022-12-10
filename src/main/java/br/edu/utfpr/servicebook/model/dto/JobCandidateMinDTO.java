@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
@@ -15,6 +17,9 @@ public class JobCandidateMinDTO implements Serializable {
     private String date;
     private String hiredDate;
     private Boolean chosenByBudget;
+    
+    @NotNull(message = "É preciso marcar uma opção!")
+    @NotBlank(message = "É preciso marcar uma opção!")
     private Boolean isQuit;
     private JobRequestFullDTO jobRequest;
 
