@@ -11,4 +11,6 @@ public interface EventSeeRepository extends JpaRepository<EventSse, Long> {
     @Query("SELECT e FROM EventSse e WHERE e.toUserEmail = :toUserEmail")
     List<EventSse> findByEmail(@Param("toUserEmail") String toUserEmail);
 
+    //fazer metodo que acessa a notificação pelo parametro id e modifica a coluna lido
+
 }

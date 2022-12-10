@@ -55,7 +55,40 @@
                         <li><a href="#!">Sair</a></li>
                     </ul>
                 </li>
-                <li><a href="#!"><i class="material-icons">notifications</i></a></li>
+
+                <li><a onclick="M.toast({html: 'Não há notificação!'})" href='#!'><i class="material-icons">notifications</i></a></li>
+
+                <%--TESTE BOTAO DAS NOTIFICASÕES--%>
+<%--                <c:if test="${empty eventsse}">--%>
+<%--                    <li id="li-notifications">--%>
+<%--                        <a onclick="M.toast({html: 'Não há notificação!'})" class='dropdown-trigger btn eventSize' href='#' data-target='dropdown3'><i class="material-icons">notifications</i></a>--%>
+<%--                        <ul id='dropdown3' class='dropdown-content'>--%>
+<%--                        </ul>--%>
+<%--                    </li>--%>
+<%--                </c:if>--%>
+
+<%--                <c:if test="${not empty eventsse}">--%>
+<%--                    <li id="li-notifications">--%>
+<%--                        <a class='dropdown-trigger btn eventSize' href='#' data-target='dropdown4'><i class="material-icons">notifications</i></a>--%>
+<%--                        <ul id='dropdown4' class='dropdown-content'>--%>
+<%--                            <c:forEach items="${eventsse}" var="p">--%>
+<%--                                <li>--%>
+<%--                                    <div class="card">--%>
+<%--                                        <div class="card-content">--%>
+<%--                                            <h5><c:out value="${p.message}"> </c:out></h5>--%>
+<%--                                            <p><c:out value="${p.fromProfessionalName}"> </c:out> para o serviço <c:out value="${p.descriptionServ}"> </c:out></p>--%>
+<%--                                        </div>--%>
+<%--                                        <div class="card-action">--%>
+<%--                                            <a href="#">ok</a>--%>
+<%--                                        </div>--%>
+<%--                                    </div>--%>
+<%--                                </li>--%>
+<%--                            </c:forEach>--%>
+<%--                        </ul>--%>
+<%--                    </li>--%>
+<%--                </c:if>--%>
+
+
             </ul>
         </div>
 

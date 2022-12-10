@@ -57,6 +57,7 @@ public class JobRequestMapper {
 
         return dto;
     }
+
     public JobRequestFullDTO toFullDto(JobRequest entity){
         JobRequestFullDTO dto = mapper.map(entity, JobRequestFullDTO.class);
         dto.setDateCreated(this.dateFormat.format(entity.getDateCreated()));

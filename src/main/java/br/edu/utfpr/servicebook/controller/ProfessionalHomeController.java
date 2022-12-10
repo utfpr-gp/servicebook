@@ -5,6 +5,10 @@ import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.service.*;
+import br.edu.utfpr.servicebook.sse.EventSse;
+import br.edu.utfpr.servicebook.sse.EventSseDTO;
+import br.edu.utfpr.servicebook.sse.EventSseMapper;
+import br.edu.utfpr.servicebook.sse.SSEService;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
@@ -82,6 +86,12 @@ public class ProfessionalHomeController {
     @Autowired
     private SidePanelUtil sidePanelUtil;
 
+    @Autowired
+    private SSEService sseService;
+
+    @Autowired
+    private EventSseMapper eventSseMapper;
+
     @GetMapping
     public ModelAndView showMyAccountProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> id) throws Exception {
         log.debug("ServiceBook: Minha conta.");
@@ -112,6 +122,17 @@ public class ProfessionalHomeController {
 
         mv.addObject("dataIndividual", sidePanelItensDTO);
         mv.addObject("id", id.orElse(0L));
+
+        //FAZER ENVIO DE NOTIFICAÇÃO PARA O PROFISSIONAL
+        List<EventSse> eventSsesList = sseService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
+        List<EventSseDTO> eventSseDTOS = eventSsesList.stream()
+                .map(eventSse -> {
+                    return eventSseMapper.toFullDto(eventSse);
+                })
+                .collect(Collectors.toList());
+        mv.addObject("eventsse", eventSseDTOS);
+        //FAZER ENVIO DE NOTIFICAÇÃO PARA O PROFISSIONAL ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 
         return mv;
     }

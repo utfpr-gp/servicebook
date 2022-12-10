@@ -38,6 +38,9 @@ public class EventSse {
     @Column(name = "fromProfessionalEmail")
     private String fromProfessionalEmail;
 
+    @Column(name = "fromProfessionalName")
+    private String fromProfessionalName;
+
     @Column(name = "readStatus")
     private Boolean readStatus;
 
@@ -55,16 +58,65 @@ public class EventSse {
         return "Mensagem desconhecida";
     }
 
+    public String getDescriptionServ() {
+        return descriptionServ;
+    }
+
+    public void setDescriptionServ(String descriptionServ) {
+        this.descriptionServ = descriptionServ;
+    }
+
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
+    }
+
+    public void setLocalDateTime(LocalDateTime localDateTime) {
+        this.localDateTime = localDateTime;
+    }
+
+    public String getToUserEmail() {
+        return toUserEmail;
+    }
+
+    public void setToUserEmail(String toUserEmail) {
+        this.toUserEmail = toUserEmail;
+    }
+
+    public String getFromProfessionalEmail() {
+        return fromProfessionalEmail;
+    }
+
+    public void setFromProfessionalEmail(String fromProfessionalEmail) {
+        this.fromProfessionalEmail = fromProfessionalEmail;
+    }
+
+    public String getFromProfessionalName() {
+        return fromProfessionalName;
+    }
+
+    public void setFromProfessionalName(String fromProfessionalName) {
+        this.fromProfessionalName = fromProfessionalName;
+    }
+
+    public Boolean getReadStatus() {
+        return readStatus;
+    }
+
+    public void setReadStatus(Boolean readStatus) {
+        this.readStatus = readStatus;
+    }
+
     public EventSse(Status message, String toUserEmail) {
         setMessage(getMessage(message)); // salva pegando o enum e convertendo para string
         setToUserEmail(toUserEmail);
         setReadStatus(false);
     }
 
-    public EventSse(Status message, String descriptionServ, String fromProfessionalEmail, String toUserEmail) {
+    public EventSse(Status message, String descriptionServ, String fromProfessionalEmail, String fromProfessionalName, String toUserEmail) {
         setMessage(getMessage(message)); // salva pegando o enum e convertendo para string
         setDescriptionServ(descriptionServ);
         setFromProfessionalEmail(fromProfessionalEmail);
+        setFromProfessionalName(fromProfessionalName);
         setToUserEmail(toUserEmail);
         setReadStatus(false);
     }
