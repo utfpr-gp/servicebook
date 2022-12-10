@@ -63,14 +63,11 @@ public class SSEService {
         }
     }
 
-
-
     public List<EventSse> findByEmail(String toUserEmail) {
         return this.eventSeeRepository.findByEmail(toUserEmail);
     }
 
-    //ANTIGO METODO
-//    public List<EventSse> findByEmail(String toUserEmail) {
-//        return this.eventSeeRepository.findByEmail(toUserEmail);
-//    }
+    public void modifyStatusById(Long id) {
+        this.eventSeeRepository.modifyStatusById(id);
+    }
 }

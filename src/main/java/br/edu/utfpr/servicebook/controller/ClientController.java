@@ -91,10 +91,6 @@ public class ClientController {
         }
 
         //EM OBRA ********
-//        System.err.println("BUSCANDO NO BANCO... " + sseService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
-//        System.err.println("PASSANDO PARA VIEW EVENTSEE... " + eventSsesList);
-
-
         List<EventSse> eventSsesList = sseService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
         List<EventSseDTO> eventSseDTOS = eventSsesList.stream()
                 .map(eventSse -> {

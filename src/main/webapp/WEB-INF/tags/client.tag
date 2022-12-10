@@ -71,7 +71,17 @@
                                             <p><c:out value="${p.fromProfessionalName}"> </c:out> para o serviço <c:out value="${p.descriptionServ}"> </c:out></p>
                                         </div>
                                         <div class="card-action">
-                                            <a href="#">ok</a>
+                                            <%--BOTÃO PARA MARCAR COMO LIDA A NOTIFICAÇÃO--%>
+<%--                                            <a href="#">ok</a>--%>
+                                                <form action="sse/delete/${p.id}" method="post">
+
+                                                    <input type="hidden" name="_method" value="DELETE"/>
+
+                                                    <button type="submit" class="">ok</button>
+                                                    </div>
+                                                </form>
+<%--                                            Teste do delete--%>
+<%--                                            teste delete acima--%>
                                         </div>
                                     </div>
                                 </li>

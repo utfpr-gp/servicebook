@@ -1,5 +1,7 @@
 package br.edu.utfpr.servicebook.sse;
 
+import br.edu.utfpr.servicebook.model.entity.Individual;
+import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -25,6 +29,19 @@ public class SSEController {
         String username = CurrentUserUtil.getCurrentUserEmail();
         System.err.println("Subscrevendo: " + username);
         return sseService.createChannel(username);
+    }
+
+
+    @DeleteMapping("/delete/{id}")
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
+
+        System.err.println("INICIOU DELETE NOTIFICAÇÃO...  " + id);
+
+        sseService.modifyStatusById(id);
+
+        redirectAttributes.addFlashAttribute("msg", "Notificação lida!");
+
+        return "redirect:/minha-conta/cliente#disponiveis";
     }
 }
 

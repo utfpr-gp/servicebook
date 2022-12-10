@@ -12,6 +12,7 @@ window.onload = function () {
     eventSource.addEventListener("message", function (event) {
         let data = JSON.parse(event.data);
         addblock(data.message, data.fromProfessionalName, data.descriptionServ);
+
         alert('mensagem chegou no cliente');
     });
 
