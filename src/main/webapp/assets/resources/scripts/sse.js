@@ -1,18 +1,12 @@
 const URL = 'sse/subscribe';
 const SSE = 'sse-data';
 window.onload = function () {
-    console.log("carregando...")
-
-    //TODO criar boolean para verificar se esta aberto um canal emiter se tiver aberto não precisar criar um novo.
 
     let eventSource = new EventSource(URL)
-
-    console.log("log eventosource... " + eventSource.readyState.toString())
 
     eventSource.addEventListener("message", function (event) {
         let data = JSON.parse(event.data);
         addblock(data.message, data.fromProfessionalName, data.descriptionServ);
-
         alert('mensagem chegou no cliente');
     });
 
@@ -38,7 +32,6 @@ window.onload = function () {
         divb.appendChild(h, p);
         diva.appendChild(divb);
         li.appendChild(diva);
-
         document.getElementById("dropdown4").appendChild(li);
     };
 };

@@ -31,16 +31,11 @@ public class SSEController {
         return sseService.createChannel(username);
     }
 
-
+    //marca como lido a notificação
     @DeleteMapping("/delete/{id}")
-    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
-
-        System.err.println("INICIOU DELETE NOTIFICAÇÃO...  " + id);
-
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         sseService.modifyStatusById(id);
-
-        redirectAttributes.addFlashAttribute("msg", "Notificação lida!");
-
+        redirectAttributes.addFlashAttribute("msg", "Notificação Lida!");
         return "redirect:/minha-conta/cliente#disponiveis";
     }
 }

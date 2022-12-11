@@ -71,17 +71,10 @@
                                             <p><c:out value="${p.fromProfessionalName}"> </c:out> para o serviço <c:out value="${p.descriptionServ}"> </c:out></p>
                                         </div>
                                         <div class="card-action">
-                                            <%--BOTÃO PARA MARCAR COMO LIDA A NOTIFICAÇÃO--%>
-<%--                                            <a href="#">ok</a>--%>
                                                 <form action="sse/delete/${p.id}" method="post">
-
                                                     <input type="hidden" name="_method" value="DELETE"/>
-
-                                                    <button type="submit" class="">ok</button>
-                                                    </div>
+                                                    <button type="submit" class="waves-effect waves-light btn">ok</button>
                                                 </form>
-<%--                                            Teste do delete--%>
-<%--                                            teste delete acima--%>
                                         </div>
                                     </div>
                                 </li>
@@ -120,6 +113,7 @@
 <script src="assets/libraries/materialize/js/materialize.min.js"></script>
 <script src="assets/resources/scripts/main.js"></script>
 <script src="assets/resources/scripts/init.js"></script>
+<script src="assets/resources/scripts/sse.js"></script>
 
 
 </body>

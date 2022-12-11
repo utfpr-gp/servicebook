@@ -10,17 +10,13 @@ import java.util.List;
 
 public interface EventSeeRepository extends JpaRepository<EventSse, Long> {
 
-//    @Query("SELECT e FROM EventSse e WHERE e.toUserEmail = :toUserEmail")
-//    List<EventSse> findByEmail(@Param("toUserEmail") String toUserEmail);
-
-
     @Query("SELECT e FROM EventSse e WHERE e.toUserEmail = :toUserEmail and e.readStatus = false")
     List<EventSse> findByEmail(@Param("toUserEmail") String toUserEmail);
 
-    //fazer metodo que acessa a notificação pelo parametro id e modifica a coluna lido
+    //marca como lido a notificação
     @Modifying
     @Transactional
-    @Query("update EventSse e set e.readStatus =: true where e.id = :id")
+    @Query("update EventSse e set e.readStatus = true where e.id = :id")
     void modifyStatusById(@Param("id") Long id);
 
 }
