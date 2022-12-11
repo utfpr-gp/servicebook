@@ -12,8 +12,11 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
+import java.util.Date;
 import java.util.Optional;
 
 @Component
@@ -29,6 +32,9 @@ public class JobRequestMapper {
 
     public JobRequestDTO toDto(JobRequest entity) {
         JobRequestDTO dto = mapper.map(entity, JobRequestDTO.class);
+
+        Boolean reviewable = checkOpenForReviewFromDate(entity.getDateExpired());
+        dto.setReviewable(Optional.of(reviewable));
         return dto;
     }
 
@@ -44,7 +50,9 @@ public class JobRequestMapper {
         dto.setDateCreated(this.dateFormat.format(entity.getDateCreated()));
         dto.setDateExpired(this.dateFormat.format(entity.getDateExpired()));
         dto.setTextualDate(DateUtil.getTextualDate(DateUtil.toLocalDate(entity.getDateExpired())));
-
+ 
+        Boolean reviewable = checkOpenForReviewFromDate(entity.getDateExpired());
+        dto.setReviewable(Optional.of(reviewable));
         return dto;
     }
 
@@ -55,12 +63,18 @@ public class JobRequestMapper {
         dto.setDateCreated(this.dateFormat.format(entity.getDateCreated()));
         dto.setDateExpired(this.dateFormat.format(entity.getDateExpired()));
 
+        Boolean reviewable = checkOpenForReviewFromDate(entity.getDateExpired());
+        dto.setReviewable(Optional.of(reviewable));
         return dto;
     }
+
     public JobRequestFullDTO toFullDto(JobRequest entity){
         JobRequestFullDTO dto = mapper.map(entity, JobRequestFullDTO.class);
         dto.setDateCreated(this.dateFormat.format(entity.getDateCreated()));
         dto.setDateExpired(this.dateFormat.format(entity.getDateExpired()));
+
+        Boolean reviewable = checkOpenForReviewFromDate(entity.getDateExpired());
+        dto.setReviewable(Optional.of(reviewable));
         return dto;
     }
 
@@ -71,7 +85,15 @@ public class JobRequestMapper {
         dto.setDateExpired(this.dateFormat.format(entity.getDateExpired()));
         dto.setTextualDate(DateUtil.getTextualDate(DateUtil.toLocalDate(entity.getDateExpired())));
 
+        Boolean reviewable = checkOpenForReviewFromDate(entity.getDateExpired());
+        dto.setReviewable(Optional.of(reviewable));
         return dto;
     }
 
+    private Boolean checkOpenForReviewFromDate(Date dateExpired) {
+        final Date now = new Date();
+
+		boolean todaysDateIsAfterExpirationDate = now.compareTo(dateExpired) >= 0;
+        return todaysDateIsAfterExpirationDate;
+    }
 }

@@ -31,6 +31,11 @@
                     <div class="col s12 m6 tertiary-color-text description-job  text-info-request">
                       <p>${jobRequest.description}</p>
                       <p>Pedido expedido em ${jobRequest.dateExpired}</p>
+                      <c:if test="${jobRequest.reviewable.get() != false}">
+                        <div>
+                          <a href="#" class="spacing-buttons waves-effect waves-light btn">Avalie o serviço</a>
+                        </div>
+                      </c:if>
                     </div>
 
                     <c:if test="${jobRequest.status == 'AVAILABLE'}">

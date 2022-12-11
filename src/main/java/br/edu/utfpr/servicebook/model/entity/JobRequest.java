@@ -1,13 +1,11 @@
 package br.edu.utfpr.servicebook.model.entity;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
 
-import br.edu.utfpr.servicebook.util.DateUtil;
 import lombok.*;
 
 @Data
@@ -61,8 +59,6 @@ public class JobRequest {
 	
 	private boolean professionalConfirmation;
 
-	private boolean reviewable;
-
 	@OneToMany(mappedBy = "jobRequest", cascade = CascadeType.REMOVE)
 	private Set<JobImages> jobImages = new HashSet<>();
 	
@@ -84,12 +80,4 @@ public class JobRequest {
 	public void onUpdate(){
 
 	}
-
-	@PostLoad
-    private void postLoadFunction(){
-		final Date now = new Date();
-
-		boolean todaysDateIsAfterExpirationDate = now.compareTo(this.getDateExpired()) >= 0;
-        this.reviewable = todaysDateIsAfterExpirationDate;
-    }
 }

@@ -5,6 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -23,4 +27,5 @@ public class JobRequestFullDTO implements Serializable {
     private Long amountOfCandidates;
     public String status;
 
+    private Optional<Boolean> reviewable = Optional.of(false);
 }

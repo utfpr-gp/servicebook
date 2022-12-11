@@ -4,10 +4,15 @@ package br.edu.utfpr.servicebook.model.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.Date;
+import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -29,5 +34,5 @@ public class JobRequestMinDTO implements Serializable {
 
     private Long amountOfCandidates;
 
-
+    private Optional<Boolean> reviewable = Optional.of(false);
 }
