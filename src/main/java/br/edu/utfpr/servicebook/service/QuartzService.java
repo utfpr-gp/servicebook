@@ -1,8 +1,6 @@
 package br.edu.utfpr.servicebook.service;
 
-import br.edu.utfpr.servicebook.jobs.SendEmailToAuthenticateJob;
-import br.edu.utfpr.servicebook.jobs.SendEmailWithVerificationCodeJob;
-import br.edu.utfpr.servicebook.jobs.VerifyExpiredTokenEmailJob;
+import br.edu.utfpr.servicebook.jobs.*;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,7 +100,7 @@ public class QuartzService {
     private Trigger getTrigger(String name, String group) {
         Trigger trigger = TriggerBuilder.newTrigger().withIdentity(name, group)
                 // FIXME startnow ativado somente para teste
-                //.startNow()
+//                .startNow()
                 //.withSchedule(CronScheduleBuilder.cronSchedule(cron))
                 //.withSchedule(simpleSchedule().withIntervalInSeconds(1).repeatForever())
                 //.withSchedule(simpleSchedule().withIntervalInHours(24 * 3).repeatForever())
@@ -117,6 +115,51 @@ public class QuartzService {
                 //.withSchedule(simpleSchedule().withIntervalInSeconds(1).repeatForever())
                 //Executa toda Sexta as 10:15am
                 .withSchedule(CronScheduleBuilder.cronSchedule("0 15 10 ? * 6"))
+                .build();
+        return trigger;
+    }
+
+    public void updateJobRequestStatusWhenIsHiredDateExpired() {
+        try{
+            JobDetail job = JobBuilder.newJob(ChangeJobRequestStatusWhenIsHiredDateExpiredJob.class)
+                    .withIdentity(ChangeJobRequestStatusWhenIsHiredDateExpiredJob.class.getSimpleName(), GROUP).build();
+
+            Trigger trigger = getTriggerEveryDay(ChangeJobRequestStatusWhenIsHiredDateExpiredJob.class.getSimpleName(), GROUP);
+            scheduler.scheduleJob(job, trigger);
+
+            if (!scheduler.isStarted()) {
+                scheduler.start();
+            }
+
+        }catch (SchedulerException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void closeJobsRequestPass30DaysFromHired() {
+        try{
+            JobDetail job = JobBuilder.newJob(CloseJobsRequestPass30DaysFromHiredJob.class)
+                    .withIdentity(CloseJobsRequestPass30DaysFromHiredJob.class.getSimpleName(), GROUP).build();
+
+            Trigger trigger = getTriggerEveryDay(CloseJobsRequestPass30DaysFromHiredJob.class.getSimpleName(), GROUP);
+            scheduler.scheduleJob(job, trigger);
+
+            if (!scheduler.isStarted()) {
+                scheduler.start();
+            }
+
+        }catch (SchedulerException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private Trigger getTriggerEveryDay(String name, String group) {
+        Trigger trigger = TriggerBuilder.newTrigger().withIdentity(name, group)
+                .startNow()
+                //.withSchedule(CronScheduleBuilder.cronSchedule(cron))
+                //.withSchedule(simpleSchedule().withIntervalInSeconds(1).repeatForever())
+                //Executa toda dia ao 12:00am
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0 12 * * ?"))
                 .build();
         return trigger;
     }

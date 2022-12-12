@@ -11,6 +11,8 @@ import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import org.slf4j.Logger;
@@ -88,7 +90,7 @@ public class MyAccountController {
             throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        IndividualDTO professionalDTO = individualMapper.toDto(oIndividual.get());
+        IndividualDTO individualDTO = individualMapper.toDto(oIndividual.get());
 
         Optional<City> oCity = cityService.findById(oIndividual.get().getAddress().getCity().getId());
         if (!oCity.isPresent()) {
@@ -96,9 +98,12 @@ public class MyAccountController {
         }
         CityMinDTO cityMinDTO = cityMapper.toMinDto(oCity.get());
 
+        SidePanelIndividualDTO sidePanelIndividualDTO = SidePanelUtil.getSidePanelDTO(individualDTO);
+
         ModelAndView mv = new ModelAndView("professional/edit-account");
-        mv.addObject("professional", professionalDTO);
+        mv.addObject("professional", individualDTO);
         mv.addObject("city", cityMinDTO);
+        mv.addObject("user", sidePanelIndividualDTO);
 
         return mv;
     }

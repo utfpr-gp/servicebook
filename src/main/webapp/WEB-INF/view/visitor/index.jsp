@@ -9,7 +9,7 @@
 
         <t:search-bar></t:search-bar>
 
-        <div class="container">
+        <div id="panel-heading" class="container">
             <div class="section">
                 <div class="row">
                     <div class="col s12">
