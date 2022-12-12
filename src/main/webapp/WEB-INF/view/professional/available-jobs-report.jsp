@@ -18,7 +18,7 @@ tagdir="/WEB-INF/tags" %>
 </c:if>
 
 <c:forEach var="job" items="${jobs}">
-  <c:if test="${not empty job}">
+  <c:if test="${not empty job.id}">
     <div class="container">
       <div class="row">
         <div class="col s12 spacing-buttons">
@@ -75,7 +75,7 @@ tagdir="/WEB-INF/tags" %>
               <div class="center">
                 <a
                   href="#modal-delete"
-                  data-url="${pageContext.request.contextPath}/candidaturas/desistir//${job.id}"
+                  data-url="${pageContext.request.contextPath}/requisicoes/nao-quero/${job.id}"
                   class="waves-effect waves-light btn spacing-buttons red modal-trigger"
                   >Não quero</a
                 >
