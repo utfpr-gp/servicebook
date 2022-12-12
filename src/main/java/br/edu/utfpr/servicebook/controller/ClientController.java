@@ -10,6 +10,7 @@ import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -408,6 +409,20 @@ public class ClientController {
 
         redirectAttributes.addFlashAttribute("msg", "Solicitação alterada!");
         return "redirect:/minha-conta/meus-pedidos?tab=paraOrcamento";
+    }
+
+    @PatchMapping("/marcar-para-contratar/{jobId}/{individualId}")
+    public String markAsHired(@PathVariable Long jobId, @PathVariable Long individualId, RedirectAttributes redirectAttributes) throws IOException {
+        Optional<JobRequest> oJobRequest = jobRequestService.findById(jobId);
+        if (!oJobRequest.isPresent()) {
+            throw new EntityNotFoundException("Serviço não encontrado");
+        }
+
+        JobRequest jobRequest = oJobRequest.get();
+        jobRequest.setStatus(JobRequest.Status.TO_HIRED);
+        this.jobRequestService.save(jobRequest);
+
+        return "redirect:/minha-conta/cliente/meus-pedidos/"+jobId;
     }
 
 

@@ -96,8 +96,24 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                     </button>
                 </form>
               </div>
-              <div class="row center-align">
-              </div>
+
+
+            <div class="row center-align">
+              <p class="contact-item center dark-color-text">Solicitar o serviço</p>
+              <form action="minha-conta/cliente/marcar-para-contratar/${jobCandidate.getJobRequest().id}/${jobCandidate.getIndividual().id}" method="post">
+                <input type="hidden" name="_method" value="PATCH"/>
+                <button type="submit" class="btn">
+                  <c:choose>
+                    <c:when test="${jobCandidate.chosenByBudget}">
+                      Cancelar contratação
+                    </c:when>
+                    <c:otherwise>
+                      Marcar para contratação
+                    </c:otherwise>
+                  </c:choose>
+                </button>
+              </form>
+            </div>
           </div>
       </div>
 
