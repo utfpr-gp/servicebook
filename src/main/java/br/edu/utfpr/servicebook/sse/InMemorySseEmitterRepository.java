@@ -15,8 +15,19 @@ public class InMemorySseEmitterRepository {
     public static final Logger log =
             LoggerFactory.getLogger(InMemorySseEmitterRepository.class);
 
+    /**
+     * Lista de emissores de notificação.
+     * O identificador é o email e o valor é o objeto de emissão.
+     * Apenas haverá um emissor de notificação por email.
+     * FIXME quando tiver muitos usuários, esta solução de guardar em memória se tornará imprópria.
+     */
     private Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
+    /**
+     * Seta o emissor corrente para o email.
+     * @param memberId
+     * @param emitter
+     */
     public void addEmitter(String memberId, SseEmitter emitter) {
         emitters.put(memberId, emitter);
     }
@@ -29,6 +40,11 @@ public class InMemorySseEmitterRepository {
         }
     }
 
+    /**
+     * Retorna o emissor para o respectivo email, quanso houver.
+     * @param memberId
+     * @return
+     */
     public Optional<SseEmitter> get(String memberId) {
         return Optional.ofNullable(emitters.get(memberId));
     }

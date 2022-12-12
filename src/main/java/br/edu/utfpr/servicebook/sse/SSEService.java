@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -22,7 +21,6 @@ public class SSEService {
      * @param username
      * @return
      */
-
     public SseEmitter createChannel(String username) {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);//verificar o uso do long para não dar timeout
         inMemorySseEmitterRepository.addEmitter(username, emitter);
@@ -46,27 +44,35 @@ public class SSEService {
      * @param eventSseDto
      */
     public void send(EventSse eventSseDto) {
-        inMemorySseEmitterRepository.get(eventSseDto.getToUserEmail()).ifPresent(emitter -> {
+        inMemorySseEmitterRepository.get(eventSseDto.getToEmail()).ifPresent(emitter -> {
             try {
                 emitter.send(eventSseDto);
                 System.err.println("enviando emiter: " + eventSseDto);
 
                 eventSeeRepository.save(eventSseDto);
                 System.err.println("user online...salvando em banco emiter: " + eventSseDto);
-            } catch (IOException e) {
-                inMemorySseEmitterRepository.remove(eventSseDto.getToUserEmail());//esta removendo pois não esta logado
+            } catch (Exception e) {
+                //esta removendo pois não esta logado
+                inMemorySseEmitterRepository.remove(eventSseDto.getToEmail());
+                eventSeeRepository.save(eventSseDto);
+                System.err.println("user offline...salvando em banco emiter: " + eventSseDto);
             }
         });
-        if (!inMemorySseEmitterRepository.get(eventSseDto.getToUserEmail()).isPresent()){
-            eventSeeRepository.save(eventSseDto);
-            System.err.println("user offline...salvando em banco emiter: " + eventSseDto);
-        }
     }
 
-    public List<EventSse> findByEmail(String toUserEmail) {
-        return this.eventSeeRepository.findByEmail(toUserEmail);
+    /**
+     * Busca os eventos de notificação pendentes para um dado usuário.
+     * @param toEmail
+     * @return
+     */
+    public List<EventSse> findPendingEventsByEmail(String toEmail) {
+        return this.eventSeeRepository.findPendingEventsByEmail(toEmail);
     }
 
+    /**
+     * Modifica o status de leitura de uma notificação referente a um dado usuário.
+     * @param id
+     */
     public void modifyStatusById(Long id) {
         this.eventSeeRepository.modifyStatusById(id);
     }

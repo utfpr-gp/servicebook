@@ -10,10 +10,20 @@ import java.util.List;
 
 public interface EventSeeRepository extends JpaRepository<EventSse, Long> {
 
-    @Query("SELECT e FROM EventSse e WHERE e.toUserEmail = :toUserEmail and e.readStatus = false")
-    List<EventSse> findByEmail(@Param("toUserEmail") String toUserEmail);
+    /**
+     * Busca uma lista de notificações a serem enviadas a um dado usuário, mas apenas
+     * as notificações que ainda não foram lidas por ele.
+     * @param toEmail
+     * @return
+     */
+    @Query("SELECT e FROM EventSse e WHERE e.toEmail = :toEmail and e.readStatus = false")
+    List<EventSse> findPendingEventsByEmail(@Param("toEmail") String toEmail);
 
-    //marca como lido a notificação
+    /**
+     * Marca a notificação como lida para o id.
+     * Considera-se que uma notificação tem id único e sendo referida a um usuário.
+     * @param id
+     */
     @Modifying
     @Transactional
     @Query("update EventSse e set e.readStatus = true where e.id = :id")

@@ -21,9 +21,14 @@ public class SSEController {
 
     public static final Logger log =
             LoggerFactory.getLogger(SSEController.class);
+
     @Autowired
     SSEService sseService;
 
+    /**
+     * Realiza a criação de um canal para o envio de notificações para o cliente.
+     * @return
+     */
     @GetMapping("/subscribe")
     public SseEmitter subscribe() {
         String username = CurrentUserUtil.getCurrentUserEmail();
@@ -31,7 +36,12 @@ public class SSEController {
         return sseService.createChannel(username);
     }
 
-    //marca como lido a notificação
+    /**
+     * Marca uma notificação como lida.
+     * @param id
+     * @param redirectAttributes
+     * @return
+     */
     @DeleteMapping("/delete/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         sseService.modifyStatusById(id);

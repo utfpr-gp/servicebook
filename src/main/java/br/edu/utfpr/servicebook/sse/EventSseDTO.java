@@ -19,12 +19,24 @@ public class EventSseDTO implements Serializable {
 
     private String descriptionServ;
 
-    private String toUserEmail;
+    /**
+     * Email de destino que é usado como identificador do canal SSE.
+     */
+    private String toEmail;
 
-    private String fromProfessionalEmail;
+    /**
+     * Email do usuário que originou um evento.
+     */
+    private String fromEmail;
 
-    private String fromProfessionalName;
+    /**
+     * Nome do usuário que originou um evento.
+     */
+    private String fromName;
 
+    /**
+     * Informa se a notificação foi lida ou não pelo usuário.
+     */
     private Boolean readStatus;
 
 

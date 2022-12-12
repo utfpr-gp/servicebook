@@ -32,22 +32,40 @@ public class EventSse {
     @Column(name = "localDateTime")
     private LocalDateTime localDateTime = LocalDateTime.now();
 
-    @Column(name = "toUserEmail")
-    private String toUserEmail;
+    @Column(name = "toEmail")
+    private String toEmail;
 
-    @Column(name = "fromProfessionalEmail")
-    private String fromProfessionalEmail;
+    @Column(name = "fromEmail")
+    private String fromEmail;
 
-    @Column(name = "fromProfessionalName")
-    private String fromProfessionalName;
+    @Column(name = "fromName")
+    private String fromName;
 
     @Column(name = "readStatus")
     private Boolean readStatus;
 
-    /*public EventSse(Status status){
-        this.message = getMessage(status);
-    }*/
+    /**
+     * Cria um evento de notificação
+     * @param message
+     * @param serviceDescription descrição do serviço
+     * @param fromEmail email do usuário que realizou o evento
+     * @param fromName nome do usuário que realizou o evento
+     * @param toEmail email do destinatário do evento
+     */
+    public EventSse(Status message, String serviceDescription, String fromEmail, String fromName, String toEmail) {
+        setMessage(getMessage(message)); // salva pegando o enum e convertendo para string
+        setDescriptionServ(serviceDescription);
+        setFromEmail(fromEmail);
+        setFromName(fromName);
+        setToEmail(toEmail);
+        setReadStatus(false);
+    }
 
+    /**
+     * Retorna a mensagem padronizada a ser enviada ao usuário de acordo com o tipo de evento.
+     * @param status
+     * @return
+     */
     private String getMessage(Status status){
         if(status == Status.NEW_CANDIDATURE){
             return "Uma nova candidatura";
@@ -56,69 +74,6 @@ public class EventSse {
             return "Profissional confirmou a realização do serviço";
         }
         return "Mensagem desconhecida";
-    }
-
-    public String getDescriptionServ() {
-        return descriptionServ;
-    }
-
-    public void setDescriptionServ(String descriptionServ) {
-        this.descriptionServ = descriptionServ;
-    }
-
-    public LocalDateTime getLocalDateTime() {
-        return localDateTime;
-    }
-
-    public void setLocalDateTime(LocalDateTime localDateTime) {
-        this.localDateTime = localDateTime;
-    }
-
-    public String getToUserEmail() {
-        return toUserEmail;
-    }
-
-    public void setToUserEmail(String toUserEmail) {
-        this.toUserEmail = toUserEmail;
-    }
-
-    public String getFromProfessionalEmail() {
-        return fromProfessionalEmail;
-    }
-
-    public void setFromProfessionalEmail(String fromProfessionalEmail) {
-        this.fromProfessionalEmail = fromProfessionalEmail;
-    }
-
-    public String getFromProfessionalName() {
-        return fromProfessionalName;
-    }
-
-    public void setFromProfessionalName(String fromProfessionalName) {
-        this.fromProfessionalName = fromProfessionalName;
-    }
-
-    public Boolean getReadStatus() {
-        return readStatus;
-    }
-
-    public void setReadStatus(Boolean readStatus) {
-        this.readStatus = readStatus;
-    }
-
-    public EventSse(Status message, String toUserEmail) {
-        setMessage(getMessage(message)); // salva pegando o enum e convertendo para string
-        setToUserEmail(toUserEmail);
-        setReadStatus(false);
-    }
-
-    public EventSse(Status message, String descriptionServ, String fromProfessionalEmail, String fromProfessionalName, String toUserEmail) {
-        setMessage(getMessage(message)); // salva pegando o enum e convertendo para string
-        setDescriptionServ(descriptionServ);
-        setFromProfessionalEmail(fromProfessionalEmail);
-        setFromProfessionalName(fromProfessionalName);
-        setToUserEmail(toUserEmail);
-        setReadStatus(false);
     }
 
 }

@@ -1,15 +1,21 @@
 const URL = 'sse/subscribe';
 const SSE = 'sse-data';
+
+/**
+ * No carregamento da página, faz a solicitação para abrir um canal de push via SSE.
+ */
 window.onload = function () {
 
     let eventSource = new EventSource(URL)
 
+    //aguarda uma mensagem global.
     eventSource.addEventListener("message", function (event) {
         let data = JSON.parse(event.data);
         addblock(data.message, data.fromProfessionalName, data.descriptionServ);
         alert('mensagem chegou no cliente');
     });
 
+    //aguarda um erro
     eventSource.addEventListener('error', function (event) {
         console.log("error : " + event.currentTarget.readyState);
         if (event.currentTarget.readyState == eventSource.CLOSED) {
@@ -19,7 +25,12 @@ window.onload = function () {
         }
     });
 
-    //ao receber notificação monta no html
+    /**
+     * Constrói o trecho de HTML da notificação a ser apresentada.
+     * @param message
+     * @param fromProfessionalName
+     * @param descriptionServ
+     */
     function addblock(message, fromProfessionalName, descriptionServ){
         console.log("adblock function...")
         let li = document.createElement("li");

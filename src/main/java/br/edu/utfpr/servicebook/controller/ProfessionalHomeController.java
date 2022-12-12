@@ -28,7 +28,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -124,7 +123,7 @@ public class ProfessionalHomeController {
         mv.addObject("id", id.orElse(0L));
 
         //FAZER ENVIO DE NOTIFICAÇÃO PARA O PROFISSIONAL
-        List<EventSse> eventSsesList = sseService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
+        List<EventSse> eventSsesList = sseService.findPendingEventsByEmail(CurrentUserUtil.getCurrentUserEmail());
         List<EventSseDTO> eventSseDTOS = eventSsesList.stream()
                 .map(eventSse -> {
                     return eventSseMapper.toFullDto(eventSse);

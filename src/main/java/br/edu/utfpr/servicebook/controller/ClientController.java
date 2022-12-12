@@ -14,7 +14,6 @@ import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +28,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -91,7 +88,7 @@ public class ClientController {
         }
 
         //EM OBRA ********
-        List<EventSse> eventSsesList = sseService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
+        List<EventSse> eventSsesList = sseService.findPendingEventsByEmail(CurrentUserUtil.getCurrentUserEmail());
         List<EventSseDTO> eventSseDTOS = eventSsesList.stream()
                 .map(eventSse -> {
                     return eventSseMapper.toFullDto(eventSse);
