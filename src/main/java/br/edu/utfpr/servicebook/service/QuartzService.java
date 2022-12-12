@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook.service;
 
 import br.edu.utfpr.servicebook.jobs.ChangeJobRequestStatusWhenIsHiredDateExpiredJob;
+import br.edu.utfpr.servicebook.jobs.DeleteJobAvailableToHideJob;
 import br.edu.utfpr.servicebook.jobs.SendEmailToAuthenticateJob;
 import br.edu.utfpr.servicebook.jobs.SendEmailWithVerificationCodeJob;
 import br.edu.utfpr.servicebook.jobs.VerifyExpiredTokenEmailJob;

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Date;
 
 public interface JobAvailableToHideRepository extends JpaRepository<JobAvailableToHide, JobRequestUserPK> {
     @Query("select j from JobAvailableToHide j where j.date <= ?1")
@@ -18,4 +19,7 @@ public interface JobAvailableToHideRepository extends JpaRepository<JobAvailable
     @Modifying
     @Query("delete from JobAvailableToHide j where j.id = ?1")
     void deleteByJobAvailableId(JobRequestUserPK id);
+
+    @Query("SELECT jr FROM JobRequest jr JOIN JobAvailableToHide ja on ja.jobRequest.id=:id")
+    List<JobRequest> findAllByJobRequest(Long id);
 }

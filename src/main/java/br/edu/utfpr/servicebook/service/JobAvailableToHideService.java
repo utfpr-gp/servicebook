@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Date;
 
 @Slf4j
 @Service
@@ -29,5 +30,9 @@ public class JobAvailableToHideService {
 
     public void deleteByJobAvailableId(JobRequestUserPK id) {
         this.jobAvailableToHideRepository.deleteByJobAvailableId(id);
+    }
+
+    public List<JobRequest> findAllByJobRequest(Long id){
+        return this.jobAvailableToHideRepository.findAllByJobRequest(id);
     }
 }

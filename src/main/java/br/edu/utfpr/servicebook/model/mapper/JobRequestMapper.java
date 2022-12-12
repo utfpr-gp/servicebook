@@ -74,4 +74,9 @@ public class JobRequestMapper {
         return dto;
     }
 
+    public JobRequestFullDTO emptyToFullDto(JobRequest entity) {
+        JobRequestFullDTO dto = mapper.map(entity, JobRequestFullDTO.class);
+        return dto;
+    }
+
 }

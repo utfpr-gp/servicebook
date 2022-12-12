@@ -151,7 +151,7 @@
                                 <div class="center">
                                   <a
                                     href="#modal-delete"
-                                    data-url="${pageContext.request.contextPath}/candidaturas/desistir/${job.id}"
+                                    data-url="${pageContext.request.contextPath}/requisicoes/nao-quero/${job.id}"
                                     class="waves-effect waves-light btn spacing-buttons red modal-trigger"
                                     >Não quero</a
                                   >
