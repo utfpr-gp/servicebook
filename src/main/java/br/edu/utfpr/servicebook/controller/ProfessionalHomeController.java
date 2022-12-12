@@ -82,6 +82,9 @@ public class ProfessionalHomeController {
     @Autowired
     private SidePanelUtil sidePanelUtil;
 
+    @Autowired
+    private JobAvailableToHideService jobAvailableToHideService;
+
     @GetMapping
     public ModelAndView showMyAccountProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> id) throws Exception {
         log.debug("ServiceBook: Minha conta.");
@@ -161,6 +164,15 @@ public class ProfessionalHomeController {
         jobRequestFullDTOs = jobRequestPage.stream()
                 .map(jobRequest -> {
                     Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobRequest);
+
+                    List<JobRequest> availableToHides = jobAvailableToHideService.findAllByJobRequest(jobRequest.getId());
+
+                    boolean isToHideJob = availableToHides.contains(jobRequest);
+
+                    if (isToHideJob) {
+                        JobRequest jobRequestEmpty = new JobRequest();
+                        return jobRequestMapper.emptyToFullDto(jobRequestEmpty);
+                    }
 
                     if (totalCandidates.isPresent()) {
                         return jobRequestMapper.toFullDto(jobRequest, totalCandidates);
