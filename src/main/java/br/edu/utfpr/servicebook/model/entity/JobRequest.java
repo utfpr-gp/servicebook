@@ -19,13 +19,16 @@ import lombok.*;
 @Entity
 public class JobRequest {
 	/**
-	 * AVAILABLE: disponível para candidaturas e permanece neste estado também durante o recebimento de candidaturas
-	 * BUDGET: passa para este estado quando alcançado o total de candidaturas esperado ou quando o cliente encerra o recebimento de candidaturas
-	 * TO_DO: o profissional foi escolhido para fazer o serviço e o serviço ainda não foi realizado
+	 * AVAILABLE: disponível para candidaturas
+	 * BUDGET: muda para este estado quando o cliente escolhe pelo menos um candidato para orçamento ou quando alcançado o total de candidaturas esperado ou quando o cliente encerra o recebimento de candidaturas
+	 * TO_HIRED: o cliente escolhe um candidato para realizar o serviço, mas aguarda a confirmação
+	 * TO_DO: o profissional confirmou e o serviço ainda não foi realizado
+	 * DOING: a data para a realização do serviço chegou
 	 * CLOSED: o serviço foi realizado
+	 * CANCELED: o serviço foi cancelado
 	 */
 	public enum Status {
-		AVAILABLE, BUDGET, TO_HIRED, DOING, TO_DO, CLOSED
+		AVAILABLE, BUDGET, TO_HIRED, TO_DO, DOING, CLOSED, CANCELED
 	};
 
 	@Id

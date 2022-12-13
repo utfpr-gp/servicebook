@@ -50,7 +50,7 @@
 
                       <div id="modal-close-job" class="modal">
                         <div class="modal-content">
-                          <form action="minha-conta/cliente/marcar-como-finalizado/${jobRequest.id}" method="post">
+                          <form action="minha-conta/cliente/informa-finalizado/${jobRequest.id}" method="post">
                             <input type="hidden" name="_method" value="PATCH"/>
 
                             <div class="modal-content" id="modal-content-confirm-hired">
