@@ -151,6 +151,11 @@ public class QuartzService {
         return trigger;
     }
 
+    /**
+     * Escalona o Job para remover da tabela temporária os jobs que um profissional marcou que não quer mais ver.
+     * Os ids dos jobs que não podem ser mostrados para o profissional ficam numa tabela e estes ids precisam ser
+     * removidos ao passar de x dias.
+     */
     public void deleteJobsAvailableToHide() {
         try{
             JobDetail job = JobBuilder.newJob(DeleteJobAvailableToHideJob.class)

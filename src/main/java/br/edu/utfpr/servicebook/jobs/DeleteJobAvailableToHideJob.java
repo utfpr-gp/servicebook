@@ -28,10 +28,10 @@ public class DeleteJobAvailableToHideJob implements Job {
             c.add(Calendar.DATE, 3);
             Date currentDatePlusThree = c.getTime();
 
-            List<JobAvailableToHide> jobAvailableToHide = jobAvailableToHideService.findAllByDateLessThan(currentDatePlusThree);
-            for (JobAvailableToHide s : jobAvailableToHide) {
+            List<JobAvailableToHide> jobAvailableToHideList = jobAvailableToHideService.findAllByDateLessThan(currentDatePlusThree);
+            for (JobAvailableToHide s : jobAvailableToHideList) {
                 JobRequestUserPK id = s.getId();
-                jobAvailableToHideService.deleteByJobAvailableId(id);
+                jobAvailableToHideService.deleteById(id);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());

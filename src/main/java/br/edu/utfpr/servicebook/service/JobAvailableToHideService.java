@@ -28,8 +28,8 @@ public class JobAvailableToHideService {
         return this.jobAvailableToHideRepository.findAllByDateLessThan(date);
     }
 
-    public void deleteByJobAvailableId(JobRequestUserPK id) {
-        this.jobAvailableToHideRepository.deleteByJobAvailableId(id);
+    public void deleteById(JobRequestUserPK id) {
+        this.jobAvailableToHideRepository.deleteById(id);
     }
 
     public List<JobRequest> findAllByJobRequest(Long id){
