@@ -50,6 +50,7 @@ public class SSEService {
                 System.err.println("enviando emiter: " + eventSseDto);
 
                 eventSeeRepository.save(eventSseDto);
+                //TODO salvar o evento como lido no banco para futuramente criar pagina notificações antigas.
                 System.err.println("user online...salvando em banco emiter: " + eventSseDto);
             } catch (Exception e) {
                 //esta removendo pois não esta logado
