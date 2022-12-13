@@ -9,7 +9,6 @@ import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -258,8 +257,6 @@ public class IndividualRegisterController {
 
         return "redirect:/cadastrar-se?passo=3";
     }
-
-
 
     @PostMapping("/passo-3")
     public String saveUserPassword(

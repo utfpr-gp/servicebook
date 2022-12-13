@@ -87,4 +87,7 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
 
     @Query("select j from JobCandidate j where j.hiredDate <= ?1")
     List<JobCandidate> findAllByHiredDateLessThan(Date date);
+
+    @Query("select j from JobCandidate j where j.hiredDate <= ?1 and j.isQuit = false")
+    List<JobCandidate> findAllThatPass30DaysFromHired(Date date);
 }
