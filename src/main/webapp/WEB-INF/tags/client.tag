@@ -63,15 +63,15 @@
                     <li id="li-notifications">
                         <a class='dropdown-trigger btn eventSize' href='#' data-target='dropdown4'><i class="material-icons">notifications</i></a>
                         <ul id='dropdown4' class='dropdown-content'>
-                            <c:forEach items="${eventsse}" var="p">
+                            <c:forEach items="${eventsse}" var="e">
                                 <li>
                                     <div class="card">
                                         <div class="card-content">
-                                            <h5><c:out value="${p.message}"> </c:out></h5>
-                                            <p><c:out value="${p.fromProfessionalName}"> </c:out> para o serviço <c:out value="${p.descriptionServ}"> </c:out></p>
+                                            <h5><c:out value="${e.message}"> </c:out></h5>
+                                            <p><c:out value="${e.fromName}"> </c:out> para o serviço <c:out value="${e.descriptionServ}"> </c:out></p>
                                         </div>
                                         <div class="card-action">
-                                                <form action="sse/delete/${p.id}" method="post">
+                                                <form action="sse/delete/${e.id}" method="post">
                                                     <input type="hidden" name="_method" value="DELETE"/>
                                                     <button type="submit" class="waves-effect waves-light btn">ok</button>
                                                 </form>
