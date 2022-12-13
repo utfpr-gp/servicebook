@@ -88,7 +88,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                   </a>
               </div>
 
-            <c:if test="${jobCandidate.getJobRequest().status == 'AVAILABLE'}">
+            <c:if test="${jobCandidate.getJobRequest().status == 'AVAILABLE' || jobCandidate.getJobRequest().status == 'BUDGET'}">
               <div class="row center-align">
                 <p class="contact-item center dark-color-text">Solicitar ou cancelar orçamento</p>
                 <form action="minha-conta/cliente/marcar-como-orcamento/${jobCandidate.getJobRequest().id}/${jobCandidate.getIndividual().id}" method="post">

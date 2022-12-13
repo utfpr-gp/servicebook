@@ -82,6 +82,12 @@
                       </div>
                     </div>
 
+                    <div class="col s12 m6 right">
+                      <div class="center">
+                        <a href="minha-conta/cliente" class="spacing-buttons waves-effect waves-light btn">Voltar para solicitações</a>
+                      </div>
+                    </div>
+
                     <div class="col s12 tertiary-color-text description-orcamento text-info-request">
                       <hr class="hr-request-area">
                       <c:if test="${jobRequest.status == 'AVAILABLE'}">
