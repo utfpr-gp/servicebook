@@ -107,6 +107,17 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               </div>
             </c:if>
 
+          <c:if test="${jobCandidate.chosenByBudget}">
+              <div class="row center-align">
+                  <form action="minha-conta/cliente/marcar-para-contratar/${jobCandidate.getJobRequest().id}/${jobCandidate.getIndividual().id}" method="post">
+                      <input type="hidden" name="_method" value="PATCH"/>
+                      <button type="submit" class="btn">
+                          Contratar serviço
+                      </button>
+                  </form>
+              </div>
+          </c:if>
+
             <c:if test="${jobCandidate.getJobRequest().status == 'CLOSED'}">
               <div class="row center-align">
                 <h5>Avaliação:</h5>
