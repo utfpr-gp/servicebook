@@ -169,19 +169,7 @@ public class ClientController {
         return mv;
     }
 
-    @PatchMapping("/marcar-como-orcamento/{jobId}/{individualId}")
-    public String markAsBudget(@PathVariable Long jobId, @PathVariable Long individualId, RedirectAttributes redirectAttributes) throws IOException {
-      Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(jobId, individualId);
-      if (!oJobCandidate.isPresent()) {
-        throw new EntityNotFoundException("Candidato não encontrado");
-      }
-
-      JobCandidate jobCandidate = oJobCandidate.get();
-      jobCandidate.setChosenByBudget(!jobCandidate.isChosenByBudget());
-      jobCandidateService.save(jobCandidate);
-
-      return "redirect:/minha-conta/cliente/meus-pedidos/"+jobId;
-    }
+    
 
     @GetMapping("/meus-pedidos/{jobId}/detalhes/{candidateId}")
     public ModelAndView showDetailsRequestCandidate(@PathVariable Optional<Long> jobId, @PathVariable Optional<Long> candidateId) throws Exception {
@@ -508,6 +496,33 @@ public class ClientController {
         IndividualDTO individualDTO = individualMapper.toDto(client.get());
 
         return SidePanelUtil.getSidePanelDTO(individualDTO);
+    }
+
+    @PatchMapping("/marcar-como-orcamento/{jobId}/{individualId}")
+    public String markAsBudget(@PathVariable Long jobId, @PathVariable Long individualId, RedirectAttributes redirectAttributes) throws IOException {
+      Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(jobId, individualId);
+      if (!oJobCandidate.isPresent()) {
+        throw new EntityNotFoundException("Candidato não encontrado");
+      }
+      
+      Optional<JobRequest> oJobRequest = jobRequestService.findById(jobId);
+      if(!oJobRequest.isPresent()) {
+          throw new EntityNotFoundException("Pedido não encontrado!");
+      }
+      JobRequest jobRequest = oJobRequest.get();
+
+      JobCandidate jobCandidate = oJobCandidate.get();
+      jobCandidate.setChosenByBudget(!jobCandidate.isChosenByBudget());
+      jobCandidateService.save(jobCandidate);
+      
+      if (jobCandidate.isChosenByBudget()) {
+        jobRequest.setStatus(JobRequest.Status.BUDGET);
+      } else {
+        jobRequest.setStatus(JobRequest.Status.AVAILABLE);
+      }
+      jobRequestService.save(jobRequest);
+
+      return "redirect:/minha-conta/cliente/meus-pedidos/"+jobId;
     }
 
     @PatchMapping("/marcar-como-finalizado/{jobId}")
