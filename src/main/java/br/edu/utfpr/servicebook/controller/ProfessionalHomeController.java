@@ -124,7 +124,7 @@ public class ProfessionalHomeController {
             HttpServletRequest request,
             @RequestParam(required = false, defaultValue = "0") Long id,
             @RequestParam(value = "pag", defaultValue = "1") int page,
-            @RequestParam(value = "siz", defaultValue = "3") int size,
+            @RequestParam(value = "siz", defaultValue = "5") int size,
             @RequestParam(value = "ord", defaultValue = "id") String order,
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
@@ -161,7 +161,7 @@ public class ProfessionalHomeController {
             jobRequestPage = jobRequestService.findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status.AVAILABLE, oExpertise.get(), oProfessional.get(), pageRequest);
         }
 
-        jobRequestFullDTOs = jobRequestPage.stream()
+        jobRequestFullDTOs = jobRequestPage.stream().distinct()
                 .map(jobRequest -> {
                     Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobRequest);
 
