@@ -52,18 +52,18 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                 </li>
                 <li class="tab" id="3">
                   <a
-                    data-url="minha-conta/cliente/meus-pedidos/para-fazer"
-                    href="#paraFazer"
+                          data-url="minha-conta/cliente/meus-pedidos/para-confirmar"
+                          href="#paraConfirmar"
                   >
-                    PARA FAZER
+                    PARA CONFIRMAR
                   </a>
                 </li>
                 <li class="tab" id="3">
                   <a
-                    data-url="minha-conta/cliente/meus-pedidos/para-confirmar"
-                    href="#paraConfirmar"
+                    data-url="minha-conta/cliente/meus-pedidos/para-fazer"
+                    href="#paraFazer"
                   >
-                    PARA CONFIRMAR
+                    PARA FAZER
                   </a>
                 </li>
                 <li class="tab" id="3">

@@ -24,11 +24,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -274,6 +271,16 @@ public class ClientController {
         return mv;
     }
 
+    /**
+     * Retorna os serviços para fazer, ou seja, que já foram confirmados pelo profissional.
+     * @param request
+     * @param page
+     * @param size
+     * @param order
+     * @param direction
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/meus-pedidos/para-fazer")
     public ModelAndView showTodoJobs(
             HttpServletRequest request,
@@ -293,7 +300,7 @@ public class ClientController {
         Page<JobRequest> jobRequestPage = null;
         List<JobRequestFullDTO> jobRequestFullDTOs = null;
 
-        jobRequestPage = jobRequestService.findByStatusAndClient(JobRequest.Status.TO_HIRED, individual.get(), pageRequest);
+        jobRequestPage = jobRequestService.findByStatusAndClient(JobRequest.Status.TO_DO, individual.get(), pageRequest);
 
         jobRequestFullDTOs = jobRequestPage.stream()
                 .map(jobRequest -> {
@@ -315,7 +322,16 @@ public class ClientController {
         return mv;
     }
 
-
+    /**
+     * Retorna os serviços que aguardam confirmação do profissional para serem realizados
+     * @param request
+     * @param page
+     * @param size
+     * @param order
+     * @param direction
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/meus-pedidos/para-confirmar")
     public ModelAndView showForHiredJobs(
             HttpServletRequest request,
@@ -409,9 +425,9 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> client = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
-        if (!client.isPresent()) {
+        if (!individual.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
@@ -419,7 +435,7 @@ public class ClientController {
         Page<JobContracted> jobContractedPage = null;
         List<JobContractedFullDTO> jobContractedDTOs = null;
 
-        jobContractedPage = jobContractedService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.CLOSED, client.get(), pageRequest);
+        jobContractedPage = jobContractedService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.CLOSED, individual.get(), pageRequest);
 
         jobContractedDTOs = jobContractedPage.stream()
                 .map(jobContracted -> {
@@ -498,9 +514,17 @@ public class ClientController {
         return SidePanelUtil.getSidePanelDTO(individualDTO);
     }
 
-    @PatchMapping("/marcar-como-orcamento/{jobId}/{individualId}")
-    public String markAsBudget(@PathVariable Long jobId, @PathVariable Long individualId, RedirectAttributes redirectAttributes) throws IOException {
-      Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(jobId, individualId);
+    /**
+     * O cliente escolhe um profissional para realizar o orçamento
+     * @param jobId
+     * @param candidateId
+     * @param redirectAttributes
+     * @return
+     * @throws IOException
+     */
+    @PatchMapping("/solicita-orcamento-ao/{candidateId}/para/{jobId}")
+    public String markAsBudget(@PathVariable Long jobId, @PathVariable Long candidateId, RedirectAttributes redirectAttributes) throws IOException {
+      Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(jobId, candidateId);
       if (!oJobCandidate.isPresent()) {
         throw new EntityNotFoundException("Candidato não encontrado");
       }
@@ -525,7 +549,16 @@ public class ClientController {
       return "redirect:/minha-conta/cliente/meus-pedidos/"+jobId;
     }
 
-    @PatchMapping("/marcar-como-finalizado/{jobId}")
+    /**
+     * Altera o estado para finalizado, ou seja, o cliente verifica que o trabalho foi finalizado
+     * e então sinaliza manualmete esta informação na plataforma.
+     * @param jobId
+     * @param dto
+     * @param redirectAttributes
+     * @return
+     * @throws IOException
+     */
+    @PatchMapping("/informa-finalizado/{jobId}")
     public String markAsClose(
             @PathVariable Long jobId,
             JobCandidateMinDTO dto,
@@ -550,28 +583,31 @@ public class ClientController {
         return "redirect:/minha-conta/cliente#executados";
     }
 
-    @PatchMapping("/marcar-para-contratar/{jobId}/{individualId}")
+    /**
+     * Altera o estado de um serviço para TO_HIRED, ou seja, o cliente contratou um serviço mas
+     * fica no estado de espera da confirmação do profissional.
+     * @param jobId
+     * @param individualId
+     * @param redirectAttributes
+     * @return
+     * @throws IOException
+     */
+    @PatchMapping("/contrata/{individualId}/para/{jobId}")
     public String markAsHided(@PathVariable Long jobId, @PathVariable Long individualId, RedirectAttributes redirectAttributes) throws IOException {
         Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(jobId, individualId);
+
         if (!oJobCandidate.isPresent()) {
             throw new EntityNotFoundException("Candidato não encontrado");
         }
 
         Optional<JobRequest> oJobRequest = jobRequestService.findById(jobId);
+
         if(!oJobRequest.isPresent()) {
             throw new EntityNotFoundException("Pedido não encontrado!");
         }
+
         JobRequest jobRequest = oJobRequest.get();
-
-        JobCandidate jobCandidate = oJobCandidate.get();
-        jobCandidate.setChosenByBudget(false);
-        jobCandidateService.save(jobCandidate);
-
-        if (jobCandidate.isChosenByBudget()) {
-            jobRequest.setStatus(JobRequest.Status.BUDGET);
-        } else {
-            jobRequest.setStatus(JobRequest.Status.TO_HIRED);
-        }
+        jobRequest.setStatus(JobRequest.Status.TO_HIRED);
         jobRequestService.save(jobRequest);
 
         return "redirect:/minha-conta/cliente/meus-pedidos/"+jobId;

@@ -91,7 +91,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
             <c:if test="${jobCandidate.getJobRequest().status == 'AVAILABLE' || jobCandidate.getJobRequest().status == 'BUDGET'}">
               <div class="row center-align">
                 <p class="contact-item center dark-color-text">Solicitar ou cancelar orçamento</p>
-                <form action="minha-conta/cliente/marcar-como-orcamento/${jobCandidate.getJobRequest().id}/${jobCandidate.getIndividual().id}" method="post">
+                <form action="minha-conta/cliente/solicita-orcamento-ao/${jobCandidate.getIndividual().id}/para/${jobCandidate.getJobRequest().id}" method="post">
                   <input type="hidden" name="_method" value="PATCH"/>
                     <button type="submit" class="btn">
                       <c:choose>
@@ -107,12 +107,12 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               </div>
             </c:if>
 
-          <c:if test="${jobCandidate.chosenByBudget}">
+            <c:if test="${jobCandidate.getJobRequest().status == 'BUDGET'}">
               <div class="row center-align">
-                  <form action="minha-conta/cliente/marcar-para-contratar/${jobCandidate.getJobRequest().id}/${jobCandidate.getIndividual().id}" method="post">
+                  <form action="minha-conta/cliente/contrata/${jobCandidate.getIndividual().id}/para/${jobCandidate.getJobRequest().id}" method="post">
                       <input type="hidden" name="_method" value="PATCH"/>
                       <button type="submit" class="btn">
-                          Contratar serviço
+                          Contratar
                       </button>
                   </form>
               </div>
