@@ -1,14 +1,11 @@
 package br.edu.utfpr.servicebook.service;
 
-<<<<<<< HEAD
 import br.edu.utfpr.servicebook.jobs.ChangeJobRequestStatusWhenIsHiredDateExpiredJob;
 import br.edu.utfpr.servicebook.jobs.DeleteJobAvailableToHideJob;
 import br.edu.utfpr.servicebook.jobs.SendEmailToAuthenticateJob;
 import br.edu.utfpr.servicebook.jobs.SendEmailWithVerificationCodeJob;
 import br.edu.utfpr.servicebook.jobs.VerifyExpiredTokenEmailJob;
-=======
 import br.edu.utfpr.servicebook.jobs.*;
->>>>>>> dce05e178e20064c80f53234a38b18d37d8279e4
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
