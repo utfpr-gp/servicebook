@@ -18,8 +18,8 @@ import java.util.Optional;
 @Component
 public class SendEmailWithVerificationStatus implements Job {
 
-    public static final String JOB_REQUEST_ID = "job_request_id";
-
+    public static final Long JOB_REQUEST_ID = Long.valueOf(0);
+    
     @Autowired
     private EmailSenderService emailSenderService;
     @Autowired
@@ -30,30 +30,33 @@ public class SendEmailWithVerificationStatus implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
-        String jobRequestId = (String) jobDataMap.get(SendEmailWithVerificationStatus.JOB_REQUEST_ID);
-        Optional<JobRequest> oJobRequest = jobRequestService.findById(Long.valueOf(jobRequestId));
+        Long jobRequestId = (Long) jobDataMap.get(SendEmailWithVerificationStatus.JOB_REQUEST_ID);
 
         System.out.println("Foi excluido!");
         
-        if (oJobRequest.isPresent()) {
-            JobRequest jobRequest = oJobRequest.get();
-            String status = String.valueOf(jobRequest.getStatus());
-
-            if (status.equals("AVAILABLE") || status.equals("BUDGET") || status.equals("TO_HIRED")){
-                List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequest(jobRequest);
-
-                for (JobCandidate jobCandidate : jobCandidates) {
-                    String email = jobCandidate.getIndividual().getEmail();
-                    String text = "Olá anuncio tal foi removido";
-
-                    try {
-                        emailSenderService.sendHTMLEmail(email, "Service Book", text);
-                    } catch (MessagingException e) {
-                        System.out.println(e.getMessage());
+        if ( jobRequestId != null) {
+            Optional<JobRequest> oJobRequest = jobRequestService.findById(jobRequestId);
+            if (oJobRequest.isPresent()) {
+                JobRequest jobRequest = oJobRequest.get();
+                String status = String.valueOf(jobRequest.getStatus());
+    
+                if (status.equals("AVAILABLE") || status.equals("BUDGET") || status.equals("TO_HIRED")){
+                    List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequest(jobRequest);
+    
+                    for (JobCandidate jobCandidate : jobCandidates) {
+                        String email = jobCandidate.getIndividual().getEmail();
+                        String text = "Olá, o anuncio foi removido!";
+    
+                        try {
+                            emailSenderService.sendHTMLEmail(email, "Service Book", text);
+                        } catch (MessagingException e) {
+                            System.out.println(e.getMessage());
+                        }
                     }
                 }
             }
         }
+        
     }
 }
 

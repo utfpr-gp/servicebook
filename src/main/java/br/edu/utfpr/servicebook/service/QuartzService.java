@@ -65,10 +65,10 @@ public class QuartzService {
      * @param jobRequestId
      */
     public void sendEmailToConfirmationStatus(Long jobRequestId) {
-        try {
-            JobDetail job = JobBuilder.newJob(SendEmailWithVerificationStatus.class)
+                try {
+                    JobDetail job = JobBuilder.newJob(SendEmailWithVerificationStatus.class)
                     .withIdentity(SendEmailWithVerificationStatus.class.getSimpleName(), GROUP).build();
-            job.getJobDataMap().put(SendEmailWithVerificationStatus.JOB_REQUEST_ID, jobRequestId);
+            job.getJobDataMap().put(String.valueOf(SendEmailWithVerificationStatus.JOB_REQUEST_ID), jobRequestId);
 
             Trigger trigger = getTrigger(SendEmailWithVerificationStatus.class.getSimpleName(), GROUP);
 
@@ -127,7 +127,7 @@ public class QuartzService {
     private Trigger getTrigger(String name, String group) {
         Trigger trigger = TriggerBuilder.newTrigger().withIdentity(name, group)
                 // FIXME startnow ativado somente para teste
-//                .startNow()
+               .startNow()
                 //.withSchedule(CronScheduleBuilder.cronSchedule(cron))
                 //.withSchedule(simpleSchedule().withIntervalInSeconds(1).repeatForever())
                 //.withSchedule(simpleSchedule().withIntervalInHours(24 * 3).repeatForever())

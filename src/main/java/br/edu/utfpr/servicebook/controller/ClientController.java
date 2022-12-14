@@ -259,7 +259,7 @@ public class ClientController {
         }
         jobRequestService.delete(id);
 
-        quartzService.sendEmailToConfirmationStatus(oJobRequest.get().getId());
+        quartzService.sendEmailToConfirmationStatus(id);
 
         redirectAttributes.addFlashAttribute("msg", "Candidatura cancelada com sucesso!");
 
