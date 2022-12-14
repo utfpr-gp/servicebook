@@ -1,14 +1,19 @@
 package br.edu.utfpr.servicebook.jobs;
 
+import br.edu.utfpr.servicebook.model.entity.JobCandidate;
+import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.service.EmailSenderService;
+import br.edu.utfpr.servicebook.service.JobCandidateService;
+import br.edu.utfpr.servicebook.service.JobRequestService;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import javax.mail.MessagingException;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 public class SendEmailWithVerificationStatus implements Job {
@@ -27,6 +32,8 @@ public class SendEmailWithVerificationStatus implements Job {
         JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
         String jobRequestId = (String) jobDataMap.get(SendEmailWithVerificationStatus.JOB_REQUEST_ID);
         Optional<JobRequest> oJobRequest = jobRequestService.findById(Long.valueOf(jobRequestId));
+
+        System.out.println("Foi excluido!");
         
         if (oJobRequest.isPresent()) {
             JobRequest jobRequest = oJobRequest.get();
@@ -38,8 +45,6 @@ public class SendEmailWithVerificationStatus implements Job {
                 for (JobCandidate jobCandidate : jobCandidates) {
                     String email = jobCandidate.getIndividual().getEmail();
                     String text = "Olá anuncio tal foi removido";
-
-                    System.out.println("Foi excluido!");
 
                     try {
                         emailSenderService.sendHTMLEmail(email, "Service Book", text);
