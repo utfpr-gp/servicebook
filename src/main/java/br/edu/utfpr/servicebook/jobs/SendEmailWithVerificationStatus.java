@@ -19,7 +19,7 @@ import java.util.Optional;
 public class SendEmailWithVerificationStatus implements Job {
 
     public static final Long JOB_REQUEST_ID = Long.valueOf(0);
-    
+
     @Autowired
     private EmailSenderService emailSenderService;
     @Autowired
@@ -53,6 +53,7 @@ public class SendEmailWithVerificationStatus implements Job {
                             System.out.println(e.getMessage());
                         }
                     }
+                    
                 }
             }
         }
