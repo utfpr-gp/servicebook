@@ -58,4 +58,8 @@ public class JobCandidateService {
     public List<JobCandidate> findAllByHiredDateLessThan(Date date) {
         return this.jobCandidateRepository.findAllByHiredDateLessThan(date);
     }
+
+    public List<JobCandidate> findAllThatPass30DaysFromHired(Date date) {
+        return this.jobCandidateRepository.findAllThatPass30DaysFromHired(date);
+    }
 }

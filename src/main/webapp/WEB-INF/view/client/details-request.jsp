@@ -32,6 +32,7 @@
                       <p>${jobRequest.description}</p>
                       <p>Pedido expedido em ${jobRequest.dateExpired}</p>
                     </div>
+
                     <c:if test="${jobRequest.status == 'AVAILABLE'}">
                       <div class="col s12 m6 l3">
                         <div class="center">
@@ -39,11 +40,54 @@
                         </div>
                       </div>
                     </c:if>
+
+                    <c:if test="${jobRequest.status == 'DOING'}">
+                      <div class="col s12 m6 l3">
+                        <div class="center">
+                          <a id="closeJobButton" href="#modal-close-job" class="spacing-buttons waves-effect waves-light btn modal-trigger">PEDIDO FINALIZADO</a>
+                        </div>
+                      </div>
+
+                      <div id="modal-close-job" class="modal">
+                        <div class="modal-content">
+                          <form action="minha-conta/cliente/informa-finalizado/${jobRequest.id}" method="post">
+                            <input type="hidden" name="_method" value="PATCH"/>
+
+                            <div class="modal-content" id="modal-content-confirm-hired">
+                              <h5>Finalização do pedido</h5>
+
+                              <label>
+                                <input id="confirmCloseJob" name="isQuit" type="radio" value="true"/>
+                                <span>Serviço foi finalizado</span>
+                              </label>
+
+                              <label>
+                                <input id="notConfirmCloseJob" name="isQuit" type="radio" value="false"/>
+                                <span>Serviço não foi finalizado</span>
+                              </label>
+                            </div>
+
+                            <div class="modal-footer">
+                              <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
+                              <button type="submit" disabled class="modal-close btn waves-effect waves-light gray" id="confirm-job-modal-button">Sim</button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </c:if>
+
                     <div class="col s12 m6 l3">
                       <div class="center">
                         <a href="#!" class="spacing-buttons waves-effect waves-light btn">Excluir o pedido</a>
                       </div>
                     </div>
+
+                    <div class="col s12 m6 right">
+                      <div class="center">
+                        <a href="minha-conta/cliente" class="spacing-buttons waves-effect waves-light btn">Voltar para solicitações</a>
+                      </div>
+                    </div>
+
                     <div class="col s12 tertiary-color-text description-orcamento text-info-request">
                       <hr class="hr-request-area">
                       <c:if test="${jobRequest.status == 'AVAILABLE'}">
@@ -168,3 +212,28 @@
     </main>
   </jsp:body>
 </t:client>
+<script>
+  $(document).ready(function() {
+    $('.modal').modal({
+      onOpenEnd: function (modal, trigger){
+        var url = $(trigger).data('url');
+        var name = $(trigger).data('name');
+
+        modal = $(modal);
+        var form = modal.find('form');
+        form.attr('action', url);
+        modal.find('#strong-name').text(name);
+
+        $('#confirmCloseJob').click(function (){
+          $('#confirm-job-modal-button').attr('disabled', false);
+        });
+
+        $('#notConfirmCloseJob').click(function (){
+          $('#confirm-job-modal-button').attr('disabled', false);
+        });
+      }
+    });
+
+
+  });
+</script>

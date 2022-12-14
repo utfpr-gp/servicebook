@@ -30,7 +30,7 @@ public class JobCandidate {
 	private boolean isQuit;
 
 	private boolean chosenByBudget;
-
+	private Boolean isHired;
 	private Date date;
 
 	private Date hiredDate;

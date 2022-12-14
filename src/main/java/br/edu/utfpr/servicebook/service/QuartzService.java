@@ -1,10 +1,14 @@
 package br.edu.utfpr.servicebook.service;
 
+<<<<<<< HEAD
 import br.edu.utfpr.servicebook.jobs.ChangeJobRequestStatusWhenIsHiredDateExpiredJob;
 import br.edu.utfpr.servicebook.jobs.DeleteJobAvailableToHideJob;
 import br.edu.utfpr.servicebook.jobs.SendEmailToAuthenticateJob;
 import br.edu.utfpr.servicebook.jobs.SendEmailWithVerificationCodeJob;
 import br.edu.utfpr.servicebook.jobs.VerifyExpiredTokenEmailJob;
+=======
+import br.edu.utfpr.servicebook.jobs.*;
+>>>>>>> dce05e178e20064c80f53234a38b18d37d8279e4
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,6 +133,23 @@ public class QuartzService {
                     .withIdentity(ChangeJobRequestStatusWhenIsHiredDateExpiredJob.class.getSimpleName(), GROUP).build();
 
             Trigger trigger = getTriggerEveryDay(ChangeJobRequestStatusWhenIsHiredDateExpiredJob.class.getSimpleName(), GROUP);
+            scheduler.scheduleJob(job, trigger);
+
+            if (!scheduler.isStarted()) {
+                scheduler.start();
+            }
+
+        }catch (SchedulerException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void closeJobsRequestPass30DaysFromHired() {
+        try{
+            JobDetail job = JobBuilder.newJob(CloseJobsRequestPass30DaysFromHiredJob.class)
+                    .withIdentity(CloseJobsRequestPass30DaysFromHiredJob.class.getSimpleName(), GROUP).build();
+
+            Trigger trigger = getTriggerEveryDay(CloseJobsRequestPass30DaysFromHiredJob.class.getSimpleName(), GROUP);
             scheduler.scheduleJob(job, trigger);
 
             if (!scheduler.isStarted()) {

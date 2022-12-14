@@ -26,6 +26,13 @@ p {
   color: #53b1ed;
 }
 
+.menu-link{
+  font-size: 110%;
+  margin-top: 10px; 
+  margin-right: 5rem;
+  color: #53b1ed;
+}
+
 /* text colors */
 
 .primary-color-text {
