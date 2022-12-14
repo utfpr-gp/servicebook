@@ -4,6 +4,7 @@ import br.edu.utfpr.servicebook.jobs.ChangeJobRequestStatusWhenIsHiredDateExpire
 import br.edu.utfpr.servicebook.jobs.SendEmailToAuthenticateJob;
 import br.edu.utfpr.servicebook.jobs.SendEmailWithVerificationCodeJob;
 import br.edu.utfpr.servicebook.jobs.VerifyExpiredTokenEmailJob;
+import br.edu.utfpr.servicebook.jobs.SendEmailWithVerificationStatus;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,29 @@ public class QuartzService {
             job.getJobDataMap().put(SendEmailWithVerificationCodeJob.CODE_KEY, emailCode);
 
             Trigger trigger = getTrigger(SendEmailWithVerificationCodeJob.class.getSimpleName(), GROUP);
+
+            scheduler.scheduleJob(job, trigger);
+
+            if (!scheduler.isStarted()) {
+                scheduler.start();
+            }
+
+        }catch (SchedulerException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Envio do email avisando sobre a desistencia da candidatura.
+     * @param jobRequestId
+     */
+    public void sendEmailToConfirmationStatus(Long jobRequestId) {
+        try {
+            JobDetail job = JobBuilder.newJob(SendEmailWithVerificationStatus.class)
+                    .withIdentity(SendEmailWithVerificationStatus.class.getSimpleName(), GROUP).build();
+            job.getJobDataMap().put(SendEmailWithVerificationStatus.JOB_REQUEST_ID, jobRequestId);
+
+            Trigger trigger = getTrigger(SendEmailWithVerificationStatus.class.getSimpleName(), GROUP);
 
             scheduler.scheduleJob(job, trigger);
 
