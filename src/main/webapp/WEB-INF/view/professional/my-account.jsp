@@ -62,8 +62,18 @@
                                         </a>
                                     </li>
                                     <li class="tab">
+                                        <a data-url="minha-conta/profissional/fazendo" href="#fazendo">
+                                            FAZENDO
+                                        </a>
+                                    </li>
+                                    <li class="tab">
                                         <a data-url="minha-conta/profissional/executados" href="#executados">
                                             EXECUTADOS
+                                        </a>
+                                    </li>
+                                    <li class="tab">
+                                        <a data-url="minha-conta/profissional/cancelados" href="#cancelados">
+                                            CANCELADOS
                                         </a>
                                     </li>
                                 </ul>
@@ -80,7 +90,13 @@
                             <div id="paraFazer" class="col s12">
 
                             </div>
+                            <div id="fazendo" class="col s12">
+
+                            </div>
                             <div id="executados" class="col s12">
+
+                            </div>
+                            <div id="cancelados" class="col s12">
 
                             </div>
                         </div>
