@@ -111,10 +111,12 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
      * @param pageable
      * @return
      */
-    @Query("SELECT jr FROM JobRequest jr WHERE jr.status = :status AND jr.expertise = :expertise AND jr.individual <> :individual")
+    @Query("SELECT jr FROM JobRequest jr WHERE jr.status = :status AND jr.expertise = :expertise AND jr.individual <> :individual AND " +
+            "jr.id NOT IN (SELECT jh.jobRequest.id FROM JobAvailableToHide jh WHERE jh.user.id = :individual)")
     Page<JobRequest> findAvailableByExpertise(JobRequest.Status status, Expertise expertise, Long individual, Pageable pageable);
 
-    @Query("SELECT jr FROM JobRequest jr WHERE jr.status = :status AND jr.individual.id <> :individual")
+    @Query("SELECT jr FROM JobRequest jr WHERE jr.status = :status AND jr.individual.id <> :individual AND " +
+            "jr.id NOT IN (SELECT jh.jobRequest.id FROM JobAvailableToHide jh WHERE jh.user.id = :individual)")
     Page<JobRequest> findAvailableAllExpertises(JobRequest.Status status, Long individual, Pageable pageable);
 
     /**
