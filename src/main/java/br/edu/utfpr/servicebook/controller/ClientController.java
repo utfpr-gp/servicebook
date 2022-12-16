@@ -244,6 +244,13 @@ public class ClientController {
         return mv;
     }
 
+    /**
+     * O cliente exclui um anúncio.
+     * O cliente pode ter contratado de alguma outra forma, não necessitando mais do anúncio.
+     * @param id
+     * @param redirectAttributes
+     * @return
+     */
     @DeleteMapping("/desistir/{id}")
     public String desist(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
@@ -255,13 +262,13 @@ public class ClientController {
 
         Optional<JobRequest> oJobRequest = jobRequestService.findById(id);
         if(!oJobRequest.isPresent()) {
-            throw new EntityNotFoundException("Candidatura não encontrada!");
+            throw new EntityNotFoundException("O anúncio não foi encontrado!");
         }
         jobRequestService.delete(id);
 
         quartzService.sendEmailToConfirmationStatus(id);
 
-        redirectAttributes.addFlashAttribute("msg", "Candidatura cancelada com sucesso!");
+        redirectAttributes.addFlashAttribute("msg", "O pedido foi excluído com sucesso!");
 
         return "redirect:/minha-conta/cliente#disponiveis";
     }
