@@ -82,6 +82,9 @@ public class ProfessionalHomeController {
     @Autowired
     private SidePanelUtil sidePanelUtil;
 
+    @Autowired
+    private JobAvailableToHideService jobAvailableToHideService;
+
     @GetMapping
     public ModelAndView showMyAccountProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> id) throws Exception {
         log.debug("ServiceBook: Minha conta.");
@@ -116,19 +119,32 @@ public class ProfessionalHomeController {
         return mv;
     }
 
+    /**
+     * Retorna a lista de jobs no estado de disponíveis. Se o profissional estiver com o filtro de especialidade, busca
+     * por especialidade ou então, por todas as especialidades.
+     * Se o profissional marcou alguns anúncios para não aparecer, estes não aparecerão. Há um filtro na busca no BD.
+     * @param request
+     * @param id
+     * @param page
+     * @param size
+     * @param order
+     * @param direction
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/disponiveis")
     public ModelAndView showAvailableJobs(
             HttpServletRequest request,
             @RequestParam(required = false, defaultValue = "0") Long id,
             @RequestParam(value = "pag", defaultValue = "1") int page,
-            @RequestParam(value = "siz", defaultValue = "3") int size,
+            @RequestParam(value = "siz", defaultValue = "5") int size,
             @RequestParam(value = "ord", defaultValue = "id") String order,
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oIndividual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
-        if (!oProfessional.isPresent()) {
+        if (!oIndividual.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
@@ -137,8 +153,9 @@ public class ProfessionalHomeController {
         List<JobRequestFullDTO> jobRequestFullDTOs = null;
 
         if (id == 0) {
-            jobRequestPage = jobRequestService.findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status.AVAILABLE, oProfessional.get(), pageRequest);
+            jobRequestPage = jobRequestService.findAvailableAllExpertises(JobRequest.Status.AVAILABLE, oIndividual.get().getId(), pageRequest);
         } else {
+
             if (id < 0) {
                 throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
             }
@@ -149,16 +166,16 @@ public class ProfessionalHomeController {
                 throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
             }
 
-            Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oProfessional.get(), oExpertise.get());
+            Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oIndividual.get(), oExpertise.get());
 
             if (!oProfessionalExpertise.isPresent()) {
                 throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
             }
 
-            jobRequestPage = jobRequestService.findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status.AVAILABLE, oExpertise.get(), oProfessional.get(), pageRequest);
+            jobRequestPage = jobRequestService.findAvailableByExpertise(JobRequest.Status.AVAILABLE, oExpertise.get(), oIndividual.get().getId(), pageRequest);
         }
 
-        jobRequestFullDTOs = jobRequestPage.stream()
+        jobRequestFullDTOs = jobRequestPage.stream().distinct()
                 .map(jobRequest -> {
                     Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobRequest);
 

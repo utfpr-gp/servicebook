@@ -4,6 +4,7 @@ import br.edu.utfpr.servicebook.model.entity.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -100,6 +101,23 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
      * @return
      */
     Page<JobRequest> findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_IndividualNot(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable);
+
+    /**
+     * Retorna uma lista de requisições de um determinado Status e Especialidade que não são de autoria do próprio usuário
+     * e que não foram marcadas como Não Quero, ou seja, que não foram escondidas pelo profissional.
+     * @param status
+     * @param expertise
+     * @param individual
+     * @param pageable
+     * @return
+     */
+    @Query("SELECT jr FROM JobRequest jr WHERE jr.status = :status AND jr.expertise = :expertise AND jr.individual <> :individual AND " +
+            "jr.id NOT IN (SELECT jh.jobRequest.id FROM JobAvailableToHide jh WHERE jh.user.id = :individual)")
+    Page<JobRequest> findAvailableByExpertise(JobRequest.Status status, Expertise expertise, Long individual, Pageable pageable);
+
+    @Query("SELECT jr FROM JobRequest jr WHERE jr.status = :status AND jr.individual.id <> :individual AND " +
+            "jr.id NOT IN (SELECT jh.jobRequest.id FROM JobAvailableToHide jh WHERE jh.user.id = :individual)")
+    Page<JobRequest> findAvailableAllExpertises(JobRequest.Status status, Long individual, Pageable pageable);
 
     /**
      * Retorna uma lista de requisições de um determinado Status e todas especialidades que ainda não tiveram candidaturas ou

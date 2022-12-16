@@ -39,7 +39,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                     data-url="minha-conta/cliente/meus-pedidos/disponiveis"
                     href="#disponiveis"
                   >
-                    DISPONÍVEIS
+                    EM ABERTO
                   </a>
                 </li>
                 <li class="tab" id="2">
@@ -48,6 +48,14 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                     href="#paraOrcamento"
                   >
                     PARA ORÇAMENTO
+                  </a>
+                </li>
+                <li class="tab" id="3">
+                  <a
+                          data-url="minha-conta/cliente/meus-pedidos/para-confirmar"
+                          href="#paraConfirmar"
+                  >
+                    PARA CONFIRMAR
                   </a>
                 </li>
                 <li class="tab" id="3">
@@ -79,6 +87,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               <div id="disponiveis" class="col s12 no-padding"></div>
               <div id="paraOrcamento" class="col s12 no-padding"></div>
               <div id="paraFazer" class="col s12 no-padding"></div>
+              <div id="paraConfirmar" class="col s12 no-padding"></div>
               <div id="fazendo" class="col s12 no-padding"></div>
               <div id="executados" class="col s12 no-padding"></div>
             </div>
@@ -91,7 +100,10 @@ uri="http://java.sun.com/jsp/jstl/core" %>
             <input type="hidden" name="_method" value="DELETE" />
 
             <div class="modal-content">
-              <h4>Você tem certeza que deseja excluir?</h4>
+              <h4>
+                Você tem certeza que deseja excluir
+                <strong id="strong-name"></strong>?
+              </h4>
             </div>
             <div class="modal-footer">
               <button

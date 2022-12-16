@@ -57,6 +57,14 @@ public class JobRequestService {
         return this.jobRequestRepository.findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_IndividualNot(status, expertise, individual, pageable);
     }
 
+    public Page<JobRequest> findAvailableByExpertise(JobRequest.Status status, Expertise expertise, Long individual, Pageable pageable) {
+        return this.jobRequestRepository.findAvailableByExpertise(status, expertise, individual, pageable);
+    }
+
+    public Page<JobRequest> findAvailableAllExpertises(JobRequest.Status status, Long individual, Pageable pageable) {
+        return this.jobRequestRepository.findAvailableAllExpertises(status, individual, pageable);
+    }
+
     public Page<JobRequest> findByStatusAndJobContracted_Professional(JobRequest.Status status, Individual individual, Pageable pageable) {
         return this.jobRequestRepository.findByStatusAndJobContracted_Individual(status, individual, pageable);
     }
