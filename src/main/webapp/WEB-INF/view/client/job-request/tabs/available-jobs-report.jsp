@@ -1,6 +1,6 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@page contentType="text/html" pageEncoding="UTF-8" %> <%@ taglib prefix="c"
+uri="http://java.sun.com/jsp/jstl/core" %> <%@taglib prefix="t"
+tagdir="/WEB-INF/tags" %>
 
 <c:if test="${empty jobs}">
   <div class="container">
@@ -8,9 +8,7 @@
       <div class="col s12 spacing-buttons">
         <div class="none-profission center">
           <i class="material-icons large"> sentiment_dissatisfied </i>
-          <p class="center text-form-dados">
-            Nenhuma solicitação encontrada!
-        </p>
+          <p class="center text-form-dados">Nenhuma solicitação encontrada!</p>
         </div>
       </div>
     </div>
@@ -52,12 +50,21 @@
       <div class="col s12">
         <div class="row no-margin">
           <div class="col s6 m6 l2 offset-l8 spacing-buttons center">
-            <div class="center">
+            <!-- <div class="center">
               <a
                 href="#modal-delete"
                 data-url="${pageContext.request.contextPath}/minha-conta/cliente/meus-pedidos/${jobRequest.id}"
                 data-name="${jobRequest.description}"
                 class="waves-effect waves-light btn modal-trigger"
+                >Excluir</a
+              >
+            </div> -->
+
+            <div class="center">
+              <a
+                href="#modal-delete"
+                data-url="${pageContext.request.contextPath}/minha-conta/cliente/desistir/${jobRequest.id}"
+                class="waves-effect waves-light btn spacing-buttons red modal-trigger"
                 >Excluir</a
               >
             </div>
@@ -78,5 +85,5 @@
 </c:forEach>
 
 <div class="container col s12 center-align">
-    <t:pagination-tab-ajax pagination="${pagination}"></t:pagination-tab-ajax>
+  <t:pagination-tab-ajax pagination="${pagination}"></t:pagination-tab-ajax>
 </div>

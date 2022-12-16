@@ -78,7 +78,12 @@
 
                     <div class="col s12 m6 l3">
                       <div class="center">
-                        <a href="#!" class="spacing-buttons waves-effect waves-light btn">Excluir o pedido</a>
+                        <a
+                          href="#modal-delete"
+                          data-url="${pageContext.request.contextPath}/minha-conta/cliente/desistir/${jobRequest.id}"
+                          class="waves-effect waves-light btn spacing-buttons red modal-trigger"
+                          >Excluir</a
+                        >
                       </div>
                     </div>
 
@@ -205,6 +210,34 @@
             <div class="modal-footer">
               <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
               <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div id="modal-delete" class="modal">
+        <div class="modal-content">
+          <form action="${pageContext.request.contextPath}/minha-conta/cliente/desistir/${jobRequest.id}" method="post">
+            <input type="hidden" name="_method" value="DELETE" />
+
+            <div class="modal-content">
+              <h4>
+                Você tem certeza que deseja excluir? Entre em contato com o
+                profissional informando sobre sua decisão!
+              </h4>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="modal-close btn-flat waves-effect waves-light btn btn-gray"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                class="modal-close btn waves-effect waves-light gray"
+              >
+                Sim, excluir!
+              </button>
             </div>
           </form>
         </div>

@@ -62,6 +62,29 @@ public class QuartzService {
     }
 
     /**
+     * Envio do email avisando sobre a desistencia da candidatura.
+     * @param jobRequestId
+     */
+    public void sendEmailToConfirmationStatus(Long jobRequestId) {
+                try {
+                    JobDetail job = JobBuilder.newJob(SendEmailWithVerificationStatus.class)
+                    .withIdentity(SendEmailWithVerificationStatus.class.getSimpleName(), GROUP).build();
+            job.getJobDataMap().put(String.valueOf(SendEmailWithVerificationStatus.JOB_REQUEST_ID), jobRequestId);
+
+            Trigger trigger = getTrigger(SendEmailWithVerificationStatus.class.getSimpleName(), GROUP);
+
+            scheduler.scheduleJob(job, trigger);
+
+            if (!scheduler.isStarted()) {
+                scheduler.start();
+            }
+
+        }catch (SchedulerException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
      * Envio do email com o código e link para autenticação.
      * @param email
      * @param emailCode
@@ -105,7 +128,7 @@ public class QuartzService {
     private Trigger getTrigger(String name, String group) {
         Trigger trigger = TriggerBuilder.newTrigger().withIdentity(name, group)
                 // FIXME startnow ativado somente para teste
-//                .startNow()
+               .startNow()
                 //.withSchedule(CronScheduleBuilder.cronSchedule(cron))
                 //.withSchedule(simpleSchedule().withIntervalInSeconds(1).repeatForever())
                 //.withSchedule(simpleSchedule().withIntervalInHours(24 * 3).repeatForever())

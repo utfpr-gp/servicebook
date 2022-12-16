@@ -18,7 +18,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           </a>
 
           <!-- Painel com as solicitações de serviços -->
-          <div class="container" style="width: 80% !important">
+          <div class="container">
             <div class="row">
               <div class="col s12">
                 <h2 class="secondary-color-text">Minhas Solicitações</h2>
@@ -116,7 +116,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                 type="submit"
                 class="modal-close btn waves-effect waves-light gray"
               >
-                Sim
+                Sim, excluir!
               </button>
             </div>
           </form>
