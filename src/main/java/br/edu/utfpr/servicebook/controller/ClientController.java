@@ -121,7 +121,7 @@ public class ClientController {
     }
 
     @DeleteMapping("/meus-pedidos/{id}")
-    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
+    public String delete (@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
         Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
@@ -248,6 +248,35 @@ public class ClientController {
         mv.addObject("jobs", jobRequestFullDTOs);
 
         return mv;
+    }
+
+    /**
+     * O cliente exclui um anúncio.
+     * O cliente pode ter contratado de alguma outra forma, não necessitando mais do anúncio.
+     * @param id
+     * @param redirectAttributes
+     * @return
+     */
+    @DeleteMapping("/desistir/{id}")
+    public String desist(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
+
+        Optional<Individual> oindividual = individualService.findByEmail(currentUserEmail);
+        if(!oindividual.isPresent()){
+            throw new EntityNotFoundException("O usuário não foi encontrado!");
+        }
+
+        Optional<JobRequest> oJobRequest = jobRequestService.findById(id);
+        if(!oJobRequest.isPresent()) {
+            throw new EntityNotFoundException("O anúncio não foi encontrado!");
+        }
+        jobRequestService.delete(id);
+
+        quartzService.sendEmailToConfirmationStatus(id);
+
+        redirectAttributes.addFlashAttribute("msg", "O pedido foi excluído com sucesso!");
+
+        return "redirect:/minha-conta/cliente#disponiveis";
     }
 
     @GetMapping("/meus-pedidos/para-orcamento")

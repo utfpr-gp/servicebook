@@ -93,7 +93,7 @@ public class JobCandidateController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String deleteJobRequest(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
 
         Optional<Individual> oindividual = individualService.findByEmail(currentUserEmail);
@@ -111,6 +111,27 @@ public class JobCandidateController {
 
         return "redirect:/minha-conta/profissional#emDisputa";
     }
+
+    @DeleteMapping("/desistir/{id}")
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
+
+        Optional<Individual> oindividual = individualService.findByEmail(currentUserEmail);
+        if(!oindividual.isPresent()){
+            throw new EntityNotFoundException("O usuário não foi encontrado!");
+        }
+
+        Optional<JobRequest> oJobRequest = jobRequestService.findById(id);
+        if(!oJobRequest.isPresent()) {
+            throw new EntityNotFoundException("Candidatura não encontrada!");
+        }
+        jobRequestService.delete(id);
+
+        redirectAttributes.addFlashAttribute("msg", "Candidatura cancelada com sucesso!");
+
+        return "redirect:/minha-conta/profissional#disponiveis";
+    }
+
 
     @PostMapping("/contratacao/{id}")
     public String confirmHired(

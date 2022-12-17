@@ -95,6 +95,8 @@ public class ServicebookApplication {
         quartzService.verifyExpiredTokenEmailJob();
         System.out.println("updating jobs request with expired hired date");
         quartzService.updateJobRequestStatusWhenIsHiredDateExpired();
+        System.out.println("removing expired jobs available to hide");
+        quartzService.deleteJobsAvailableToHide();
         System.out.println("close jobs that pass 30 days from hired");
         quartzService.closeJobsRequestPass30DaysFromHired();
     }

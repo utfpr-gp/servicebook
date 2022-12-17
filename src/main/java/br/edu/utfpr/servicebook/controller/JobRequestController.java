@@ -4,17 +4,11 @@ import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
 import br.edu.utfpr.servicebook.model.dto.JobRequestDTO;
 import br.edu.utfpr.servicebook.model.dto.ProfessionalSearchItemDTO;
-import br.edu.utfpr.servicebook.model.entity.City;
-import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.model.entity.JobRequest;
+import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
-import br.edu.utfpr.servicebook.service.CityService;
-import br.edu.utfpr.servicebook.service.ExpertiseService;
-import br.edu.utfpr.servicebook.service.IndividualService;
-import br.edu.utfpr.servicebook.service.JobRequestService;
+import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.DateUtil;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
@@ -33,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
@@ -54,7 +49,13 @@ public class JobRequestController {
     private JobRequestService jobRequestService;
 
     @Autowired
+    private JobAvailableToHideService jobAvailableToHideService;
+
+    @Autowired
     private IndividualService individualService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private ExpertiseService expertiseService;
@@ -349,5 +350,33 @@ public class JobRequestController {
         }
 
         return false;
+    }
+
+    /**
+     * O profissional solicita para não ver mais o JobRequest informado na lista de disponíveis, não tendo interesse.
+     * A persistência é temporária na tabela, pois ao passar de uns dias será removido por um job assíncrono.
+     * @param id
+     * @param redirectAttributes
+     * @return
+     */
+    @PostMapping("/nao-quero/{id}")
+    public String rememberToHide(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        System.out.println("Salvo com sucesso!");
+        String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
+
+        Optional<User> oUser = userService.findByEmail(currentUserEmail);
+        if(!oUser.isPresent()){
+            throw new EntityNotFoundException("O usuário não foi encontrado!");
+        }
+
+        Optional<JobRequest> oJobRequest = jobRequestService.findById(id);
+        if(!oJobRequest.isPresent()) {
+            throw new EntityNotFoundException("Candidatura não encontrada!");
+        }
+
+        JobAvailableToHide jobAvailableToHide = new JobAvailableToHide(oJobRequest.get(), oUser.get());
+        this.jobAvailableToHideService.save(jobAvailableToHide);
+
+        return "redirect:/minha-conta/profissional#disponiveis";
     }
 }

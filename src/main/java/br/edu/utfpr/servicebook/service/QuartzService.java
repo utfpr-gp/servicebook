@@ -1,5 +1,10 @@
 package br.edu.utfpr.servicebook.service;
 
+import br.edu.utfpr.servicebook.jobs.ChangeJobRequestStatusWhenIsHiredDateExpiredJob;
+import br.edu.utfpr.servicebook.jobs.DeleteJobAvailableToHideJob;
+import br.edu.utfpr.servicebook.jobs.SendEmailToAuthenticateJob;
+import br.edu.utfpr.servicebook.jobs.SendEmailWithVerificationCodeJob;
+import br.edu.utfpr.servicebook.jobs.VerifyExpiredTokenEmailJob;
 import br.edu.utfpr.servicebook.jobs.*;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
@@ -57,6 +62,29 @@ public class QuartzService {
     }
 
     /**
+     * Envio do email avisando sobre a desistencia da candidatura.
+     * @param jobRequestId
+     */
+    public void sendEmailToConfirmationStatus(Long jobRequestId) {
+                try {
+                    JobDetail job = JobBuilder.newJob(SendEmailWithVerificationStatus.class)
+                    .withIdentity(SendEmailWithVerificationStatus.class.getSimpleName(), GROUP).build();
+            job.getJobDataMap().put(String.valueOf(SendEmailWithVerificationStatus.JOB_REQUEST_ID), jobRequestId);
+
+            Trigger trigger = getTrigger(SendEmailWithVerificationStatus.class.getSimpleName(), GROUP);
+
+            scheduler.scheduleJob(job, trigger);
+
+            if (!scheduler.isStarted()) {
+                scheduler.start();
+            }
+
+        }catch (SchedulerException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
      * Envio do email com o código e link para autenticação.
      * @param email
      * @param emailCode
@@ -100,7 +128,7 @@ public class QuartzService {
     private Trigger getTrigger(String name, String group) {
         Trigger trigger = TriggerBuilder.newTrigger().withIdentity(name, group)
                 // FIXME startnow ativado somente para teste
-//                .startNow()
+               .startNow()
                 //.withSchedule(CronScheduleBuilder.cronSchedule(cron))
                 //.withSchedule(simpleSchedule().withIntervalInSeconds(1).repeatForever())
                 //.withSchedule(simpleSchedule().withIntervalInHours(24 * 3).repeatForever())
@@ -162,5 +190,27 @@ public class QuartzService {
                 .withSchedule(CronScheduleBuilder.cronSchedule("0 0 12 * * ?"))
                 .build();
         return trigger;
+    }
+
+    /**
+     * Escalona o Job para remover da tabela temporária os jobs que um profissional marcou que não quer mais ver.
+     * Os ids dos jobs que não podem ser mostrados para o profissional ficam numa tabela e estes ids precisam ser
+     * removidos ao passar de x dias.
+     */
+    public void deleteJobsAvailableToHide() {
+        try{
+            JobDetail job = JobBuilder.newJob(DeleteJobAvailableToHideJob.class)
+                    .withIdentity(DeleteJobAvailableToHideJob.class.getSimpleName(), GROUP).build();
+
+            Trigger trigger = getTriggerEveryDay(DeleteJobAvailableToHideJob.class.getSimpleName(), GROUP);
+            scheduler.scheduleJob(job, trigger);
+
+            if (!scheduler.isStarted()) {
+                scheduler.start();
+            }
+
+        }catch (SchedulerException e){
+            System.out.println(e.getMessage());
+        }
     }
 }
