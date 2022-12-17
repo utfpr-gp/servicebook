@@ -10,6 +10,10 @@ import br.edu.utfpr.servicebook.model.mapper.JobContractedMapper;
 import br.edu.utfpr.servicebook.service.CityService;
 import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobContractedService;
+import br.edu.utfpr.servicebook.sse.EventSse;
+import br.edu.utfpr.servicebook.sse.EventSseDTO;
+import br.edu.utfpr.servicebook.sse.EventSseMapper;
+import br.edu.utfpr.servicebook.sse.SSEService;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;

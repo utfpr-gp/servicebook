@@ -19,6 +19,5 @@
       e.stopPropagation();
       $('.carousel').carousel('prev');
     });
-    
   });
 })(jQuery);

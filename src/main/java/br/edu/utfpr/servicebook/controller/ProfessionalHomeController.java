@@ -5,6 +5,10 @@ import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.service.*;
+import br.edu.utfpr.servicebook.sse.EventSse;
+import br.edu.utfpr.servicebook.sse.EventSseDTO;
+import br.edu.utfpr.servicebook.sse.EventSseMapper;
+import br.edu.utfpr.servicebook.sse.SSEService;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
@@ -24,7 +28,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -83,6 +86,12 @@ public class ProfessionalHomeController {
     private SidePanelUtil sidePanelUtil;
 
     @Autowired
+    private SSEService sseService;
+
+    @Autowired
+    private EventSseMapper eventSseMapper;
+
+    @Autowired
     private JobAvailableToHideService jobAvailableToHideService;
 
     @GetMapping
@@ -115,6 +124,17 @@ public class ProfessionalHomeController {
 
         mv.addObject("dataIndividual", sidePanelItensDTO);
         mv.addObject("id", id.orElse(0L));
+
+        //FAZER ENVIO DE NOTIFICAÇÃO PARA O PROFISSIONAL
+        List<EventSse> eventSsesList = sseService.findPendingEventsByEmail(CurrentUserUtil.getCurrentUserEmail());
+        List<EventSseDTO> eventSseDTOS = eventSsesList.stream()
+                .map(eventSse -> {
+                    return eventSseMapper.toFullDto(eventSse);
+                })
+                .collect(Collectors.toList());
+        mv.addObject("eventsse", eventSseDTOS);
+        //FAZER ENVIO DE NOTIFICAÇÃO PARA O PROFISSIONAL ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 
         return mv;
     }
@@ -614,6 +634,31 @@ public class ProfessionalHomeController {
         JobRequest jb = oJob.get();
 
         JobRequestDetailsDTO jobFull = jobRequestMapper.jobRequestDetailsDTO(jb);
+
+
+
+
+
+
+
+
+
+
+
+        //TESTE PUSH NOTIFICATION
+        System.err.println("DETALHE DO SERVIÇO (JOBFULL)....   " + jobFull);
+        System.err.println("DETALHE DO CLIENTE SERVIÇO......  " + jobFull.getIndividual().getEmail());
+
+
+
+
+
+
+
+
+
+
+
 
         Optional oClient, oCity, oState;
 

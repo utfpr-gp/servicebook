@@ -5,6 +5,10 @@ import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.service.*;
+import br.edu.utfpr.servicebook.sse.EventSse;
+import br.edu.utfpr.servicebook.sse.EventSseDTO;
+import br.edu.utfpr.servicebook.sse.EventSseMapper;
+import br.edu.utfpr.servicebook.sse.SSEService;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
@@ -68,6 +72,12 @@ public class ClientController {
     @Autowired
     private QuartzService quartzService;
 
+    @Autowired
+    private SSEService sseService;
+
+    @Autowired
+    private EventSseMapper eventSseMapper;
+
     @GetMapping
     public ModelAndView show() throws Exception {
         ModelAndView mv = new ModelAndView("client/my-requests");
@@ -76,6 +86,16 @@ public class ClientController {
         if (!individual.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
+
+        //EM OBRA ********
+        List<EventSse> eventSsesList = sseService.findPendingEventsByEmail(CurrentUserUtil.getCurrentUserEmail());
+        List<EventSseDTO> eventSseDTOS = eventSsesList.stream()
+                .map(eventSse -> {
+                    return eventSseMapper.toFullDto(eventSse);
+                })
+                .collect(Collectors.toList());
+        mv.addObject("eventsse", eventSseDTOS);
+        //EM OBRA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
         IndividualDTO clientDTO = individualMapper.toDto(individual.get());
 
@@ -86,9 +106,9 @@ public class ClientController {
 
         List<JobRequestMinDTO> jobRequestDTOs = jobRequests.stream()
                 .map(job -> {
-                    Optional <Long> amountOfCandidates = jobCandidateService.countByJobRequest(job);
+                    Optional<Long> amountOfCandidates = jobCandidateService.countByJobRequest(job);
 
-                    if(amountOfCandidates.isPresent()){
+                    if (amountOfCandidates.isPresent()) {
                         return jobRequestMapper.toMinDto(job, amountOfCandidates);
                     }
                     return jobRequestMapper.toMinDto(job, Optional.ofNullable(0L));
@@ -111,14 +131,14 @@ public class ClientController {
 
         Optional<JobRequest> jobRequest = this.jobRequestService.findById(id);
 
-        if(!jobRequest.isPresent()) {
+        if (!jobRequest.isPresent()) {
             throw new EntityNotFoundException("Solicitação não foi encontrada pelo id informado.");
         }
 
         Long jobRequestClientId = jobRequest.get().getIndividual().getId();
         Long clientId = individual.get().getId();
 
-        if(jobRequestClientId != clientId){
+        if (jobRequestClientId != clientId) {
             throw new EntityNotFoundException("Você não ter permissão para deletar essa solicitação.");
         }
 
@@ -170,23 +190,23 @@ public class ClientController {
 
     @GetMapping("/meus-pedidos/{jobId}/detalhes/{candidateId}")
     public ModelAndView showDetailsRequestCandidate(@PathVariable Optional<Long> jobId, @PathVariable Optional<Long> candidateId) throws Exception {
-      ModelAndView mv = new ModelAndView("client/details-request-candidate");
+        ModelAndView mv = new ModelAndView("client/details-request-candidate");
 
-      Optional<Individual> oIndividual = individualService.findById(candidateId.get());
-      if (!oIndividual.isPresent()) {
-        throw new EntityNotFoundException("Individuo não encontrado");
-      }
-      
-      Optional<JobCandidate> jobCandidate = jobCandidateService.findById(jobId.get(), oIndividual.get().getId());
-      if (!jobCandidate.isPresent()) {
-        throw new EntityNotFoundException("Candidato não encontrado");
-      }
+        Optional<Individual> oIndividual = individualService.findById(candidateId.get());
+        if (!oIndividual.isPresent()) {
+            throw new EntityNotFoundException("Individuo não encontrado");
+        }
 
-      JobCandidateDTO jobCandidateDTO = jobCandidateMapper.toDto(jobCandidate.get());
+        Optional<JobCandidate> jobCandidate = jobCandidateService.findById(jobId.get(), oIndividual.get().getId());
+        if (!jobCandidate.isPresent()) {
+            throw new EntityNotFoundException("Candidato não encontrado");
+        }
 
-      mv.addObject("jobCandidate", jobCandidateDTO);
+        JobCandidateDTO jobCandidateDTO = jobCandidateMapper.toDto(jobCandidate.get());
 
-      return mv;
+        mv.addObject("jobCandidate", jobCandidateDTO);
+
+        return mv;
     }
 
     @GetMapping("/meus-pedidos/disponiveis")
@@ -490,6 +510,7 @@ public class ClientController {
 
     /**
      * Encerra o recebimento de candidaturas antes de receber o total de candidaturas esperado.
+     *
      * @param id
      * @param redirectAttributes
      * @return
@@ -507,7 +528,7 @@ public class ClientController {
         JobRequest jobRequest = null;
         Optional<JobRequest> oJobRequest = this.jobRequestService.findById(id);
 
-        if(!oJobRequest.isPresent()) {
+        if (!oJobRequest.isPresent()) {
             throw new EntityNotFoundException("Solicitação não foi encontrada pelo id informado.");
         }
 
@@ -516,7 +537,7 @@ public class ClientController {
         Long jobRequestClientId = jobRequest.getIndividual().getId();
         Long clientId = oClient.get().getId();
 
-        if(jobRequestClientId != clientId){
+        if (jobRequestClientId != clientId) {
             throw new EntityNotFoundException("Você não tem permissão para alterar essa solicitação.");
         }
 
@@ -533,7 +554,7 @@ public class ClientController {
 
 
     private SidePanelIndividualDTO getSidePanelUser() throws Exception {
-      Optional<Individual> client = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> client = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
 
         if (!client.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");

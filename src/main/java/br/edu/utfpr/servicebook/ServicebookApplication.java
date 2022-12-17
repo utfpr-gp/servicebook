@@ -100,4 +100,10 @@ public class ServicebookApplication {
         System.out.println("close jobs that pass 30 days from hired");
         quartzService.closeJobsRequestPass30DaysFromHired();
     }
+
+    @EventListener(ApplicationStartedEvent.class)
+    public void updateJobRequestStatusWhenIsHiredDateIsExpired() {
+        System.out.println("updating jobs request with expired hired date");
+        quartzService.updateJobRequestStatusWhenIsHiredDateExpired();
+    }
 }

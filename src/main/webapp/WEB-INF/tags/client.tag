@@ -50,7 +50,40 @@
                         <li><a href="#!">Sair</a></li>
                     </ul>
                 </li>
-                <li><a href="#!"><i class="material-icons">notifications</i></a></li>
+
+                <c:if test="${empty eventsse}">
+                    <li id="li-notifications">
+                        <a onclick="M.toast({html: 'Não há notificação!'})" class='dropdown-trigger btn eventSize' href='#' data-target='dropdown3'><i class="material-icons">notifications</i></a>
+                        <ul id='dropdown3' class='dropdown-content'>
+                        </ul>
+                    </li>
+                </c:if>
+
+                <c:if test="${not empty eventsse}">
+                    <li id="li-notifications">
+                        <a class='dropdown-trigger btn eventSize' href='#' data-target='dropdown4'><i class="material-icons">notifications</i></a>
+                        <ul id='dropdown4' class='dropdown-content'>
+                            <c:forEach items="${eventsse}" var="e">
+                                <li>
+                                    <div class="card">
+                                        <div class="card-content">
+                                            <h5><c:out value="${e.message}"> </c:out></h5>
+                                            <p><c:out value="${e.fromName}"> </c:out> para o serviço <c:out value="${e.descriptionServ}"> </c:out></p>
+                                        </div>
+                                        <div class="card-action">
+                                                <form action="sse/delete/${e.id}" method="post">
+                                                    <input type="hidden" name="_method" value="DELETE"/>
+                                                    <button type="submit" class="waves-effect waves-light btn">ok</button>
+                                                </form>
+                                        </div>
+                                    </div>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </li>
+                </c:if>
+
+
             </ul>
         </div>
 
@@ -80,6 +113,8 @@
 <script src="assets/libraries/materialize/js/materialize.min.js"></script>
 <script src="assets/resources/scripts/main.js"></script>
 <script src="assets/resources/scripts/init.js"></script>
+<script src="assets/resources/scripts/sse.js"></script>
+
 
 </body>
 </html>

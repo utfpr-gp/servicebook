@@ -32,64 +32,50 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                 >
               </div>
 
-              <ul class="tabs tabs-fixed-width center">
-                <li class="tab" id="1">
-                  <a
-                    id="tab-default"
-                    data-url="minha-conta/cliente/meus-pedidos/disponiveis"
-                    href="#disponiveis"
-                  >
-                    EM ABERTO
-                  </a>
-                </li>
-                <li class="tab" id="2">
-                  <a
-                    data-url="minha-conta/cliente/meus-pedidos/para-orcamento"
-                    href="#paraOrcamento"
-                  >
-                    PARA ORÇAMENTO
-                  </a>
-                </li>
-                <li class="tab" id="3">
-                  <a
-                          data-url="minha-conta/cliente/meus-pedidos/para-confirmar"
-                          href="#paraConfirmar"
-                  >
-                    PARA CONFIRMAR
-                  </a>
-                </li>
-                <li class="tab" id="3">
-                  <a
-                    data-url="minha-conta/cliente/meus-pedidos/para-fazer"
-                    href="#paraFazer"
-                  >
-                    PARA FAZER
-                  </a>
-                </li>
-                <li class="tab" id="3">
-                  <a
-                    data-url="minha-conta/cliente/meus-pedidos/fazendo"
-                    href="#fazendo"
-                  >
-                    FAZENDO
-                  </a>
-                </li>
-                <li class="tab" id="4">
-                  <a
-                    data-url="minha-conta/cliente/meus-pedidos/executados"
-                    href="#executados"
-                  >
-                    CONCLUÍDOS
-                  </a>
-                </li>
-              </ul>
+                            <ul class="tabs tabs-fixed-width center">
+                                <li class="tab" id="1">
+                                    <a id="tab-default" data-url="minha-conta/cliente/meus-pedidos/disponiveis"
+                                       href="#disponiveis">
+                                        DISPONÍVEIS
+                                    </a>
+                                </li>
+                                <li class="tab" id="2">
+                                    <a data-url="minha-conta/cliente/meus-pedidos/para-orcamento" href="#paraOrcamento">
+                                        PARA ORÇAMENTO
+                                    </a>
+                                </li>
+                                <li class="tab" id="3">
+                                    <a data-url="minha-conta/cliente/meus-pedidos/para-fazer" href="#paraFazer">
+                                        PARA FAZER
+                                    </a>
+                                </li>
+                                <li class="tab" id="3">
+                                    <a data-url="minha-conta/cliente/meus-pedidos/fazendo" href="#fazendo">
+                                        FAZENDO
+                                    </a>
+                                </li>
+                                <li class="tab" id="4">
+                                    <a data-url="minha-conta/cliente/meus-pedidos/executados" href="#executados">
+                                        CONCLUÍDOS
+                                    </a>
+                                </li>
+                            </ul>
 
-              <div id="disponiveis" class="col s12 no-padding"></div>
-              <div id="paraOrcamento" class="col s12 no-padding"></div>
-              <div id="paraFazer" class="col s12 no-padding"></div>
-              <div id="paraConfirmar" class="col s12 no-padding"></div>
-              <div id="fazendo" class="col s12 no-padding"></div>
-              <div id="executados" class="col s12 no-padding"></div>
+                            <div id="disponiveis" class="col s12 no-padding">
+
+                            </div>
+                            <div id="paraOrcamento" class="col s12 no-padding">
+
+                            </div>
+                            <div id="paraFazer" class="col s12 no-padding">
+
+                            </div>
+                            <div id="fazendo" class="col s12 no-padding"></div>
+                            <div id="executados" class="col s12 no-padding">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
           </div>
         </div>
