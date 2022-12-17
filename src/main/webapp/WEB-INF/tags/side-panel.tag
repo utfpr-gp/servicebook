@@ -98,6 +98,70 @@
 
             </div>
         </div>
+
+
+
+<%--        FETURE FOLLOWER - EM OBRA--%>
+
+        <c:if test="${isClient != false}">
+            <div class="row primary-background-color no-margin">
+                <div class="col s12">
+                        <p class="header-verification tertiary-color-text center">PROFISSIONAIS FAVORITOS</p>
+                </div>
+            </div>
+            <div class="row secondary-background-color no-margin">
+                <div class="col s12">
+                    <h5 class="name-header no-margin center white-text">
+                        <strong>100 seguidores</strong>
+                            <%--<strong>${individual.name}</strong>--%>
+                    </h5>
+                </div>
+            </div>
+        </c:if>
+
+
+        <c:if test="${isClient == false}">
+            <div class="row primary-background-color no-margin">
+                <div class="col s12">
+                    <p class="header-verification tertiary-color-text center">SEGUIDORES</p>
+                </div>
+            </div>
+            <div class="row secondary-background-color no-margin">
+                <div class="col s12">
+                    <h5 class="name-header no-margin center white-text">
+                        <strong>100 seguidores</strong>
+                            <%--<strong>${individual.name}</strong>--%>
+                    </h5>
+                </div>
+            </div>
+
+<%--            BUTTON FOLLOW FAZER VALIDAÇÃO SEGUINDO/DEIXAR DE SEGUIR--%>
+            <c:if test="${true}">
+                <div class="row no-margin center">
+                    <div class="col s12 no-margin no-padding input-field area-profission-select">
+                        <div class="spacing-buttons">
+                                <%--                        ADD ROTA NO HREF PARA SEGUIR--%>
+                            <a class="waves-effect waves-light btn" href="#">Seguir</a>
+                        </div>
+                    </div>
+                </div>
+            </c:if>
+            <c:if test="${false}">
+                <div class="row no-margin center">
+                    <div class="col s12 no-margin no-padding input-field area-profission-select">
+                        <div class="spacing-buttons">
+                                <%--                        ADD ROTA NO HREF PARA SEGUIR--%>
+                            <a class="waves-effect waves-light btn" href="#">deixar de seguir</a>
+                        </div>
+                    </div>
+                </div>
+            </c:if>
+        </c:if>
+
+        <%--        FETURE FOLLOWER - EM OBRA--%>
+
+
+
         <c:if test="${isClient != false}">
             <div class="row no-margin center">
                 <div class="col s12 no-margin no-padding input-field area-profission-select">

@@ -8,8 +8,6 @@ public class CurrentUserUtil {
         String client1 = "cliente1@gmail.com";
         String client2 = "cliente2@gmail.com";
 
-        //TESTE PUSH NOTIFICATION - ALTERADO O RETURN DE professional1 para clent2
-
         return client2;
     }
 
