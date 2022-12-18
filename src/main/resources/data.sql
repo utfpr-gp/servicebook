@@ -139,3 +139,7 @@ VALUES ('1', '1', 'false', '2021-01-01', null, 'false'),
        ('16', '1', 'true', '2021-01-02', null, 'false');
 
 
+INSERT INTO follows (followed_id, followers_json, amount_followers)
+VALUES (1, '{"idFollower" : 1, "idFollower" : 2,}', 2);
+
+

@@ -23,12 +23,15 @@ public class Follow {
     private Long followed_id;
 
     //lista de seguidoresJson(id, userName)
-    @Column(name = "followersJson")
-    private String followersJson;
+    @Column(name = "followers_json")
+    private String followers_json;
 
-    @Column(name = "amountFollowers")
-    private Long amountFollowers;
+    @Column(name = "amount_followers")
+    private Long amount_followers;
 
-    /*
-    * (id, idseguido, seguidoresJson(id, userName), QuantSeguidores)*/
+    public Follow(Long followed_id, String followersJson) {
+        setFollowed_id(followed_id);
+        setFollowers_json(followersJson);
+    }
+
 }

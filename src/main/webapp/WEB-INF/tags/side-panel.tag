@@ -140,12 +140,19 @@
                 <div class="row no-margin center">
                     <div class="col s12 no-margin no-padding input-field area-profission-select">
                         <div class="spacing-buttons">
+                                <%--ARRUMAR O ID PARA OS VERDADEIROS--%>
+                            <form action="follow/subscribe/${2}/${3}" method="post">
+                                <input type="hidden" name="_method" value="POST"/>
+                                <button class="waves-effect waves-light btn">Seguir</button>
+
+                            </form>
                                 <%--                        ADD ROTA NO HREF PARA SEGUIR--%>
-                            <a class="waves-effect waves-light btn" href="#">Seguir</a>
+<%--                            <a class="waves-effect waves-light btn" href="follow/subscribe/${individual.rating}">Seguir</a>--%>
                         </div>
                     </div>
                 </div>
             </c:if>
+
             <c:if test="${false}">
                 <div class="row no-margin center">
                     <div class="col s12 no-margin no-padding input-field area-profission-select">

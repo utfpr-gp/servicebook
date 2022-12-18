@@ -99,6 +99,10 @@ public class ProfessionalHomeController {
         log.debug("ServiceBook: Minha conta.");
    
         Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+
+        System.err.println("l103 TESTE PARA VER O OBJETO OpROFESSIONAL..." + oProfessional);
+        System.err.println("l104 TESTE PARA VER O OBJETO individual service..." + individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
@@ -117,10 +121,21 @@ public class ProfessionalHomeController {
         mv.addObject("isClient", isClient);
 
         IndividualDTO professionalMinDTO = individualMapper.toDto(oProfessional.get());
+
+        System.err.println("l124 TESTE PARA VER O OBJETO professionalMinDTo..." + professionalMinDTO);
+        System.err.println("l125 TESTE PARA VER O OBJETO indicidual mapper..." + individualMapper.toResponseDto(oProfessional.get()));
+
         SidePanelIndividualDTO sidePanelIndividualDTO = SidePanelUtil.getSidePanelDTO(professionalMinDTO);
+
+        System.err.println(" l128 TESTE PARA VER O OBJETO sidePanelIndividualDTO..." + sidePanelIndividualDTO);
+
+
         mv.addObject("user", sidePanelIndividualDTO);
 
         SidePanelItensDTO sidePanelItensDTO = sidePanelUtil.getSidePanelStats(oProfessional.get(), id.get());
+
+        System.err.println(" l128 TESTE PARA VER O OBJETO sidePanelItensDTO..." + sidePanelItensDTO);
+
 
         mv.addObject("dataIndividual", sidePanelItensDTO);
         mv.addObject("id", id.orElse(0L));
