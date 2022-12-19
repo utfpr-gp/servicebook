@@ -64,15 +64,15 @@ public class FollowService {
             return followObj;
     }
 
-    public Follow save(Follow entity) {
-        return this.followRepository.save(entity);
+    public Follow getFollowedById(Long idFollowed) {
+        Follow followObj = followRepository.findFollowsByidFollowed(idFollowed);
+        //JSONArray idFollowerList = new JSONArray(followObj.getFollowers_json());
+
+        return followObj;
     }
 
 
-
-    //metodo seguir - com redirecionameto
-    //get pagina lista de seguidores - pega seguidorees do banco e encaminha para uma pagina especifica
-    //metodo deseguir
-    //metodo quantidade de seguidores
-
+    public Follow save(Follow entity) {
+        return this.followRepository.save(entity);
+    }
 }

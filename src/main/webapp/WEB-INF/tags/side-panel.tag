@@ -2,6 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@attribute name="individual" type="br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO" %>
 <%@attribute name="dataIndividual" type="br.edu.utfpr.servicebook.util.sidePanel.SidePanelItensDTO" %>
+<%@attribute name="followdto" type="br.edu.utfpr.servicebook.follower.FollowDTO" %>
+
 
     <div class="col s12 l3 hide-on-med-and-down no-padding" id="area-perfil">
         <div class="row primary-background-color area-perfil no-margin">
@@ -130,7 +132,7 @@
                 <div class="col s8 left-align">
                     <h5 class="name-header no-margin center white-text">
 <%--                        COLOCAR ID CORRETO DO USER  --%>
-                        <strong><a href="follow/${1}">100 seguidores</a></strong>
+                        <strong><a href="follow/${1}">${followdto.amountFollowers != null ? followdto.amountFollowers : '0'}&nbsp;seguidores</a></strong>
                             <%--<strong>${individual.name}</strong>--%>
                     </h5>
                 </div>

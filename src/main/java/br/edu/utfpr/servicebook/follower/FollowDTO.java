@@ -17,7 +17,6 @@ public class FollowDTO implements Serializable {
 
     private Long followed_id;
 
-    //lista de seguidoresJson(id, userName)
     private String followersJson;
 
     private Long amountFollowers;

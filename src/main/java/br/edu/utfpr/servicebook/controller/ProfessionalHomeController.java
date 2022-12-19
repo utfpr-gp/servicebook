@@ -1,6 +1,9 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
+import br.edu.utfpr.servicebook.follower.FollowDTO;
+import br.edu.utfpr.servicebook.follower.FollowMapper;
+import br.edu.utfpr.servicebook.follower.FollowService;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
@@ -39,6 +42,12 @@ public class ProfessionalHomeController {
     public static final Logger log = LoggerFactory.getLogger(ProfessionalHomeController.class);
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+    @Autowired
+    private FollowService followService;
+
+    @Autowired
+    private FollowMapper followMapper;
 
     @Autowired
     private IndividualService individualService;
@@ -99,10 +108,6 @@ public class ProfessionalHomeController {
         log.debug("ServiceBook: Minha conta.");
    
         Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
-
-        System.err.println("l103 TESTE PARA VER O OBJETO OpROFESSIONAL..." + oProfessional);
-        System.err.println("l104 TESTE PARA VER O OBJETO individual service..." + individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
-
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
@@ -119,24 +124,10 @@ public class ProfessionalHomeController {
 
         boolean isClient = false;
         mv.addObject("isClient", isClient);
-
         IndividualDTO professionalMinDTO = individualMapper.toDto(oProfessional.get());
-
-        System.err.println("l124 TESTE PARA VER O OBJETO professionalMinDTo..." + professionalMinDTO);
-        System.err.println("l125 TESTE PARA VER O OBJETO indicidual mapper..." + individualMapper.toResponseDto(oProfessional.get()));
-
         SidePanelIndividualDTO sidePanelIndividualDTO = SidePanelUtil.getSidePanelDTO(professionalMinDTO);
-
-        System.err.println(" l128 TESTE PARA VER O OBJETO sidePanelIndividualDTO..." + sidePanelIndividualDTO);
-
-
         mv.addObject("user", sidePanelIndividualDTO);
-
         SidePanelItensDTO sidePanelItensDTO = sidePanelUtil.getSidePanelStats(oProfessional.get(), id.get());
-
-        System.err.println(" l128 TESTE PARA VER O OBJETO sidePanelItensDTO..." + sidePanelItensDTO);
-
-
         mv.addObject("dataIndividual", sidePanelItensDTO);
         mv.addObject("id", id.orElse(0L));
 
@@ -149,6 +140,12 @@ public class ProfessionalHomeController {
                 .collect(Collectors.toList());
         mv.addObject("eventsse", eventSseDTOS);
         //FAZER ENVIO DE NOTIFICAÇÃO PARA O PROFISSIONAL ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+//RETORNADO OBJ SEGUIDORES
+//        FollowDTO followDTO = followMapper.toFullDto(followService.getFollowedById(id.get()));
+//        System.err.println("OBJFOloow ..  " + followDTO.toString());
+//        mv.addObject("followdto", followDTO);
 
 
         return mv;

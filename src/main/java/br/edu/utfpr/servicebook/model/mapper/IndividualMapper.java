@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class IndividualMapper {
@@ -17,6 +18,11 @@ public class IndividualMapper {
     private ModelMapper mapper;
 
     public IndividualDTO toDto(Individual entity) {
+        IndividualDTO dto = mapper.map(entity, IndividualDTO.class);
+        return dto;
+    }
+
+    public IndividualDTO toDto(Optional entity) {
         IndividualDTO dto = mapper.map(entity, IndividualDTO.class);
         return dto;
     }

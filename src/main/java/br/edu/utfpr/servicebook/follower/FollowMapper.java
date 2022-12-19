@@ -16,7 +16,7 @@ public class FollowMapper {
         FollowDTO dto = mapper.map(entity, FollowDTO.class);
         dto.getId();
         dto.getFollowed_id();
-        dto.getFollowed_id();
+        dto.getFollowersJson();
         dto.getAmountFollowers();
         return dto;
     }
