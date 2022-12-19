@@ -87,7 +87,6 @@ public class ClientController {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        //EM OBRA ********
         List<EventSse> eventSsesList = sseService.findPendingEventsByEmail(CurrentUserUtil.getCurrentUserEmail());
         List<EventSseDTO> eventSseDTOS = eventSsesList.stream()
                 .map(eventSse -> {
@@ -95,7 +94,6 @@ public class ClientController {
                 })
                 .collect(Collectors.toList());
         mv.addObject("eventsse", eventSseDTOS);
-        //EM OBRA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
         IndividualDTO clientDTO = individualMapper.toDto(individual.get());
 

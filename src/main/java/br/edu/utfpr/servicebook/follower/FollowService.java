@@ -48,6 +48,22 @@ public class FollowService {
         return followObj;
     }
 
+
+    public Follow unFollowisClient(Follow followObj, Long idFollower) throws RuntimeException {
+        JSONArray idFollowerList = new JSONArray(followObj.getFollowers_json());
+
+            for (int i = 0; i < idFollowerList.length(); i++) {
+                System.out.println("(" + i + ") " + idFollowerList.getInt(i));
+                if (idFollowerList.getInt(i) == Integer.parseInt(idFollower.toString())) {
+                    idFollowerList.remove(i);
+                }
+            }
+            followObj.setFollowers_json(idFollowerList.toString());
+            followObj.setAmount_followers(idFollowerList.length());
+            System.err.println("OBJETO PARA SER SALVADO... " + followObj.toString());
+            return followObj;
+    }
+
     public Follow save(Follow entity) {
         return this.followRepository.save(entity);
     }

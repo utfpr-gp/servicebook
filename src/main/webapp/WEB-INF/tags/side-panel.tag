@@ -136,29 +136,32 @@
             </div>
 
 <%--            BUTTON FOLLOW FAZER VALIDAÇÃO SEGUINDO/DEIXAR DE SEGUIR--%>
-            <c:if test="${true}">
+            <c:if test="${false}">
                 <div class="row no-margin center">
                     <div class="col s12 no-margin no-padding input-field area-profission-select">
                         <div class="spacing-buttons">
                                 <%--ARRUMAR O ID PARA OS VERDADEIROS--%>
+                                <%--Follow--%>
                             <form action="follow/subscribe/${1}/${4}" method="post">
                                 <input type="hidden" name="_method" value="POST"/>
                                 <button class="waves-effect waves-light btn">Seguir</button>
 
                             </form>
-                                <%--                        ADD ROTA NO HREF PARA SEGUIR--%>
-<%--                            <a class="waves-effect waves-light btn" href="follow/subscribe/${individual.rating}">Seguir</a>--%>
                         </div>
                     </div>
                 </div>
             </c:if>
 
-            <c:if test="${false}">
+            <c:if test="${true}">
                 <div class="row no-margin center">
                     <div class="col s12 no-margin no-padding input-field area-profission-select">
                         <div class="spacing-buttons">
-                                <%--                        ADD ROTA NO HREF PARA SEGUIR--%>
-                            <a class="waves-effect waves-light btn" href="#">deixar de seguir</a>
+                                <%--ARRUMAR O ID PARA OS VERDADEIROS--%>
+                                <%--UnFollow--%>
+                            <form action="follow/unfollow/${1}/${3}" method="post">
+                                <input type="hidden" name="_method" value="DELETE"/>
+                                <button class="waves-effect waves-light btn">Deixar de seguir</button>
+                            </form>
                         </div>
                     </div>
                 </div>
