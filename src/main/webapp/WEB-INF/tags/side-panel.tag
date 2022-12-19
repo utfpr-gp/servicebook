@@ -127,45 +127,72 @@
                 </div>
             </div>
             <div class="row secondary-background-color no-margin">
-                <div class="col s12">
+                <div class="col s8 left-align">
                     <h5 class="name-header no-margin center white-text">
-                        <strong>100 seguidores</strong>
+<%--                        COLOCAR ID CORRETO DO USER  --%>
+                        <strong><a href="follow/${1}">100 seguidores</a></strong>
                             <%--<strong>${individual.name}</strong>--%>
                     </h5>
+                </div>
+                <div class="col s4 right-align">
+                    <c:if test="${true}">
+                        <div class="col s12 no-margin no-padding input-field area-profission-select center">
+                            <div class="spacing-buttons">
+                                    <%--ARRUMAR O ID PARA OS VERDADEIROS--%>
+                                    <%--Follow--%>
+                                <form action="follow/subscribe/${1}/${4}" method="post">
+                                    <input type="hidden" name="_method" value="POST"/>
+                                    <button alt="seguir" class="waves-effect waves-light btn"><i alt="seguir"  class="material-icons black-text small">thumb_up</i></button>
+                                </form>
+                            </div>
+                        </div>
+                    </c:if>
+                    <c:if test="${false}">
+                        <div class="col s12 no-margin no-padding input-field area-profission-select center">
+                            <div class="spacing-buttons">
+                                    <%--ARRUMAR O ID PARA OS VERDADEIROS--%>
+                                    <%--UnFollow--%>
+                                <form action="follow/unfollow/${1}/${3}" method="post">
+                                    <input type="hidden" name="_method" value="DELETE"/>
+                                    <button alt="Unfollow" class="waves-effect waves-light btn"><i alt="Unfollow"  class="material-icons black-text small">thumb_down</i></button>
+                                </form>
+                            </div>
+                        </div>
+                    </c:if>
                 </div>
             </div>
 
 <%--            BUTTON FOLLOW FAZER VALIDAÇÃO SEGUINDO/DEIXAR DE SEGUIR--%>
-            <c:if test="${false}">
-                <div class="row no-margin center">
-                    <div class="col s12 no-margin no-padding input-field area-profission-select">
-                        <div class="spacing-buttons">
-                                <%--ARRUMAR O ID PARA OS VERDADEIROS--%>
-                                <%--Follow--%>
-                            <form action="follow/subscribe/${1}/${4}" method="post">
-                                <input type="hidden" name="_method" value="POST"/>
-                                <button class="waves-effect waves-light btn">Seguir</button>
+<%--            <c:if test="${true}">--%>
+<%--                <div class="row no-margin center">--%>
+<%--                    <div class="col s12 no-margin no-padding input-field area-profission-select">--%>
+<%--                        <div class="spacing-buttons">--%>
+<%--                                &lt;%&ndash;ARRUMAR O ID PARA OS VERDADEIROS&ndash;%&gt;--%>
+<%--                                &lt;%&ndash;Follow&ndash;%&gt;--%>
+<%--                            <form action="follow/subscribe/${1}/${4}" method="post">--%>
+<%--                                <input type="hidden" name="_method" value="POST"/>--%>
+<%--                                <button alt="seguir" class="waves-effect waves-light btn"><i alt="seguir"  class="material-icons black-text small">thumb_up</i></button>--%>
+<%--                            </form>--%>
+<%--                        </div>--%>
+<%--                    </div>--%>
+<%--                </div>--%>
+<%--            </c:if>--%>
 
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </c:if>
+<%--            <c:if test="${false}">--%>
+<%--                <div class="row no-margin center">--%>
+<%--                    <div class="col s12 no-margin no-padding input-field area-profission-select">--%>
+<%--                        <div class="spacing-buttons">--%>
+<%--                                &lt;%&ndash;ARRUMAR O ID PARA OS VERDADEIROS&ndash;%&gt;--%>
+<%--                                &lt;%&ndash;UnFollow&ndash;%&gt;--%>
+<%--                            <form action="follow/unfollow/${1}/${3}" method="post">--%>
+<%--                                <input type="hidden" name="_method" value="DELETE"/>--%>
+<%--                                <button class="waves-effect waves-light btn">Deixar de seguir</button>--%>
+<%--                            </form>--%>
+<%--                        </div>--%>
+<%--                    </div>--%>
+<%--                </div>--%>
+<%--            </c:if>--%>
 
-            <c:if test="${true}">
-                <div class="row no-margin center">
-                    <div class="col s12 no-margin no-padding input-field area-profission-select">
-                        <div class="spacing-buttons">
-                                <%--ARRUMAR O ID PARA OS VERDADEIROS--%>
-                                <%--UnFollow--%>
-                            <form action="follow/unfollow/${1}/${3}" method="post">
-                                <input type="hidden" name="_method" value="DELETE"/>
-                                <button class="waves-effect waves-light btn">Deixar de seguir</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </c:if>
         </c:if>
 
         <%--        FETURE FOLLOWER - EM OBRA--%>
