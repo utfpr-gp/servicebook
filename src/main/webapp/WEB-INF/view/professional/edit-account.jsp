@@ -3,7 +3,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:professional title="Editar perfil">
+<t:template title="Editar perfil">
     <jsp:body>
         <main>
            <div class="row primary-background-color">
@@ -88,4 +88,4 @@
         </main>
 
     </jsp:body>
-</t:professional>
+</t:template>

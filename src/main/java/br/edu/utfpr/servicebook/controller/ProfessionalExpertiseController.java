@@ -1,8 +1,6 @@
 package br.edu.utfpr.servicebook.controller;
 
-import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.*;
-import br.edu.utfpr.servicebook.model.entity.City;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
@@ -10,18 +8,17 @@ import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.ProfessionalExpertiseMapper;
 import br.edu.utfpr.servicebook.model.mapper.ProfessionalMapper;
+import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.service.ExpertiseService;
 import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobContractedService;
 import br.edu.utfpr.servicebook.service.ProfessionalExpertiseService;
-import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelItensDTO;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -29,9 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -69,9 +64,12 @@ public class ProfessionalExpertiseController {
     @Autowired
     private SidePanelUtil sidePanelUtil;
 
+    @Autowired
+    private IAuthentication authentication;
+
     @GetMapping()
     public ModelAndView showExpertises(@RequestParam(required = false, defaultValue = "0") Optional<Long> id)  throws Exception {
-        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
         ModelAndView mv = new ModelAndView("professional/my-expertises");
         boolean isClient = false;
 
@@ -142,7 +140,7 @@ public class ProfessionalExpertiseController {
     }
 
     private Individual getProfessional() throws Exception {
-        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Opss! Não foi possivel encontrar seus dados, tente fazer login novamente");

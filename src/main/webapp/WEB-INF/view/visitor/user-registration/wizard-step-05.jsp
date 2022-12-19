@@ -2,7 +2,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:visitor title="Servicebook - Cadastro - Passo 5">
+<t:template title="Servicebook - Cadastro - Passo 5">
     <jsp:body>
 
         <main>
@@ -61,4 +61,4 @@
         </main>
 
     </jsp:body>
-</t:visitor>
+</t:template>

@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<t:client title="Etapa 06">
+<t:template title="Etapa 06">
     <jsp:body>
 
         <main>
@@ -94,6 +94,6 @@
 
 
     </jsp:body>
-</t:client>
+</t:template>
 <script src="assets/libraries/jquery.mask.js"></script>
 <script src="assets/resources/scripts/cep.js"></script>

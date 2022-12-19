@@ -3,7 +3,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:client title="Detalhes da Solicitação">
+<t:template title="Detalhes da Solicitação">
   <jsp:body>
     <main>
       <div class="row">
@@ -244,7 +244,7 @@
       </div>
     </main>
   </jsp:body>
-</t:client>
+</t:template>
 <script>
   $(document).ready(function() {
     $('.modal').modal({

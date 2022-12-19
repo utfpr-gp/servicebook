@@ -3,7 +3,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:professional title="Meu email">
+<t:template title="Meu email">
     <jsp:body>
 
         <main>
@@ -90,7 +90,7 @@
         </main>
 
     </jsp:body>
-</t:professional>
+</t:template>
 <script>
     $('.sendEmail').click(function () {
         $.post("minha-conta/salvar-email/${professional.id}", {email: "${professional.email}"}).done(function () {
