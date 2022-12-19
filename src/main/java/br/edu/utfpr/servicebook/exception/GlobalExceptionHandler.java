@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -50,8 +51,26 @@ public class GlobalExceptionHandler {
 	 * @param e
 	 * @return
 	 */
-	@ExceptionHandler({AuthenticationCredentialsNotFoundException.class, AccessDeniedException.class})
-	public ModelAndView handleException(HttpServletRequest req, AuthenticationCredentialsNotFoundException e) {
+	@ExceptionHandler({AuthenticationCredentialsNotFoundException.class})
+	public ModelAndView handleException(AuthenticationCredentialsNotFoundException e, HttpServletRequest req) {
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("message", e.getMessage());
+		mv.addObject("url", req.getRequestURL());
+		mv.setViewName("error/error-handler");
+		return mv;
+	}
+
+	@ExceptionHandler({AccessDeniedException.class})
+	public ModelAndView handleException(AccessDeniedException e, HttpServletRequest req) {
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("message", e.getMessage());
+		mv.addObject("url", req.getRequestURL());
+		mv.setViewName("error/error-handler");
+		return mv;
+	}
+
+	@ExceptionHandler({UsernameNotFoundException.class})
+	public ModelAndView handleException(HttpServletRequest req, UsernameNotFoundException e) {
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("message", e.getMessage());
 		mv.addObject("url", req.getRequestURL());

@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<t:client title="Etapa 07">
+<t:template title="Etapa 07">
     <jsp:body>
 
         <main>
@@ -65,4 +65,4 @@
         </main>
 
     </jsp:body>
-</t:client>
+</t:template>

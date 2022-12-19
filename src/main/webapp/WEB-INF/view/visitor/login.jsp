@@ -2,7 +2,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:visitor title="Servicebook - Entrar">
+<t:template title="Servicebook - Entrar">
     <jsp:body>
 
         <main>
@@ -46,11 +46,11 @@
                             </form>
                         </div>
                         <div class="col s6 login-email">
-                            <form class="login-form">
+                            <form class="login-form" method="POST" action="login">
                                 <h6 class="header center login-logo-text">LOGIN POR EMAIL E SENHA</h6>
                                 <div class="row center">
                                     <div class="input-field col s12 offset-s1 m6 offset-m3  l4 offset-l4 center">
-                                        <input id="email1" name="email" type="text" class="validate" placeholder="joao@gmail.com">
+                                        <input id="username" name="username" type="text" class="validate" placeholder="joao@gmail.com">
                                         <label class="label-login" for="email">Qual o seu email?</label>
                                     </div>
 
@@ -60,7 +60,7 @@
                                     </div>
                                 </div>
                                 <div class="center">
-                                    <button id="logar1" class="waves-effect waves-light btn btn-login">ENTRAR</button>
+                                    <button id="logar1" type="submit" class="waves-effect waves-light btn btn-login">ENTRAR</button>
                                 </div>
                             </form>
                         </div>
@@ -76,4 +76,4 @@
             </div>
         </main>
     </jsp:body>
-</t:visitor>
+</t:template>

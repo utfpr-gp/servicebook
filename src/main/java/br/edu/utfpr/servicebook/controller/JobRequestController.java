@@ -8,8 +8,8 @@ import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
+import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.service.*;
-import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.DateUtil;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import com.cloudinary.Cloudinary;
@@ -77,6 +77,9 @@ public class JobRequestController {
 
     @Autowired
     private IndividualMapper individualMapper;
+
+    @Autowired
+    private IAuthentication authentication;
 
 
     public enum RequestDateSelect{
@@ -298,7 +301,7 @@ public class JobRequestController {
         System.out.println("Parâmetro erro: " + isError);
         ModelAndView mv = new ModelAndView("client/job-requested");
 
-        Optional<Individual> individual = individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
+        Optional<Individual> individual = individualService.findByEmail(authentication.getEmail());
 
         mv.addObject("client", individual.get().getName());
 
@@ -362,7 +365,7 @@ public class JobRequestController {
     @PostMapping("/nao-quero/{id}")
     public String rememberToHide(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         System.out.println("Salvo com sucesso!");
-        String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
+        String currentUserEmail = authentication.getEmail();
 
         Optional<User> oUser = userService.findByEmail(currentUserEmail);
         if(!oUser.isPresent()){

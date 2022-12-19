@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
-<t:visitor title="Cadastro de Profissional">
+<t:template title="Cadastro de Profissional">
     <jsp:body>
 
         <main>
@@ -77,6 +77,6 @@
         </main>
 
     </jsp:body>
-</t:visitor>
+</t:template>
 
 <script src="assets/resources/scripts/cep.js"></script>

@@ -7,12 +7,12 @@ import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobCandidateMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
+import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobCandidateService;
 import br.edu.utfpr.servicebook.service.JobRequestService;
 import br.edu.utfpr.servicebook.sse.EventSse;
 import br.edu.utfpr.servicebook.sse.SSEService;
-import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,11 +52,14 @@ public class JobCandidateController {
     @Autowired
     private SSEService sseService;
 
+    @Autowired
+    private IAuthentication authentication;
+
     @PostMapping
     public ModelAndView save(JobCandidateDTO dto, RedirectAttributes redirectAttributes) {
 
         //simula um usuário autenticado
-        String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
+        String currentUserEmail = authentication.getEmail();
 
         Optional<Individual> oindividual = individualService.findByEmail(currentUserEmail);
 
@@ -94,7 +97,7 @@ public class JobCandidateController {
 
     @DeleteMapping("/{id}")
     public String deleteJobRequest(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
+        String currentUserEmail = authentication.getEmail();
 
         Optional<Individual> oindividual = individualService.findByEmail(currentUserEmail);
         if(!oindividual.isPresent()){
@@ -114,7 +117,7 @@ public class JobCandidateController {
 
     @DeleteMapping("/desistir/{id}")
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
+        String currentUserEmail = authentication.getEmail();
 
         Optional<Individual> oindividual = individualService.findByEmail(currentUserEmail);
         if(!oindividual.isPresent()){
@@ -139,7 +142,7 @@ public class JobCandidateController {
             JobCandidateMinDTO dto,
             RedirectAttributes redirectAttributes
     ) throws IOException, ParseException {
-        String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
+        String currentUserEmail = authentication.getEmail();
 
         Optional<Individual> oindividual = individualService.findByEmail(currentUserEmail);
         if(!oindividual.isPresent()){

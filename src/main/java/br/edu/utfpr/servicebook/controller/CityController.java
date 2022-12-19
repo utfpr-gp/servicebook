@@ -7,6 +7,8 @@ import br.edu.utfpr.servicebook.model.entity.City;
 import br.edu.utfpr.servicebook.model.entity.State;
 import br.edu.utfpr.servicebook.model.mapper.CityMapper;
 import br.edu.utfpr.servicebook.model.mapper.StateMapper;
+import br.edu.utfpr.servicebook.security.IAuthentication;
+import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.CityService;
 import br.edu.utfpr.servicebook.service.StateService;
 
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -41,6 +44,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -67,7 +71,11 @@ public class CityController {
     @Autowired
     private Cloudinary cloudinary;
 
+    @Autowired
+    private IAuthentication authentication;
+
     @GetMapping
+    @RolesAllowed({RoleType.ADMIN})
     public ModelAndView showForm(HttpServletRequest request,
                                  @RequestParam(value = "pag", defaultValue = "1") int page,
                                  @RequestParam(value = "siz", defaultValue = "3") int size,
@@ -89,6 +97,7 @@ public class CityController {
     }
 
     @PostMapping
+    @RolesAllowed({RoleType.ADMIN})
     public ModelAndView save(@Valid CityDTO dto, BindingResult errors, RedirectAttributes redirectAttributes) throws IOException {
         for (FieldError e : errors.getFieldErrors()) {
             log.info(e.getField() + " -> " + e.getCode());
@@ -160,6 +169,7 @@ public class CityController {
     }
 
     @GetMapping("/{id}")
+    @RolesAllowed({RoleType.ADMIN})
     public ModelAndView showFormUpdate(@PathVariable("id") Long id) throws Exception {
 
         ModelAndView mv = new ModelAndView("admin/city-register");
@@ -201,6 +211,7 @@ public class CityController {
     }
 
     @DeleteMapping("/{id}")
+    @RolesAllowed({RoleType.ADMIN})
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
         Optional<City> city = cityService.findById(id);
 

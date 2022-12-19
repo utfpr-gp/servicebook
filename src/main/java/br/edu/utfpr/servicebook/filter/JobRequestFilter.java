@@ -12,9 +12,9 @@ import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
 import br.edu.utfpr.servicebook.model.repository.IndividualRepository;
+import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.service.ExpertiseService;
 import br.edu.utfpr.servicebook.service.JobRequestService;
-import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
@@ -48,6 +48,9 @@ public class JobRequestFilter implements Filter {
     @Autowired
     private ExpertiseService expertiseService;
 
+    @Autowired
+    private IAuthentication authentication;
+
     /**
      * Usado para validar manualmente o DTO que contém anotações de validações
      */
@@ -78,57 +81,63 @@ public class JobRequestFilter implements Filter {
             Caso não esteja, deixa a requisição seguir o seu fluxo
         */
         Optional<Individual> oIndividual = null;
-        if(jobRequestDTO != null){
-            oIndividual = individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
-        }
+        if(jobRequestDTO != null) {
+            oIndividual = individualService.findByEmail(authentication.getEmail());
 
-        /*
-            Apenas analisa se houver ordem de serviço e usuário logado.
-         */
-        if(jobRequestDTO != null && oIndividual.isPresent()){
+             /*
+                 Apenas analisa se houver ordem de serviço e usuário logado.
+             */
+            if (oIndividual.isPresent()) {
 
-            //valida o jobRequestDTO para ver se está completo.
-            Errors errors = new BeanPropertyBindingResult(jobRequestDTO, "jobRequestDTO");
-            validator.validate(jobRequestDTO, errors);
+                //valida o jobRequestDTO para ver se está completo.
+                Errors errors = new BeanPropertyBindingResult(jobRequestDTO, "jobRequestDTO");
+                validator.validate(jobRequestDTO, errors);
 
-            /*
+                /*
                 Se estiver válido, verifica se o id do expertise existe no BD.
                 Caso contrário, insere como um erro.
-             */
-            Optional<Expertise> oExpertise = null;
-            if(jobRequestDTO != null){
-                 oExpertise = expertiseService.findById(jobRequestDTO.getExpertiseId());
-                 if(!oExpertise.isPresent()){
-                     errors.rejectValue("expertiseId", "A especialidade informada não foi encontrada!");
-                 }
+                */
+                Optional<Expertise> oExpertise = null;
+                if (jobRequestDTO.getExpertiseId() == null) {
+                    errors.rejectValue("expertiseId", "A especialidade informada não foi encontrada!");
+                }
+
+                if (jobRequestDTO.getExpertiseId() != null) {
+                    oExpertise = expertiseService.findById(jobRequestDTO.getExpertiseId());
+                    if (!oExpertise.isPresent()) {
+                        errors.rejectValue("expertiseId", "A especialidade informada não foi encontrada!");
+                    }
+                }
+
+                /*
+                    Se estiver válido, salva no BD.
+                    Caso contrário, informa o erro ao usuário em relação a ordem de serviço cadastrada.
+                */
+                if (!errors.hasErrors()) {
+
+                    jobRequestDTO.setStatus(String.valueOf(JobRequest.Status.AVAILABLE));
+
+                    //salva no BD
+                    JobRequest jr = jobRequestMapper.toEntity(jobRequestDTO);
+                    jr.setIndividual(oIndividual.get());
+                    jr.setExpertise(oExpertise.get());
+                    jobRequestService.save(jr);
+                }
+
+                 /*
+                    Se o jobRequest não estiver vazio e com erro, guarda esta informação para ser apresentado para o usuário.
+                    Significa que o usuário preencheu um jobRequest, mas houve um erro de validação.
+                    Portanto, é incluído um parâmetro na rota para informar o erro ao usuário.
+                 */
+                String query = errors.hasErrors() ? "?erro=true" : "";
+                System.out.println(errors);
+
+                //redirecionar para a página de aviso de sucesso de cadastro de um jobRequest
+                if(!errors.hasErrors()){
+                    HttpServletResponse res = (HttpServletResponse) response;
+                    res.sendRedirect(((HttpServletRequest) request).getContextPath() + "/requisicoes/pedido-recebido" + query);
+                }
             }
-
-            /*
-                Se estiver válido, salva no BD.
-                Caso contrário, informa o erro ao usuário em relação a ordem de serviço cadastrada.
-            */
-            if(!errors.hasErrors()){
-
-                jobRequestDTO.setStatus(String.valueOf(JobRequest.Status.AVAILABLE));
-
-                //salva no BD
-                JobRequest jr = jobRequestMapper.toEntity(jobRequestDTO);
-                jr.setIndividual(oIndividual.get());
-                jr.setExpertise(oExpertise.get());
-                jobRequestService.save(jr);
-            }
-
-            /*
-               Se o jobRequest não estiver vazio e com erro, guarda esta informação para ser apresentado para o usuário.
-               Significa que o usuário preencheu um jobRequest, mas houve um erro de validação.
-               Portanto, é incluído um parâmetro na rota para informar o erro ao usuário.
-             */
-            String query = errors.hasErrors() ? "?erro=true" : "";
-            System.out.println(errors);
-
-            //redirecionar para a página de aviso de sucesso de cadastro de um jobRequest
-            HttpServletResponse res = (HttpServletResponse) response;
-            res.sendRedirect(((HttpServletRequest) request).getContextPath() + "/requisicoes/pedido-recebido" + query);
         }
 
         //antes do chain - executa na requisição

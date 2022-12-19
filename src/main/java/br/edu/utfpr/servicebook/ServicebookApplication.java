@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 @ServletComponentScan
@@ -99,6 +100,9 @@ public class ServicebookApplication {
         quartzService.deleteJobsAvailableToHide();
         System.out.println("close jobs that pass 30 days from hired");
         quartzService.closeJobsRequestPass30DaysFromHired();
+
+        BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
+        System.out.println(bc.encode("qwerty123"));
     }
 
     @EventListener(ApplicationStartedEvent.class)

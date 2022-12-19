@@ -2,7 +2,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:visitor title="Servicebook - Início">
+<t:template title="Servicebook - Início">
     <jsp:body>
 
         <t:banner></t:banner>
@@ -83,5 +83,5 @@
             });
         </script>
     </jsp:body>
-</t:visitor>
+</t:template>
 

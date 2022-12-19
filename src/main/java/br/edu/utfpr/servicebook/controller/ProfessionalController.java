@@ -4,17 +4,12 @@ import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.City;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.JobContracted;
-import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobContractedMapper;
+import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.service.CityService;
 import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobContractedService;
-import br.edu.utfpr.servicebook.sse.EventSse;
-import br.edu.utfpr.servicebook.sse.EventSseDTO;
-import br.edu.utfpr.servicebook.sse.EventSseMapper;
-import br.edu.utfpr.servicebook.sse.SSEService;
-import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
@@ -24,8 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.annotation.security.PermitAll;
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -56,11 +51,15 @@ public class ProfessionalController {
     @Value("${pagination.size.visitor}")
     private Integer paginationSizeVisitor;
 
+    @Autowired
+    private IAuthentication authentication;
+
     @GetMapping
+    @PermitAll
     protected ModelAndView showAll() throws Exception {
         ModelAndView mv = new ModelAndView("visitor/search-results");
 
-        Optional<Individual> oIndividual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oIndividual = (individualService.findByEmail(authentication.getEmail()));
         IndividualDTO individualDTO = individualMapper.toDto(oIndividual.get());
         mv.addObject("professional", individualDTO);
         List<City> cities = cityService.findAll();
@@ -94,6 +93,7 @@ public class ProfessionalController {
      * @throws Exception
      */
     @GetMapping(value = "/busca")
+    @PermitAll
     protected ModelAndView showSearchResults(
             @RequestParam(value = "termo-da-busca") String searchTerm,
             @RequestParam(value = "pag", defaultValue = "1") int page
@@ -105,7 +105,7 @@ public class ProfessionalController {
         List<City> cities = cityService.findAll();
         mv.addObject("cities", cities);
 
-        Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> individual = (individualService.findByEmail(authentication.getEmail()));
         mv.addObject("logged", individual.isPresent());
 
         //quando o usuário é visitante, apresenta apenas 4 resultados, por isso que sempre será a primeira página
@@ -139,7 +139,7 @@ public class ProfessionalController {
         }
 
 
-        Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> individual = (individualService.findByEmail(authentication.getEmail()));
         mv.addObject("logged", individual.isPresent());
 
         List<ExpertiseDTO> expertisesDTO = individualService.getExpertises(oProfessional.get());

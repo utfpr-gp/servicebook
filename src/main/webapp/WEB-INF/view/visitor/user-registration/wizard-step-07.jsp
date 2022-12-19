@@ -2,7 +2,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:visitor title="Servicebook - Cadastro - Passo 7">
+<t:template title="Servicebook - Cadastro - Passo 7">
     <jsp:body>
 
         <main>
@@ -93,7 +93,7 @@
         </main>
 
     </jsp:body>
-</t:visitor>
+</t:template>
 
 <script src="assets/resources/scripts/cep-user-registration.js"></script>
 <script src="assets/libraries/jquery.mask.js"></script>

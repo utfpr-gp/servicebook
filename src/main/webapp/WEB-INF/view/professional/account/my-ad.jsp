@@ -3,7 +3,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:professional title="Meu anúncio">
+<t:template title="Meu anúncio">
     <jsp:body>
 
         <main>
@@ -55,7 +55,7 @@
         </main>
 
     </jsp:body>
-</t:professional>
+</t:template>
 <script>
     $(document).ready(function(){
         $(".exibir").click(function (e) {
