@@ -141,7 +141,7 @@
                     <div class="col s12 no-margin no-padding input-field area-profission-select">
                         <div class="spacing-buttons">
                                 <%--ARRUMAR O ID PARA OS VERDADEIROS--%>
-                            <form action="follow/subscribe/${2}/${3}" method="post">
+                            <form action="follow/subscribe/${1}/${4}" method="post">
                                 <input type="hidden" name="_method" value="POST"/>
                                 <button class="waves-effect waves-light btn">Seguir</button>
 

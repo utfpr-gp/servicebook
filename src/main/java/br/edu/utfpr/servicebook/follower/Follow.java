@@ -1,5 +1,6 @@
 package br.edu.utfpr.servicebook.follower;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Table(name = "follows")
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 public class Follow {
 
 
@@ -27,11 +29,17 @@ public class Follow {
     private String followers_json;
 
     @Column(name = "amount_followers")
-    private Long amount_followers;
+    private Integer amount_followers;
 
     public Follow(Long followed_id, String followersJson) {
         setFollowed_id(followed_id);
         setFollowers_json(followersJson);
+    }
+
+    public Follow(Long followed_id, String followersJson, Integer amount_followers) {
+        setFollowed_id(followed_id);
+        setFollowers_json(followersJson);
+        setAmount_followers(amount_followers);
     }
 
 }
