@@ -75,9 +75,13 @@ public class FollowController {
 
     @GetMapping("/{id}")
     public ModelAndView showFollows(@PathVariable Optional<Long> id) throws Exception {
+        //verifica pagina que retornara
         ModelAndView mv = new ModelAndView("?");
 
         //metodo que gera lista
+        // ver metodo show do ClientController
+        //        Optional<Individual> individual = individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()); - suar findbyID -passar o id do json
+
         return mv;
     }
 
