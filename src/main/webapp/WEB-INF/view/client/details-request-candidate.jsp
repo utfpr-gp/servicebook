@@ -31,15 +31,19 @@
                   </c:forEach>
                 </div>
                 <div class="col s4">
-<%--                  FAZER O IF PARAR FOLLOW OU UNFOLLOW--%>
-                  <form action="follow/subscribe" method="post">
-                    <input type="hidden" name="professional" value="${jobCandidate.getIndividual().id}"/>
-
-                    <input type="hidden" name="client" value="${jobClient.id}"/>
-
-                    <button alt="seguir" class="waves-effect waves-light btn">Seguir</button>
-                  </form>
-
+                  <c:if test="${!isFollow}">
+                    <form method="post" id="follow-form">
+                      <input type="hidden" name="professional" value="${jobCandidate.getIndividual().id}"/>
+                      <input type="hidden" name="client" value="${jobClient.id}"/>
+                      <button alt="seguir" type="button"
+                              class="waves-effect waves-light btn" id="follow-button">Seguir</button>
+                    </form>
+                  </c:if>
+                  <c:if test="${isFollow}">
+                      <button type="button" data-professional="${jobCandidate.getIndividual().id}"
+                              class="waves-effect waves-light btn"
+                              id="unfollow-button">Deixar de Seguir</button>
+                  </c:if>
                 </div>
                 <div class="col s4">
                   <div class="right check-circle-candidate">
@@ -169,3 +173,4 @@
 
 
 <script src="assets/resources/scripts/client-rating-job-functions.js"></script>
+<script src="assets/resources/scripts/follow-professional.js"></script>

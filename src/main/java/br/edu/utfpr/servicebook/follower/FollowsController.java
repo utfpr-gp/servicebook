@@ -5,13 +5,13 @@ import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.service.IndividualService;
-import br.edu.utfpr.servicebook.service.UserService;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -46,29 +45,53 @@ public class FollowsController {
     @Autowired
     FollowsMapper followsMapper;
 
-    @PostMapping("/subscribe")
-    public ModelAndView save(@Valid FollowsDTO dto, BindingResult errors, RedirectAttributes redirectAttributes) {
+    /**
+     * Trata da solitação via Fetch API para um cliente seguir um profissional.
+     * @param dto
+     * @param errors
+     * @param redirectAttributes
+     * @return
+     * @throws Exception
+     */
+    @PostMapping
+    @ResponseBody
+    public ResponseEntity<Void> save(@Valid FollowsDTO dto, BindingResult errors, RedirectAttributes redirectAttributes) {
 
         String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
-
-        System.err.println("CONTROLLER FOLLOWA SAVE... DTO.CLIENT.." + dto.getClient());
-        System.err.println("CONTROLLER FOLLOWA SAVE... DTO.PROFESSIONAL.." + dto.getProfessional());
 
         for(FieldError e: errors.getFieldErrors()){
             log.info(e.getField() + " -> " + e.getCode());
         }
 
         if(errors.hasErrors()){
-            return errorFowarding(dto, errors);
+            return ResponseEntity.badRequest().build();
         }
 
         Follows follows = new Follows(dto.getClient(), dto.getProfessional());
         followsService.save(follows);
 
-        //fazer validação
+        return ResponseEntity.ok().build();
+    }
 
-        redirectAttributes.addFlashAttribute("msg", "Está seguindo!");
-        return new ModelAndView("redirect:/minha-conta/profissional");
+    @DeleteMapping("/professional/{professionalId}")
+    public ResponseEntity<Void> delete(@PathVariable Long professionalId, RedirectAttributes redirectAttributes) {
+
+        String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
+
+        Optional<Individual> oClient = individualService.findByEmail(currentUserEmail);
+        Optional<Individual> oProfessional = individualService.findById(professionalId);
+
+        if(!oProfessional.isPresent() || !oClient.isPresent()){
+            return ResponseEntity.badRequest().build();
+        }
+
+        List<Follows> followList = followsService.findFollowProfessionalClient(oProfessional.get(), oClient.get());
+
+        if(followList != null && !followList.isEmpty()){
+            followsService.delete(followList.get(0));
+        }
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/list")
@@ -101,12 +124,6 @@ public class FollowsController {
 
         return mv;
     }
-    public ModelAndView errorFowarding(@Valid FollowsDTO dto, BindingResult errors) {
-        ModelAndView mv = new ModelAndView("/minha-conta/profissional");
-        mv.addObject("dto", dto);
-        mv.addObject("errors", errors.getAllErrors());
 
-        return mv;
-    }
 
 }

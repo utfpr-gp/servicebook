@@ -25,12 +25,10 @@ public class Follows {
 	private Date date;
 
 	@ManyToOne
-//	@Cascade(CascadeType.PERSIST)
 	@MapsId("clientId")
 	@JoinColumn(name = "client_id")
 	private Individual client;
 
-	//	@ManyToOne(cascade=CascadeType.PERSIST)
 	@ManyToOne
 	@MapsId("professionalId")
 	@JoinColumn(name = "professional_id")

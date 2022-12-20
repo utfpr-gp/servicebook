@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
+import br.edu.utfpr.servicebook.follower.FollowsService;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
@@ -69,6 +70,7 @@ public class ClientController {
 
     @Autowired
     private JobContractedMapper jobContractedMapper;
+
     @Autowired
     private QuartzService quartzService;
 
@@ -77,6 +79,9 @@ public class ClientController {
 
     @Autowired
     private EventSseMapper eventSseMapper;
+
+    @Autowired
+    private FollowsService followsService;
 
     @GetMapping
     public ModelAndView show() throws Exception {
@@ -184,28 +189,36 @@ public class ClientController {
         return mv;
     }
 
-    
-
+    /**
+     * Apresenta a tela de detalhes de um candidato para um serviço.
+     * @param jobId
+     * @param candidateId
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/meus-pedidos/{jobId}/detalhes/{candidateId}")
     public ModelAndView showDetailsRequestCandidate(@PathVariable Optional<Long> jobId, @PathVariable Optional<Long> candidateId) throws Exception {
         ModelAndView mv = new ModelAndView("client/details-request-candidate");
 
-        Optional<Individual> oIndividual = individualService.findById(candidateId.get());
-        if (!oIndividual.isPresent()) {
+        Optional<Individual> oCandidate = individualService.findById(candidateId.get());
+        if (!oCandidate.isPresent()) {
             throw new EntityNotFoundException("Individuo não encontrado");
         }
 
-        Optional<JobCandidate> jobCandidate = jobCandidateService.findById(jobId.get(), oIndividual.get().getId());
+        Optional<JobCandidate> jobCandidate = jobCandidateService.findById(jobId.get(), oCandidate.get().getId());
         if (!jobCandidate.isPresent()) {
             throw new EntityNotFoundException("Candidato não encontrado");
         }
         JobCandidateDTO jobCandidateDTO = jobCandidateMapper.toDto(jobCandidate.get());
 
-        Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
-        IndividualDTO individualDTO = individualMapper.toDto(individual.get());
+        Optional<Individual> client = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        IndividualDTO individualDTO = individualMapper.toDto(client.get());
+
+        List<Follows> follows = followsService.findFollowProfessionalClient(oCandidate.get(), client.get());
+        boolean isFollow = !follows.isEmpty();
 
         mv.addObject("jobCandidate", jobCandidateDTO);
-
+        mv.addObject("isFollow", isFollow);
         mv.addObject("jobClient", individualDTO);
 
         return mv;

@@ -140,7 +140,6 @@ VALUES ('1', '1', 'false', '2021-01-01', null, 'false'),
 
 
 INSERT INTO follows (client_id, professional_id)
-VALUES (1, 4),
-       (4, 1);
+VALUES (1, 4)
 
 
