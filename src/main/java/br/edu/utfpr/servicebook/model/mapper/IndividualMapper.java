@@ -53,6 +53,11 @@ public class IndividualMapper {
         return entity;
     }
 
+    public Individual optionalToEntity(Optional dto){
+        Individual entity = mapper.map(dto, Individual.class);
+        return entity;
+    }
+
     public ProfessionalSearchItemDTO toSearchItemDto(Individual entity, List<ExpertiseDTO> expertises){
         ProfessionalSearchItemDTO dto = mapper.map(entity, ProfessionalSearchItemDTO.class);
         dto.setExpertises(expertises);

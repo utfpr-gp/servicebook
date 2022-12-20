@@ -19,6 +19,7 @@ import java.util.Date;
 @ToString
 public class IndividualDTO extends UserDTO implements Serializable {
 
+    private Long id;
     @CPF(message = "CPF inválido! Por favor, insira um CPF válido.", groups = IndividualDTO.RequestUserNameAndCPFInfoGroupValidation.class)
     private String cpf;
 
@@ -34,6 +35,8 @@ public class IndividualDTO extends UserDTO implements Serializable {
     private int rating;
 
     private int denounceAmount;
+
+    private int followsAmount;
 
     public String getOnlyNumbersFromPhone() {
         return getPhoneNumber().replaceAll("[^0-9]", "");

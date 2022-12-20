@@ -1,9 +1,7 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
-import br.edu.utfpr.servicebook.follower.FollowDTO;
-import br.edu.utfpr.servicebook.follower.FollowMapper;
-import br.edu.utfpr.servicebook.follower.FollowService;
+import br.edu.utfpr.servicebook.follower.FollowsService;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
@@ -44,10 +42,7 @@ public class ProfessionalHomeController {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     @Autowired
-    private FollowService followService;
-
-    @Autowired
-    private FollowMapper followMapper;
+    private FollowsService followsService;
 
     @Autowired
     private IndividualService individualService;
@@ -124,11 +119,19 @@ public class ProfessionalHomeController {
 
         boolean isClient = false;
         mv.addObject("isClient", isClient);
+
         IndividualDTO professionalMinDTO = individualMapper.toDto(oProfessional.get());
         SidePanelIndividualDTO sidePanelIndividualDTO = SidePanelUtil.getSidePanelDTO(professionalMinDTO);
+
+        //insirindo quantidade de seguidores - TESTE
+        List<Follows> followsList = followsService.findFollowsByProfessional(oProfessional.get());
+        sidePanelIndividualDTO.setFollowsAmount(followsList.size());
+
         mv.addObject("user", sidePanelIndividualDTO);
+
         SidePanelItensDTO sidePanelItensDTO = sidePanelUtil.getSidePanelStats(oProfessional.get(), id.get());
         mv.addObject("dataIndividual", sidePanelItensDTO);
+
         mv.addObject("id", id.orElse(0L));
 
         //FAZER ENVIO DE NOTIFICAÇÃO PARA O PROFISSIONAL
@@ -140,13 +143,6 @@ public class ProfessionalHomeController {
                 .collect(Collectors.toList());
         mv.addObject("eventsse", eventSseDTOS);
         //FAZER ENVIO DE NOTIFICAÇÃO PARA O PROFISSIONAL ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-
-//RETORNADO OBJ SEGUIDORES
-//        FollowDTO followDTO = followMapper.toFullDto(followService.getFollowedById(id.get()));
-//        System.err.println("OBJFOloow ..  " + followDTO.toString());
-//        mv.addObject("followdto", followDTO);
-
 
         return mv;
     }
@@ -646,31 +642,6 @@ public class ProfessionalHomeController {
         JobRequest jb = oJob.get();
 
         JobRequestDetailsDTO jobFull = jobRequestMapper.jobRequestDetailsDTO(jb);
-
-
-
-
-
-
-
-
-
-
-
-        //TESTE PUSH NOTIFICATION
-        System.err.println("DETALHE DO SERVIÇO (JOBFULL)....   " + jobFull);
-        System.err.println("DETALHE DO CLIENTE SERVIÇO......  " + jobFull.getIndividual().getEmail());
-
-
-
-
-
-
-
-
-
-
-
 
         Optional oClient, oCity, oState;
 

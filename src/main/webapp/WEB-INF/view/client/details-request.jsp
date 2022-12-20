@@ -128,7 +128,7 @@
                           <div class="row ${(jobCandidate.chosenByBudget) ? 'primary-background-color': ''} no-margin">
                             <div class="col s12 icons-area-request center padding">
                               <div class="row">
-                                <div class="col s6 center">
+                                <div class="col s6">
                                   <div class="left star-icons candidate dark-color-text">
                                     <c:forEach var="star" begin="1" end="5">
                                       <c:if test="${star <= jobCandidate.individual.rating}">
@@ -141,29 +141,14 @@
                                   </div>
                                 </div>
                                 <div class="col s6">
-                                  <div class="col s6 left">
+                                  <div class="col s4 left">
                                     <div class="right check-circle-candidate">
                                       <i class="material-icons green-text darken-3-text">check_circle</i>
                                     </div>
                                   </div>
-                                  <div class="col s6 right">
-<%--                                    FAZER  VALIDAÇÃO SE ESTA SEGUINDO CORRETO--%>
-                                    <c:if test="${true}">
-                                      <div class="right check-circle-candidate">
-                                        <form action="follow/subscribe/${1}/${4}" method="post">
-                                            <input type="hidden" name="_method" value="POST"/>
-                                            <button alt="seguir" class="waves-effect waves-light btn"><i alt="seguir" class="material-icons black-text small">thumb_up</i></button>
-                                          </form>
-                                      </div>
-                                      </c:if>
-                                      <c:if test="${false}">
-                                        <div class="right check-circle-candidate">
-                                          <form action="follow/unfollow/${1}/${3}" method="post">
-                                            <input type="hidden" name="_method" value="DELETE"/>
-                                            <button alt="Unfollow" class="waves-effect waves-light btn"><i alt="Unfollow"  class="material-icons black-text small">thumb_down</i></button>
-                                          </form>
-                                        </div>
-                                      </c:if>
+                                  <div class="col s8 right">
+                                        <div class="left">${jobCandidate.individual.followsAmount != 0 ? jobCandidate.individual.followsAmount : " "}</div>
+                                        <div class="right"><i alt="seguir" class="material-icons black-text small">thumb_up</i></div>
                                   </div>
                                 </div>
                               </div>

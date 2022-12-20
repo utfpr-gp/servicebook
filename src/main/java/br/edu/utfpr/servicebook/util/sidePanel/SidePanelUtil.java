@@ -34,7 +34,7 @@ public class SidePanelUtil {
     private ProfessionalMapper professionalMapper;
 
     public static SidePanelIndividualDTO getSidePanelDTO(IndividualDTO entity){
-        return new SidePanelIndividualDTO(entity.getName(), entity.getDescription(), entity.getRating(), entity.getProfilePicture(), entity.isPhoneVerified(), entity.isEmailVerified(), entity.isProfileVerified());
+        return new SidePanelIndividualDTO(entity.getId(), entity.getName(), entity.getDescription(), entity.getRating(), entity.getProfilePicture(), entity.isPhoneVerified(), entity.isEmailVerified(), entity.isProfileVerified(), entity.getFollowsAmount());
     }
 
     public SidePanelItensDTO getSidePanelStats(Individual oProfessional, Long expertiseId) {

@@ -199,10 +199,14 @@ public class ClientController {
         if (!jobCandidate.isPresent()) {
             throw new EntityNotFoundException("Candidato não encontrado");
         }
-
         JobCandidateDTO jobCandidateDTO = jobCandidateMapper.toDto(jobCandidate.get());
 
+        Optional<Individual> individual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        IndividualDTO individualDTO = individualMapper.toDto(individual.get());
+
         mv.addObject("jobCandidate", jobCandidateDTO);
+
+        mv.addObject("jobClient", individualDTO);
 
         return mv;
     }

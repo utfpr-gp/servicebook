@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 public class SidePanelIndividualDTO {
+
+    private Long id;
     private String name;
     private String description;
     private int rating;
@@ -15,4 +17,5 @@ public class SidePanelIndividualDTO {
     protected boolean phoneVerified;
     protected boolean emailVerified;
     protected boolean profileVerified;
+    protected int followsAmount;
 }

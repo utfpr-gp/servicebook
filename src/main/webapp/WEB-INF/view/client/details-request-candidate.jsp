@@ -1,7 +1,7 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%> <%@ taglib
-uri="http://www.springframework.org/tags/form" prefix="form" %> <%@taglib
-prefix="t" tagdir="/WEB-INF/tags"%> <%@ taglib prefix="c"
-uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <t:client title="Detalhes do candidato">
   <jsp:body>
@@ -20,7 +20,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                 </c:choose>
               </div>
               <div class="row">
-                <div class="col s6">
+                <div class="col s4">
                   <c:forEach var="star" begin="1" end="5">
                     <c:if test="${star <= jobCandidate.getIndividual().rating}">
                       <i class="material-icons yellow-text small">star</i>
@@ -30,7 +30,18 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                     </c:if>
                   </c:forEach>
                 </div>
-                <div class="col s6">
+                <div class="col s4">
+<%--                  FAZER O IF PARAR FOLLOW OU UNFOLLOW--%>
+                  <form action="follow/subscribe" method="post">
+                    <input type="hidden" name="professional" value="${jobCandidate.getIndividual().id}"/>
+
+                    <input type="hidden" name="client" value="${jobClient.id}"/>
+
+                    <button alt="seguir" class="waves-effect waves-light btn">Seguir</button>
+                  </form>
+
+                </div>
+                <div class="col s4">
                   <div class="right check-circle-candidate">
                     <i class="material-icons green-text darken-4-text">check_circle</i>
                   </div>
