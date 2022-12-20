@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class SidePanelIndividualDTO {
 
     private Long id;
@@ -17,5 +16,5 @@ public class SidePanelIndividualDTO {
     protected boolean phoneVerified;
     protected boolean emailVerified;
     protected boolean profileVerified;
-    protected int followsAmount;
+    protected Long followingAmount;
 }

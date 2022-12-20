@@ -87,25 +87,28 @@ public class ClientController {
     public ModelAndView show() throws Exception {
         ModelAndView mv = new ModelAndView("client/my-requests");
 
-        Optional<Individual> individual = individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
-        if (!individual.isPresent()) {
+        Optional<Individual> oClient = individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
+        if (!oClient.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        List<EventSse> eventSsesList = sseService.findPendingEventsByEmail(CurrentUserUtil.getCurrentUserEmail());
-        List<EventSseDTO> eventSseDTOS = eventSsesList.stream()
+        List<EventSse> eventSSEList = sseService.findPendingEventsByEmail(CurrentUserUtil.getCurrentUserEmail());
+        List<EventSseDTO> eventSSEDTOs = eventSSEList.stream()
                 .map(eventSse -> {
                     return eventSseMapper.toFullDto(eventSse);
                 })
                 .collect(Collectors.toList());
-        mv.addObject("eventsse", eventSseDTOS);
+        mv.addObject("eventsse", eventSSEDTOs);
 
-        IndividualDTO clientDTO = individualMapper.toDto(individual.get());
+        IndividualDTO clientDTO = individualMapper.toDto(oClient.get());
 
+        Optional<Long> oClientFollowingAmount = followsService.countByClient(oClient.get());
+        clientDTO.setFollowingAmount(oClientFollowingAmount.get());
         SidePanelIndividualDTO sidePanelIndividualDTO = SidePanelUtil.getSidePanelDTO(clientDTO);
+
         mv.addObject("user", sidePanelIndividualDTO);
 
-        List<JobRequest> jobRequests = jobRequestService.findByClientOrderByDateCreatedDesc(individual.get());
+        List<JobRequest> jobRequests = jobRequestService.findByClientOrderByDateCreatedDesc(oClient.get());
 
         List<JobRequestMinDTO> jobRequestDTOs = jobRequests.stream()
                 .map(job -> {

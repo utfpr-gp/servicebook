@@ -125,7 +125,7 @@ public class ProfessionalHomeController {
 
         //insirindo quantidade de seguidores - TESTE
         List<Follows> followsList = followsService.findFollowsByProfessional(oProfessional.get());
-        sidePanelIndividualDTO.setFollowsAmount(followsList.size());
+        sidePanelIndividualDTO.setFollowingAmount((long)followsList.size());
 
         mv.addObject("user", sidePanelIndividualDTO);
 

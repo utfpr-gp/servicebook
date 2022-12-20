@@ -20,7 +20,7 @@ public class FollowsService {
         return followsRepository.findFollowsByProfessional(professional);
     }
 
-    public List<Follows> findFollowsByClient(Individual client) {return followsRepository.findFollowsByClient(client);}
+    public List<Follows> findFollowingByClient(Individual client) {return followsRepository.findFollowsByClient(client);}
 
     public List<Follows> findFollowProfessionalClient(Individual professional, Individual client){
         return followsRepository.isClientFollowProfessional(professional, client);

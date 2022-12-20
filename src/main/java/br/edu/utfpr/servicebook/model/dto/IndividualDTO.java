@@ -36,7 +36,7 @@ public class IndividualDTO extends UserDTO implements Serializable {
 
     private int denounceAmount;
 
-    private int followsAmount;
+    private long followingAmount;
 
     public String getOnlyNumbersFromPhone() {
         return getPhoneNumber().replaceAll("[^0-9]", "");

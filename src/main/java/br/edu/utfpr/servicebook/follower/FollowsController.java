@@ -73,6 +73,12 @@ public class FollowsController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Remove o registro de seguir de um cliente para um profissional
+     * @param professionalId
+     * @param redirectAttributes
+     * @return
+     */
     @DeleteMapping("/professional/{professionalId}")
     public ResponseEntity<Void> delete(@PathVariable Long professionalId, RedirectAttributes redirectAttributes) {
 
@@ -109,7 +115,7 @@ public class FollowsController {
 
         Individual individual = individualMapper.optionalToEntity(oindividual);
 
-        List<Follows> followsList = followsService.findFollowsByClient(individual);
+        List<Follows> followsList = followsService.findFollowingByClient(individual);
 //        List<Follows> followsList = followsService.findFollowsByProfessional(individual);
 
         List<FollowsDTO> followsDTOList = followsList.stream()

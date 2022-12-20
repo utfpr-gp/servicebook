@@ -109,7 +109,7 @@
             <div class="row secondary-background-color no-margin">
                 <div class="col s12">
                     <h5 class="name-header no-margin center white-text">
-                        <strong><a href="follow/${individual.id}">${individual.followsAmount != 0 ? individual.followsAmount : ' '}</a></strong>
+                        <strong><a href="follow/${individual.id}">${individual.followingAmount}</a></strong>
                     </h5>
                 </div>
             </div>
@@ -123,7 +123,7 @@
             <div class="row secondary-background-color no-margin">
                 <div class="col s12 left-align">
                     <h5 class="name-header no-margin center white-text">
-                        <strong>${individual.followsAmount != null ? individual.followsAmount : '0'}&nbsp;seguidores</strong>
+                        <strong>${individual.followingAmount}</strong>
                     </h5>
                 </div>
             </div>
