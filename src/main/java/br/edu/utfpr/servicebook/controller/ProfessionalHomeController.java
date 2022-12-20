@@ -121,12 +121,11 @@ public class ProfessionalHomeController {
         mv.addObject("isClient", isClient);
 
         IndividualDTO professionalMinDTO = individualMapper.toDto(oProfessional.get());
+
+        Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(oProfessional.get());
+        professionalMinDTO.setFollowingAmount(oProfessionalFollowingAmount.get());
+
         SidePanelIndividualDTO sidePanelIndividualDTO = SidePanelUtil.getSidePanelDTO(professionalMinDTO);
-
-        //insirindo quantidade de seguidores - TESTE
-        List<Follows> followsList = followsService.findFollowsByProfessional(oProfessional.get());
-        sidePanelIndividualDTO.setFollowingAmount((long)followsList.size());
-
         mv.addObject("user", sidePanelIndividualDTO);
 
         SidePanelItensDTO sidePanelItensDTO = sidePanelUtil.getSidePanelStats(oProfessional.get(), id.get());

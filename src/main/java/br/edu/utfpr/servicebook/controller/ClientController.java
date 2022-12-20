@@ -104,6 +104,7 @@ public class ClientController {
 
         Optional<Long> oClientFollowingAmount = followsService.countByClient(oClient.get());
         clientDTO.setFollowingAmount(oClientFollowingAmount.get());
+
         SidePanelIndividualDTO sidePanelIndividualDTO = SidePanelUtil.getSidePanelDTO(clientDTO);
 
         mv.addObject("user", sidePanelIndividualDTO);
@@ -182,7 +183,11 @@ public class ClientController {
         List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequestOrderByChosenByBudgetDesc(job.get());
 
         List<JobCandidateDTO> jobCandidatesDTOs = jobCandidates.stream()
-                .map(candidate -> jobCandidateMapper.toDto(candidate))
+                .map(candidate -> {
+                    Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(candidate.getIndividual());
+                    candidate.getIndividual().setFollowsAmount(oProfessionalFollowingAmount.get());
+                    return jobCandidateMapper.toDto(candidate);
+                })
                 .collect(Collectors.toList());
 
         mv.addObject("candidates", jobCandidatesDTOs);

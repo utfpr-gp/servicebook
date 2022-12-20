@@ -12,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -36,7 +37,7 @@ public class IndividualDTO extends UserDTO implements Serializable {
 
     private int denounceAmount;
 
-    private long followingAmount;
+    private Long followingAmount;
 
     public String getOnlyNumbersFromPhone() {
         return getPhoneNumber().replaceAll("[^0-9]", "");

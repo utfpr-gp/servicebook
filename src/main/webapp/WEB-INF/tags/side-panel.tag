@@ -109,7 +109,7 @@
             <div class="row secondary-background-color no-margin">
                 <div class="col s12">
                     <h5 class="name-header no-margin center white-text">
-                        <strong><a href="follow/${individual.id}">${individual.followingAmount}</a></strong>
+                        <strong><a href="follow/showfollow">${individual.followingAmount}</a></strong>
                     </h5>
                 </div>
             </div>

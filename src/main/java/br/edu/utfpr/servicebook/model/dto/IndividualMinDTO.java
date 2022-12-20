@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,6 +14,6 @@ public class IndividualMinDTO extends UserDTO {
     private Long id;
     private String description;
     private Integer rating;
-    private int followsAmount;
+    private Long followsAmount;
 
 }

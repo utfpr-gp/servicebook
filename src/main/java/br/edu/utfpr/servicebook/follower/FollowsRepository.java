@@ -49,7 +49,4 @@ public interface FollowsRepository extends JpaRepository<Follows, Long> {
      * @return
      */
     Optional<Long> countByClient(Individual client);
-
-
-
 }

@@ -19,7 +19,7 @@
                   </c:otherwise>
                 </c:choose>
               </div>
-              <div class="row">
+              <div class="row center">
                 <div class="col s4">
                   <c:forEach var="star" begin="1" end="5">
                     <c:if test="${star <= jobCandidate.getIndividual().rating}">

@@ -4,7 +4,9 @@ import br.edu.utfpr.servicebook.controller.ExpertiseController;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
+import br.edu.utfpr.servicebook.model.mapper.JobCandidateMapper;
 import br.edu.utfpr.servicebook.service.IndividualService;
+import br.edu.utfpr.servicebook.service.JobCandidateService;
 import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
@@ -44,6 +46,12 @@ public class FollowsController {
 
     @Autowired
     FollowsMapper followsMapper;
+
+    @Autowired
+    JobCandidateService jobCandidateService;
+
+    @Autowired
+    JobCandidateMapper jobCandidateMapper;
 
     /**
      * Trata da solitação via Fetch API para um cliente seguir um profissional.
@@ -100,29 +108,44 @@ public class FollowsController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/list")
+    @GetMapping("/showfollow")
     public ModelAndView showDetailsFollows() throws Exception {
         ModelAndView mv = new ModelAndView("client/details-follows");
-
-        Optional<Individual> oindividual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
-
         System.err.println("entrou na rota follows listagem.....");
-        System.err.println("client id.... " + oindividual.get().getId());
-
+        Optional<Individual> oindividual = individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
         IndividualDTO clientDTO = individualMapper.toDto(oindividual.get());
         SidePanelIndividualDTO sidePanelIndividualDTO = SidePanelUtil.getSidePanelDTO(clientDTO);
         mv.addObject("user", sidePanelIndividualDTO);
 
-        Individual individual = individualMapper.optionalToEntity(oindividual);
+        //lista de seguidores
+        List<Follows> followsList = followsService.findFollowingByClient(oindividual.get());
 
-        List<Follows> followsList = followsService.findFollowingByClient(individual);
-//        List<Follows> followsList = followsService.findFollowsByProfessional(individual);
-
-        List<FollowsDTO> followsDTOList = followsList.stream()
-                .map(teste -> followsMapper.toDto(teste))
+        List<Individual> oindiviList = followsList.stream()
+                .map(follows -> {
+                    return follows.getProfessional();
+                })
                 .collect(Collectors.toList());
 
-        mv.addObject("follows", followsDTOList);
+//        List<JobCandidateDTO> jobCandidatesDTOs = oindiviList.stream()
+//                .map(individual -> {
+//                    return  jobCandidateMapper.toDto(jobCandidateService.findByIndividual(individual));
+//
+//
+//                })
+//                .collect(Collectors.toList());
+
+
+//        List<JobCandidateDTO> jobCandidatesDTOs = jobCandidates.stream()
+//                .map(candidate -> {
+//                    Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(candidate.getIndividual());
+//                    candidate.getIndividual().setFollowsAmount(oProfessionalFollowingAmount.get());
+//                    return jobCandidateMapper.toDto(candidate);
+//                })
+//                .collect(Collectors.toList());
+
+
+        mv.addObject("follows", oindiviList);
+
 //        followsDTOList.get().getProfessional().getName();
 
         boolean isClient = true;

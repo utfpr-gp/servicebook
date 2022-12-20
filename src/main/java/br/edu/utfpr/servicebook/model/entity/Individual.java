@@ -42,7 +42,7 @@ public class Individual extends User {
 
     private Integer denounceAmount;
 
-    private Integer followsAmount;
+    private Long followsAmount;
 
     public Individual(String name, String email, String password, String phoneNumber, String cpf){
         super(name, email, password, phoneNumber);

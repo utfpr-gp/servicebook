@@ -1,10 +1,8 @@
 package br.edu.utfpr.servicebook.follower;
 
 import br.edu.utfpr.servicebook.model.entity.Follows;
-import br.edu.utfpr.servicebook.model.entity.FollowsPK;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
