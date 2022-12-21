@@ -88,29 +88,31 @@ public class ClientController {
 
     @GetMapping
     public ModelAndView show() throws Exception {
+
         ModelAndView mv = new ModelAndView("client/my-requests");
-        System.err.println("principallll" + authentication.getEmail());
-        Optional<Individual> individual = individualService.findByEmail(authentication.getEmail());
-        if (!individual.isPresent()) {
+
+        Optional<Individual> oClient = individualService.findByEmail(authentication.getEmail());
+
+        if (!oClient.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        //EM OBRA ********
+        //apresenta os eventos de notificação ao cliente que ainda não foram lidos
         List<EventSse> eventSsesList = sseService.findPendingEventsByEmail(authentication.getEmail());
-        List<EventSseDTO> eventSseDTOS = eventSsesList.stream()
+        List<EventSseDTO> eventSseDTOs = eventSsesList.stream()
                 .map(eventSse -> {
                     return eventSseMapper.toFullDto(eventSse);
                 })
                 .collect(Collectors.toList());
-        mv.addObject("eventsse", eventSSEDTOs);
+        mv.addObject("eventsse", eventSseDTOs);
 
+        //cria o dto do cliente
         IndividualDTO clientDTO = individualMapper.toDto(oClient.get());
-
         Optional<Long> oClientFollowingAmount = followsService.countByClient(oClient.get());
         clientDTO.setFollowingAmount(oClientFollowingAmount.get());
 
+        //cria o dto para passar ao painel lateral
         SidePanelIndividualDTO sidePanelIndividualDTO = SidePanelUtil.getSidePanelDTO(clientDTO);
-
         mv.addObject("user", sidePanelIndividualDTO);
 
         List<JobRequest> jobRequests = jobRequestService.findByClientOrderByDateCreatedDesc(oClient.get());
@@ -223,7 +225,7 @@ public class ClientController {
         }
         JobCandidateDTO jobCandidateDTO = jobCandidateMapper.toDto(jobCandidate.get());
 
-        Optional<Individual> client = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> client = (individualService.findByEmail(authentication.getEmail()));
         IndividualDTO individualDTO = individualMapper.toDto(client.get());
 
         List<Follows> follows = followsService.findFollowProfessionalClient(oCandidate.get(), client.get());

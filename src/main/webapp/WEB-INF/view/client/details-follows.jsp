@@ -4,7 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 
-<t:professional title="Meus Profissionais Favoritos">
+<t:template title="Meus Profissionais Favoritos">
   <jsp:body>
     <main>
       <div class="row">
@@ -21,7 +21,7 @@
 
 
                     <div class="col s12 m6 tertiary-color-text description-job  text-info-request">
-                      <h3>Meus seguidores</h3>
+                      <h3>Meus Profissionais Favoritos</h3>
                     </div>
 
 
@@ -119,4 +119,4 @@
 
     </main>
   </jsp:body>
-</t:professional>
+</t:template>

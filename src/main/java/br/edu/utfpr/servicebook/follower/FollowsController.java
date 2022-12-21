@@ -5,9 +5,9 @@ import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobCandidateMapper;
+import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobCandidateService;
-import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
 import org.slf4j.Logger;
@@ -53,6 +53,9 @@ public class FollowsController {
     @Autowired
     JobCandidateMapper jobCandidateMapper;
 
+    @Autowired
+    IAuthentication authentication;
+
     /**
      * Trata da solitação via Fetch API para um cliente seguir um profissional.
      * @param dto
@@ -65,7 +68,7 @@ public class FollowsController {
     @ResponseBody
     public ResponseEntity<Void> save(@Valid FollowsDTO dto, BindingResult errors, RedirectAttributes redirectAttributes) {
 
-        String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
+        String currentUserEmail = authentication.getEmail();
 
         for(FieldError e: errors.getFieldErrors()){
             log.info(e.getField() + " -> " + e.getCode());
@@ -90,7 +93,7 @@ public class FollowsController {
     @DeleteMapping("/professional/{professionalId}")
     public ResponseEntity<Void> delete(@PathVariable Long professionalId, RedirectAttributes redirectAttributes) {
 
-        String currentUserEmail = CurrentUserUtil.getCurrentUserEmail();
+        String currentUserEmail = authentication.getEmail();
 
         Optional<Individual> oClient = individualService.findByEmail(currentUserEmail);
         Optional<Individual> oProfessional = individualService.findById(professionalId);
@@ -112,7 +115,7 @@ public class FollowsController {
     public ModelAndView showDetailsFollows() throws Exception {
         ModelAndView mv = new ModelAndView("client/details-follows");
         System.err.println("entrou na rota follows listagem.....");
-        Optional<Individual> oindividual = individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail());
+        Optional<Individual> oindividual = individualService.findByEmail(authentication.getEmail());
         IndividualDTO clientDTO = individualMapper.toDto(oindividual.get());
         SidePanelIndividualDTO sidePanelIndividualDTO = SidePanelUtil.getSidePanelDTO(clientDTO);
         mv.addObject("user", sidePanelIndividualDTO);
