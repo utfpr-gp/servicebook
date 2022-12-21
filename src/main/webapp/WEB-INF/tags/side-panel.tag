@@ -2,6 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@attribute name="individual" type="br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO" %>
 <%@attribute name="dataIndividual" type="br.edu.utfpr.servicebook.util.sidePanel.SidePanelItensDTO" %>
+<%@attribute name="followdto" type="br.edu.utfpr.servicebook.follower.FollowsDTO" %>
+
 
     <div class="col s12 l3 hide-on-med-and-down no-padding" id="area-perfil">
         <div class="row primary-background-color area-perfil no-margin">
@@ -98,6 +100,34 @@
 
             </div>
         </div>
+        <c:if test="${isClient != false}">
+            <div class="row primary-background-color no-margin">
+                <div class="col s12">
+                        <p class="header-verification tertiary-color-text center">PROFISSIONAIS FAVORITOS</p>
+                </div>
+            </div>
+            <div class="row secondary-background-color no-margin">
+                <div class="col s12">
+                    <h5 class="name-header no-margin center white-text">
+                        <strong><a href="follow/showfollow">${individual.followingAmount}</a></strong>
+                    </h5>
+                </div>
+            </div>
+        </c:if>
+        <c:if test="${isClient == false}">
+            <div class="row primary-background-color no-margin">
+                <div class="col s12">
+                    <p class="header-verification tertiary-color-text center">SEGUIDORES</p>
+                </div>
+            </div>
+            <div class="row secondary-background-color no-margin">
+                <div class="col s12 left-align">
+                    <h5 class="name-header no-margin center white-text">
+                        <strong>${individual.followingAmount}</strong>
+                    </h5>
+                </div>
+            </div>
+        </c:if>
         <c:if test="${isClient != false}">
             <div class="row no-margin center">
                 <div class="col s12 no-margin no-padding input-field area-profission-select">

@@ -22,7 +22,7 @@ public class Individual extends User {
     public enum Gender {
         MASCULINE, FEMININE
     };
-
+//    private int id;
     @NonNull
     @Column(unique = true)
     private String cpf;
@@ -41,6 +41,8 @@ public class Individual extends User {
     private String description;
 
     private Integer denounceAmount;
+
+    private Long followsAmount;
 
     public Individual(String name, String email, String password, String phoneNumber, String cpf){
         super(name, email, password, phoneNumber);

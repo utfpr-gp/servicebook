@@ -51,6 +51,10 @@ public class JobCandidateService {
         return jobCandidateRepository.findByJobIdAndIndividualId(jobId, individualId);
     }
 
+    public List<JobCandidate> findByIndividual(Individual individual) {
+        return jobCandidateRepository.findByIndividual(individual);
+    }
+
     public List<JobCandidate> findByJobRequestOrderByChosenByBudgetDesc(JobRequest jobRequest) {
       return this.jobCandidateRepository.findByJobRequestOrderByChosenByBudgetDesc(jobRequest);
   }

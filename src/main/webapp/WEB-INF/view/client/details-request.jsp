@@ -128,7 +128,7 @@
                           <div class="row ${(jobCandidate.chosenByBudget) ? 'primary-background-color': ''} no-margin">
                             <div class="col s12 icons-area-request center padding">
                               <div class="row">
-                                <div class="col s8 center">
+                                <div class="col s6">
                                   <div class="left star-icons candidate dark-color-text">
                                     <c:forEach var="star" begin="1" end="5">
                                       <c:if test="${star <= jobCandidate.individual.rating}">
@@ -140,9 +140,15 @@
                                     </c:forEach>
                                   </div>
                                 </div>
-                                <div class="col s4">
-                                  <div class="right check-circle-candidate">
-                                    <i class="material-icons green-text darken-3-text">check_circle</i>
+                                <div class="col s6">
+                                  <div class="col s4 left">
+                                    <div class="right check-circle-candidate">
+                                      <i class="material-icons green-text darken-3-text">check_circle</i>
+                                    </div>
+                                  </div>
+                                  <div class="col s8 right">
+                                        <div class="left black-text">${jobCandidate.individual.followsAmount != 0 ? jobCandidate.individual.followsAmount : " "}</div>
+                                        <div class="right"><i alt="seguir" class="material-icons black-text small">thumb_up</i></div>
                                   </div>
                                 </div>
                               </div>

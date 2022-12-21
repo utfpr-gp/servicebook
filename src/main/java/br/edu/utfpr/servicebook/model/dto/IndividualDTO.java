@@ -12,6 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -19,6 +20,7 @@ import java.util.Date;
 @ToString
 public class IndividualDTO extends UserDTO implements Serializable {
 
+    private Long id;
     @CPF(message = "CPF inválido! Por favor, insira um CPF válido.", groups = IndividualDTO.RequestUserNameAndCPFInfoGroupValidation.class)
     private String cpf;
 
@@ -34,6 +36,8 @@ public class IndividualDTO extends UserDTO implements Serializable {
     private int rating;
 
     private int denounceAmount;
+
+    private Long followingAmount;
 
     public String getOnlyNumbersFromPhone() {
         return getPhoneNumber().replaceAll("[^0-9]", "");

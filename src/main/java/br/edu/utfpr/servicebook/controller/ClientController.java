@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
+import br.edu.utfpr.servicebook.follower.FollowsService;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
@@ -69,6 +70,7 @@ public class ClientController {
 
     @Autowired
     private JobContractedMapper jobContractedMapper;
+
     @Autowired
     private QuartzService quartzService;
 
@@ -81,31 +83,39 @@ public class ClientController {
     @Autowired
     private IAuthentication authentication;
 
+    @Autowired
+    private FollowsService followsService;
+
     @GetMapping
     public ModelAndView show() throws Exception {
+
         ModelAndView mv = new ModelAndView("client/my-requests");
-        System.err.println("principallll" + authentication.getEmail());
-        Optional<Individual> individual = individualService.findByEmail(authentication.getEmail());
-        if (!individual.isPresent()) {
+
+        Optional<Individual> oClient = individualService.findByEmail(authentication.getEmail());
+
+        if (!oClient.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        //EM OBRA ********
+        //apresenta os eventos de notificação ao cliente que ainda não foram lidos
         List<EventSse> eventSsesList = sseService.findPendingEventsByEmail(authentication.getEmail());
-        List<EventSseDTO> eventSseDTOS = eventSsesList.stream()
+        List<EventSseDTO> eventSseDTOs = eventSsesList.stream()
                 .map(eventSse -> {
                     return eventSseMapper.toFullDto(eventSse);
                 })
                 .collect(Collectors.toList());
-        mv.addObject("eventsse", eventSseDTOS);
-        //EM OBRA ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        mv.addObject("eventsse", eventSseDTOs);
 
-        IndividualDTO clientDTO = individualMapper.toDto(individual.get());
+        //cria o dto do cliente
+        IndividualDTO clientDTO = individualMapper.toDto(oClient.get());
+        Optional<Long> oClientFollowingAmount = followsService.countByClient(oClient.get());
+        clientDTO.setFollowingAmount(oClientFollowingAmount.get());
 
+        //cria o dto para passar ao painel lateral
         SidePanelIndividualDTO sidePanelIndividualDTO = SidePanelUtil.getSidePanelDTO(clientDTO);
         mv.addObject("user", sidePanelIndividualDTO);
 
-        List<JobRequest> jobRequests = jobRequestService.findByClientOrderByDateCreatedDesc(individual.get());
+        List<JobRequest> jobRequests = jobRequestService.findByClientOrderByDateCreatedDesc(oClient.get());
 
         List<JobRequestMinDTO> jobRequestDTOs = jobRequests.stream()
                 .map(job -> {
@@ -179,7 +189,11 @@ public class ClientController {
         List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequestOrderByChosenByBudgetDesc(job.get());
 
         List<JobCandidateDTO> jobCandidatesDTOs = jobCandidates.stream()
-                .map(candidate -> jobCandidateMapper.toDto(candidate))
+                .map(candidate -> {
+                    Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(candidate.getIndividual());
+                    candidate.getIndividual().setFollowsAmount(oProfessionalFollowingAmount.get());
+                    return jobCandidateMapper.toDto(candidate);
+                })
                 .collect(Collectors.toList());
 
         mv.addObject("candidates", jobCandidatesDTOs);
@@ -189,25 +203,37 @@ public class ClientController {
         return mv;
     }
 
-    
-
+    /**
+     * Apresenta a tela de detalhes de um candidato para um serviço.
+     * @param jobId
+     * @param candidateId
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/meus-pedidos/{jobId}/detalhes/{candidateId}")
     public ModelAndView showDetailsRequestCandidate(@PathVariable Optional<Long> jobId, @PathVariable Optional<Long> candidateId) throws Exception {
         ModelAndView mv = new ModelAndView("client/details-request-candidate");
 
-        Optional<Individual> oIndividual = individualService.findById(candidateId.get());
-        if (!oIndividual.isPresent()) {
+        Optional<Individual> oCandidate = individualService.findById(candidateId.get());
+        if (!oCandidate.isPresent()) {
             throw new EntityNotFoundException("Individuo não encontrado");
         }
 
-        Optional<JobCandidate> jobCandidate = jobCandidateService.findById(jobId.get(), oIndividual.get().getId());
+        Optional<JobCandidate> jobCandidate = jobCandidateService.findById(jobId.get(), oCandidate.get().getId());
         if (!jobCandidate.isPresent()) {
             throw new EntityNotFoundException("Candidato não encontrado");
         }
-
         JobCandidateDTO jobCandidateDTO = jobCandidateMapper.toDto(jobCandidate.get());
 
+        Optional<Individual> client = (individualService.findByEmail(authentication.getEmail()));
+        IndividualDTO individualDTO = individualMapper.toDto(client.get());
+
+        List<Follows> follows = followsService.findFollowProfessionalClient(oCandidate.get(), client.get());
+        boolean isFollow = !follows.isEmpty();
+
         mv.addObject("jobCandidate", jobCandidateDTO);
+        mv.addObject("isFollow", isFollow);
+        mv.addObject("jobClient", individualDTO);
 
         return mv;
     }
