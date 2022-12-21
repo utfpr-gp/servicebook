@@ -34,6 +34,7 @@ public class JobRequestDTO implements Serializable {
     private Integer quantityCandidatorsMax;
 
     @NotBlank(message = "A Descrição não pode ser vazia.", groups = RequestDescriptionGroupValidation.class)
+    @NotNull(message = "A Descrição não pode ser vazia.", groups = RequestDescriptionGroupValidation.class)
     private String description;
 
     private MultipartFile imageFile;

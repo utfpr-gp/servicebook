@@ -3,49 +3,28 @@ package br.edu.utfpr.servicebook.controller;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.City;
 import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.model.entity.State;
 import br.edu.utfpr.servicebook.model.entity.UserCode;
 import br.edu.utfpr.servicebook.model.mapper.*;
+import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.service.*;
-import br.edu.utfpr.servicebook.util.CurrentUserUtil;
-import br.edu.utfpr.servicebook.util.WizardSessionUtil;
-import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
-import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.security.InvalidParameterException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequestMapping("/minha-conta")
 @Controller
@@ -78,6 +57,9 @@ public class MyAccountController {
     @Autowired
     private QuartzService quartzService;
 
+    @Autowired
+    private IAuthentication authentication;
+
     @GetMapping
     public String home(HttpServletRequest request) {
         return "redirect:/minha-conta/cliente";
@@ -85,7 +67,7 @@ public class MyAccountController {
 
     @GetMapping("/perfil")
     public ModelAndView editProfile() throws IOException {
-        Optional<Individual> oIndividual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oIndividual = (individualService.findByEmail(authentication.getEmail()));
         if (!oIndividual.isPresent()) {
             throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }

@@ -3,7 +3,7 @@ uri="http://www.springframework.org/tags/form" prefix="form" %> <%@taglib
 prefix="t" tagdir="/WEB-INF/tags" %> <%@ taglib prefix="c"
 uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:client title="Minhas Solicitações">
+<t:template title="Minhas Solicitações">
   <jsp:body>
     <main>
       <div class="row">
@@ -126,7 +126,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
       </div>
     </main>
   </jsp:body>
-</t:client>
+</t:template>
 <script src="assets/resources/scripts/requests.js"></script>
 
 <c:if test="${not empty msg}">

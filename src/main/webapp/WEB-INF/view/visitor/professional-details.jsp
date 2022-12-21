@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<t:visitor title="Servicebook - Início">
+<t:template title="Servicebook - Início">
     <jsp:body>
 
         <div id="" class="blue lighten-1">
@@ -88,4 +88,4 @@
         </div>
 
     </jsp:body>
-</t:visitor>
+</t:template>

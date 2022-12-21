@@ -2,17 +2,15 @@ package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
-import br.edu.utfpr.servicebook.model.dto.ProfessionalDTO;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.mapper.ProfessionalMapper;
+import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.service.ExpertiseService;
 import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobContractedService;
 import br.edu.utfpr.servicebook.service.ProfessionalExpertiseService;
-import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelItensDTO;
@@ -20,7 +18,6 @@ import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +39,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -78,6 +74,9 @@ public class ExpertiseController {
 
     @Autowired
     private SidePanelUtil sidePanelUtil;
+
+    @Autowired
+    private IAuthentication authentication;
 
     @GetMapping
     public ModelAndView showForm(HttpServletRequest request,
@@ -154,7 +153,7 @@ public class ExpertiseController {
     @GetMapping("/api/get-by-professional/{id}")
     @ResponseBody
     public SidePanelItensDTO getExpertiseData(@PathVariable("id") Long expertiseId) throws Exception {
-        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");

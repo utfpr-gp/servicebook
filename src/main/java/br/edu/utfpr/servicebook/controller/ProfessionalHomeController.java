@@ -5,12 +5,12 @@ import br.edu.utfpr.servicebook.follower.FollowsService;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
+import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.sse.EventSse;
 import br.edu.utfpr.servicebook.sse.EventSseDTO;
 import br.edu.utfpr.servicebook.sse.EventSseMapper;
 import br.edu.utfpr.servicebook.sse.SSEService;
-import br.edu.utfpr.servicebook.util.CurrentUserUtil;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
@@ -98,11 +98,14 @@ public class ProfessionalHomeController {
     @Autowired
     private JobAvailableToHideService jobAvailableToHideService;
 
+    @Autowired
+    private IAuthentication authentication;
+
     @GetMapping
     public ModelAndView showMyAccountProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> id) throws Exception {
         log.debug("ServiceBook: Minha conta.");
    
-        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
@@ -134,7 +137,7 @@ public class ProfessionalHomeController {
         mv.addObject("id", id.orElse(0L));
 
         //FAZER ENVIO DE NOTIFICAÇÃO PARA O PROFISSIONAL
-        List<EventSse> eventSsesList = sseService.findPendingEventsByEmail(CurrentUserUtil.getCurrentUserEmail());
+        List<EventSse> eventSsesList = sseService.findPendingEventsByEmail(authentication.getEmail());
         List<EventSseDTO> eventSseDTOS = eventSsesList.stream()
                 .map(eventSse -> {
                     return eventSseMapper.toFullDto(eventSse);
@@ -169,7 +172,7 @@ public class ProfessionalHomeController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> oIndividual = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oIndividual = (individualService.findByEmail(authentication.getEmail()));
 
         if (!oIndividual.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -232,7 +235,7 @@ public class ProfessionalHomeController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -294,7 +297,7 @@ public class ProfessionalHomeController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -356,7 +359,7 @@ public class ProfessionalHomeController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -418,7 +421,7 @@ public class ProfessionalHomeController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -480,7 +483,7 @@ public class ProfessionalHomeController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -543,7 +546,7 @@ public class ProfessionalHomeController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -599,7 +602,7 @@ public class ProfessionalHomeController {
     public ModelAndView showMyDetails() throws Exception {
         ModelAndView mv = new ModelAndView("client/details-contact");
 
-        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -625,7 +628,7 @@ public class ProfessionalHomeController {
             @PathVariable Long id
     ) throws Exception {
 
-        Optional<Individual> oProfessional = (individualService.findByEmail(CurrentUserUtil.getCurrentUserEmail()));
+        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");

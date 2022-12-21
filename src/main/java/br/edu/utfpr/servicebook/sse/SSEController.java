@@ -1,8 +1,6 @@
 package br.edu.utfpr.servicebook.sse;
 
-import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.model.entity.JobRequest;
-import br.edu.utfpr.servicebook.util.CurrentUserUtil;
+import br.edu.utfpr.servicebook.security.IAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.persistence.EntityNotFoundException;
-import java.io.IOException;
-import java.util.*;
 
 @RequestMapping("/sse")
 @Controller
@@ -25,13 +19,16 @@ public class SSEController {
     @Autowired
     SSEService sseService;
 
+    @Autowired
+    private IAuthentication authentication;
+
     /**
      * Realiza a criação de um canal para o envio de notificações para o cliente.
      * @return
      */
     @GetMapping("/subscribe")
     public SseEmitter subscribe() {
-        String username = CurrentUserUtil.getCurrentUserEmail();
+        String username = authentication.getEmail();
         System.err.println("Subscrevendo: " + username);
         return sseService.createChannel(username);
     }

@@ -41,19 +41,19 @@ VALUES ('Industrial', '800', '85053525', 'Avenida Professora Laura Pacheco Basto
 
 INSERT INTO users
 (email, email_verified, name, phone_number, phone_verified, profile_picture, profile_verified,
- address_id, rating)
+ address_id, rating, profile, password)
 VALUES ('profissional1@gmail.com', 'true', 'Nome do Primeiro Profissional', '(42) 99999-9991', 'true',
-        'https://i.imgur.com/owhNAKK.png', 'true', '1', 2),
+        'https://i.imgur.com/owhNAKK.png', 'true', '1', 2, 'ROLE_ADMIN','$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS'),
        ('profissional2@gmail.com', 'true', 'Nome do Segundo Profissional', '(42) 99999-9992', 'true',
-        'https://i.imgur.com/sHAg9pz.png', 'true', '1', 4),
+        'https://i.imgur.com/sHAg9pz.png', 'true', '1', 4,'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS'),
        ('cliente1@gmail.com', 'true', 'Nome do Primeiro Cliente', '(42) 99999-9993', 'true',
-        'https://i.imgur.com/y9dH2bJ.jpeg', 'true', '1', 5),
+        'https://i.imgur.com/y9dH2bJ.jpeg', 'true', '1', 5, 'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS'),
        ('cliente2@gmail.com', 'true', 'Nome do Segundo Cliente', '(42) 99999-9994', 'true',
-        'https://i.imgur.com/owhNAKK.png', 'true', '1', 1),
+        'https://i.imgur.com/owhNAKK.png', 'true', '1', 1, 'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS'),
        ('profissional3@gmail.com', 'true', 'Nome do Terceiro Profissional', '(42) 99999-9995', 'false',
-        null, 'false', '1', 3),
+        null, 'false', '1', 3, 'ROLE_USER', 'qwerty'),
        ('profissional4@gmail.com', 'true', 'Nome do Quarto Profissional', '(42) 99999-9996', 'true',
-        'https://i.imgur.com/owhNAKK.png', 'true', '1', 2);
+        'https://i.imgur.com/owhNAKK.png', 'true', '1', 2, 'ROLE_USER', 'qwerty');
 
 INSERT INTO individuals (cpf, description, gender, birth_date, id)
 VALUES ('982.988.640-93', 'Descrição profissional 1', 'MASCULINE', '2003-01-01', '1'),

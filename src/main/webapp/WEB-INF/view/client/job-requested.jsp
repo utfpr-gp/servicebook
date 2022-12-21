@@ -3,7 +3,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:client title="Status do pedido">
+<t:template title="Status do pedido">
     <jsp:body>
         <main>
             <div class="container">
@@ -47,4 +47,4 @@
             </div>
         </main>
     </jsp:body>
-</t:client>
+</t:template>
