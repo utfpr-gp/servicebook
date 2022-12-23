@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SidePanelItensDTO {
+public class SidePanelStatisticsDTO {
     private Long jobs;
     private Long comments;
     private Long ratings;

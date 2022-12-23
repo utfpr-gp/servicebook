@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.annotation.security.PermitAll;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
@@ -57,6 +58,7 @@ public class LoginController {
     private static final Logger log = LoggerFactory.getLogger(LoginController.class);
 
     @GetMapping
+    @PermitAll
     public ModelAndView showLogin() {
         ModelAndView mv = new ModelAndView("visitor/login");
         return mv;
@@ -98,6 +100,7 @@ public class LoginController {
      * @throws IOException
      */
     @GetMapping("/email")
+    @PermitAll
     public String formEmail() throws IOException {
         return "visitor/login";
     }
@@ -107,13 +110,15 @@ public class LoginController {
      * @return
      * @throws IOException
      */
-    @GetMapping("/login-by-token-email/{code}")
+    @GetMapping("/codigo/{code}")
+    @PermitAll
     public String loginByTokenEmail(
             @PathVariable("code") String code,
             @Validated(LoginDTO.CodeGroupValidation.class) LoginDTO dto,
             BindingResult errors,
             Model model
     ) throws IOException {
+
         if (errors.hasErrors()) {
             return this.codeErrorForwarding(dto, model, errors);
         }
@@ -145,6 +150,7 @@ public class LoginController {
      * @throws MessagingException
      */
     @PostMapping("/email")
+    @PermitAll
     public String loginUserEmail(
             HttpSession httpSession,
             @Validated(LoginDTO.EmailGroupValidation.class) LoginDTO dto,
@@ -175,11 +181,11 @@ public class LoginController {
             UserCode userCode = new UserCode(dto.getEmail(), code);
             userCodeService.save(userCode);
 
-            String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/login-by-token-email/" + code;
+            String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/codigo/" + code;
             quartzService.sendEmailWithAuthenticatationCode(dto.getEmail(), code, tokenLink, oUser.get().getName());
 
         } else {
-            String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/login-by-token-email/" + oUserCode.get().getCode();
+            String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/codigo/" + oUserCode.get().getCode();
             quartzService.sendEmailWithAuthenticatationCode(dto.getEmail(), oUserCode.get().getCode(), tokenLink, oUser.get().getName());
 
         }
@@ -197,6 +203,7 @@ public class LoginController {
      * @throws IOException
      */
     @GetMapping("/token")
+    @PermitAll
     public String formToken() throws IOException {
         return "visitor/login-sucess";
     }
@@ -211,6 +218,7 @@ public class LoginController {
      * @return
      */
     @PostMapping("/token")
+    @PermitAll
     public String saveUserEmailCode(
             HttpSession httpSession,
             @Validated(LoginDTO.CodeGroupValidation.class) LoginDTO dto,

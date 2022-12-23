@@ -1,5 +1,5 @@
 (function (){
-    const URL = "follow";
+    const URL = "profissionais-favoritos";
 
     //submete a requisição para seguir
     if(document.querySelector("#follow-button")){
@@ -20,7 +20,7 @@
     if(document.querySelector("#unfollow-button")){
         document.querySelector("#unfollow-button").addEventListener("click", function () {
             let professionalId = this.dataset.professional;
-            fetch(`${URL}/professional/${professionalId}`, {
+            fetch(`${URL}/${professionalId}`, {
                 method: 'delete'
             }).then((response) => {
                 location.reload();

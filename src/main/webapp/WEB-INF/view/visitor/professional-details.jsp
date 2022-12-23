@@ -73,7 +73,7 @@
                         SERVIÇO QUE VOCÊ PRECISA!
                     </p>
                     <c:if test="${logged == false}">
-                        <a class="waves-effect waves-light btn" href="entrar">Entrar</a>
+                        <a class="waves-effect waves-light btn" href="login">Entrar</a>
                     </c:if>
                 </div>
                 <c:if test="${logged == false}">

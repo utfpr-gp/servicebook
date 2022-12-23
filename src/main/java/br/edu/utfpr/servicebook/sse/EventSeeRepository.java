@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public interface EventSeeRepository extends JpaRepository<EventSse, Long> {
+public interface EventSeeRepository extends JpaRepository<EventSSE, Long> {
 
     /**
      * Busca uma lista de notificações a serem enviadas a um dado usuário, mas apenas
@@ -16,8 +16,8 @@ public interface EventSeeRepository extends JpaRepository<EventSse, Long> {
      * @param toEmail
      * @return
      */
-    @Query("SELECT e FROM EventSse e WHERE e.toEmail = :toEmail and e.readStatus = false")
-    List<EventSse> findPendingEventsByEmail(@Param("toEmail") String toEmail);
+    @Query("SELECT e FROM EventSSE e WHERE e.toEmail = :toEmail and e.readStatus = false")
+    List<EventSSE> findPendingEventsByEmail(@Param("toEmail") String toEmail);
 
     /**
      * Marca a notificação como lida para o id.
@@ -26,7 +26,7 @@ public interface EventSeeRepository extends JpaRepository<EventSse, Long> {
      */
     @Modifying
     @Transactional
-    @Query("update EventSse e set e.readStatus = true where e.id = :id")
+    @Query("update EventSSE e set e.readStatus = true where e.id = :id")
     void modifyStatusById(@Param("id") Long id);
 
 }

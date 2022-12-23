@@ -41,22 +41,22 @@ public class SSEService {
     /**
      * Tenta enviar a mensagem para o cliente. Caso o cliente esteja offline, remove o emissor e guarda
      * a mensagem no banco de dados.
-     * @param eventSseDto
+     * @param eventSSEDto
      */
-    public void send(EventSse eventSseDto) {
-        inMemorySseEmitterRepository.get(eventSseDto.getToEmail()).ifPresent(emitter -> {
+    public void send(EventSSE eventSSEDto) {
+        inMemorySseEmitterRepository.get(eventSSEDto.getToEmail()).ifPresent(emitter -> {
             try {
-                emitter.send(eventSseDto);
-                System.err.println("enviando emiter: " + eventSseDto);
+                emitter.send(eventSSEDto);
+                System.err.println("enviando emiter: " + eventSSEDto);
 
-                eventSeeRepository.save(eventSseDto);
+                eventSeeRepository.save(eventSSEDto);
                 //TODO salvar o evento como lido no banco para futuramente criar pagina notificações antigas.
-                System.err.println("user online...salvando em banco emiter: " + eventSseDto);
+                System.err.println("user online...salvando em banco emiter: " + eventSSEDto);
             } catch (Exception e) {
                 //esta removendo pois não esta logado
-                inMemorySseEmitterRepository.remove(eventSseDto.getToEmail());
-                eventSeeRepository.save(eventSseDto);
-                System.err.println("user offline...salvando em banco emiter: " + eventSseDto);
+                inMemorySseEmitterRepository.remove(eventSSEDto.getToEmail());
+                eventSeeRepository.save(eventSSEDto);
+                System.err.println("user offline...salvando em banco emiter: " + eventSSEDto);
             }
         });
     }
@@ -66,7 +66,7 @@ public class SSEService {
      * @param toEmail
      * @return
      */
-    public List<EventSse> findPendingEventsByEmail(String toEmail) {
+    public List<EventSSE> findPendingEventsByEmail(String toEmail) {
         return this.eventSeeRepository.findPendingEventsByEmail(toEmail);
     }
 

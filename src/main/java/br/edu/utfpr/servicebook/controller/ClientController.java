@@ -6,9 +6,10 @@ import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.security.IAuthentication;
+import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
-import br.edu.utfpr.servicebook.sse.EventSse;
-import br.edu.utfpr.servicebook.sse.EventSseDTO;
+import br.edu.utfpr.servicebook.sse.EventSSE;
+import br.edu.utfpr.servicebook.sse.EventSSEDTO;
 import br.edu.utfpr.servicebook.sse.EventSseMapper;
 import br.edu.utfpr.servicebook.sse.SSEService;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -86,10 +88,15 @@ public class ClientController {
     @Autowired
     private FollowsService followsService;
 
-    @GetMapping
-    public ModelAndView show() throws Exception {
+    @Autowired
+    private SidePanelUtil sidePanelUtil;
 
-        ModelAndView mv = new ModelAndView("client/my-requests");
+    @Autowired
+    private PaginationUtil paginationUtil;
+
+    @GetMapping
+    @RolesAllowed({RoleType.USER})
+    public ModelAndView show() throws Exception {
 
         Optional<Individual> oClient = individualService.findByEmail(authentication.getEmail());
 
@@ -98,13 +105,12 @@ public class ClientController {
         }
 
         //apresenta os eventos de notificação ao cliente que ainda não foram lidos
-        List<EventSse> eventSsesList = sseService.findPendingEventsByEmail(authentication.getEmail());
-        List<EventSseDTO> eventSseDTOs = eventSsesList.stream()
+        List<EventSSE> eventSsesList = sseService.findPendingEventsByEmail(authentication.getEmail());
+        List<EventSSEDTO> eventSseDTOs = eventSsesList.stream()
                 .map(eventSse -> {
                     return eventSseMapper.toFullDto(eventSse);
                 })
                 .collect(Collectors.toList());
-        mv.addObject("eventsse", eventSseDTOs);
 
         //cria o dto do cliente
         IndividualDTO clientDTO = individualMapper.toDto(oClient.get());
@@ -112,8 +118,7 @@ public class ClientController {
         clientDTO.setFollowingAmount(oClientFollowingAmount.get());
 
         //cria o dto para passar ao painel lateral
-        SidePanelIndividualDTO sidePanelIndividualDTO = SidePanelUtil.getSidePanelDTO(clientDTO);
-        mv.addObject("user", sidePanelIndividualDTO);
+        SidePanelIndividualDTO sidePanelIndividualDTO = sidePanelUtil.getIndividualInfo(clientDTO);
 
         List<JobRequest> jobRequests = jobRequestService.findByClientOrderByDateCreatedDesc(oClient.get());
 
@@ -128,12 +133,23 @@ public class ClientController {
                 })
                 .collect(Collectors.toList());
 
+        ModelAndView mv = new ModelAndView("client/my-requests");
+        mv.addObject("user", sidePanelIndividualDTO);
         mv.addObject("jobRequests", jobRequestDTOs);
+        mv.addObject("eventsse", eventSseDTOs);
 
         return mv;
     }
 
+    /**
+     * Cliente remove o seu próprio anúncio.
+     * @param id
+     * @param redirectAttributes
+     * @return
+     * @throws IOException
+     */
     @DeleteMapping("/meus-pedidos/{id}")
+    @RolesAllowed({RoleType.USER})
     public String delete (@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
         Optional<Individual> individual = (individualService.findByEmail(authentication.getEmail()));
@@ -161,21 +177,29 @@ public class ClientController {
         return "redirect:/minha-conta/meus-pedidos";
     }
 
+    /**
+     * Mostra a tela de detalhes de um anúncio do cliente, ou seja, com os candidatos.
+     * @param id
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/meus-pedidos/{id}")
+    @RolesAllowed({RoleType.USER})
     public ModelAndView showDetailsRequest(@PathVariable Optional<Long> id) throws Exception {
+
         ModelAndView mv = new ModelAndView("client/details-request");
         mv.addObject("user", this.getSidePanelUser());
 
-        Optional<JobRequest> job = jobRequestService.findById(id.get());
+        Optional<JobRequest> jobRequest = jobRequestService.findById(id.get());
 
-        if (!job.isPresent()) {
+        if (!jobRequest.isPresent()) {
             throw new EntityNotFoundException("Solicitação de serviço não encontrado. Por favor, tente novamente.");
         }
 
-        JobRequestFullDTO jobDTO = jobRequestMapper.toFullDto(job.get());
+        JobRequestFullDTO jobDTO = jobRequestMapper.toFullDto(jobRequest.get());
         mv.addObject("jobRequest", jobDTO);
 
-        Long expertiseId = job.get().getExpertise().getId();
+        Long expertiseId = jobRequest.get().getExpertise().getId();
 
         Optional<Expertise> expertise = expertiseService.findById(expertiseId);
 
@@ -186,7 +210,7 @@ public class ClientController {
         ExpertiseMinDTO expertiseDTO = expertiseMapper.toMinDto(expertise.get());
         mv.addObject("expertise", expertiseDTO);
 
-        List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequestOrderByChosenByBudgetDesc(job.get());
+        List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequestOrderByChosenByBudgetDesc(jobRequest.get());
 
         List<JobCandidateDTO> jobCandidatesDTOs = jobCandidates.stream()
                 .map(candidate -> {
@@ -197,9 +221,6 @@ public class ClientController {
                 .collect(Collectors.toList());
 
         mv.addObject("candidates", jobCandidatesDTOs);
-        boolean isClient = true;
-        mv.addObject("isClient", isClient);
-
         return mv;
     }
 
@@ -211,12 +232,13 @@ public class ClientController {
      * @throws Exception
      */
     @GetMapping("/meus-pedidos/{jobId}/detalhes/{candidateId}")
+    @RolesAllowed({RoleType.USER})
     public ModelAndView showDetailsRequestCandidate(@PathVariable Optional<Long> jobId, @PathVariable Optional<Long> candidateId) throws Exception {
         ModelAndView mv = new ModelAndView("client/details-request-candidate");
 
         Optional<Individual> oCandidate = individualService.findById(candidateId.get());
         if (!oCandidate.isPresent()) {
-            throw new EntityNotFoundException("Individuo não encontrado");
+            throw new EntityNotFoundException("O usuário não foi encontrado!");
         }
 
         Optional<JobCandidate> jobCandidate = jobCandidateService.findById(jobId.get(), oCandidate.get().getId());
@@ -239,6 +261,7 @@ public class ClientController {
     }
 
     @GetMapping("/meus-pedidos/disponiveis")
+    @RolesAllowed({RoleType.USER})
     public ModelAndView showAvailableJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -270,7 +293,7 @@ public class ClientController {
                     return jobRequestMapper.toFullDto(jobRequest, Optional.ofNullable(0L));
                 }).collect(Collectors.toList());
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/cliente/meus-pedidos/disponiveis");
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/cliente/meus-pedidos/disponiveis");
 
         ModelAndView mv = new ModelAndView("client/job-request/tabs/available-jobs-report");
         mv.addObject("pagination", paginationDTO);
@@ -287,6 +310,7 @@ public class ClientController {
      * @return
      */
     @DeleteMapping("/desistir/{id}")
+    @RolesAllowed({RoleType.USER})
     public String desist(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         String currentUserEmail = authentication.getEmail();
 
@@ -299,16 +323,16 @@ public class ClientController {
         if(!oJobRequest.isPresent()) {
             throw new EntityNotFoundException("O anúncio não foi encontrado!");
         }
+
         jobRequestService.delete(id);
-
         quartzService.sendEmailToConfirmationStatus(id);
-
         redirectAttributes.addFlashAttribute("msg", "O pedido foi excluído com sucesso!");
 
         return "redirect:/minha-conta/cliente#disponiveis";
     }
 
     @GetMapping("/meus-pedidos/para-orcamento")
+    @RolesAllowed({RoleType.USER})
     public ModelAndView showDisputedJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -340,7 +364,7 @@ public class ClientController {
                     return jobRequestMapper.toFullDto(jobRequest, Optional.ofNullable(0L));
                 }).collect(Collectors.toList());
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/cliente/meus-pedidos/disponiveis");
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/cliente/meus-pedidos/disponiveis");
 
         ModelAndView mv = new ModelAndView("client/job-request/tabs/available-jobs-report");
         mv.addObject("pagination", paginationDTO);
@@ -360,6 +384,7 @@ public class ClientController {
      * @throws Exception
      */
     @GetMapping("/meus-pedidos/para-fazer")
+    @RolesAllowed({RoleType.USER})
     public ModelAndView showTodoJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -391,7 +416,7 @@ public class ClientController {
                     return jobRequestMapper.toFullDto(jobRequest, Optional.ofNullable(0L));
                 }).collect(Collectors.toList());
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/cliente/meus-pedidos/disponiveis");
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/cliente/meus-pedidos/disponiveis");
 
         ModelAndView mv = new ModelAndView("client/job-request/tabs/available-jobs-report");
         mv.addObject("pagination", paginationDTO);
@@ -411,6 +436,7 @@ public class ClientController {
      * @throws Exception
      */
     @GetMapping("/meus-pedidos/para-confirmar")
+    @RolesAllowed({RoleType.USER})
     public ModelAndView showForHiredJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -442,7 +468,7 @@ public class ClientController {
                     return jobCandidateMapper.toMinDto(jobCandidate, Optional.ofNullable(0L));
                 }).collect(Collectors.toList());
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/cliente/meus-pedidos/para-confirmar");
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/cliente/meus-pedidos/para-confirmar");
 
         ModelAndView mv = new ModelAndView("client/job-request/tabs/to-hired-jobs-report");
         mv.addObject("pagination", paginationDTO);
@@ -452,6 +478,7 @@ public class ClientController {
     }
 
     @GetMapping("/meus-pedidos/fazendo")
+    @RolesAllowed({RoleType.USER})
     public ModelAndView showDoingJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -483,7 +510,7 @@ public class ClientController {
                     return jobCandidateMapper.toMinDto(jobCandidate, Optional.ofNullable(0L));
                 }).collect(Collectors.toList());
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/cliente/meus-pedidos/fazendo");
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/cliente/meus-pedidos/fazendo");
 
         ModelAndView mv = new ModelAndView("client/job-request/tabs/doing-jobs-report");
         mv.addObject("pagination", paginationDTO);
@@ -495,6 +522,7 @@ public class ClientController {
     }
 
     @GetMapping("/meus-pedidos/executados")
+    @RolesAllowed({RoleType.USER})
     public ModelAndView showJobsPerformed(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -527,7 +555,7 @@ public class ClientController {
                 })
                 .collect(Collectors.toList());
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobContractedPage, "/minha-conta/cliente/meus-pedidos/executados");
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobContractedPage, "/minha-conta/cliente/meus-pedidos/executados");
 
         ModelAndView mv = new ModelAndView("client/job-request/tabs/executed-jobs-report");
 
@@ -546,6 +574,7 @@ public class ClientController {
      * @throws IOException
      */
     @PatchMapping("/encerra-pedido/{id}")
+    @RolesAllowed({RoleType.USER})
     public String updateRequest(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
         Optional<Individual> oClient = (individualService.findByEmail(authentication.getEmail()));
@@ -590,7 +619,7 @@ public class ClientController {
         }
         IndividualDTO individualDTO = individualMapper.toDto(client.get());
 
-        return SidePanelUtil.getSidePanelDTO(individualDTO);
+        return sidePanelUtil.getIndividualInfo(individualDTO);
     }
 
     /**
@@ -602,6 +631,7 @@ public class ClientController {
      * @throws IOException
      */
     @PatchMapping("/solicita-orcamento-ao/{candidateId}/para/{jobId}")
+    @RolesAllowed({RoleType.USER})
     public String markAsBudget(@PathVariable Long jobId, @PathVariable Long candidateId, RedirectAttributes redirectAttributes) throws IOException {
       Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(jobId, candidateId);
       if (!oJobCandidate.isPresent()) {
@@ -638,6 +668,7 @@ public class ClientController {
      * @throws IOException
      */
     @PatchMapping("/informa-finalizado/{jobId}")
+    @RolesAllowed({RoleType.USER})
     public String markAsClose(
             @PathVariable Long jobId,
             JobCandidateMinDTO dto,
@@ -672,6 +703,7 @@ public class ClientController {
      * @throws IOException
      */
     @PatchMapping("/contrata/{individualId}/para/{jobId}")
+    @RolesAllowed({RoleType.USER})
     public String markAsHided(@PathVariable Long jobId, @PathVariable Long individualId, RedirectAttributes redirectAttributes) throws IOException {
         Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(jobId, individualId);
 

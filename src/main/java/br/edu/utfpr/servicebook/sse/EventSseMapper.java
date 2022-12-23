@@ -10,8 +10,8 @@ public class EventSseMapper {
     @Autowired
     private ModelMapper mapper;
 
-    public EventSseDTO toFullDto(EventSse entity){
-        EventSseDTO dto = mapper.map(entity, EventSseDTO.class);
+    public EventSSEDTO toFullDto(EventSSE entity){
+        EventSSEDTO dto = mapper.map(entity, EventSSEDTO.class);
         dto.getId();
         dto.getDescriptionServ();
         dto.getMessage();

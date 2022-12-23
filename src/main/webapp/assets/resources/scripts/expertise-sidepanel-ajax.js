@@ -9,7 +9,7 @@ $(document).ready(function() {
         e.preventDefault();
 
         const expertiseId = e.target.elements[1].value;
-        const apiUrl = `/servicebook/especialidades/api/get-by-professional/${expertiseId}`
+        const apiUrl = `/servicebook/minha-conta/profissional/especialidades/estatistica/${expertiseId}`
 
         $.ajax({
             type: "get",

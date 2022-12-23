@@ -47,6 +47,7 @@
         url = urlAux[0] + '?id=' + id + '&pag=' + urlAux[1];
 
         $(href).load(url, function (result) {
+            window.scrollTo(0,0);
         });
     });
 </script>

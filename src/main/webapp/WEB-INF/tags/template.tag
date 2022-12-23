@@ -1,7 +1,7 @@
 <%@tag description="Template inicial" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ attribute name="title" %>
-<%@ attribute name="user" type="br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO"%>
+<%@ attribute name="individualInfo" type="br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO"%>
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -36,10 +36,10 @@
         <%-- Anônimo --%>
         <sec:authorize access="!isAuthenticated()">
             <ul class="right hide-on-med-and-down">
-                <li><a class="menu-itens" href="login">ENTRAR</a></li>
-                <li><a class="menu-itens" href="cadastrar-se">CADASTRE-SE</a></li>
+                <li><a class="btn waves-effect waves-light" href="como-funciona">Como Funciona?</a></li>
+                <li><a href="login">ENTRAR</a></li>
+                <li><a href="cadastrar-se">CADASTRE-SE</a></li>
             </ul>
-            <button class="click-scroll right hide-on-med-and-down" onclick="rolar('panel-heading');">Como Funciona?</button>
         </sec:authorize>
 
         <%-- Usuário --%>
@@ -73,7 +73,7 @@
                     </form>
 
                     <li>
-                        <a class='dropdown-trigger btn truncate' href='#' data-target='dropdown-perfil'>${user.name}<i class="tiny material-icons right">arrow_drop_down</i></a>
+                        <a class='dropdown-trigger btn truncate' href='#' data-target='dropdown-perfil'>${individualInfo.name}<i class="tiny material-icons right">arrow_drop_down</i></a>
                         <ul id='dropdown-perfil' class='dropdown-content'>
                             <li><a href="/servicebook/minha-conta/cliente">Minha Conta</a></li>
                             <li><a href="/servicebook/minha-conta/perfil">Meu perfil</a></li>

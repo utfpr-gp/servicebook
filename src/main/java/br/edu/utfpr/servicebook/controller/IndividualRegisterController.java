@@ -19,6 +19,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.annotation.security.PermitAll;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityNotFoundException;
@@ -119,6 +120,7 @@ public class IndividualRegisterController {
     }
 
     @GetMapping
+    @PermitAll
     public String showUserRegistrationWizard(
             @RequestParam(value = "passo", required = false, defaultValue = "1") Long step,
             HttpSession httpSession,
@@ -173,6 +175,7 @@ public class IndividualRegisterController {
     }
 
     @PostMapping("/passo-1")
+    @PermitAll
     public String saveUserEmail(
             HttpSession httpSession,
             @Validated(IndividualDTO.RequestUserEmailInfoGroupValidation.class) IndividualDTO dto,
@@ -210,7 +213,7 @@ public class IndividualRegisterController {
             actualCode = oUserCode.get().getCode();
         }
 
-        String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/login-by-token-email/" + actualCode;
+        String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/codigo/" + actualCode;
         quartzService.sendEmailToConfirmationCode(email, actualCode, tokenLink);
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
@@ -220,6 +223,7 @@ public class IndividualRegisterController {
     }
 
     @PostMapping("/passo-2")
+    @PermitAll
     public String saveUserEmailCode(
             HttpSession httpSession,
             @Validated(UserCodeDTO.RequestUserCodeInfoGroupValidation.class) UserCodeDTO dto,
@@ -259,6 +263,7 @@ public class IndividualRegisterController {
     }
 
     @PostMapping("/passo-3")
+    @PermitAll
     public String saveUserPassword(
             HttpSession httpSession,
             @Validated(IndividualDTO.RequestUserPasswordInfoGroupValidation.class) IndividualDTO dto,
@@ -286,6 +291,7 @@ public class IndividualRegisterController {
     }
 
     @PostMapping("/passo-4")
+    @PermitAll
     public String saveUserPhone(
             HttpSession httpSession,
             @Validated(IndividualDTO.RequestUserPhoneInfoGroupValidation.class) IndividualDTO dto,
@@ -309,6 +315,7 @@ public class IndividualRegisterController {
     }
 
     @PostMapping("/passo-5")
+    @PermitAll
     public String saveUserPhoneCode(
             HttpSession httpSession,
             @Validated(UserSmsDTO.RequestUserSmsInfoGroupValidation.class) UserSmsDTO dto,
@@ -359,6 +366,7 @@ public class IndividualRegisterController {
     }
 
     @PostMapping("/passo-6")
+    @PermitAll
     public String saveUserNameAndCPF(
             HttpSession httpSession,
             @Validated(IndividualDTO.RequestUserNameAndCPFInfoGroupValidation.class) IndividualDTO dto,
@@ -389,6 +397,7 @@ public class IndividualRegisterController {
     }
 
     @PostMapping("/passo-7")
+    @PermitAll
     public String saveUserAddress(
             HttpSession httpSession,
             @Validated(AddressDTO.RequestUserAddressInfoGroupValidation.class) AddressDTO dto,
@@ -428,6 +437,7 @@ public class IndividualRegisterController {
     }
 
     @PostMapping("/passo-8")
+    @PermitAll
     public String saveExpertises(
             HttpSession httpSession,
             ProfessionalExpertiseDTO dto,
@@ -457,6 +467,7 @@ public class IndividualRegisterController {
     }
 
     @PostMapping("/passo-9")
+    @PermitAll
     public String saveUser(
             HttpSession httpSession,
             IndividualDTO dto,

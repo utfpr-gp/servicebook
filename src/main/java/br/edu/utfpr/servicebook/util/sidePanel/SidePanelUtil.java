@@ -33,16 +33,31 @@ public class SidePanelUtil {
     @Autowired
     private ProfessionalMapper professionalMapper;
 
-    public static SidePanelIndividualDTO getSidePanelDTO(IndividualDTO entity){
+    /**
+     * Retorna os dados do usuário a ser apresentado no menu lateral.
+     * @param entity
+     * @return
+     */
+    public SidePanelIndividualDTO getIndividualInfo(IndividualDTO entity){
         return new SidePanelIndividualDTO(entity.getId(), entity.getName(), entity.getDescription(), entity.getRating(), entity.getProfilePicture(), entity.isPhoneVerified(), entity.isEmailVerified(), entity.isProfileVerified(), entity.getFollowingAmount());
     }
 
-    public SidePanelItensDTO getSidePanelStats(Individual oProfessional, Long expertiseId) {
+    public SidePanelIndividualDTO getIndividualInfo(Individual entity){
+        return new SidePanelIndividualDTO(entity.getId(), entity.getName(), entity.getDescription(), entity.getRating(), entity.getProfilePicture(), entity.isPhoneVerified(), entity.isEmailVerified(), entity.isProfileVerified(), 0L);
+    }
+
+    /**
+     * Retorna os dados estatísticos a serem apresentados no menu lateral para o perfil do profissional.
+     * @param oProfessional
+     * @param expertiseId
+     * @return
+     */
+    public SidePanelStatisticsDTO getProfessionalStatisticInfo(Individual oProfessional, Long expertiseId) {
         
         if (expertiseId == 0L) {
             ProfessionalDTO professional = professionalMapper.toResponseDto(oProfessional);
             
-            return new SidePanelItensDTO(
+            return new SidePanelStatisticsDTO(
                 jobContractedService.countByProfessional(oProfessional).orElse(0L),
                 jobContractedService.countRatingByProfessional(oProfessional).orElse(0L),
                 jobContractedService.countCommentsByProfessional(oProfessional).orElse(0L),
@@ -63,6 +78,7 @@ public class SidePanelUtil {
             oProfessional, 
             oExpertise.get()
         );
+
         if (!oProfessionalExpertise.isPresent()) {
             throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
         }
@@ -74,7 +90,7 @@ public class SidePanelUtil {
         Long totalCommentsByExpertise = jobContractedService.countCommentsByProfessionalAndJobRequest_Expertise(
             oProfessional, oExpertise.get()).orElse(0L);
 
-        return new SidePanelItensDTO(
+        return new SidePanelStatisticsDTO(
             totalJobsByExpertise,
             totalRatingsByExpertise,
             totalCommentsByExpertise,

@@ -1,18 +1,16 @@
 package br.edu.utfpr.servicebook;
 
-import br.edu.utfpr.servicebook.controller.IndexController;
 import br.edu.utfpr.servicebook.filter.JobRequestFilter;
 import br.edu.utfpr.servicebook.service.IndexService;
 import br.edu.utfpr.servicebook.service.QuartzService;
-import br.edu.utfpr.servicebook.service.UserCodeService;
 import br.edu.utfpr.servicebook.util.quartz.AutoWiringSpringBeanJobFactory;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.web.servlet.ServletComponentScan;
@@ -23,7 +21,7 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@SpringBootApplication
+@SpringBootApplication()
 @ServletComponentScan
 public class ServicebookApplication {
 

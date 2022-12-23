@@ -3,17 +3,16 @@ package br.edu.utfpr.servicebook.controller;
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.mapper.ProfessionalMapper;
 import br.edu.utfpr.servicebook.security.IAuthentication;
+import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.ExpertiseService;
 import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobContractedService;
 import br.edu.utfpr.servicebook.service.ProfessionalExpertiseService;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelItensDTO;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
 
 import com.cloudinary.Cloudinary;
@@ -32,6 +31,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -78,7 +79,11 @@ public class ExpertiseController {
     @Autowired
     private IAuthentication authentication;
 
+    @Autowired
+    private PaginationUtil paginationUtil;
+
     @GetMapping
+    @PermitAll
     public ModelAndView showForm(HttpServletRequest request,
                                  @RequestParam(value = "pag", defaultValue = "1") int page,
                                  @RequestParam(value = "siz", defaultValue = "5") int size,
@@ -95,7 +100,7 @@ public class ExpertiseController {
                 .collect(Collectors.toList());
         mv.addObject("professions", professionDTOs);
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(expertisePage);
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(expertisePage);
         mv.addObject("pagination", paginationDTO);
         return mv;
     }
@@ -109,6 +114,7 @@ public class ExpertiseController {
      * @return
      */
     @PostMapping
+    @RolesAllowed({RoleType.ADMIN})
     public ModelAndView save(@Valid ExpertiseDTO dto, BindingResult errors, RedirectAttributes redirectAttributes){
 
         for(FieldError e: errors.getFieldErrors()){
@@ -123,7 +129,6 @@ public class ExpertiseController {
             errors.rejectValue("icon", "dto.icon", "Por favor, envie um ícone no formato SVG.");
             return errorFowarding(dto, errors);
         }
-
 
         Optional<Expertise> oExpertise = expertiseService.findByName(dto.getName());
         if (oExpertise.isPresent()) {
@@ -149,20 +154,19 @@ public class ExpertiseController {
 
         return new ModelAndView("redirect:especialidades");
     }
-    
-    @GetMapping("/api/get-by-professional/{id}")
-    @ResponseBody
-    public SidePanelItensDTO getExpertiseData(@PathVariable("id") Long expertiseId) throws Exception {
-        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
 
-        if (!oProfessional.isPresent()) {
-            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
-        }
-        
-        return sidePanelUtil.getSidePanelStats(oProfessional.get(), expertiseId);
-    }
-
+    /**
+     * Mostra o formulário para atualizar uma especialidade.
+     * @param id
+     * @param request
+     * @param page
+     * @param size
+     * @param order
+     * @param direction
+     * @return
+     */
     @GetMapping("/{id}")
+    @RolesAllowed({RoleType.ADMIN})
     public ModelAndView showFormForUpdate(@PathVariable("id") Long id, HttpServletRequest request,
                                           @RequestParam(value = "pag", defaultValue = "1") int page,
                                           @RequestParam(value = "siz", defaultValue = "4") int size,
@@ -199,14 +203,15 @@ public class ExpertiseController {
                 .collect(Collectors.toList());
         mv.addObject("professions", professionDTOs);
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(professionPage, "/especialidades/" + id);
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(professionPage, "/especialidades/" + id);
         mv.addObject("pagination", paginationDTO);
         return mv;
     }
 
     @DeleteMapping("/{id}")
+    @RolesAllowed({RoleType.ADMIN})
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
-        log.debug("Removendo uma profissão com id {}", id);
+        log.debug("Removendo uma especialidade com id {}", id);
         Optional <Expertise> optionalProfession = this.expertiseService.findById(id);
         ExpertiseDTO expertiseDTO = expertiseMapper.toDto(optionalProfession.get());
 
@@ -224,7 +229,7 @@ public class ExpertiseController {
         }
     }
 
-    public ModelAndView errorFowarding(ExpertiseDTO dto, BindingResult errors) {
+    private ModelAndView errorFowarding(ExpertiseDTO dto, BindingResult errors) {
         ModelAndView mv = new ModelAndView("admin/profession-registration");
         mv.addObject("dto", dto);
         mv.addObject("errors", errors.getAllErrors());
@@ -232,7 +237,7 @@ public class ExpertiseController {
         return mv;
     }
 
-    public boolean isValidateImage(MultipartFile image){
+    private boolean isValidateImage(MultipartFile image){
         List<String> contentTypes = Arrays.asList("image/svg");
 
         for(int i = 0; i < contentTypes.size(); i++){
@@ -243,6 +248,4 @@ public class ExpertiseController {
 
         return false;
     }
-
- 
 }

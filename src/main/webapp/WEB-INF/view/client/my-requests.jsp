@@ -5,9 +5,9 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 
 <t:template title="Minhas Solicitações">
   <jsp:body>
-    <main>
+    <main class="container">
       <div class="row">
-        <t:side-panel individual="${user}"></t:side-panel>
+        <t:side-panel individualInfo="${user}"></t:side-panel>
 
         <div class="col m10 offset-m1 l9">
           <a
@@ -18,7 +18,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           </a>
 
           <!-- Painel com as solicitações de serviços -->
-          <div class="container">
+          <div class="">
             <div class="row">
               <div class="col s12">
                 <h2 class="secondary-color-text">Minhas Solicitações</h2>

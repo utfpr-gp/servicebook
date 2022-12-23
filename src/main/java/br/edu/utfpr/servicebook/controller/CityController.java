@@ -74,6 +74,9 @@ public class CityController {
     @Autowired
     private IAuthentication authentication;
 
+    @Autowired
+    private PaginationUtil paginationUtil;
+
     @GetMapping
     @RolesAllowed({RoleType.ADMIN})
     public ModelAndView showForm(HttpServletRequest request,
@@ -90,7 +93,7 @@ public class CityController {
         mv.addObject("states", listStateDTO());
         mv.addObject("cities", listCityDTO(cityPage));
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(cityPage);
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(cityPage);
         mv.addObject("pagination", paginationDTO);
 
         return mv;
@@ -204,7 +207,7 @@ public class CityController {
 
         mv.addObject("cities", listCityDTO(cityPage));
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(cityPage);
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(cityPage);
         mv.addObject("pagination", paginationDTO);
 
         return mv;
@@ -226,7 +229,7 @@ public class CityController {
         throw new EntityNotFoundException("A cidade não foi encontrada pelo id informado");
     }
 
-    public boolean isValidateImage(MultipartFile image){
+    private boolean isValidateImage(MultipartFile image){
         List<String> contentTypes = Arrays.asList("image/png", "image/jpg", "image/jpeg");
 
         for(int i = 0; i < contentTypes.size(); i++){
@@ -238,7 +241,7 @@ public class CityController {
         return false;
     }
 
-    public String recoverIdImage(String urlImage){
+    private String recoverIdImage(String urlImage){
         String[] urlExplode = urlImage.split("/");
         String fileName = urlExplode[urlExplode.length-1];
         String[] fileNameExplode = fileName.split("\\.");
@@ -247,7 +250,7 @@ public class CityController {
         return idImage;
     }
 
-    public void deleteImage(Optional<City> city) throws IOException {
+    private void deleteImage(Optional<City> city) throws IOException {
         String urlImage = city.get().getImage();
         cloudinary.uploader().destroy("cities/"+recoverIdImage(urlImage), ObjectUtils.emptyMap());
     }
@@ -264,7 +267,7 @@ public class CityController {
         cityService.save(ct);
     }
 
-    public ModelAndView errorFowarding(CityDTO dto,BindingResult errors) {
+    private ModelAndView errorFowarding(CityDTO dto,BindingResult errors) {
 
         ModelAndView mv = new ModelAndView("admin/city-register");
 
@@ -278,7 +281,7 @@ public class CityController {
 
         mv.addObject("cities", listCityDTO(cityPage));
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(cityPage);
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(cityPage);
         mv.addObject("pagination", paginationDTO);
 
         return mv;
