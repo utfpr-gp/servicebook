@@ -8,7 +8,7 @@
             <div class="col s12 spacing-buttons">
                 <div class="none-profission">
                     <p class="center text-form-dados">
-                        Nenhum pedido para ser confirmado!
+                        Nenhum pedido em orçamento encontrado!
                     </p>
                     <p class="center">
                         Um novo pedido pode chegar aqui a qualquer momento.
@@ -66,7 +66,7 @@
                             <a href="minha-conta/profissional/detalhes-servico/${job.jobRequest.id}" class="waves-effect waves-light btn spacing-buttons">
                                 Detalhes
                             </a>
-                            <a href="#modal-delete" data-url="${pageContext.request.contextPath}/candidaturas/${job.jobRequest.id}" class="waves-effect waves-light btn spacing-buttons red modal-trigger">Desistir</a>
+                            <a href="#modal-delete" data-url="${pageContext.request.contextPath}/candidaturas/${job.jobRequest.id}" data-name="${city.name}" class="waves-effect waves-light btn spacing-buttons red modal-trigger">Desistir</a>
                         </div>
                     </div>
                 </div>

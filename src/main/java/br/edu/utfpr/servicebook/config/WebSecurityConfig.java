@@ -6,26 +6,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.DefaultWebInvocationPrivilegeEvaluator;
 import org.springframework.security.web.access.WebInvocationPrivilegeEvaluator;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
 @Configuration
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig {
 
-    @Autowired
-    private UserDetailServiceImpl userDetailService;
+//    @Autowired
+//    UserDetailServiceImpl userDetailService;
 
     private static final String[] PERMIT_LIST = {
             "/",
+            "/**",
             "/assets/**",
             "/login"
     };
@@ -35,9 +41,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * @param http
      * @throws Exception
      */
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests()
                 .antMatchers("/images/**").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/profissionais/busca").permitAll()
@@ -48,12 +54,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 //.and().httpBasic() //janela flutuante
                 .and().formLogin()//tela de login padrão
-                    .loginPage("/login").permitAll()
-                .and().logout()
-                    .logoutSuccessUrl("/").permitAll()
+                .loginPage("/login").permitAll()
                 .and()
-                    .csrf().disable()//habilitar em produção
-                    .headers().frameOptions().disable();//para funcionar o H2
+                .logout(logout -> logout.deleteCookies("JSESSIONID").logoutSuccessUrl("/").permitAll())
+                .sessionManagement(session -> session.invalidSessionUrl("/login"))//Se a sessão estiver expirada ou o usuário removeu o cookie JSESSIONID, então encaminha para a tela de login.
+                //.anonymous().disable()//desabilita o usuário anônimo criado por default
+                .csrf().disable()//habilitar em produção
+                .headers().frameOptions().disable();//para funcionar o H2
+        return http.build();
     }
 
     @Bean
@@ -61,33 +69,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    public WebInvocationPrivilegeEvaluator webInvocationPrivilegeEvaluator(FilterSecurityInterceptor filterSecurityInterceptor) {
-//        return new DefaultWebInvocationPrivilegeEvaluator(filterSecurityInterceptor);
-//    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder());
-
-//        auth.inMemoryAuthentication()
-//                .withUser("user").password(passwordEncoder().encode("qwerty")).roles(RoleType.USER)
-//                .and()
-//                .withUser("admin").password(passwordEncoder().encode("qwerty")).roles(RoleType.USER, RoleType.ADMIN);
-
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
-//    @Bean
-//    @Override
-//    public UserDetailsService userDetailsService() {
-//        UserDetails user =
-//                User.withDefaultPasswordEncoder()
-//                        .username("user")
-//                        .password("password")
-//                        .roles("USER")
-//                        .build();
-//
-//        return new InMemoryUserDetailsManager(user);
-//    }
+
 
 }

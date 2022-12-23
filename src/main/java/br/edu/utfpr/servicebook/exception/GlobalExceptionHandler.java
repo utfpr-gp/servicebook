@@ -60,13 +60,15 @@ public class GlobalExceptionHandler {
 		return mv;
 	}
 
+	/**
+	 * Em caso de acesso negado, redireciona para o login
+	 * @param e
+	 * @param req
+	 * @return
+	 */
 	@ExceptionHandler({AccessDeniedException.class})
-	public ModelAndView handleException(AccessDeniedException e, HttpServletRequest req) {
-		ModelAndView mv = new ModelAndView();
-		mv.addObject("message", e.getMessage());
-		mv.addObject("url", req.getRequestURL());
-		mv.setViewName("error/error-handler");
-		return mv;
+	public String handleException(AccessDeniedException e, HttpServletRequest req) {
+		return "redirect:/login";
 	}
 
 	@ExceptionHandler({UsernameNotFoundException.class})

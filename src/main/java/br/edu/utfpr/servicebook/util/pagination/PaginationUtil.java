@@ -2,8 +2,10 @@ package br.edu.utfpr.servicebook.util.pagination;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
 
 @Slf4j
+@Component
 public class PaginationUtil {
     public static final int PAGE_SIZE = 3;
     public static final int PAGE_GROUP_SIZE = 5;
@@ -13,7 +15,7 @@ public class PaginationUtil {
      * @param currentPage
      * @return
      */
-    public static int getStartPage(int currentPage, int totalPages){
+    public int getStartPage(int currentPage, int totalPages){
         log.debug("A página corrente é {}", currentPage);
 
         currentPage += 1;
@@ -34,7 +36,7 @@ public class PaginationUtil {
         return (start <= 0)? 1 : start;
     }
 
-    public static int getEndPage(int currentPage, int totalPages){
+    public int getEndPage(int currentPage, int totalPages){
         log.debug("O total de páginas é {}", totalPages);
 
         int start = getStartPage(currentPage, totalPages);
@@ -47,12 +49,12 @@ public class PaginationUtil {
         }
     }
 
-    public static PaginationDTO getPaginationDTO(Page page){
+    public PaginationDTO getPaginationDTO(Page page){
 
         return new PaginationDTO(page.getTotalPages(), page.getNumber(), getStartPage(page.getNumber(), page.getTotalPages()), getEndPage(page.getNumber(), page.getTotalPages()), null);
     }
 
-    public static PaginationDTO getPaginationDTO(Page page, String route){
+    public PaginationDTO getPaginationDTO(Page page, String route){
 
         return new PaginationDTO(page.getTotalPages(), page.getNumber(), getStartPage(page.getNumber(), page.getTotalPages()), getEndPage(page.getNumber(), page.getTotalPages()), route);
     }

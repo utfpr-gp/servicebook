@@ -13,10 +13,10 @@ import java.util.Date;
 public class IndexService {
 
     @Autowired
-    ExpertiseRepository expertiseRepository;
+    IndividualRepository individualRepository;
 
     @Autowired
-    IndividualRepository individualRepository;
+    ExpertiseRepository expertiseRepository;
 
     @Autowired
     ProfessionalExpertiseRepository professionalExpertiseRepository;

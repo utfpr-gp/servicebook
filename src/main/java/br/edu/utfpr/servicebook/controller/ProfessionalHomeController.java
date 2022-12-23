@@ -6,15 +6,16 @@ import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.security.IAuthentication;
+import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
-import br.edu.utfpr.servicebook.sse.EventSse;
-import br.edu.utfpr.servicebook.sse.EventSseDTO;
+import br.edu.utfpr.servicebook.sse.EventSSE;
+import br.edu.utfpr.servicebook.sse.EventSSEDTO;
 import br.edu.utfpr.servicebook.sse.EventSseMapper;
 import br.edu.utfpr.servicebook.sse.SSEService;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelItensDTO;
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelStatisticsDTO;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
@@ -101,8 +103,18 @@ public class ProfessionalHomeController {
     @Autowired
     private IAuthentication authentication;
 
+    @Autowired
+    private PaginationUtil paginationUtil;
+
+    /**
+     * Mostra a tela da minha conta no perfil do profissional, mostrando os anúncios disponíveis por default.
+     * @param expertiseId
+     * @return
+     * @throws Exception
+     */
     @GetMapping
-    public ModelAndView showMyAccountProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> id) throws Exception {
+    @RolesAllowed({RoleType.USER})
+    public ModelAndView showMyAccountProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> expertiseId) throws Exception {
         log.debug("ServiceBook: Minha conta.");
    
         Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
@@ -118,33 +130,26 @@ public class ProfessionalHomeController {
                 .map(expertise -> expertiseMapper.toDto(expertise))
                 .collect(Collectors.toList());
 
-        mv.addObject("expertises", expertiseDTOs);
-
-        boolean isClient = false;
-        mv.addObject("isClient", isClient);
-
-        IndividualDTO professionalMinDTO = individualMapper.toDto(oProfessional.get());
+        IndividualDTO professionalDTO = individualMapper.toDto(oProfessional.get());
 
         Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(oProfessional.get());
-        professionalMinDTO.setFollowingAmount(oProfessionalFollowingAmount.get());
+        professionalDTO.setFollowingAmount(oProfessionalFollowingAmount.get());
 
-        SidePanelIndividualDTO sidePanelIndividualDTO = SidePanelUtil.getSidePanelDTO(professionalMinDTO);
-        mv.addObject("user", sidePanelIndividualDTO);
+        SidePanelIndividualDTO individualInfo = sidePanelUtil.getIndividualInfo(professionalDTO);
+        SidePanelStatisticsDTO statisticInfo = sidePanelUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId.get());
 
-        SidePanelItensDTO sidePanelItensDTO = sidePanelUtil.getSidePanelStats(oProfessional.get(), id.get());
-        mv.addObject("dataIndividual", sidePanelItensDTO);
-
-        mv.addObject("id", id.orElse(0L));
-
-        //FAZER ENVIO DE NOTIFICAÇÃO PARA O PROFISSIONAL
-        List<EventSse> eventSsesList = sseService.findPendingEventsByEmail(authentication.getEmail());
-        List<EventSseDTO> eventSseDTOS = eventSsesList.stream()
+        //envia a notificação ao usuário
+        List<EventSSE> eventSsesList = sseService.findPendingEventsByEmail(authentication.getEmail());
+        List<EventSSEDTO> eventSSEDTOs = eventSsesList.stream()
                 .map(eventSse -> {
                     return eventSseMapper.toFullDto(eventSse);
                 })
                 .collect(Collectors.toList());
-        mv.addObject("eventsse", eventSseDTOS);
-        //FAZER ENVIO DE NOTIFICAÇÃO PARA O PROFISSIONAL ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+        mv.addObject("eventsse", eventSSEDTOs);
+        mv.addObject("expertises", expertiseDTOs);
+        mv.addObject("individualInfo", individualInfo);
+        mv.addObject("statisticInfo", statisticInfo);
 
         return mv;
     }
@@ -163,6 +168,7 @@ public class ProfessionalHomeController {
      * @throws Exception
      */
     @GetMapping("/disponiveis")
+    @RolesAllowed({RoleType.USER})
     public ModelAndView showAvailableJobs(
             HttpServletRequest request,
             @RequestParam(required = false, defaultValue = "0") Long id,
@@ -172,51 +178,11 @@ public class ProfessionalHomeController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> oIndividual = (individualService.findByEmail(authentication.getEmail()));
+        Page<JobRequest> jobRequestPage = findJobRequests(id, JobRequest.Status.AVAILABLE, page, size);
 
-        if (!oIndividual.isPresent()) {
-            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
-        }
+        List<JobRequestFullDTO> jobRequestFullDTOs = generateJobRequestDTOList(jobRequestPage);
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateExpired").ascending());
-        Page<JobRequest> jobRequestPage = null;
-        List<JobRequestFullDTO> jobRequestFullDTOs = null;
-
-        if (id == 0) {
-            jobRequestPage = jobRequestService.findAvailableAllExpertises(JobRequest.Status.AVAILABLE, oIndividual.get().getId(), pageRequest);
-        } else {
-
-            if (id < 0) {
-                throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
-            }
-
-            Optional<Expertise> oExpertise = expertiseService.findById(id);
-
-            if (!oExpertise.isPresent()) {
-                throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
-            }
-
-            Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oIndividual.get(), oExpertise.get());
-
-            if (!oProfessionalExpertise.isPresent()) {
-                throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
-            }
-
-            jobRequestPage = jobRequestService.findAvailableByExpertise(JobRequest.Status.AVAILABLE, oExpertise.get(), oIndividual.get().getId(), pageRequest);
-        }
-
-        jobRequestFullDTOs = jobRequestPage.stream().distinct()
-                .map(jobRequest -> {
-                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobRequest);
-
-                    if (totalCandidates.isPresent()) {
-                        return jobRequestMapper.toFullDto(jobRequest, totalCandidates);
-                    }
-
-                    return jobRequestMapper.toFullDto(jobRequest, Optional.ofNullable(0L));
-                }).collect(Collectors.toList());
-
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/profissional/disponiveis");
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/profissional/disponiveis");
 
         ModelAndView mv = new ModelAndView("professional/available-jobs-report");
         mv.addObject("pagination", paginationDTO);
@@ -225,7 +191,19 @@ public class ProfessionalHomeController {
         return mv;
     }
 
+    /**
+     * Mostra os serviços em que o profissional se candidatou.
+     * @param request
+     * @param id
+     * @param page
+     * @param size
+     * @param order
+     * @param direction
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/em-disputa")
+    @RolesAllowed({RoleType.USER})
     public ModelAndView showDisputedJobs(
             HttpServletRequest request,
             @RequestParam(required = false, defaultValue = "0") Long id,
@@ -267,18 +245,9 @@ public class ProfessionalHomeController {
             jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status.AVAILABLE, oExpertise.get(), oProfessional.get(), pageRequest);
         }
 
-        jobCandidateDTOs = jobCandidatePage.stream()
-                .map(jobCandidate -> {
-                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobCandidate.getJobRequest());
+        jobCandidateDTOs = generateJobCandidateDTOList(jobCandidatePage);
 
-                    if (totalCandidates.isPresent()) {
-                        return jobCandidateMapper.toMinDto(jobCandidate, totalCandidates);
-                    }
-
-                    return jobCandidateMapper.toMinDto(jobCandidate, Optional.ofNullable(0L));
-                }).collect(Collectors.toList());
-
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/profissional/em-disputa");
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/profissional/em-disputa");
 
         ModelAndView mv = new ModelAndView("professional/disputed-jobs-report");
         mv.addObject("pagination", paginationDTO);
@@ -287,8 +256,9 @@ public class ProfessionalHomeController {
         return mv;
     }
 
-    @GetMapping("/para-contratar")
-    public ModelAndView showForHiredJobs(
+    @GetMapping("/em-orcamento")
+    @RolesAllowed({RoleType.USER})
+    public ModelAndView showBudgetJobs(
             HttpServletRequest request,
             @RequestParam(required = false, defaultValue = "0") Long id,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -308,7 +278,7 @@ public class ProfessionalHomeController {
         List<JobCandidateMinDTO> jobCandidateDTOs = null;
 
         if (id == 0) {
-            jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndProfessional(JobRequest.Status.TO_HIRED, oProfessional.get(), pageRequest);
+            jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndProfessional(JobRequest.Status.BUDGET, oProfessional.get(), pageRequest);
         } else {
             if (id < 0) {
                 throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
@@ -326,31 +296,23 @@ public class ProfessionalHomeController {
                 throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
             }
 
-            jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status.TO_HIRED, oExpertise.get(), oProfessional.get(), pageRequest);
+            jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status.BUDGET, oExpertise.get(), oProfessional.get(), pageRequest);
         }
 
-        jobCandidateDTOs = jobCandidatePage.stream()
-                .map(jobCandidate -> {
-                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobCandidate.getJobRequest());
+        jobCandidateDTOs = generateJobCandidateDTOList(jobCandidatePage);
 
-                    if (totalCandidates.isPresent()) {
-                        return jobCandidateMapper.toMinDto(jobCandidate, totalCandidates);
-                    }
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/profissional/em-orcamento");
 
-                    return jobCandidateMapper.toMinDto(jobCandidate, Optional.ofNullable(0L));
-                }).collect(Collectors.toList());
-
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/profissional/para-contratar");
-
-        ModelAndView mv = new ModelAndView("professional/to-hired-jobs-report");
+        ModelAndView mv = new ModelAndView("professional/budget-jobs-report");
         mv.addObject("pagination", paginationDTO);
         mv.addObject("jobs", jobCandidateDTOs);
 
         return mv;
     }
 
-    @GetMapping("/para-fazer")
-    public ModelAndView showTodoJobs(
+    @GetMapping("/para-contratar")
+    @RolesAllowed({RoleType.USER})
+    public ModelAndView showForHiredJobs(
             HttpServletRequest request,
             @RequestParam(required = false, defaultValue = "0") Long id,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -359,50 +321,46 @@ public class ProfessionalHomeController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
+        Page<JobCandidate> jobCandidatePage = findJobCandidates(id, JobRequest.Status.TO_HIRED, page, size);
 
-        if (!oProfessional.isPresent()) {
-            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
-        }
+        List<JobCandidateMinDTO> jobCandidateDTOs = generateJobCandidateDTOList(jobCandidatePage);
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateExpired").ascending());
-        Page<JobRequest> jobRequestPage = null;
-        List<JobRequestFullDTO> jobRequestFullDTOs = null;
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/profissional/para-contratar");
 
-        if (id == 0) {
-            jobRequestPage = jobRequestService.findByStatusAndJobContracted_Professional(JobRequest.Status.TO_DO, oProfessional.get(), pageRequest);
-        } else {
-            if (id < 0) {
-                throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
-            }
+        ModelAndView mv = new ModelAndView("professional/to-hired-jobs-report");
+        mv.addObject("pagination", paginationDTO);
+        mv.addObject("jobs", jobCandidateDTOs);
 
-            Optional<Expertise> oExpertise = expertiseService.findById(id);
+        return mv;
+    }
 
-            if (!oExpertise.isPresent()) {
-                throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
-            }
+    /**
+     * Mostra as ordens de serviços para serem feitas, ou seja, que o profissional já foi contratado.
+     * @param request
+     * @param expertiseId
+     * @param page
+     * @param size
+     * @param order
+     * @param direction
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/para-fazer")
+    @RolesAllowed({RoleType.USER})
+    public ModelAndView showTodoJobs(
+            HttpServletRequest request,
+            @RequestParam(required = false, defaultValue = "0") Long expertiseId,
+            @RequestParam(value = "pag", defaultValue = "1") int page,
+            @RequestParam(value = "siz", defaultValue = "3") int size,
+            @RequestParam(value = "ord", defaultValue = "id") String order,
+            @RequestParam(value = "dir", defaultValue = "ASC") String direction
+    ) throws Exception {
 
-            Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oProfessional.get(), oExpertise.get());
+        Page<JobRequest> jobRequestPage = findJobRequests(expertiseId, JobRequest.Status.TO_DO, page, size);
 
-            if (!oProfessionalExpertise.isPresent()) {
-                throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
-            }
+        List<JobRequestFullDTO> jobRequestFullDTOs = generateJobRequestDTOList(jobRequestPage);
 
-            jobRequestPage = jobRequestService.findByStatusAndExpertiseAndJobContracted_Professional(JobRequest.Status.TO_DO, oExpertise.get(), oProfessional.get(), pageRequest);
-        }
-
-        jobRequestFullDTOs = jobRequestPage.stream()
-                .map(jobRequest -> {
-                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobRequest);
-
-                    if (totalCandidates.isPresent()) {
-                        return jobRequestMapper.toFullDto(jobRequest, totalCandidates);
-                    }
-
-                    return jobRequestMapper.toFullDto(jobRequest, Optional.ofNullable(0L));
-                }).collect(Collectors.toList());
-
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/profissional/para-fazer");
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/profissional/para-fazer");
 
         ModelAndView mv = new ModelAndView("professional/todo-jobs-report");
         mv.addObject("pagination", paginationDTO);
@@ -412,6 +370,7 @@ public class ProfessionalHomeController {
     }
 
     @GetMapping("/fazendo")
+    @RolesAllowed({RoleType.USER})
     public ModelAndView showWorkingJobs(
             HttpServletRequest request,
             @RequestParam(required = false, defaultValue = "0") Long id,
@@ -421,50 +380,10 @@ public class ProfessionalHomeController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
+        Page<JobRequest> jobRequestPage = findJobRequests(id, JobRequest.Status.DOING, page, size);
+        List<JobRequestFullDTO> jobRequestFullDTOs = generateJobRequestDTOList(jobRequestPage);
 
-        if (!oProfessional.isPresent()) {
-            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
-        }
-
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateExpired").ascending());
-        Page<JobRequest> jobRequestPage = null;
-        List<JobRequestFullDTO> jobRequestFullDTOs = null;
-
-        if (id == 0) {
-            jobRequestPage = jobRequestService.findByStatusAndJobContracted_Professional(JobRequest.Status.DOING, oProfessional.get(), pageRequest);
-        } else {
-            if (id < 0) {
-                throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
-            }
-
-            Optional<Expertise> oExpertise = expertiseService.findById(id);
-
-            if (!oExpertise.isPresent()) {
-                throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
-            }
-
-            Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oProfessional.get(), oExpertise.get());
-
-            if (!oProfessionalExpertise.isPresent()) {
-                throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
-            }
-
-            jobRequestPage = jobRequestService.findByStatusAndExpertiseAndJobContracted_Professional(JobRequest.Status.DOING, oExpertise.get(), oProfessional.get(), pageRequest);
-        }
-
-        jobRequestFullDTOs = jobRequestPage.stream()
-                .map(jobRequest -> {
-                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobRequest);
-
-                    if (totalCandidates.isPresent()) {
-                        return jobRequestMapper.toFullDto(jobRequest, totalCandidates);
-                    }
-
-                    return jobRequestMapper.toFullDto(jobRequest, Optional.ofNullable(0L));
-                }).collect(Collectors.toList());
-
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/profissional/para-fazer");
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/profissional/para-fazer");
 
         ModelAndView mv = new ModelAndView("professional/todo-jobs-report");
         mv.addObject("pagination", paginationDTO);
@@ -474,6 +393,7 @@ public class ProfessionalHomeController {
     }
 
     @GetMapping("/executados")
+    @RolesAllowed({RoleType.USER})
     public ModelAndView showJobsPerformed(
             HttpServletRequest request,
             @RequestParam(required = false, defaultValue = "0") Long id,
@@ -483,51 +403,10 @@ public class ProfessionalHomeController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
+        Page<JobContracted> jobContractedPage = findJobContracted(id, JobRequest.Status.CLOSED, page, size);
+        List<JobContractedFullDTO> jobContractedDTOs = generateJobContractedDTOList(jobContractedPage);
 
-        if (!oProfessional.isPresent()) {
-            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
-        }
-
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("id").descending());
-        Page<JobContracted> jobContractedPage = null;
-        List<JobContractedFullDTO> jobContractedDTOs = null;
-
-        if (id == 0) {
-            jobContractedPage = jobContractedService.findByJobRequest_StatusAndProfessional(JobRequest.Status.CLOSED, oProfessional.get(), pageRequest);
-        } else {
-            if (id < 0) {
-                throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
-            }
-
-            Optional<Expertise> oExpertise = expertiseService.findById(id);
-
-            if (!oExpertise.isPresent()) {
-                throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
-            }
-
-            Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oProfessional.get(), oExpertise.get());
-
-            if (!oProfessionalExpertise.isPresent()) {
-                throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
-            }
-
-            jobContractedPage = jobContractedService.findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status.CLOSED, oExpertise.get(), oProfessional.get(), pageRequest);
-        }
-
-        jobContractedDTOs = jobContractedPage.stream()
-                .map(jobContracted -> {
-                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobContracted.getJobRequest());
-
-                    if (totalCandidates.isPresent()) {
-                        return jobContractedMapper.toFullDto(jobContracted, totalCandidates);
-                    }
-
-                    return jobContractedMapper.toFullDto(jobContracted, Optional.ofNullable(0L));
-                })
-                .collect(Collectors.toList());
-
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobContractedPage, "/minha-conta/profissional/executados");
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobContractedPage, "/minha-conta/profissional/executados");
 
         ModelAndView mv = new ModelAndView("professional/jobs-performed-report");
         mv.addObject("pagination", paginationDTO);
@@ -537,6 +416,7 @@ public class ProfessionalHomeController {
     }
 
     @GetMapping("/cancelados")
+    @RolesAllowed({RoleType.USER})
     public ModelAndView showCanceledJobs(
             HttpServletRequest request,
             @RequestParam(required = false, defaultValue = "0") Long id,
@@ -546,50 +426,10 @@ public class ProfessionalHomeController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
+        Page<JobRequest> jobRequestPage = findJobRequests(id, JobRequest.Status.CANCELED, page, size);
+        List<JobRequestFullDTO> jobRequestFullDTOs = generateJobRequestDTOList(jobRequestPage);
 
-        if (!oProfessional.isPresent()) {
-            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
-        }
-
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateExpired").ascending());
-        Page<JobRequest> jobRequestPage = null;
-        List<JobRequestFullDTO> jobRequestFullDTOs = null;
-
-        if (id == 0) {
-            jobRequestPage = jobRequestService.findByStatusAndJobContracted_Professional(JobRequest.Status.CANCELED, oProfessional.get(), pageRequest);
-        } else {
-            if (id < 0) {
-                throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
-            }
-
-            Optional<Expertise> oExpertise = expertiseService.findById(id);
-
-            if (!oExpertise.isPresent()) {
-                throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
-            }
-
-            Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oProfessional.get(), oExpertise.get());
-
-            if (!oProfessionalExpertise.isPresent()) {
-                throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
-            }
-
-            jobRequestPage = jobRequestService.findByStatusAndExpertiseAndJobContracted_Professional(JobRequest.Status.CANCELED, oExpertise.get(), oProfessional.get(), pageRequest);
-        }
-
-        jobRequestFullDTOs = jobRequestPage.stream()
-                .map(jobRequest -> {
-                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobRequest);
-
-                    if (totalCandidates.isPresent()) {
-                        return jobRequestMapper.toFullDto(jobRequest, totalCandidates);
-                    }
-
-                    return jobRequestMapper.toFullDto(jobRequest, Optional.ofNullable(0L));
-                }).collect(Collectors.toList());
-
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/profissional/para-fazer");
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/profissional/para-fazer");
 
         ModelAndView mv = new ModelAndView("professional/todo-jobs-report");
         mv.addObject("pagination", paginationDTO);
@@ -599,6 +439,7 @@ public class ProfessionalHomeController {
     }
 
     @GetMapping("/detalhes")
+    @RolesAllowed({RoleType.USER})
     public ModelAndView showMyDetails() throws Exception {
         ModelAndView mv = new ModelAndView("client/details-contact");
 
@@ -622,8 +463,8 @@ public class ProfessionalHomeController {
         return mv;
     }
 
-
     @GetMapping("/detalhes-servico/{id}")
+    @RolesAllowed({RoleType.USER})
     public ModelAndView showAvailableDetailJobs(
             @PathVariable Long id
     ) throws Exception {
@@ -691,5 +532,201 @@ public class ProfessionalHomeController {
         mv.addObject("isJobToHired", isJobToHired);
         return mv;
     }
+
+    /**
+     * Realiza a busca no banco de dados pelos anúncios com paginação filtrando por status e especialidades.
+     * @param expertiseId
+     * @param status
+     * @param page
+     * @param size
+     * @return
+     */
+    private Page<JobRequest> findJobRequests(Long expertiseId, JobRequest.Status status, int page, int size){
+        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
+
+        if (!oProfessional.isPresent()) {
+            throw new EntityNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateExpired").ascending());
+        Page<JobRequest> jobRequestPage = null;
+        List<JobRequestFullDTO> jobRequestFullDTOs = null;
+
+        if (expertiseId == 0) {
+            if(status == JobRequest.Status.AVAILABLE){
+                return jobRequestPage = jobRequestService.findAvailableAllExpertises(JobRequest.Status.AVAILABLE, oProfessional.get().getId(), pageRequest);
+            }
+            else if(status == JobRequest.Status.TO_DO){
+                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_Professional(JobRequest.Status.TO_DO, oProfessional.get(), pageRequest);
+            }
+            else if(status == JobRequest.Status.DOING){
+                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_Professional(JobRequest.Status.DOING, oProfessional.get(), pageRequest);
+            }
+            else if(status == JobRequest.Status.CANCELED){
+                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_Professional(JobRequest.Status.CANCELED, oProfessional.get(), pageRequest);
+            }
+            return null;
+        } else {
+
+            if (expertiseId < 0) {
+                throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
+            }
+
+            Optional<Expertise> oExpertise = expertiseService.findById(expertiseId);
+
+            if (!oExpertise.isPresent()) {
+                throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
+            }
+
+            Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oProfessional.get(), oExpertise.get());
+
+            if (!oProfessionalExpertise.isPresent()) {
+                throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
+            }
+
+            if(status == JobRequest.Status.AVAILABLE){
+                return jobRequestPage = jobRequestService.findAvailableByExpertise(JobRequest.Status.AVAILABLE, oExpertise.get(), oProfessional.get().getId(), pageRequest);
+            }
+            else if(status == JobRequest.Status.TO_DO){
+                return jobRequestPage = jobRequestService.findByStatusAndExpertiseAndJobContracted_Professional(JobRequest.Status.TO_DO, oExpertise.get(), oProfessional.get(), pageRequest);
+            }
+            else if(status == JobRequest.Status.DOING){
+                return jobRequestPage = jobRequestService.findByStatusAndExpertiseAndJobContracted_Professional(JobRequest.Status.DOING, oExpertise.get(), oProfessional.get(), pageRequest);
+            }
+            else if(status == JobRequest.Status.CANCELED){
+                return jobRequestPage = jobRequestService.findByStatusAndExpertiseAndJobContracted_Professional(JobRequest.Status.CANCELED, oExpertise.get(), oProfessional.get(), pageRequest);
+            }
+            return null;
+        }
+    }
+
+    private Page<JobCandidate> findJobCandidates(Long expertiseId, JobRequest.Status status, int page, int size){
+        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
+
+        if (!oProfessional.isPresent()) {
+            throw new EntityNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
+        Page<JobCandidate> jobCandidatePage = null;
+        List<JobCandidateMinDTO> jobCandidateDTOs = null;
+
+        if (expertiseId == 0) {
+            if(status == JobRequest.Status.TO_HIRED){
+                return jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndProfessional(status, oProfessional.get(), pageRequest);
+            }
+            return null;
+        } else {
+            if (expertiseId < 0) {
+                throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
+            }
+
+            Optional<Expertise> oExpertise = expertiseService.findById(expertiseId);
+
+            if (!oExpertise.isPresent()) {
+                throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
+            }
+
+            Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oProfessional.get(), oExpertise.get());
+
+            if (!oProfessionalExpertise.isPresent()) {
+                throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
+            }
+
+            if(status == JobRequest.Status.TO_HIRED){
+                return jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status.TO_HIRED, oExpertise.get(), oProfessional.get(), pageRequest);
+            }
+
+            return null;
+        }
+    }
+
+    private Page<JobContracted> findJobContracted(Long expertiseId, JobRequest.Status status, int page, int size){
+        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
+
+        if (!oProfessional.isPresent()) {
+            throw new EntityNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("id").descending());
+        Page<JobContracted> jobContractedPage = null;
+        List<JobContractedFullDTO> jobContractedDTOs = null;
+
+        if (expertiseId == 0) {
+            if(status == JobRequest.Status.CLOSED){
+                return jobContractedPage = jobContractedService.findByJobRequest_StatusAndProfessional(JobRequest.Status.CLOSED, oProfessional.get(), pageRequest);
+            }
+            return null;
+        } else {
+
+            if (expertiseId < 0) {
+                throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
+            }
+
+            Optional<Expertise> oExpertise = expertiseService.findById(expertiseId);
+
+            if (!oExpertise.isPresent()) {
+                throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
+            }
+
+            Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oProfessional.get(), oExpertise.get());
+
+            if (!oProfessionalExpertise.isPresent()) {
+                throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
+            }
+
+            if(status == JobRequest.Status.CLOSED){
+                jobContractedPage = jobContractedService.findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status.CLOSED, oExpertise.get(), oProfessional.get(), pageRequest);
+            }
+            return null;
+        }
+    }
+
+    /**
+     * Recebe o resultado em uma página e transforma em DTO.
+     * @param jobRequestPage
+     * @return
+     */
+    private List<JobRequestFullDTO> generateJobRequestDTOList(Page<JobRequest> jobRequestPage){
+        return jobRequestPage.stream().distinct()
+                .map(jobRequest -> {
+                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobRequest);
+
+                    if (totalCandidates.isPresent()) {
+                        return jobRequestMapper.toFullDto(jobRequest, totalCandidates);
+                    }
+
+                    return jobRequestMapper.toFullDto(jobRequest, Optional.ofNullable(0L));
+                }).collect(Collectors.toList());
+    }
+
+
+    private List<JobCandidateMinDTO> generateJobCandidateDTOList(Page<JobCandidate> jobCandidatePage){
+        return jobCandidatePage.stream()
+                .map(jobCandidate -> {
+                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobCandidate.getJobRequest());
+
+                    if (totalCandidates.isPresent()) {
+                        return jobCandidateMapper.toMinDto(jobCandidate, totalCandidates);
+                    }
+
+                    return jobCandidateMapper.toMinDto(jobCandidate, Optional.ofNullable(0L));
+                }).collect(Collectors.toList());
+    }
+
+    private List<JobContractedFullDTO> generateJobContractedDTOList(Page<JobContracted> jobContractedPage) {
+        return jobContractedPage.stream()
+                .map(jobContracted -> {
+                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobContracted.getJobRequest());
+
+                    if (totalCandidates.isPresent()) {
+                        return jobContractedMapper.toFullDto(jobContracted, totalCandidates);
+                    }
+
+                    return jobContractedMapper.toFullDto(jobContracted, Optional.ofNullable(0L));
+                })
+                .collect(Collectors.toList());
+    }
+
 
 }

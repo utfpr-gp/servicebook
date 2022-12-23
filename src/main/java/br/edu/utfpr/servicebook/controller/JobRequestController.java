@@ -9,6 +9,7 @@ import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
 import br.edu.utfpr.servicebook.security.IAuthentication;
+import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.DateUtil;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
@@ -27,6 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpSession;
 import java.io.File;
@@ -98,6 +101,7 @@ public class JobRequestController {
     }
 
     @GetMapping
+    @PermitAll
     public String showWizard(@RequestParam(value = "passo", required = false, defaultValue = "1") Long step,
                              HttpSession httpSession,
                              Model model) {
@@ -120,6 +124,7 @@ public class JobRequestController {
     }
 
     @PostMapping("/passo-1")
+    @PermitAll
     public String saveFormRequestedJob(HttpSession httpSession, @Validated(JobRequestDTO.RequestExpertiseGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model){
         Optional<Expertise> oExpertise = null;
 
@@ -153,6 +158,7 @@ public class JobRequestController {
     }
 
     @PostMapping("/passo-2")
+    @PermitAll
     public String saveFormDateJob(HttpSession httpSession, @Validated(JobRequestDTO.RequestExpirationGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model){
 
 
@@ -203,6 +209,7 @@ public class JobRequestController {
 
     }
     @PostMapping("/passo-3")
+    @PermitAll
     public String saveFormMaxCandidates(HttpSession httpSession, @Validated(JobRequestDTO.RequestMaxCandidatesGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model){
         if(errors.hasErrors()){
             model.addAttribute("dto", dto);
@@ -222,6 +229,7 @@ public class JobRequestController {
 
 
     @PostMapping("/passo-4")
+    @PermitAll
     public String saveFormDescription(HttpSession httpSession, @Validated(JobRequestDTO.RequestDescriptionGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model){
 
         if(errors.hasErrors()){
@@ -241,7 +249,9 @@ public class JobRequestController {
         return "redirect:/requisicoes?passo=5";
 
     }
+
     @PostMapping("/passo-5")
+    @PermitAll
     public String saveFormImagePath(HttpSession httpSession, RedirectAttributes redirectAttributes, JobRequestDTO dto, Model model) throws IOException {
 
 
@@ -264,10 +274,10 @@ public class JobRequestController {
         } else {
             return "redirect:/requisicoes/passo=6";
         }
-
-
     }
+
     @GetMapping("passo=6")
+    @PermitAll
     protected ModelAndView showProfessionals(HttpSession httpSession) {
         ModelAndView mv = new ModelAndView("client/job-request/wizard-step-06");
 
@@ -287,31 +297,10 @@ public class JobRequestController {
         return mv;
     }
 
-    /**
-     * Apresenta a página de sucesso ou falha, quando o usuário preenche uma requisição de serviço como visitante e só
-     * depois que realizao login na aplicação.
-     * Esta requisição de serviço é pega da sessão e então, é salva no BD e o usuário é encaminhado para este endereço.
-     * TODO apresentar uma mensagem de erro genérica no JSP caso error seja true
-     * @param isError informa se houve falha na persistência ou validação da requisição de serviço.
-     * @param httpSession
-     * @return
-     */
-    @GetMapping("pedido-recebido")
-    protected ModelAndView showMessageSuccessful(@RequestParam(value = "erro", required = false, defaultValue = "false") boolean isError, HttpSession httpSession) {
-        System.out.println("Parâmetro erro: " + isError);
-        ModelAndView mv = new ModelAndView("client/job-requested");
 
-        Optional<Individual> individual = individualService.findByEmail(authentication.getEmail());
-
-        mv.addObject("client", individual.get().getName());
-
-        //apaga a sessão
-        httpSession.invalidate();
-
-        return mv;
-    }
 
     @PostMapping("/passo-7")
+    @PermitAll
     public String saveFormVerification(HttpSession httpSession, JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
 
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
@@ -339,8 +328,34 @@ public class JobRequestController {
     }
 
     @PostMapping("/passo-8")
+    @PermitAll
     public String formConfirmation(HttpSession httpSession, BindingResult errors,JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
         return "redirect:/requisicoes";
+    }
+
+    /**
+     * Apresenta a página de sucesso ou falha, quando o usuário preenche uma requisição de serviço como visitante e só
+     * depois que realizao login na aplicação.
+     * Esta requisição de serviço é pega da sessão e então, é salva no BD e o usuário é encaminhado para este endereço.
+     * TODO apresentar uma mensagem de erro genérica no JSP caso error seja true
+     * @param isError informa se houve falha na persistência ou validação da requisição de serviço.
+     * @param httpSession
+     * @return
+     */
+    @GetMapping("pedido-recebido")
+    @RolesAllowed({RoleType.USER})
+    protected ModelAndView showMessageSuccessful(@RequestParam(value = "erro", required = false, defaultValue = "false") boolean isError, HttpSession httpSession) {
+        System.out.println("Parâmetro erro: " + isError);
+        ModelAndView mv = new ModelAndView("client/job-requested");
+
+        Optional<Individual> individual = individualService.findByEmail(authentication.getEmail());
+
+        mv.addObject("client", individual.get().getName());
+
+        //apaga a sessão
+        httpSession.invalidate();
+
+        return mv;
     }
 
     public boolean isValidateImage(MultipartFile image){
@@ -363,6 +378,7 @@ public class JobRequestController {
      * @return
      */
     @PostMapping("/nao-quero/{id}")
+    @RolesAllowed({RoleType.USER})
     public String rememberToHide(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         System.out.println("Salvo com sucesso!");
         String currentUserEmail = authentication.getEmail();

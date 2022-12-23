@@ -8,10 +8,11 @@ import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobCandidateMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
 import br.edu.utfpr.servicebook.security.IAuthentication;
+import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobCandidateService;
 import br.edu.utfpr.servicebook.service.JobRequestService;
-import br.edu.utfpr.servicebook.sse.EventSse;
+import br.edu.utfpr.servicebook.sse.EventSSE;
 import br.edu.utfpr.servicebook.sse.SSEService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
@@ -56,6 +58,7 @@ public class JobCandidateController {
     private IAuthentication authentication;
 
     @PostMapping
+    @RolesAllowed({RoleType.USER})
     public ModelAndView save(JobCandidateDTO dto, RedirectAttributes redirectAttributes) {
 
         //simula um usuário autenticado
@@ -87,7 +90,7 @@ public class JobCandidateController {
         JobRequestDetailsDTO jobFull = jobRequestMapper.jobRequestDetailsDTO(oJobRequest.get());
 
         //envia a notificação SSE
-        EventSse eventSse = new EventSse(EventSse.Status.NEW_CANDIDATURE, jobFull.getDescription().toString(), currentUserEmail, jobFull.getIndividual().getName(), jobFull.getIndividual().getEmail());
+        EventSSE eventSse = new EventSSE(EventSSE.Status.NEW_CANDIDATURE, jobFull.getDescription().toString(), currentUserEmail, jobFull.getIndividual().getName(), jobFull.getIndividual().getEmail());
         sseService.send(eventSse);
 
         redirectAttributes.addFlashAttribute("msg", "Candidatura realizada com sucesso!");
@@ -95,7 +98,14 @@ public class JobCandidateController {
         return new ModelAndView("redirect:minha-conta/profissional");
     }
 
+    /**
+     * Usuário cancela a candidatura a um serviço.
+     * @param id
+     * @param redirectAttributes
+     * @return
+     */
     @DeleteMapping("/{id}")
+    @RolesAllowed({RoleType.USER})
     public String deleteJobRequest(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         String currentUserEmail = authentication.getEmail();
 
@@ -115,7 +125,14 @@ public class JobCandidateController {
         return "redirect:/minha-conta/profissional#emDisputa";
     }
 
+    /**
+     * Usuário cancela a candidatura a um serviço
+     * @param id
+     * @param redirectAttributes
+     * @return
+     */
     @DeleteMapping("/desistir/{id}")
+    @RolesAllowed({RoleType.USER})
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         String currentUserEmail = authentication.getEmail();
 
@@ -137,6 +154,7 @@ public class JobCandidateController {
 
 
     @PostMapping("/contratacao/{id}")
+    @RolesAllowed({RoleType.USER})
     public String confirmHired(
             @PathVariable Long id,
             JobCandidateMinDTO dto,

@@ -19,7 +19,7 @@
 </c:if>
 
 <c:forEach var="job" items="${jobs}">
-    <div class="col s12">
+    <div class="container">
         <div class="row card-request spacing-standard">
             <div class="col s8 m10 l2 center center-align">
                 <svg style="width:120px;height:120px" viewBox="0 0 24 24">

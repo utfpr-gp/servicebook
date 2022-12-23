@@ -54,6 +54,9 @@ public class ProfessionalController {
     @Autowired
     private IAuthentication authentication;
 
+    @Autowired
+    private PaginationUtil paginationUtil;
+
     @GetMapping
     @PermitAll
     protected ModelAndView showAll() throws Exception {
@@ -119,7 +122,7 @@ public class ProfessionalController {
                 .map(s -> individualMapper.toSearchItemDto(s, individualService.getExpertises(s)))
                 .collect(Collectors.toList());
 
-        PaginationDTO paginationDTO = PaginationUtil.getPaginationDTO(professionals, "/profissionais/busca?termo-da-busca="+ searchTerm);
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(professionals, "/profissionais/busca?termo-da-busca="+ searchTerm);
         mv.addObject("professionals", professionalSearchItemDTOS);
         mv.addObject("pagination", paginationDTO);
         mv.addObject("isParam", true);
@@ -129,6 +132,7 @@ public class ProfessionalController {
     }
 
     @GetMapping("/detalhes/{id}")
+    @PermitAll
     protected ModelAndView showProfessionalDetailsToVisitors(@PathVariable("id") Long id) throws Exception {
         ModelAndView mv = new ModelAndView("visitor/professional-details");
 
@@ -137,7 +141,6 @@ public class ProfessionalController {
         if(!oProfessional.isPresent()) {
             throw new EntityNotFoundException("Profissional não encontrado.");
         }
-
 
         Optional<Individual> individual = (individualService.findByEmail(authentication.getEmail()));
         mv.addObject("logged", individual.isPresent());
@@ -150,6 +153,4 @@ public class ProfessionalController {
         mv.addObject("professionalExpertises", expertisesDTO);
         return mv;
     }
-
-
 }

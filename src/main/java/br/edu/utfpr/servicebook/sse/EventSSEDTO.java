@@ -11,7 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class EventSseDTO implements Serializable {
+public class EventSSEDTO implements Serializable {
 
     private Long id;
 

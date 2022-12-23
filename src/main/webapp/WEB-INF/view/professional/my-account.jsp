@@ -4,10 +4,9 @@
 
 <t:template title="ServiceBook - Minha conta">
     <jsp:body>
-
-        <main>
+        <main class="container">
             <div class="row">
-                <t:side-panel individual="${user}" followdto="${followdto}" dataIndividual="${dataIndividual}"></t:side-panel>
+                <t:side-panel individualInfo="${individualInfo}" followdto="${followdto}" statisticProfessionalInfo="${statisticInfo}"></t:side-panel>
                 <div class="col m10 offset-m1 l9">
                     <a id="show-area-perfil"
                        class="hide-on-large-only show-area-perfil waves-effect waves-light btn btn-floating grey darken-3 z-depth-A">
@@ -16,13 +15,6 @@
                     <div class="row">
                         <div class="col s12">
                             <h2 class="secondary-color-text">Anúncios de serviços</h2>
-
-                            <blockquote class="light-blue lighten-5 info-headers">
-                                <p>
-                                    Abaixo você encontra os pedidos disponíveis no momento. Clique nos quadros para mais
-                                    detalhes.
-                                </p>
-                            </blockquote>
                         </div>
                         <div class="col s12">
                             <c:if test="${not empty msg}">
@@ -42,48 +34,56 @@
                                 <ul class="tabs tabs-fixed-width center">
                                     <li class="tab">
                                         <a id="tab-default" data-url="minha-conta/profissional/disponiveis"
-                                           href="#disponiveis">
+                                           href="#disponiveis" class="truncate">
                                             DISPONÍVEIS
                                         </a>
                                     </li>
                                     <li class="tab">
-                                        <a data-url="minha-conta/profissional/em-disputa" href="#emDisputa">
+                                        <a data-url="minha-conta/profissional/em-disputa" href="#emDisputa" class="truncate">
                                             EM DISPUTA
                                         </a>
                                     </li>
                                     <li class="tab">
-                                        <a data-url="minha-conta/profissional/para-contratar" href="#paraContratar">
+                                        <a data-url="minha-conta/profissional/em-orcamento" href="#paraOrcamento" class="truncate">
+                                            ORÇAMENTO
+                                        </a>
+                                    </li>
+                                    <li class="tab">
+                                        <a data-url="minha-conta/profissional/para-contratar" href="#paraContratar" class="truncate">
                                             PARA CONFIRMAR
                                         </a>
                                     </li>
                                     <li class="tab">
-                                        <a data-url="minha-conta/profissional/para-fazer" href="#paraFazer">
+                                        <a data-url="minha-conta/profissional/para-fazer" href="#paraFazer" class="truncate">
                                             PARA FAZER
                                         </a>
                                     </li>
                                     <li class="tab">
-                                        <a data-url="minha-conta/profissional/fazendo" href="#fazendo">
+                                        <a data-url="minha-conta/profissional/fazendo" href="#fazendo" class="truncate">
                                             FAZENDO
                                         </a>
                                     </li>
                                     <li class="tab">
-                                        <a data-url="minha-conta/profissional/executados" href="#executados">
+                                        <a data-url="minha-conta/profissional/executados" href="#executados" class="truncate">
                                             EXECUTADOS
                                         </a>
                                     </li>
                                     <li class="tab">
-                                        <a data-url="minha-conta/profissional/cancelados" href="#cancelados">
+                                        <a data-url="minha-conta/profissional/cancelados" href="#cancelados" class="truncate">
                                             CANCELADOS
                                         </a>
                                     </li>
                                 </ul>
                             </div>
                             <div id="disponiveis" class="col s12">
-
                             </div>
+
                             <div id="emDisputa" class="col s12">
-
                             </div>
+
+                            <div id="paraOrcamento" class="col s12">
+                            </div>
+
                             <div id="paraContratar" class="col s12">
 
                             </div>
@@ -110,6 +110,8 @@
 
 <script>
     $(document).ready(function () {
+        $('.tabs').tabs();
+
         $('#disponiveis').load($('.tab .active').attr("data-url"), function (result) {
             window.location.hash = "#disponiveis";
             $('#tab-default').click();
@@ -126,8 +128,9 @@
         let urlParams = new URLSearchParams(window.location.search);
         let id = (urlParams.has('id')) ? urlParams.get('id') : 0;
         url += '?id=' + id;
-
+        console.log(url);
         $(href).load(url, function (result) {
+            //window.scrollTo(0,0);
         });
     });
 </script>

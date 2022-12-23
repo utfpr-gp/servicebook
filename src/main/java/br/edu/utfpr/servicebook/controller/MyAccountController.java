@@ -6,6 +6,7 @@ import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.UserCode;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.security.IAuthentication;
+import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -60,14 +62,25 @@ public class MyAccountController {
     @Autowired
     private IAuthentication authentication;
 
+    @Autowired
+    private SidePanelUtil sidePanelUtil;
+
     @GetMapping
     public String home(HttpServletRequest request) {
         return "redirect:/minha-conta/cliente";
     }
 
+    /**
+     * Mostra a tela de perfil do usuário.
+     * @return
+     * @throws IOException
+     */
     @GetMapping("/perfil")
+    @RolesAllowed({RoleType.USER})
     public ModelAndView editProfile() throws IOException {
+
         Optional<Individual> oIndividual = (individualService.findByEmail(authentication.getEmail()));
+
         if (!oIndividual.isPresent()) {
             throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
@@ -78,21 +91,28 @@ public class MyAccountController {
         if (!oCity.isPresent()) {
             throw new EntityNotFoundException("Cidade não foi encontrada pelo id informado.");
         }
-        CityMinDTO cityMinDTO = cityMapper.toMinDto(oCity.get());
 
-        SidePanelIndividualDTO sidePanelIndividualDTO = SidePanelUtil.getSidePanelDTO(individualDTO);
+        CityMinDTO cityMinDTO = cityMapper.toMinDto(oCity.get());
 
         ModelAndView mv = new ModelAndView("professional/edit-account");
         mv.addObject("professional", individualDTO);
         mv.addObject("city", cityMinDTO);
-        mv.addObject("user", sidePanelIndividualDTO);
 
         return mv;
     }
 
+    /**
+     * Mostra a tela de edição do anúncio geral do profissional.
+     * Esta descrição aparecerá no portfólio público do profissional.
+     * @param id
+     * @return
+     * @throws IOException
+     */
     @GetMapping("/meu-anuncio/{id}")
+    @RolesAllowed({RoleType.USER})
     public ModelAndView showMyAd(@PathVariable Long id) throws IOException {
-        Optional<Individual> oProfessional = this.individualService.findById(id);
+
+        Optional<Individual> oProfessional = this.individualService.findByEmail(authentication.getEmail());
 
         if (!oProfessional.isPresent()) {
             throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -108,9 +128,10 @@ public class MyAccountController {
     }
 
     @PatchMapping("/cadastra-descricao/{id}")
+    @RolesAllowed({RoleType.USER})
     public String updateDescriptionProfessional(@PathVariable Long id, HttpServletRequest request, RedirectAttributes redirectAttributes) throws IOException {
 
-        Optional<Individual> oProfessional = this.individualService.findById(id);
+        Optional<Individual> oProfessional = this.individualService.findByEmail(authentication.getEmail());
 
         if(!oProfessional.isPresent()) {
             throw new EntityNotFoundException("Profissional não encontrado pelo id informado.");
@@ -124,7 +145,15 @@ public class MyAccountController {
         return "redirect:/minha-conta/meu-anuncio/{id}";
     }
 
+    /**
+     * Apresenta a tela de email do usuário.
+     * FIXME Depois de modificado, informar para o usuário fazer o login novamente.
+     * @param id
+     * @return
+     * @throws IOException
+     */
     @GetMapping("/meu-email/{id}")
+    @RolesAllowed({RoleType.USER})
     public ModelAndView showMyEmail(@PathVariable Long id) throws IOException {
         Optional<Individual> oProfessional = this.individualService.findById(id);
 
@@ -141,14 +170,23 @@ public class MyAccountController {
         return mv;
     }
 
+    /**
+     * FIXME Ao mudar o email, fazer logout para o usuário logar novamente, aí com o novo email
+     * @param id
+     * @param request
+     * @param redirectAttributes
+     * @return
+     * @throws IOException
+     */
     @PostMapping("/salvar-email/{id}")
+    @RolesAllowed({RoleType.USER})
     public String saveEmail(
             @PathVariable Long id,
             HttpServletRequest request,
             RedirectAttributes redirectAttributes)
             throws IOException {
 
-        Optional<Individual> oProfessional = this.individualService.findById(id);
+        Optional<Individual> oProfessional = this.individualService.findByEmail(authentication.getEmail());
 
         if(!oProfessional.isPresent()) {
             throw new EntityNotFoundException("Profissional não encontrado pelas informações fornecidas.");
@@ -182,14 +220,17 @@ public class MyAccountController {
             actualCode = oUserCode.get().getCode();
         }
 
-        String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/login-by-token-email/" + actualCode;
+        String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/codigo/" + actualCode;
         quartzService.sendEmailToConfirmationCode(email, actualCode, tokenLink);
 
         redirectAttributes.addFlashAttribute("msg", "Email salvo com sucesso!");
+
+        //return "redirect:/logout";
         return "redirect:/minha-conta/meu-email/{id}";
     }
 
     @PostMapping("/validar-email/{id}")
+    @RolesAllowed({RoleType.USER})
     public String saveUserEmailCode(
             @PathVariable Long id,
             @Validated(UserCodeDTO.RequestUserCodeInfoGroupValidation.class) UserCodeDTO dto,

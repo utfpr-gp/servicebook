@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "eventsses")
 @Entity
 @NoArgsConstructor
-public class EventSse {
+public class EventSSE {
 
     public enum Status {
         NEW_CANDIDATURE, JOB_CONFIRMED, JOB_CANCELED
@@ -52,7 +52,7 @@ public class EventSse {
      * @param fromName nome do usuário que realizou o evento
      * @param toEmail email do destinatário do evento
      */
-    public EventSse(Status message, String serviceDescription, String fromEmail, String fromName, String toEmail) {
+    public EventSSE(Status message, String serviceDescription, String fromEmail, String fromName, String toEmail) {
         setMessage(getMessage(message)); // salva pegando o enum e convertendo para string
         setDescriptionServ(serviceDescription);
         setFromEmail(fromEmail);

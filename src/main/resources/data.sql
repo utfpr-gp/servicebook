@@ -99,7 +99,7 @@ VALUES ('false', '2021-01-01', '2021-01-01', 'Preciso de um Encanador 1!', 'true
        ('true', '2021-01-01', '2021-01-01', 'Preciso de um Pintor 1!', 'true', '5', 'AVAILABLE', '4', '3'),
        ('true', '2021-01-01', '2021-01-02', 'Preciso de um Pintor 2!', 'true', '10', 'AVAILABLE', '4', '3'),
        ('true', '2021-01-01', '2021-01-03', 'Preciso de um Pintor 3!', 'true', '15', 'TO_HIRED', '4', '3'),
-       ('true', '2021-01-01', '2021-01-04', 'Preciso de um Pintor 4!', 'true', '20', 'TO_DO', '4', '3'), -- 16
+       ('true', '2021-01-01', '2021-01-04', 'Preciso de um Pintor 4!', 'true', '20', 'TO_DO', '1', '3'), -- 19
        ('true', '2021-01-01', '2021-01-04', 'Preciso de um Pintor 5!', 'true', '20', 'CLOSED', '4', '3'),
        ('true', '2021-01-01', '2021-01-04', 'Preciso de um Pintor 6!', 'true', '20', 'CLOSED', '4', '3'),
        ('true', '2021-08-26', '2021-08-27', 'Preciso de um Mecânico 1!', 'true', '5', 'AVAILABLE', '4', '4'),
@@ -111,7 +111,7 @@ VALUES ('false', '2021-01-01', '2021-01-01', 'Preciso de um Encanador 1!', 'true
 
 
 INSERT INTO job_contracted (comments, rating, job_request, professional)
-VALUES ('Ótimo Encanador!', '5', '4', '1'),
+VALUES ('Ótimo Encanador!', '5', '19', '4'),
        ('Ótimo Eletricista!', '5', '10', '1'),
        ('Ótimo Pintor!', '5', '16', '1'),
        ('Bom Encanador!', '3', '5', '1'),
