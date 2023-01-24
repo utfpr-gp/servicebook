@@ -3,6 +3,7 @@ package br.edu.utfpr.servicebook.controller;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.JobCandidate;
+import br.edu.utfpr.servicebook.model.entity.JobContracted;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobCandidateMapper;
@@ -11,9 +12,12 @@ import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobCandidateService;
+import br.edu.utfpr.servicebook.service.JobContractedService;
 import br.edu.utfpr.servicebook.service.JobRequestService;
 import br.edu.utfpr.servicebook.sse.EventSSE;
 import br.edu.utfpr.servicebook.sse.SSEService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,8 +37,13 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/candidaturas")
 public class JobCandidateController {
+    public static final Logger log = LoggerFactory.getLogger(JobCandidateController.class);
+
     @Autowired
     private JobCandidateService jobCandidateService;
+
+    @Autowired
+    private JobContractedService jobContractedService;
 
     @Autowired
     private JobRequestService jobRequestService;
@@ -83,9 +92,6 @@ public class JobCandidateController {
             redirectAttributes.addFlashAttribute("candidacyApplicationErrorMessage", "Essa ordem de serviço já atingiu o número máximo de candidaturas.");
             return samePageView;
         }
-
-        JobCandidate jobCandidate = new JobCandidate(oJobRequest.get(), oindividual.get());
-        jobCandidateService.save(jobCandidate);
 
         JobRequestDetailsDTO jobFull = jobRequestMapper.jobRequestDetailsDTO(oJobRequest.get());
 
@@ -177,6 +183,7 @@ public class JobCandidateController {
         if(!oJobRequest.isPresent()) {
             throw new EntityNotFoundException("Pedido não encontrado!");
         }
+        log.debug("TTTTTTTTTTTTTTTTTTTTTTT" + dto.getDate());
 
         if (dto.getChosenByBudget().equals(true)) {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -188,10 +195,15 @@ public class JobCandidateController {
             JobRequest jobRequest = oJobRequest.get();
             jobRequest.setStatus(JobRequest.Status.TO_DO);
             jobRequestService.save(jobRequest);
+
+            JobContracted jobContracted = new JobContracted();
+            jobContracted.setJobRequest(jobCandidate.getJobRequest());
+            jobContracted.setIndividual(jobCandidate.getIndividual());
+            jobContracted.setHiredDate(formatter.parse(dto.getHiredDate()));
+            jobContractedService.save(jobContracted);
         } else {
             jobCandidate.setChosenByBudget(dto.getChosenByBudget());
             jobCandidateService.save(jobCandidate);
-
             JobRequest jobRequest = oJobRequest.get();
             jobRequest.setStatus(JobRequest.Status.BUDGET);
             jobRequestService.save(jobRequest);

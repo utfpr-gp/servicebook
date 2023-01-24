@@ -10,6 +10,8 @@ import javax.persistence.Table;
 
 import lombok.*;
 
+import java.util.Date;
+
 @Data
 @Table(name = "job_contracted")
 @NoArgsConstructor
@@ -26,6 +28,8 @@ public class JobContracted {
 	private String comments;
 
 	private int rating;
+	private Date dateServicePerformed;
+	private Date hiredDate;
 
 	@NonNull
 	@OneToOne

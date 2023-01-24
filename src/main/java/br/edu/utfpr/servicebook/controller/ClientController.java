@@ -32,6 +32,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -689,6 +690,11 @@ public class ClientController {
 
         jobRequest.setStatus(JobRequest.Status.CLOSED);
         jobRequestService.save(jobRequest);
+        /**Busca pelo job que foi contratado, ao finalizar é adicionado no campo data e horário em que foi concluido*/
+        Optional<JobContracted> oJobContracted = jobContractedService.findByRequestProfessional(jobRequest.getId());
+        JobContracted jobContracted = oJobContracted.get();
+        jobContracted.setDateServicePerformed(new Date());
+        jobContractedService.save(jobContracted);
 
         return "redirect:/minha-conta/cliente#executados";
     }

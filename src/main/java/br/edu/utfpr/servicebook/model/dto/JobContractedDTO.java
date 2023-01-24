@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,5 +22,10 @@ public class JobContractedDTO {
     private Long idJobRequest;
 
     private Long idProfessional;
+
+    private Date dateServicePerformed;
+
+    private Date hiredDate;
+
 
 }

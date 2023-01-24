@@ -66,4 +66,12 @@ public class JobContractedService {
     public Page<JobContracted> findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status status, Individual client, Pageable pageable){
         return this.jobContractedRepository.findByJobRequest_StatusAndJobRequest_Individual(status, client, pageable);
     }
+
+    public List<JobContracted> findByIdRequest(Long id) {
+        return this.jobContractedRepository.findByRequestId(id);
+    }
+
+    public Optional<JobContracted> findByRequestProfessional(Long request_id) {
+        return  this.jobContractedRepository.findByJobIdAndIndividualId(request_id);
+    }
 }

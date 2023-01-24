@@ -72,4 +72,10 @@ public interface JobContractedRepository extends JpaRepository<JobContracted, Lo
 
     Page<JobContracted> findByJobRequest_StatusAndJobRequest_ExpertiseAndIndividual(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable);
 
+    @Query("SELECT j FROM JobContracted j WHERE j.jobRequest.id = :job_request_id")
+    List<JobContracted> findByRequestId(@Param("job_request") Long job_request_id);
+
+    @Query("select j from JobContracted j where j.jobRequest.id = ?1")
+    Optional<JobContracted> findByJobIdAndIndividualId(Long jobId);
+
 }

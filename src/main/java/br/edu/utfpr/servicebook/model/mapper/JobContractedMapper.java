@@ -24,6 +24,8 @@ public class JobContractedMapper {
         JobContractedDTO dto = mapper.map(entity, JobContractedDTO.class);
         dto.setId(dto.getId());
         dto.setComments(dto.getComments());
+        dto.setDateServicePerformed(dto.getDateServicePerformed());
+        dto.setHiredDate(dto.getHiredDate());
         dto.setStatus(dto.getStatus());
         dto.setRating(dto.getRating());
         return dto;
