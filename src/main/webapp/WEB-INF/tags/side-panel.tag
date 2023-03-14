@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@attribute name="individualInfo" type="br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO" %>
 <%@attribute name="statisticProfessionalInfo" type="br.edu.utfpr.servicebook.util.sidePanel.SidePanelStatisticsDTO" %>
+<%@attribute name="companyInfo" type="br.edu.utfpr.servicebook.util.sidePanel.SidePanelCompanyDTO" %>
 <%@attribute name="followdto" type="br.edu.utfpr.servicebook.follower.FollowsDTO" %>
 
     <div class="col m2 l3 hide-on-med-and-down" style="padding-left: 0" id="area-perfil">
@@ -99,7 +100,7 @@
 
             </div>
         </div>
-        <c:if test="${statisticProfessionalInfo == null}">
+        <c:if test="${statisticProfessionalInfo == null && company != true}">
             <div class="row primary-background-color no-margin">
                 <div class="col s12">
                         <p class="header-verification tertiary-color-text center">PROFISSIONAIS FAVORITOS</p>
@@ -113,6 +114,47 @@
                 </div>
             </div>
         </c:if>
+
+        <c:if test="${company == true}">
+            <div class="row primary-background-color no-margin">
+                <div class="col s12">
+                    <p class="header-verification tertiary-color-text center">SEGUIDORES</p>
+                </div>
+            </div>
+            <div class="row secondary-background-color no-margin">
+                <div class="col s12">
+                    <h5 class="name-header no-margin center white-text">
+                        <strong><a href="profissionais-favoritos">${individualInfo.followingAmount}</a></strong>
+                    </h5>
+                </div>
+            </div>
+
+            <div class="row primary-background-color no-margin">
+                <div class="col s12">
+                    <p class="header-verification tertiary-color-text center">FUNCIONÁRIOS</p>
+                </div>
+            </div>
+            <div class="row secondary-background-color no-margin">
+                <div class="col s12">
+                    <h5 class="name-header no-margin center white-text">
+                        <strong><a href="profissionais-favoritos">${individualInfo.followingAmount}</a></strong>
+                    </h5>
+                </div>
+            </div>
+        </c:if>
+
+        <c:if test="${company == true}">
+            <div class="row no-margin center">
+                <div class="col s12 no-margin no-padding input-field area-profission-select">
+                    <div class="spacing-buttons">
+                        <a class="waves-effect waves-light btn" href="minha-conta/empresa/adicionar-profissional">
+                            Adicionar Funcionário </a>
+                    </div>
+                </div>
+            </div>
+        </c:if>
+
+
         <c:if test="${statisticProfessionalInfo != null}">
             <div class="row primary-background-color no-margin">
                 <div class="col s12">
@@ -134,6 +176,56 @@
                         <a class="waves-effect waves-light btn" href="minha-conta/profissional">
                             Acessar como profissional </a>
                     </div>
+                </div>
+            </div>
+        </c:if>
+
+        <c:if test="${company == true}">
+            <div class="row no-margin center">
+                <div class="col s12 no-margin no-padding">
+                    <p class="header-verification tertiary-color-text center">SERVIÇOS REALIZADOS</p>
+                    <div class="row secondary-background-color no-margin">
+                        <h5 class="info-headers no-margin center white-text center">
+                            <strong id="expertise-jobs1">${statisticInfo.jobs}</strong>
+                        </h5>
+                    </div>
+                </div>
+                <div class="col s12 no-margin no-padding">
+                    <p class="header-verification tertiary-color-text center">AVALIAÇÕES</p>
+                    <div class="row secondary-background-color no-margin">
+                        <h5 class="info-headers no-margin center white-text center">
+                            <strong id="expertise-ratings1">${statisticInfo.ratings}</strong>
+                        </h5>
+                    </div>
+                </div>
+                <div class="col s12 no-margin no-padding">
+                    <p class="header-verification tertiary-color-text center">COMENTÁRIOS</p>
+                    <div class="row secondary-background-color no-margin">
+                        <h5 class="info-headers no-margin center white-text center">
+                            <strong id="expertise-comments1">${statisticInfo.comments}</strong>
+                        </h5>
+                    </div>
+                </div>
+
+                <div class="col s12 no-margin no-padding input-field area-profission-select">
+                    <p class="header-verification tertiary-color-text">
+                        ESPECIALIDADES
+                    </p>
+
+                    <form method="get" action="minha-conta/profissional" id="form-expertise1">
+                        <div class="input-field col s12 no-padding white-text">
+                            <select name="id" id="select-expertise1">
+                                <option value="0">Todas as Especialidades</option>
+
+                                <c:forEach var="expertise" items="${expertises}">
+                                    <option value="${expertise.id}" ${expertise.id == id ? 'selected' : ''}><p>${expertise.name}</p></option>
+                                </c:forEach>
+
+                            </select>
+                        </div>
+                        <button type="submit" hidden></button>
+                    </form>
+
                 </div>
             </div>
         </c:if>

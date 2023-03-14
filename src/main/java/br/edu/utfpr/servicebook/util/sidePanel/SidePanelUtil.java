@@ -97,4 +97,50 @@ public class SidePanelUtil {
             oProfessionalExpertise.get().getRating()
         );
     }
+
+    public SidePanelCompanyDTO getCompanyStatisticInfo(Individual oProfessional, Long expertiseId) {
+
+        if (expertiseId == 0L) {
+            ProfessionalDTO professional = professionalMapper.toResponseDto(oProfessional);
+
+            return new SidePanelCompanyDTO(
+                    jobContractedService.countByProfessional(oProfessional).orElse(0L),
+                    jobContractedService.countRatingByProfessional(oProfessional).orElse(0L),
+                    jobContractedService.countCommentsByProfessional(oProfessional).orElse(0L),
+                    professional.getRating()
+            );
+        }
+
+        if (expertiseId < 0) {
+            throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
+        }
+
+        Optional<Expertise> oExpertise = expertiseService.findById(expertiseId);
+        if (!oExpertise.isPresent()) {
+            throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
+        }
+
+        Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(
+                oProfessional,
+                oExpertise.get()
+        );
+
+        if (!oProfessionalExpertise.isPresent()) {
+            throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
+        }
+
+        Long totalJobsByExpertise = jobContractedService.countByProfessionalAndJobRequest_Expertise(
+                oProfessional, oExpertise.get()).orElse(0L);
+        Long totalRatingsByExpertise = jobContractedService.countRatingByProfessionalAndJobRequest_Expertise(
+                oProfessional, oExpertise.get()).orElse(0L);
+        Long totalCommentsByExpertise = jobContractedService.countCommentsByProfessionalAndJobRequest_Expertise(
+                oProfessional, oExpertise.get()).orElse(0L);
+
+        return new SidePanelCompanyDTO(
+                totalJobsByExpertise,
+                totalRatingsByExpertise,
+                totalCommentsByExpertise,
+                oProfessionalExpertise.get().getRating()
+        );
+    }
 }

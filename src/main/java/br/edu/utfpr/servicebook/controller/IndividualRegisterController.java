@@ -3,6 +3,7 @@ package br.edu.utfpr.servicebook.controller;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
+import br.edu.utfpr.servicebook.security.ProfileEnum;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.NumberValidator;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
@@ -29,6 +30,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static br.edu.utfpr.servicebook.security.ProfileEnum.ROLE_COMPANY;
+import static br.edu.utfpr.servicebook.security.ProfileEnum.ROLE_USER;
+
 @Controller
 @Slf4j
 @RequestMapping("/cadastrar-se")
@@ -36,6 +40,8 @@ public class IndividualRegisterController {
 
     @Autowired
     private WizardSessionUtil<IndividualDTO> wizardSessionUtil;
+    @Autowired
+    private WizardSessionUtil<CompanyDTO> wizardSessionUtilCompany;
 
     @Autowired
     private WizardSessionUtil<ProfessionalExpertiseDTO> wizardSessionUtilExpertise;
@@ -47,11 +53,19 @@ public class IndividualRegisterController {
     private IndividualMapper individualMapper;
 
     @Autowired
+    private CompanyMapper companyMapper;
+
+    @Autowired
+    private CompanyService companyService;
+
+    @Autowired
     private UserCodeService userCodeService;
 
     @Autowired
     private UserCodeMapper userCodeMapper;
 
+    @Autowired
+    private UserService userService;
     @Autowired
     private CityService cityService;
 
@@ -91,7 +105,7 @@ public class IndividualRegisterController {
     @Autowired
     private ProfessionalExpertiseMapper professionalExpertiseMapper;
 
-    private String userRegistrationErrorForwarding(String step, IndividualDTO dto, Model model, BindingResult errors) {
+    private String userRegistrationErrorForwarding(String step, UserDTO dto, Model model, BindingResult errors) {
         model.addAttribute("dto", dto);
         model.addAttribute("errors", errors.getAllErrors());
 
@@ -138,9 +152,11 @@ public class IndividualRegisterController {
                     .collect(Collectors.toList());
 
             IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
+            CompanyDTO companyDTO = wizardSessionUtilCompany.getWizardState(httpSession, CompanyDTO.class, WizardSessionUtil.KEY_WIZARD_COMPANY);
 
             model.addAttribute("individual", sessionDTO);
             model.addAttribute("expertises", expertiseDTOs);
+            model.addAttribute("companies", companyDTO);
 
             ProfessionalExpertiseDTO professionalExpertiseDTO= wizardSessionUtilExpertise.getWizardState(httpSession, ProfessionalExpertiseDTO.class, WizardSessionUtil.KEY_EXERPERTISES);
 
@@ -172,6 +188,7 @@ public class IndividualRegisterController {
 
         wizardSessionUtil.removeWizardState(httpSession, WizardSessionUtil.KEY_WIZARD_USER);
         wizardSessionUtil.removeWizardState(httpSession, WizardSessionUtil.KEY_EXERPERTISES);
+        wizardSessionUtil.removeWizardState(httpSession, WizardSessionUtil.KEY_WIZARD_COMPANY);
     }
 
     @PostMapping("/passo-1")
@@ -183,21 +200,21 @@ public class IndividualRegisterController {
             RedirectAttributes redirectAttributes,
             Model model
     ) throws MessagingException {
-
         if (errors.hasErrors()) {
             return this.userRegistrationErrorForwarding("1", dto, model, errors);
         }
         String email = dto.getEmail();
+        String typeUser = dto.getType();
+
+        log.info("tipo de usuário é: ", typeUser);
         Optional<Individual> oUser = individualService.findByEmail(dto.getEmail());
 
         if (oUser.isPresent()) {
             errors.rejectValue("email", "error.dto", "Email já cadastrado! Por favor, insira um email não cadastrado.");
         }
-
         if (errors.hasErrors()) {
             return this.userRegistrationErrorForwarding("1", dto, model, errors);
         }
-
         Optional<UserCode> oUserCode = userCodeService.findByEmail(dto.getEmail());
         String actualCode = "";
 
@@ -216,8 +233,18 @@ public class IndividualRegisterController {
         String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/codigo/" + actualCode;
         quartzService.sendEmailToConfirmationCode(email, actualCode, tokenLink);
 
-        IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
+        UserDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
+        UserDTO companyDTO = wizardSessionUtilCompany.getWizardState(httpSession, CompanyDTO.class, WizardSessionUtil.KEY_WIZARD_COMPANY);
         sessionDTO.setEmail(dto.getEmail());
+
+        sessionDTO.setProfile(dto.getProfile());
+        sessionDTO.setType(dto.getType());
+
+        companyDTO.setProfile(dto.getProfile());
+        companyDTO.setCnpj(dto.getCpf());
+        companyDTO.setEmail(dto.getEmail());
+
+        log.info("email: " + dto.getProfile());
 
         return "redirect:/cadastrar-se?passo=2";
     }
@@ -284,9 +311,12 @@ public class IndividualRegisterController {
         }
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
+        CompanyDTO companyDTO = wizardSessionUtilCompany.getWizardState(httpSession, CompanyDTO.class, WizardSessionUtil.KEY_WIZARD_COMPANY);
         sessionDTO.setPassword(dto.getPassword());
         sessionDTO.setRepassword(dto.getRepassword());
 
+        companyDTO.setPassword(dto.getPassword());
+        companyDTO.setRepassword(dto.getRepassword());
         return "redirect:/cadastrar-se?passo=4";
     }
 
@@ -310,10 +340,11 @@ public class IndividualRegisterController {
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         sessionDTO.setPhoneNumber(dto.getPhoneNumber());
+        CompanyDTO companyDTO = wizardSessionUtilCompany.getWizardState(httpSession, CompanyDTO.class, WizardSessionUtil.KEY_WIZARD_COMPANY);
+        companyDTO.setPhoneNumber(dto.getPhoneNumber());
 
         return "redirect:/cadastrar-se?passo=5";
     }
-
     @PostMapping("/passo-5")
     @PermitAll
     public String saveUserPhoneCode(
@@ -369,7 +400,8 @@ public class IndividualRegisterController {
     @PermitAll
     public String saveUserNameAndCPF(
             HttpSession httpSession,
-            @Validated(IndividualDTO.RequestUserNameAndCPFInfoGroupValidation.class) IndividualDTO dto,
+            IndividualDTO dto,
+            CompanyDTO companyDTO,
             BindingResult errors,
             RedirectAttributes redirectAttributes,
             Model model
@@ -379,19 +411,28 @@ public class IndividualRegisterController {
             return this.userRegistrationErrorForwarding("6", dto, model, errors);
         }
 
-        Optional<Individual> oUser = individualService.findByCpf(dto.getCpf());
+        if(dto.getType() == "individual"){
 
-        if (oUser.isPresent()) {
-            errors.rejectValue("cpf", "error.dto", "CPF já cadastrado! Por favor, insira um CPF não cadastrado.");
-        }
+            Optional<Individual> oUser = individualService.findByCpf(dto.getCpf());
 
-        if (errors.hasErrors()) {
-            return this.userRegistrationErrorForwarding("6", dto, model, errors);
+            if (oUser.isPresent()) {
+                errors.rejectValue("cpf", "error.dto", "CPF já cadastrado! Por favor, insira um CPF não cadastrado.");
+            }
+
+            if (errors.hasErrors()) {
+                return this.userRegistrationErrorForwarding("6", dto, model, errors);
+            }
+
         }
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
+        CompanyDTO companyDTO1= wizardSessionUtilCompany.getWizardState(httpSession, CompanyDTO.class, WizardSessionUtil.KEY_WIZARD_COMPANY);
+
         sessionDTO.setName(dto.getName());
         sessionDTO.setCpf(dto.getCpf());
+        sessionDTO.setCnpj(dto.getCpf());
+        companyDTO1.setCnpj(dto.getCpf());
+        companyDTO1.setName(dto.getName());
 
         return "redirect:/cadastrar-se?passo=7";
     }
@@ -430,9 +471,12 @@ public class IndividualRegisterController {
         addressFullDTO.setCity(cityMidDTO);
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
+        CompanyDTO companyDTO1= wizardSessionUtilCompany.getWizardState(httpSession, CompanyDTO.class, WizardSessionUtil.KEY_WIZARD_COMPANY);
+
         sessionDTO.setAddress(addressFullDTO);
         sessionDTO.setProfileVerified(true);
-
+        companyDTO1.setAddress(addressFullDTO);
+        companyDTO1.setProfileVerified(true);
         return "redirect:/cadastrar-se?passo=8";
     }
 
@@ -479,20 +523,22 @@ public class IndividualRegisterController {
 
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         ProfessionalExpertiseDTO professionalExpertiseDTO= wizardSessionUtilExpertise.getWizardState(httpSession, ProfessionalExpertiseDTO.class, WizardSessionUtil.KEY_EXERPERTISES);
+        CompanyDTO companyDTO = wizardSessionUtilCompany.getWizardState(httpSession, CompanyDTO.class, WizardSessionUtil.KEY_WIZARD_COMPANY);
 
-        validator.validate(sessionDTO, errors, new Class[]{
-                IndividualDTO.RequestUserEmailInfoGroupValidation.class,
-                IndividualDTO.RequestUserPasswordInfoGroupValidation.class,
-                IndividualDTO.RequestUserPhoneInfoGroupValidation.class,
-                IndividualDTO.RequestUserNameAndCPFInfoGroupValidation.class,
-                AddressDTO.RequestUserAddressInfoGroupValidation.class
-        });
+//        validator.validate(sessionDTO, errors, new Class[]{
+//                IndividualDTO.RequestUserEmailInfoGroupValidation.class,
+//                IndividualDTO.RequestUserPasswordInfoGroupValidation.class,
+//                IndividualDTO.RequestUserPhoneInfoGroupValidation.class,
+//                IndividualDTO.RequestUserNameAndCPFInfoGroupValidation.class,
+//                AddressDTO.RequestUserAddressInfoGroupValidation.class
+//        });
 
         if (errors.hasErrors()) {
             return this.userRegistrationErrorForwarding("8", dto, model, errors);
         }
 
         Individual user = individualMapper.toEntity(sessionDTO);
+        Company company = companyMapper.toEntity(companyDTO);
 
         /* Faz a busca pelas especialidades informadas e relaciona ao profissional */
         if (professionalExpertiseDTO.getIds() != null) {
@@ -503,7 +549,12 @@ public class IndividualRegisterController {
                 }
 
                 ProfessionalExpertise professionalExpertise = new ProfessionalExpertise(user, e.get());
-                individualService.saveExpertisesIndividual(user, professionalExpertise);
+                if(dto.getProfile() == ROLE_COMPANY || company.getProfile() == ROLE_COMPANY){
+                    CompanyExpertise companyExpertise = new CompanyExpertise(company, e.get());
+                    companyService.saveExpertisesCompany(company, companyExpertise);
+                } else {
+                    individualService.saveExpertisesIndividual(user, professionalExpertise);
+                }
             }
         }
 

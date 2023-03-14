@@ -2,6 +2,8 @@ package br.edu.utfpr.servicebook.model.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -56,6 +58,18 @@ public class User implements Serializable {
 
 	@OneToOne(cascade = CascadeType.PERSIST)
 	private Address address;
+
+	@OneToMany(mappedBy = "individual")
+	private Set<JobRequest> jobRequest = new HashSet<>();
+
+	@OneToMany(mappedBy = "individual")
+	Set<JobCandidate> candidatures;
+
+	private String description;
+
+	private Integer denounceAmount;
+
+	private Long followsAmount;
 
 	@PrePersist
 	@PreUpdate

@@ -4,16 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClientDTO extends UserDTO {
-    private Long id;
-
-    private String name;
-
-    private String email;
-
-    private String phone;
+public class CompanyExpertiseDTO {
+    private List<Integer> ids;
 
 }

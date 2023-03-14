@@ -1,5 +1,6 @@
 package br.edu.utfpr.servicebook.model.entity;
 
+import br.edu.utfpr.servicebook.security.ProfileEnum;
 import lombok.*;
 
 import javax.persistence.*;
@@ -27,22 +28,16 @@ public class Individual extends User {
     @Column(unique = true)
     private String cpf;
 
+    private String type;
+
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
     private Date birthDate;
 
-    @OneToMany(mappedBy = "individual")
-    private Set<JobRequest> jobRequest = new HashSet<>();
-
-    @OneToMany(mappedBy = "individual")
-    Set<JobCandidate> candidatures;
-
-    private String description;
-
-    private Integer denounceAmount;
-
-    private Long followsAmount;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ProfileEnum profile;
 
     public Individual(String name, String email, String password, String phoneNumber, String cpf){
         super(name, email, password, phoneNumber);

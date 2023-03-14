@@ -24,20 +24,16 @@ public class IndividualDTO extends UserDTO implements Serializable {
     @CPF(message = "CPF inválido! Por favor, insira um CPF válido.", groups = IndividualDTO.RequestUserNameAndCPFInfoGroupValidation.class)
     private String cpf;
 
-     private String gender;
+    private String gender;
 
     private Date birthDate;
+
+    private String type;
 
     @Pattern(regexp = "^\\(?\\d{2}\\)?\\s?(9\\d{4})-?(\\d{4})$", message = "Telefone inválido! Por favor, insira um número de telefone válido.", groups = IndividualDTO.RequestUserPhoneInfoGroupValidation.class)
     private String phoneNumber;
 
-    private String description;
 
-    private int rating;
-
-    private int denounceAmount;
-
-    private Long followingAmount;
 
     public String getOnlyNumbersFromPhone() {
         return getPhoneNumber().replaceAll("[^0-9]", "");

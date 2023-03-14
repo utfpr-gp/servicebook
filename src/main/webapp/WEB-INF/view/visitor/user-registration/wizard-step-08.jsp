@@ -74,22 +74,22 @@
                             </div>
                         </div>
 
-                            <div class="row">
-                                <div class="col s6 m3 offset-m3 spacing-buttons">
-                                    <div class="center">
-                                        <a href="cadastrar-se?passo=7" class="waves-effect waves-light btn btn-gray">
-                                            Voltar
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="col s6 m3 spacing-buttons">
-                                    <form action="cadastrar-se/passo-9" method="post">
-                                        <div class="center">
-                                            <button type="submit" class="waves-effect waves-light btn">Fim</button>
-                                        </div>
-                                    </form>
+                        <div class="row">
+                            <div class="col s6 m3 offset-m3 spacing-buttons">
+                                <div class="center">
+                                    <a href="cadastrar-se?passo=7" class="waves-effect waves-light btn btn-gray">
+                                        Voltar
+                                    </a>
                                 </div>
                             </div>
+                            <div class="col s6 m3 spacing-buttons">
+                                <form action="cadastrar-se/passo-9" method="post">
+                                    <div class="center">
+                                        <button type="submit" class="waves-effect waves-light btn">Fim</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -150,12 +150,9 @@
     </jsp:body>
 </t:template>
 <script>
-
     $(function(){
-
         $("#txtBusca").keyup(function(){
             var texto = $(this).val();
-
             $("#search-expertises li").css("display", "block");
             $("#search-expertises li").each(function(){
                 if($(this).text().toUpperCase().indexOf(texto.toUpperCase()) < 0)
@@ -163,7 +160,6 @@
             });
         });
     });
-
     $(".myclass").hover(function(e) {
         $(this).css("color",e.type === "mouseenter"?"red":"grey")
     })

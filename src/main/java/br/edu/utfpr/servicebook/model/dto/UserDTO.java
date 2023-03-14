@@ -1,5 +1,6 @@
 package br.edu.utfpr.servicebook.model.dto;
 
+import br.edu.utfpr.servicebook.security.ProfileEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public class UserDTO implements Serializable {
 
     @CPF(message = "CPF inválido! Por favor, insira um CPF válido.", groups = UserDTO.RequestUserNameAndCPFInfoGroupValidation.class)
     protected String cpf;
+    protected String cnpj;
 
     @NotBlank(message = "Email inválido! Por favor, insira o email.", groups = UserDTO.RequestUserEmailInfoGroupValidation.class)
     @Email(message = "Email inválido! Por favor, insira um email válido.", groups = UserDTO.RequestUserEmailInfoGroupValidation.class)
@@ -40,6 +42,7 @@ public class UserDTO implements Serializable {
     protected String type;
     protected String gender;
     protected String profilePicture;
+    protected ProfileEnum profile;
     protected Date birthDate;
 
     @Pattern(regexp = "^\\(?\\d{2}\\)?\\s?(\\d{4,5})-?(\\d{4})$", message = "Telefone inválido! Por favor, insira um número de telefone válido.", groups = UserDTO.RequestUserPhoneInfoGroupValidation.class)
@@ -52,6 +55,14 @@ public class UserDTO implements Serializable {
     protected boolean phoneVerified;
     protected boolean emailVerified;
     protected boolean profileVerified;
+
+    private String description;
+
+    private int rating;
+
+    private int denounceAmount;
+
+    private Long followingAmount;
 
     @Valid
     protected AddressFullDTO address;

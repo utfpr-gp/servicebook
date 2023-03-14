@@ -45,6 +45,7 @@ public class IndividualMapper {
         dto.setDescription(dto.getDescription());
         dto.setRating(dto.getRating());
         dto.setDenounceAmount(dto.getDenounceAmount());
+        dto.setProfile(dto.getProfile());
         return dto;
     }
 

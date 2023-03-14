@@ -12,8 +12,4 @@ import java.util.Optional;
 public class IndividualMinDTO extends UserDTO {
 
     private Long id;
-    private String description;
-    private Integer rating;
-    private Long followsAmount;
-
 }

@@ -1,5 +1,6 @@
 (function($){
   $(function(){
+    $('.tabs_register').tabs();
 
     M.AutoInit();
     $('.carousel.carousel-slider').carousel({

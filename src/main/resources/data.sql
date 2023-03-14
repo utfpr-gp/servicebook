@@ -41,27 +41,31 @@ VALUES ('Industrial', '800', '85053525', 'Avenida Professora Laura Pacheco Basto
 
 INSERT INTO users
 (email, email_verified, name, phone_number, phone_verified, profile_picture, profile_verified,
- address_id, rating, profile, password)
+ address_id, rating, profile, password, description)
 VALUES ('profissional1@gmail.com', 'true', 'Nome do Primeiro Profissional', '(42) 99999-9991', 'true',
-        'https://i.imgur.com/owhNAKK.png', 'true', '1', 2, 'ROLE_ADMIN','$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS'),
+        'https://i.imgur.com/owhNAKK.png', 'true', '1', 2, 'ROLE_ADMIN','$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição profissional 1'),
        ('profissional2@gmail.com', 'true', 'Nome do Segundo Profissional', '(42) 99999-9992', 'true',
-        'https://i.imgur.com/sHAg9pz.png', 'true', '1', 4,'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS'),
+        'https://i.imgur.com/sHAg9pz.png', 'true', '1', 4,'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição profissional 1'),
        ('cliente1@gmail.com', 'true', 'Nome do Primeiro Cliente', '(42) 99999-9993', 'true',
-        'https://i.imgur.com/y9dH2bJ.jpeg', 'true', '1', 5, 'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS'),
+        'https://i.imgur.com/y9dH2bJ.jpeg', 'true', '1', 5, 'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição profissional 1'),
        ('cliente2@gmail.com', 'true', 'Nome do Segundo Cliente', '(42) 99999-9994', 'true',
-        'https://i.imgur.com/owhNAKK.png', 'true', '1', 1, 'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS'),
+        'https://i.imgur.com/owhNAKK.png', 'true', '1', 1, 'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição profissional 1'),
+       ('empresa@gmail.com', 'true', 'Nome Empresa', '(42) 99999-9994', 'true',
+        'https://i.imgur.com/owhNAKK.png', 'true', '1', 1, 'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição empresa 1'),
        ('profissional3@gmail.com', 'true', 'Nome do Terceiro Profissional', '(42) 99999-9995', 'false',
-        null, 'false', '1', 3, 'ROLE_USER', 'qwerty'),
+        null, 'false', '1', 3, 'ROLE_USER', 'qwerty',  'Descrição profissional 1'),
        ('profissional4@gmail.com', 'true', 'Nome do Quarto Profissional', '(42) 99999-9996', 'true',
-        'https://i.imgur.com/owhNAKK.png', 'true', '1', 2, 'ROLE_USER', 'qwerty');
+        'https://i.imgur.com/owhNAKK.png', 'true', '1', 2, 'ROLE_USER', 'qwerty123', 'Descrição profissional 1');
 
-INSERT INTO individuals (cpf, description, gender, birth_date, id)
-VALUES ('982.988.640-93', 'Descrição profissional 1', 'MASCULINE', '2003-01-01', '1'),
-       ('998.045.450-47', 'Descrição profissional 2', 'MASCULINE', '2000-01-01', '2'),
-       ('130.218.260-91', 'Descrição profissional 3', 'MASCULINE', '2001-01-01', '3'),
-       ('619.487.532-19', 'Descrição profissional 3', 'MASCULINE', '2001-01-01', '4'),
-       ('814.541.391-53', 'Descrição profissional 3', 'MASCULINE', '2001-01-01', '5'),
-       ('567.690.630-85', 'Descrição profissional 4', 'MASCULINE', '2001-01-01', '6');
+
+INSERT INTO individuals (cpf, gender, birth_date, id)
+VALUES ('982.988.640-93', 'MASCULINE', '2003-01-01', '1'),
+       ('998.045.450-47', 'MASCULINE', '2000-01-01', '2'),
+       ('130.218.260-91', 'MASCULINE', '2001-01-01', '3'),
+       ('619.487.532-19', 'MASCULINE', '2001-01-01', '4'),
+       ('814.541.391-53', 'MASCULINE', '2001-01-01', '5'),
+       ('567.690.630-85', 'MASCULINE', '2001-01-01', '6');
+
 
 INSERT INTO expertises (name, description, path_icon)
 VALUES ('Encanador', 'Realiza serviço como encanador', 'https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg'),
@@ -77,6 +81,11 @@ VALUES (1, 1, 1),
        (2, 5, 4),
        (2, 6, 4);
 
+INSERT INTO companies (cnpj, id)
+VALUES ('98.988.640/0001-91', 1);
+
+INSERT INTO company_expertises (expertise_id, company_id, rating)
+VALUES (1, 1, 1);
 
 INSERT INTO job_requests
 (client_confirmation, date_created, date_expired, description, professional_confirmation, quantity_candidators_max,
@@ -106,7 +115,7 @@ VALUES ('false', '2021-01-01', '2021-01-01', 'Preciso de um Encanador 1!', 'true
        ('true', '2021-08-26', '2021-08-28', 'Preciso de um Mecânico 2!', 'true', '10', 'AVAILABLE', '4', '4'),
        ('true', '2021-08-26', '2021-09-01', 'Preciso de um Mecânico 3!', 'true', '15', 'AVAILABLE', '4', '4'),
        ('true', '2021-08-26', '2021-09-10', 'Preciso de um Mecânico 4!', 'true', '20', 'AVAILABLE', '4', '4'),
-       ('true', '2021-08-26', '2021-09-20', 'Preciso de um Mecânico 5!', 'true', '20', 'AVAILABLE', '4', '4');
+       ('true', '2023-01-16', '2023-01-17', 'Preciso de um Mecânico 5!', 'true', '20', 'CLOSED', '4', '4');
 
 
 
