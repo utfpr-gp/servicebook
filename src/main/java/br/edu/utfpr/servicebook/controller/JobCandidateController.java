@@ -133,6 +133,7 @@ public class JobCandidateController {
 
     /**
      * Usuário cancela a candidatura a um serviço
+     * FIXME Não pode deletar o JobRequest, apenas a candidatura.
      * @param id
      * @param redirectAttributes
      * @return
@@ -159,58 +160,5 @@ public class JobCandidateController {
     }
 
 
-    @PostMapping("/contratacao/{id}")
-    @RolesAllowed({RoleType.USER})
-    public String confirmHired(
-            @PathVariable Long id,
-            JobCandidateMinDTO dto,
-            RedirectAttributes redirectAttributes
-    ) throws IOException, ParseException {
-        String currentUserEmail = authentication.getEmail();
 
-        Optional<Individual> oindividual = individualService.findByEmail(currentUserEmail);
-        if(!oindividual.isPresent()){
-            throw new EntityNotFoundException("O usuário não foi encontrado!");
-        }
-
-        Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(id, oindividual.get().getId());
-        if(!oJobCandidate.isPresent()) {
-            throw new EntityNotFoundException("Candidatura não encontrada!");
-        }
-
-        JobCandidate jobCandidate = oJobCandidate.get();
-        Optional<JobRequest> oJobRequest = jobRequestService.findById(jobCandidate.getJobRequest().getId());
-        if(!oJobRequest.isPresent()) {
-            throw new EntityNotFoundException("Pedido não encontrado!");
-        }
-        log.debug("TTTTTTTTTTTTTTTTTTTTTTT" + dto.getDate());
-
-        if (dto.getChosenByBudget().equals(true)) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            jobCandidate.setHiredDate(formatter.parse(dto.getHiredDate()));
-
-            jobCandidate.setChosenByBudget(dto.getChosenByBudget());
-            jobCandidateService.save(jobCandidate);
-
-            JobRequest jobRequest = oJobRequest.get();
-            jobRequest.setStatus(JobRequest.Status.TO_DO);
-            jobRequestService.save(jobRequest);
-
-            JobContracted jobContracted = new JobContracted();
-            jobContracted.setJobRequest(jobCandidate.getJobRequest());
-            jobContracted.setIndividual(jobCandidate.getIndividual());
-            jobContracted.setHiredDate(formatter.parse(dto.getHiredDate()));
-            jobContractedService.save(jobContracted);
-        } else {
-            jobCandidate.setChosenByBudget(dto.getChosenByBudget());
-            jobCandidateService.save(jobCandidate);
-            JobRequest jobRequest = oJobRequest.get();
-            jobRequest.setStatus(JobRequest.Status.BUDGET);
-            jobRequestService.save(jobRequest);
-        }
-
-        redirectAttributes.addFlashAttribute("msg", "Pedido salvo com sucesso!");
-
-        return "redirect:/minha-conta/profissional/detalhes-servico/" + id;
-    }
 }

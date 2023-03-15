@@ -33,7 +33,7 @@ public class JobCandidateMapper {
         JobCandidateMinDTO dto = mapper.map(entity, JobCandidateMinDTO.class);
         dto.getJobRequest().setDateCreated(this.dateFormat.format(entity.getJobRequest().getDateCreated()));
         dto.getJobRequest().setDateExpired(this.dateFormat.format(entity.getJobRequest().getDateExpired()));
-        dto.setDate(this.dateFormat.format(entity.getDate()));
+        dto.setDate(this.dateFormat.format(entity.getDateCreated()));
         dto.getJobRequest().setTotalCandidates(totalCandidates.get());
         dto.getJobRequest().setTextualDate(DateUtil.getTextualDate(DateUtil.toLocalDate(entity.getJobRequest().getDateExpired())));
 

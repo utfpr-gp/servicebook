@@ -87,22 +87,22 @@
 
                                 <form id="hiredForm" method="post">
                                     <label>
-                                        <input id="confirmHired" name="chosenByBudget" type="radio" value="true"/>
+                                        <input id="confirm-hired-input" name="confirm" type="radio" value="true"/>
                                         <span>Confirmo a realização do serviço</span>
                                     </label>
 
                                     <label>
-                                        <input id="notConfirmHired" name="chosenByBudget" type="radio" value="false"/>
+                                        <input id="not-confirm-hired-input" name="confirm" type="radio" value="false"/>
                                         <span>Não poderei realizar o serviço</span>
                                     </label>
 
                                     <div class="row" id="confirmHiredForm" style="display: none; margin-top: 15px">
                                         <p>Adicione abaixo a data para a realização do serviço e confirme sua ação:</p>
-                                        <input class="col s6" type="date" id="hiredDateFormConfirm" name="hiredDate">
+                                        <input class="col s6" type="date" id="hiredDateFormConfirm" name="todoDate">
                                     </div>
 
                                     <div class="row">
-                                        <a id="hiredFormButton" href="#modal-confirm-hired" data-url="${pageContext.request.contextPath}/candidaturas/contratacao/${job.id}" class="waves-effect waves-light btn spacing-buttons modal-trigger">Contratação</a>
+                                        <a id="hiredFormButton" href="#modal-confirm-hired" data-url="${pageContext.request.contextPath}/contratados/confirma/${job.id}" class="waves-effect waves-light btn spacing-buttons modal-trigger">Contratação</a>
                                     </div>
                                 </form>
 
@@ -110,8 +110,8 @@
                                     <div class="modal-content">
                                         <form action="" method="post">
                                             <input type="hidden" name="_method" value="POST"/>
-                                            <input id="chosenByBudget" name="chosenByBudget" type="hidden" value=""/>
-                                            <input class="col s6" type="date" id="hiredDateFormConfirmModal" name="hiredDate" hidden>
+                                            <input id="confirm-input" name="confirm" type="hidden" value=""/>
+                                            <input class="col s6" type="date" id="hiredDateFormConfirmModal" name="todoDate" hidden>
 
                                             <div class="modal-content" id="modal-content-confirm-hired" style="display: none">
                                                 <h5>Você tem certeza que deseja confirmar a contratação desse serviço?</h5>
@@ -233,30 +233,30 @@
 
         $('#hiredFormButton').attr("disabled", "disabled");
 
-        $('#confirmHired').click(function () {
+        $('#confirm-hired-input').click(function () {
             $('#hiredFormButton').removeAttr("disabled");
             $("#confirmHiredForm").show();
         });
 
-        $('#notConfirmHired').click(function () {
+        $('#not-confirm-hired-input').click(function () {
             $("#hiredDateFormConfirm").val(null);
             $('#hiredFormButton').removeAttr("disabled");
             $("#confirmHiredForm").hide();
         });
 
         $('#hiredFormButton').click(function () {
-            if ($("#confirmHired").is(":checked")) {
+            if ($("#confirm-hired-input").is(":checked")) {
                 $("#date-confirmed-span").text($("#hiredDateFormConfirm").val());
                 $("#modal-content-confirm-hired").show();
                 $("#modal-content-not-confirm-hired").hide();
 
                 let date = $("#hiredDateFormConfirm").val();
                 $("#hiredDateFormConfirmModal").val(date);
-                $("#chosenByBudget").val(true);
+                $("#confirm-input").val(true);
             } else {
                 $("#modal-content-confirm-hired").hide();
                 $("#modal-content-not-confirm-hired").show();
-                $("#chosenByBudget").val(false);
+                $("#confirm-input").val(false);
             }
         });
 

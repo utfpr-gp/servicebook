@@ -17,10 +17,6 @@ public class JobCandidateMinDTO implements Serializable {
     private String date;
     private String hiredDate;
     private Boolean chosenByBudget;
-    
-    @NotNull(message = "É preciso marcar uma opção!")
-    @NotBlank(message = "É preciso marcar uma opção!")
-    private Boolean isQuit;
     private JobRequestFullDTO jobRequest;
 
 }

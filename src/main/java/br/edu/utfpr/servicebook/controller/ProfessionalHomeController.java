@@ -479,7 +479,7 @@ public class ProfessionalHomeController {
         Optional<JobRequest> oJob = jobRequestService.findById(id);
 
         if (!oJob.isPresent()) {
-            throw new Exception("O trabalho não foi encontrado em nosso sistema!");
+            throw new Exception("O serviço não foi encontrado em nosso sistema!");
         }
 
         JobRequest jb = oJob.get();
@@ -505,22 +505,18 @@ public class ProfessionalHomeController {
         boolean isAvailableJobRequest = jb.getStatus().equals(JobRequest.Status.AVAILABLE) && jb.isClientConfirmation();
         boolean isJobToHired = jb.getStatus().equals(JobRequest.Status.TO_HIRED);
 
-        Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(id, oProfessional.get().getId());
+        JobContracted jobContracted = jb.getJobContracted();
 
-        if (oJobCandidate.isPresent()) {
-            JobCandidate jobCandidate = oJobCandidate.get();
-            boolean hasHiredDate = false;
+        boolean hasTodoDate = false;
 
-            if (jobCandidate.getHiredDate() != null) {
-                String date = this.dateFormat.format(jobCandidate.getHiredDate());
-                hasHiredDate = true;
+        if (jobContracted.getTodoDate() != null) {
+            String date = this.dateFormat.format(jobContracted.getTodoDate());
+            hasTodoDate = true;
 
-                mv.addObject("jobCandidateHiredDate",  date);
-            }
-
-            mv.addObject("hasHiredDate",  hasHiredDate);
+            mv.addObject("jobCandidateHiredDate",  date);
         }
 
+        mv.addObject("hasHiredDate",  hasTodoDate);
         mv.addObject("job", jobFull);
         mv.addObject("client", client);
         mv.addObject("city", city.getName());
