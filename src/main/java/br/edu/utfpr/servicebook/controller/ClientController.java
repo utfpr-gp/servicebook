@@ -277,7 +277,7 @@ public class ClientController {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateExpired").ascending());
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateTarget").ascending());
         Page<JobRequest> jobRequestPage = null;
         List<JobRequestFullDTO> jobRequestFullDTOs = null;
 
@@ -348,7 +348,7 @@ public class ClientController {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateExpired").ascending());
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateTarget").ascending());
         Page<JobRequest> jobRequestPage = null;
         List<JobRequestFullDTO> jobRequestFullDTOs = null;
 
@@ -400,7 +400,7 @@ public class ClientController {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateExpired").ascending());
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateTarget").ascending());
         Page<JobRequest> jobRequestPage = null;
         List<JobRequestFullDTO> jobRequestFullDTOs = null;
 
@@ -452,7 +452,7 @@ public class ClientController {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateCreated").descending());
         Page<JobCandidate> jobCandidatePage = null;
         List<JobCandidateMinDTO> jobCandidateDTOs = null;
 
@@ -494,7 +494,7 @@ public class ClientController {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateCreated").descending());
         Page<JobCandidate> jobCandidatePage = null;
         List<JobCandidateMinDTO> jobCandidateDTOs = null;
 

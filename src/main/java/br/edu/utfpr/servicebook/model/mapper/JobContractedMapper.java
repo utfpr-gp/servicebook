@@ -22,12 +22,12 @@ public class JobContractedMapper {
 
     public JobContractedDTO toResponseDto(JobContracted entity) {
         JobContractedDTO dto = mapper.map(entity, JobContractedDTO.class);
-        dto.setId(dto.getId());
-        dto.setComments(dto.getComments());
-        dto.setDateServicePerformed(dto.getDateServicePerformed());
-        dto.setHiredDate(dto.getHiredDate());
-        dto.setStatus(dto.getStatus());
-        dto.setRating(dto.getRating());
+        dto.setId(entity.getId());
+        dto.setComments(entity.getComments());
+        dto.setTodoDate(entity.getTodoDate());
+        dto.setHiredDate(entity.getHiredDate());
+        dto.setStatus(entity.getJobRequest().getStatus().toString());
+        dto.setRating(entity.getRating());
         return dto;
     }
 
@@ -39,7 +39,7 @@ public class JobContractedMapper {
     public JobContractedFullDTO toFullDto(JobContracted entity, Optional<Long> totalCandidates) {
         JobContractedFullDTO dto = mapper.map(entity, JobContractedFullDTO.class);
         dto.getJobRequest().setTotalCandidates(totalCandidates.get());
-        dto.getJobRequest().setTextualDate(DateUtil.getTextualDate(DateUtil.toLocalDate(entity.getJobRequest().getDateExpired())));
+        dto.getJobRequest().setTextualDate(DateUtil.getTextualDate(DateUtil.toLocalDate(entity.getJobRequest().getDateTarget())));
 
         return dto;
     }

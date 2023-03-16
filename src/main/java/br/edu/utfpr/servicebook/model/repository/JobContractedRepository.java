@@ -76,9 +76,6 @@ public interface JobContractedRepository extends JpaRepository<JobContracted, Lo
     //@Query("SELECT j FROM JobContracted j WHERE j.jobRequest.id = :job_request_id")
     Optional<JobContracted> getJobContractedByJobRequest_Id(Long jobRequestId);
 
-    @Query("select j from JobContracted j where j.jobRequest.id = ?1")
-    Optional<JobContracted> findByJobIdAndIndividualId(Long jobId);
-
     /**
      * Retorna o JobContracted para o respectivo JobRequest, sendo que a relação é 1x1.
      * @param jobRequest
@@ -86,6 +83,12 @@ public interface JobContractedRepository extends JpaRepository<JobContracted, Lo
      */
     Optional<JobContracted> findByJobRequest(JobRequest jobRequest);
 
+    /**
+     * Retorna um JobContracted para o respectivo JobRequest.
+     * @param jobRequestId id do JobRequest
+     * @return
+     */
+    Optional<JobContracted> findByJobRequest_Id(Long jobRequestId);
 
 
 //    @Query("select j from JobContracted j where j.hiredDate <= ?1")
@@ -95,11 +98,22 @@ public interface JobContractedRepository extends JpaRepository<JobContracted, Lo
      * Busca os JobContracted expirados em um número de dias.
      * É útil quando o cliente não finaliza explicitamente um JobRequest. Então, busca por data de contratação
      * acima de 30 dias.
-     * @param date
-     * @param days
+     * @param now data corrente
+     * @param days quantidade de dias para ser considerado expirado
      * @return
      */
-    @Query("select j from JobContracted j where j.jobRequest.status = :status and (j.hiredDate + :days) <= :date")
-    List<JobContracted> findAllJobContractedExpired(Date date, int days, JobRequest.Status status);
+    @Query("select j from JobContracted j where j.jobRequest.status = :status and (j.hiredDate + :days) <= :now")
+    List<JobContracted> findAllJobContractedExpired(Date now, int days, JobRequest.Status status);
+
+
+    /**
+     * Busca os JobContacted no estado de TO_DO para mudar automaticamente para DOING.
+     *
+     * @param now
+     * @param status
+     * @return
+     */
+    @Query("select j from JobContracted j where j.jobRequest.status = :status and j.todoDate >= :now")
+    List<JobContracted> findAllJobContractedToDoing(Date now, JobRequest.Status status);
 
 }

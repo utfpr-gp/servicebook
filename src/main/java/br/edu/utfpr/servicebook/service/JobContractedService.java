@@ -68,14 +68,6 @@ public class JobContractedService {
         return this.jobContractedRepository.findByJobRequest_StatusAndJobRequest_Individual(status, client, pageable);
     }
 
-    public List<JobContracted> findByIdRequest(Long id) {
-        return this.jobContractedRepository.findByJobRequestId(id);
-    }
-
-    public Optional<JobContracted> findByRequestProfessional(Long request_id) {
-        return  this.jobContractedRepository.findByJobIdAndIndividualId(request_id);
-    }
-
     /**
      * Retorna o JobContracted para o respectivo JobRequest, sendo que a relação é 1x1.
      * @param jobRequest
@@ -99,6 +91,14 @@ public class JobContractedService {
     }
 
     /**
+     * Busca os JobContracted com data para iniciar o serviço, ou seja, para mudar para DOING.
+     * @return
+     */
+    public List<JobContracted> findAllJobRequestsToDoing() {
+        return this.jobContractedRepository.findAllJobContractedToDoing(new Date(), JobRequest.Status.TO_DO);
+    }
+
+    /**
      * Busca os JobRequests expirados no estado de TO_HIRED para cancelar.
      * @param days
      * @return
@@ -106,6 +106,8 @@ public class JobContractedService {
     public List<JobContracted> findAllJobRequestsToCancel(int days) {
         return this.jobContractedRepository.findAllJobContractedExpired(new Date(), days, JobRequest.Status.TO_HIRED);
     }
+
+
 
 
 }

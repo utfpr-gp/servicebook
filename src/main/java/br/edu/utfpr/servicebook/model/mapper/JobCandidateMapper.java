@@ -32,10 +32,10 @@ public class JobCandidateMapper {
     public JobCandidateMinDTO toMinDto(JobCandidate entity, Optional<Long> totalCandidates) {
         JobCandidateMinDTO dto = mapper.map(entity, JobCandidateMinDTO.class);
         dto.getJobRequest().setDateCreated(this.dateFormat.format(entity.getJobRequest().getDateCreated()));
-        dto.getJobRequest().setDateExpired(this.dateFormat.format(entity.getJobRequest().getDateExpired()));
+        dto.getJobRequest().setDateTarget(this.dateFormat.format(entity.getJobRequest().getDateTarget()));
         dto.setDate(this.dateFormat.format(entity.getDateCreated()));
         dto.getJobRequest().setTotalCandidates(totalCandidates.get());
-        dto.getJobRequest().setTextualDate(DateUtil.getTextualDate(DateUtil.toLocalDate(entity.getJobRequest().getDateExpired())));
+        dto.getJobRequest().setTextualDate(DateUtil.getTextualDate(DateUtil.toLocalDate(entity.getJobRequest().getDateTarget())));
 
         return dto;
     }

@@ -135,9 +135,9 @@
                         </c:if>
 
                         <div class="row">
-                            <c:if test="${hasHiredDate}">
+                            <c:if test="${hasTodoDate}">
                                 <div class="col s12">
-                                    <p class="text-area-info-cli primary-color-text">Data de realização do serviço: ${jobCandidateHiredDate}</p>
+                                    <p class="text-area-info-cli primary-color-text">Data de realização do serviço: ${todoDate}</p>
                                 </div>
                             </c:if>
 

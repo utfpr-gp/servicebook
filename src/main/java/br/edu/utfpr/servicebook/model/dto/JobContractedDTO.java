@@ -23,7 +23,7 @@ public class JobContractedDTO {
 
     private Long idProfessional;
 
-    private Date dateServicePerformed;
+    private Date todoDate;
 
     private Date hiredDate;
 

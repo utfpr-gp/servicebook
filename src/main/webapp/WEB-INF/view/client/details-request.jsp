@@ -30,7 +30,7 @@
                      </c:if>
                     <div class="col s12 m6 tertiary-color-text description-job  text-info-request">
                       <p>${jobRequest.description}</p>
-                      <p>Pedido expedido em ${jobRequest.dateExpired}</p>
+                      <p>Pedido expedido em ${jobRequest.dateTarget}</p>
                     </div>
 
                     <c:if test="${jobRequest.status == 'AVAILABLE'}">
