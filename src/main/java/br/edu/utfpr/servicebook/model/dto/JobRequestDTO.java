@@ -26,7 +26,7 @@ public class JobRequestDTO implements Serializable {
 
     public String status;
     @Future(message = "Valor inválido para a requisição", groups = RequestExpirationGroupValidation.class)
-    private LocalDate dateExpired;
+    private LocalDate dateTarget;
 
     @DecimalMin(value = "1", message = "", groups = RequestMaxCandidatesGroupValidation.class)
     @DecimalMax(value = "20.00", message = "", groups = RequestMaxCandidatesGroupValidation.class)

@@ -219,7 +219,7 @@ public class ProfessionalHomeController {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateCreated").descending());
         Page<JobCandidate> jobCandidatePage = null;
         List<JobCandidateMinDTO> jobCandidateDTOs = null;
 
@@ -273,7 +273,7 @@ public class ProfessionalHomeController {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateCreated").descending());
         Page<JobCandidate> jobCandidatePage = null;
         List<JobCandidateMinDTO> jobCandidateDTOs = null;
 
@@ -469,22 +469,22 @@ public class ProfessionalHomeController {
             @PathVariable Long id
     ) throws Exception {
 
-        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
+        Optional<Individual> oIndividual = (individualService.findByEmail(authentication.getEmail()));
 
-        if (!oProfessional.isPresent()) {
+        if (!oIndividual.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
         ModelAndView mv = new ModelAndView("professional/detail-service");
-        Optional<JobRequest> oJob = jobRequestService.findById(id);
+        Optional<JobRequest> oJobRequest = jobRequestService.findById(id);
 
-        if (!oJob.isPresent()) {
-            throw new Exception("O trabalho não foi encontrado em nosso sistema!");
+        if (!oJobRequest.isPresent()) {
+            throw new Exception("O serviço não foi encontrado em nosso sistema!");
         }
 
-        JobRequest jb = oJob.get();
+        JobRequest jobRequest = oJobRequest.get();
 
-        JobRequestDetailsDTO jobFull = jobRequestMapper.jobRequestDetailsDTO(jb);
+        JobRequestDetailsDTO jobFull = jobRequestMapper.jobRequestDetailsDTO(jobRequest);
 
         Optional oClient, oCity, oState;
 
@@ -498,28 +498,26 @@ public class ProfessionalHomeController {
 
         State state = (State) oState.get();
 
-        int maxCandidates = jb.getQuantityCandidatorsMax();
-        int currentCandidates = jb.getJobCandidates().size();
+        int maxCandidates = jobRequest.getQuantityCandidatorsMax();
+        int currentCandidates = jobRequest.getJobCandidates().size();
         int percentCandidatesApplied = (int)(((double)currentCandidates / (double)maxCandidates) * 100);
 
-        boolean isAvailableJobRequest = jb.getStatus().equals(JobRequest.Status.AVAILABLE) && jb.isClientConfirmation();
-        boolean isJobToHired = jb.getStatus().equals(JobRequest.Status.TO_HIRED);
+        boolean isAvailableJobRequest = jobRequest.getStatus().equals(JobRequest.Status.AVAILABLE) && jobRequest.isClientConfirmation();
+        boolean isJobToHired = jobRequest.getStatus().equals(JobRequest.Status.TO_HIRED);
 
-        Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(id, oProfessional.get().getId());
+        Optional<JobContracted> oJobContracted = jobContractedService.findByJobRequest(jobRequest);
 
-        if (oJobCandidate.isPresent()) {
-            JobCandidate jobCandidate = oJobCandidate.get();
-            boolean hasHiredDate = false;
+        if (oJobContracted.isPresent()) {
+            JobContracted jobContracted = oJobContracted.get();
+            boolean hasToDoDate = jobContracted.getTodoDate() != null;
 
-            if (jobCandidate.getHiredDate() != null) {
-                String date = this.dateFormat.format(jobCandidate.getHiredDate());
-                hasHiredDate = true;
+            String date = this.dateFormat.format(jobRequest.getDateTarget());
 
-                mv.addObject("jobCandidateHiredDate",  date);
-            }
-
-            mv.addObject("hasHiredDate",  hasHiredDate);
+            mv.addObject("todoDate",  date);
+            mv.addObject("hasTodoDate",  hasToDoDate);
         }
+
+        SidePanelIndividualDTO individualInfo = sidePanelUtil.getIndividualInfo(oIndividual.get());
 
         mv.addObject("job", jobFull);
         mv.addObject("client", client);
@@ -530,6 +528,7 @@ public class ProfessionalHomeController {
         mv.addObject("percentCandidatesApplied", percentCandidatesApplied);
         mv.addObject("isAvailableJobRequest", isAvailableJobRequest);
         mv.addObject("isJobToHired", isJobToHired);
+        mv.addObject("individualInfo", individualInfo);
         return mv;
     }
 
@@ -548,7 +547,7 @@ public class ProfessionalHomeController {
             throw new EntityNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateExpired").ascending());
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateTarget").ascending());
         Page<JobRequest> jobRequestPage = null;
         List<JobRequestFullDTO> jobRequestFullDTOs = null;
 
@@ -607,7 +606,7 @@ public class ProfessionalHomeController {
             throw new EntityNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateCreated").descending());
         Page<JobCandidate> jobCandidatePage = null;
         List<JobCandidateMinDTO> jobCandidateDTOs = null;
 

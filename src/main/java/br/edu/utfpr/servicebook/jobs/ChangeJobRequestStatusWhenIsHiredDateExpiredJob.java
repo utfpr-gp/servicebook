@@ -1,8 +1,10 @@
 package br.edu.utfpr.servicebook.jobs;
 
 import br.edu.utfpr.servicebook.model.entity.JobCandidate;
+import br.edu.utfpr.servicebook.model.entity.JobContracted;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.service.JobCandidateService;
+import br.edu.utfpr.servicebook.service.JobContractedService;
 import br.edu.utfpr.servicebook.service.JobRequestService;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -14,26 +16,25 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Muda o estado do JobRequest para DOING quando chega a data prevista para fazer o serviço.
+ */
 @Component
 public class ChangeJobRequestStatusWhenIsHiredDateExpiredJob implements Job {
     @Autowired
-    private JobCandidateService jobCandidateService;
+    private JobContractedService jobContractedService;
+
     @Autowired
     private JobRequestService jobRequestService;
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         try {
-            Date now = new Date(new Date().getTime());
-            List<JobCandidate> jobCandidates = jobCandidateService.findAllByHiredDateLessThan(now);
-            for (JobCandidate s : jobCandidates) {
-               Optional<JobRequest> oJobRequest = jobRequestService.findById(s.getJobRequest().getId());
-
-               if (oJobRequest.isPresent()) {
-                   JobRequest jobRequest = oJobRequest.get();
-                   jobRequest.setStatus(JobRequest.Status.DOING);
-                   jobRequestService.save(jobRequest);
-               }
+            List<JobContracted> contractedJobs = jobContractedService.findAllJobRequestsToDoing();
+            for (JobContracted s : contractedJobs) {
+               JobRequest jobRequest = s.getJobRequest();
+               jobRequest.setStatus(JobRequest.Status.DOING);
+               jobRequestService.save(jobRequest);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());

@@ -1,8 +1,10 @@
 package br.edu.utfpr.servicebook.jobs;
 
 import br.edu.utfpr.servicebook.model.entity.JobCandidate;
+import br.edu.utfpr.servicebook.model.entity.JobContracted;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.service.JobCandidateService;
+import br.edu.utfpr.servicebook.service.JobContractedService;
 import br.edu.utfpr.servicebook.service.JobRequestService;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -14,30 +16,54 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Finaliza os JobRequests que o cliente não finalizou manualmente.
+ * Então, depois de 30 dias, um JobRequest será finalizado.
+ * Mas somente os JobRequests que estão no estado de DOING, ou seja, quando o profissional aceitou fazer, chegou a data
+ * para fazer e não cancelou.
+ * Os JobRequests em estado de TO_HIRED, serão cancelados, pois o profissional não aceitou.
+ */
 @Component
 public class CloseJobsRequestPass30DaysFromHiredJob implements Job {
     @Autowired
-    private JobCandidateService jobCandidateService;
+    private JobContractedService jobContractedService;
 
     @Autowired
     private JobRequestService jobRequestService;
 
+    /**
+     * Quantidade de dias para ser considerado que um JobRequest expirou.
+     */
+    private final int EXPIRED_DAYS = 30;
+
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
+
         try {
-            Date now = new Date();
-            Calendar c = Calendar.getInstance();
-            c.setTime(now);
-            c.add(Calendar.DATE, 30);
-            Date currentDatePlus30 = c.getTime();
 
-            List<JobCandidate> jobCandidate = jobCandidateService.findAllThatPass30DaysFromHired(currentDatePlus30);
-            for (JobCandidate s : jobCandidate) {
-                s.setQuit(true);
-                jobCandidateService.save(s);
+            //busca os jobs expirados para finalizar
+            List<JobContracted> contractedJobs = jobContractedService.findAllJobRequestsToClose(EXPIRED_DAYS);
+            for (JobContracted jobContracted : contractedJobs) {
 
-                JobRequest jobRequest = s.getJobRequest();
+                JobRequest jobRequest = jobContracted.getJobRequest();
                 jobRequest.setStatus(JobRequest.Status.CLOSED);
+                jobRequestService.save(jobRequest);
+
+                jobContracted.setFinishDate(new Date());
+                jobContractedService.save(jobContracted);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+
+            //busca os jobs expirados para cancelar
+            List<JobContracted> contractedJobs = jobContractedService.findAllJobRequestsToCancel(EXPIRED_DAYS);
+            for (JobContracted jobContracted : contractedJobs) {
+
+                JobRequest jobRequest = jobContracted.getJobRequest();
+                jobRequest.setStatus(JobRequest.Status.CANCELED);
                 jobRequestService.save(jobRequest);
             }
         } catch (Exception e) {

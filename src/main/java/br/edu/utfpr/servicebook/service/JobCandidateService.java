@@ -57,13 +57,12 @@ public class JobCandidateService {
 
     public List<JobCandidate> findByJobRequestOrderByChosenByBudgetDesc(JobRequest jobRequest) {
       return this.jobCandidateRepository.findByJobRequestOrderByChosenByBudgetDesc(jobRequest);
-  }
-
-    public List<JobCandidate> findAllByHiredDateLessThan(Date date) {
-        return this.jobCandidateRepository.findAllByHiredDateLessThan(date);
     }
 
-    public List<JobCandidate> findAllThatPass30DaysFromHired(Date date) {
-        return this.jobCandidateRepository.findAllThatPass30DaysFromHired(date);
+    public List<JobCandidate> findByJobRequestAndChosenByBudget(JobRequest jobRequest, boolean chosenByBudget){
+        return this.jobCandidateRepository.findByJobRequestAndChosenByBudget(jobRequest, chosenByBudget);
     }
+
+
+
 }

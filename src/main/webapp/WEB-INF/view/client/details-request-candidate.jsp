@@ -106,7 +106,7 @@
             <c:if test="${jobCandidate.getJobRequest().status == 'AVAILABLE' || jobCandidate.getJobRequest().status == 'BUDGET'}">
               <div class="row center-align">
                 <p class="contact-item center dark-color-text">Solicitar ou cancelar orçamento</p>
-                <form action="minha-conta/cliente/solicita-orcamento-ao/${jobCandidate.getIndividual().id}/para/${jobCandidate.getJobRequest().id}" method="post">
+                <form action="minha-conta/cliente/orcamento-ao/${jobCandidate.getIndividual().id}/para/${jobCandidate.getJobRequest().id}" method="post">
                   <input type="hidden" name="_method" value="PATCH"/>
                     <button type="submit" class="btn">
                       <c:choose>

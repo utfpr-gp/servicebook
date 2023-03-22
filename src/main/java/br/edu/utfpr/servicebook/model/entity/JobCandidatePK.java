@@ -11,7 +11,8 @@ import javax.persistence.ManyToOne;
 import lombok.*;
 
 /**
- * Classe auxiliar para chave composta em um relacionamento n x n
+ * Classe auxiliar para chave composta em um relacionamento n x n.
+ *
  */
 @Data
 @NoArgsConstructor

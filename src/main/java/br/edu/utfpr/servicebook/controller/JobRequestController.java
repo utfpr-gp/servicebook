@@ -176,32 +176,32 @@ public class JobRequestController {
         if(dto.getDateProximity() == RequestDateSelect.today.value){
             //Hoje
             log.debug("HOJE: {}", sessionDTO);
-            sessionDTO.setDateExpired(DateUtil.getToday());
+            sessionDTO.setDateTarget(DateUtil.getToday());
         }
         if(dto.getDateProximity() == RequestDateSelect.tomorrow.value){
             //Amanhã
             log.debug("Amanhã: {}", sessionDTO);
-            sessionDTO.setDateExpired(DateUtil.getTomorrow());
+            sessionDTO.setDateTarget(DateUtil.getTomorrow());
         }
         if(dto.getDateProximity() == RequestDateSelect.thisweek.value){
             //Esta Semana
             log.debug("Esta Semana: {}", sessionDTO);
-            sessionDTO.setDateExpired(DateUtil.getThisWeek());
+            sessionDTO.setDateTarget(DateUtil.getThisWeek());
         }
         if(dto.getDateProximity() == RequestDateSelect.nextweek.value){
             //Proxima Semana
             log.debug("Proxima Semana: {}", sessionDTO);
-            sessionDTO.setDateExpired(DateUtil.getNextWeek());
+            sessionDTO.setDateTarget(DateUtil.getNextWeek());
         }
         if(dto.getDateProximity() == RequestDateSelect.thismonth.value){
             //Este Mês
             log.debug("Este Mês: {}", sessionDTO);
-            sessionDTO.setDateExpired(DateUtil.getThisMonth());
+            sessionDTO.setDateTarget(DateUtil.getThisMonth());
         }
         if(dto.getDateProximity() == RequestDateSelect.nextmonth.value){
             //Proximo Mes
             log.debug("Proximo Mês: {}", sessionDTO);
-            sessionDTO.setDateExpired(DateUtil.getNextMonth());
+            sessionDTO.setDateTarget(DateUtil.getNextMonth());
         }
         sessionDTO.setDateCreated(DateUtil.getToday());
         log.debug("Passo 2 {}", sessionDTO);
