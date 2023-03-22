@@ -2,7 +2,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:template title="ServiceBook - Minha conta">
+<t:template title="ServiceBook - Minha conta" individualInfo="${individualInfo}">
     <jsp:body>
         <main class="container">
             <div class="row">

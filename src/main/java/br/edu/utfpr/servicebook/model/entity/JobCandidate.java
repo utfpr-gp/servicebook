@@ -24,16 +24,23 @@ public class JobCandidate {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Chave composta referenciando um serviço e um profissional.
+	 */
 	@EmbeddedId
 	private JobCandidatePK id;
 
-	private boolean isQuit;
-
+	/**
+	 * Informa que o corrente candidato foi selecionado para realizar orçamento.
+	 * Mais de um candidato pode ser selecionado.
+	 */
 	private boolean chosenByBudget;
-	private Boolean isHired;
-	private Date date;
 
-	private Date hiredDate;
+	/**
+	 * Data de criação da entidade.
+	 */
+	@Temporal(TemporalType.DATE)
+	private Date dateCreated;
 
 	@ManyToOne
 	@MapsId("jobRequestId")
@@ -53,6 +60,6 @@ public class JobCandidate {
 
 	@PrePersist
 	public void onPersist() {
-		this.date = new Date();
+		this.dateCreated = new Date();
 	}
 }

@@ -32,6 +32,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -188,7 +189,6 @@ public class ClientController {
     public ModelAndView showDetailsRequest(@PathVariable Optional<Long> id) throws Exception {
 
         ModelAndView mv = new ModelAndView("client/details-request");
-        mv.addObject("user", this.getSidePanelUser());
 
         Optional<JobRequest> jobRequest = jobRequestService.findById(id.get());
 
@@ -197,7 +197,6 @@ public class ClientController {
         }
 
         JobRequestFullDTO jobDTO = jobRequestMapper.toFullDto(jobRequest.get());
-        mv.addObject("jobRequest", jobDTO);
 
         Long expertiseId = jobRequest.get().getExpertise().getId();
 
@@ -208,7 +207,6 @@ public class ClientController {
         }
 
         ExpertiseMinDTO expertiseDTO = expertiseMapper.toMinDto(expertise.get());
-        mv.addObject("expertise", expertiseDTO);
 
         List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequestOrderByChosenByBudgetDesc(jobRequest.get());
 
@@ -221,6 +219,9 @@ public class ClientController {
                 .collect(Collectors.toList());
 
         mv.addObject("candidates", jobCandidatesDTOs);
+        mv.addObject("individualInfo", this.getSidePanelUser());
+        mv.addObject("expertise", expertiseDTO);
+        mv.addObject("jobRequest", jobDTO);
         return mv;
     }
 
@@ -276,7 +277,7 @@ public class ClientController {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateExpired").ascending());
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateTarget").ascending());
         Page<JobRequest> jobRequestPage = null;
         List<JobRequestFullDTO> jobRequestFullDTOs = null;
 
@@ -347,7 +348,7 @@ public class ClientController {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateExpired").ascending());
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateTarget").ascending());
         Page<JobRequest> jobRequestPage = null;
         List<JobRequestFullDTO> jobRequestFullDTOs = null;
 
@@ -399,7 +400,7 @@ public class ClientController {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateExpired").ascending());
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateTarget").ascending());
         Page<JobRequest> jobRequestPage = null;
         List<JobRequestFullDTO> jobRequestFullDTOs = null;
 
@@ -451,7 +452,7 @@ public class ClientController {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateCreated").descending());
         Page<JobCandidate> jobCandidatePage = null;
         List<JobCandidateMinDTO> jobCandidateDTOs = null;
 
@@ -487,40 +488,52 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> client = (individualService.findByEmail(authentication.getEmail()));
+        Optional<Individual> individual = (individualService.findByEmail(authentication.getEmail()));
 
-        if (!client.isPresent()) {
+        if (!individual.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("date").descending());
-        Page<JobCandidate> jobCandidatePage = null;
-        List<JobCandidateMinDTO> jobCandidateDTOs = null;
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("id").descending());
+        Page<JobContracted> jobContractedPage = null;
+        List<JobContractedFullDTO> jobContractedDTOs = null;
 
-        jobCandidatePage = jobCandidateService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.DOING, client.get(),pageRequest);
+        jobContractedPage = jobContractedService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.DOING, individual.get(), pageRequest);
 
-        jobCandidateDTOs = jobCandidatePage.stream()
-                .map(jobCandidate -> {
-                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobCandidate.getJobRequest());
+        jobContractedDTOs = jobContractedPage.stream()
+                .map(jobContracted -> {
+
+                    Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobContracted.getJobRequest());
 
                     if (totalCandidates.isPresent()) {
-                        return jobCandidateMapper.toMinDto(jobCandidate, totalCandidates);
+                        return jobContractedMapper.toFullDto(jobContracted, totalCandidates);
                     }
 
-                    return jobCandidateMapper.toMinDto(jobCandidate, Optional.ofNullable(0L));
-                }).collect(Collectors.toList());
+                    return jobContractedMapper.toFullDto(jobContracted, Optional.ofNullable(0L));
+                })
+                .collect(Collectors.toList());
 
-        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobCandidatePage, "/minha-conta/cliente/meus-pedidos/fazendo");
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobContractedPage, "/minha-conta/cliente/meus-pedidos/fazendo");
 
         ModelAndView mv = new ModelAndView("client/job-request/tabs/doing-jobs-report");
         mv.addObject("pagination", paginationDTO);
-        mv.addObject("jobs", jobCandidateDTOs);
+        mv.addObject("jobs", jobContractedDTOs);
 
         quartzService.updateJobRequestStatusWhenIsHiredDateExpired();
 
         return mv;
     }
 
+    /**
+     * Retorna uma lista de pedidos criados pelo cliente que já foram finalizados.
+     * @param request
+     * @param page
+     * @param size
+     * @param order
+     * @param direction
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/meus-pedidos/executados")
     @RolesAllowed({RoleType.USER})
     public ModelAndView showJobsPerformed(
@@ -542,9 +555,12 @@ public class ClientController {
         List<JobContractedFullDTO> jobContractedDTOs = null;
 
         jobContractedPage = jobContractedService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.CLOSED, individual.get(), pageRequest);
-
+        System.out.println("Quantos: " + jobContractedPage.getTotalElements());
         jobContractedDTOs = jobContractedPage.stream()
                 .map(jobContracted -> {
+
+                    System.out.println("ID: " + jobContracted.getJobRequest().getId());
+
                     Optional<Long> totalCandidates = jobCandidateService.countByJobRequest(jobContracted.getJobRequest());
 
                     if (totalCandidates.isPresent()) {
@@ -567,7 +583,7 @@ public class ClientController {
 
     /**
      * Encerra o recebimento de candidaturas antes de receber o total de candidaturas esperado.
-     *
+     * Basicamente, muda o estado para BUDGET.
      * @param id
      * @param redirectAttributes
      * @return
@@ -583,14 +599,13 @@ public class ClientController {
             throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        JobRequest jobRequest = null;
         Optional<JobRequest> oJobRequest = this.jobRequestService.findById(id);
 
         if (!oJobRequest.isPresent()) {
             throw new EntityNotFoundException("Solicitação não foi encontrada pelo id informado.");
         }
 
-        jobRequest = oJobRequest.get();
+        JobRequest jobRequest = oJobRequest.get();
 
         Long jobRequestClientId = jobRequest.getIndividual().getId();
         Long clientId = oClient.get().getId();
@@ -610,7 +625,6 @@ public class ClientController {
         return "redirect:/minha-conta/meus-pedidos?tab=paraOrcamento";
     }
 
-
     private SidePanelIndividualDTO getSidePanelUser() throws Exception {
         Optional<Individual> client = (individualService.findByEmail(authentication.getEmail()));
 
@@ -623,44 +637,62 @@ public class ClientController {
     }
 
     /**
-     * O cliente escolhe um profissional para realizar o orçamento
+     * O cliente escolhe um profissional para realizar o orçamento ou cancela a escolha do profissional para orçamento.
+     * *
      * @param jobId
      * @param candidateId
      * @param redirectAttributes
      * @return
      * @throws IOException
      */
-    @PatchMapping("/solicita-orcamento-ao/{candidateId}/para/{jobId}")
+    @PatchMapping("/orcamento-ao/{candidateId}/para/{jobId}")
     @RolesAllowed({RoleType.USER})
     public String markAsBudget(@PathVariable Long jobId, @PathVariable Long candidateId, RedirectAttributes redirectAttributes) throws IOException {
-      Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(jobId, candidateId);
-      if (!oJobCandidate.isPresent()) {
-        throw new EntityNotFoundException("Candidato não encontrado");
-      }
-      
-      Optional<JobRequest> oJobRequest = jobRequestService.findById(jobId);
-      if(!oJobRequest.isPresent()) {
-          throw new EntityNotFoundException("Pedido não encontrado!");
-      }
-      JobRequest jobRequest = oJobRequest.get();
 
-      JobCandidate jobCandidate = oJobCandidate.get();
-      jobCandidate.setChosenByBudget(!jobCandidate.isChosenByBudget());
-      jobCandidateService.save(jobCandidate);
-      
-      if (jobCandidate.isChosenByBudget()) {
-        jobRequest.setStatus(JobRequest.Status.BUDGET);
-      } else {
-        jobRequest.setStatus(JobRequest.Status.AVAILABLE);
-      }
-      jobRequestService.save(jobRequest);
+        Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(jobId, candidateId);
 
-      return "redirect:/minha-conta/cliente/meus-pedidos/"+jobId;
+        if (!oJobCandidate.isPresent()) {
+            throw new EntityNotFoundException("Candidato não encontrado");
+        }
+
+        Optional<JobRequest> oJobRequest = jobRequestService.findById(jobId);
+        if(!oJobRequest.isPresent()) {
+            throw new EntityNotFoundException("Pedido não encontrado!");
+        }
+        JobRequest jobRequest = oJobRequest.get();
+
+        //verifica se o usuário logado é o dono do dado
+        User user = individualService.getAuthenticated();
+
+        if(jobRequest.getIndividual().getId() != user.getId()){
+            throw new InvalidParamsException("O usuário não tem permissão de alterar este dado!");
+        }
+
+        JobCandidate jobCandidate = oJobCandidate.get();
+        jobCandidate.setChosenByBudget(!jobCandidate.isChosenByBudget());
+        jobCandidateService.save(jobCandidate);
+
+        //caso o candidato seja o primeiro escolhido para orçamento
+        if (jobCandidate.isChosenByBudget() && jobRequest.getStatus() == JobRequest.Status.AVAILABLE) {
+            jobRequest.setStatus(JobRequest.Status.BUDGET);
+            jobRequestService.save(jobRequest);
+        }
+
+        //caso o candidato seja o último ou único e o cliente cancelou o orçamento, muda o job para AVAILABLE novamente
+        if(!jobCandidate.isChosenByBudget()){
+            List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequestAndChosenByBudget(jobRequest, true);
+            if(jobCandidates.isEmpty()) {
+                jobRequest.setStatus(JobRequest.Status.AVAILABLE);
+            }
+        }
+
+        return "redirect:/minha-conta/cliente/meus-pedidos/" + jobId;
     }
 
     /**
-     * Altera o estado para finalizado, ou seja, o cliente verifica que o trabalho foi finalizado
+     * Altera o estado para finalizado, ou seja, o cliente verifica que o serviço foi finalizado
      * e então sinaliza manualmete esta informação na plataforma.
+     * O estado do JobRequest é mudado para CLOSED e a data da finalização é guardada em JobContracted.
      * @param jobId
      * @param dto
      * @param redirectAttributes
@@ -675,20 +707,34 @@ public class ClientController {
             RedirectAttributes redirectAttributes) throws IOException {
 
         Optional<JobRequest> oJobRequest = jobRequestService.findById(jobId);
+
         if(!oJobRequest.isPresent()) {
             throw new EntityNotFoundException("Pedido não encontrado!");
         }
 
         JobRequest jobRequest = oJobRequest.get();
-        List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequest(jobRequest);
 
-        for (JobCandidate s : jobCandidates) {
-            s.setQuit(dto.getIsQuit());
-            jobCandidateService.save(s);
+        //verifica se o usuário é realmente o dono do anúncio
+        User user = jobRequest.getIndividual();
+
+        Optional<Individual> oClient = individualService.findByEmail(authentication.getEmail());
+
+        if (!oClient.isPresent()) {
+            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
         jobRequest.setStatus(JobRequest.Status.CLOSED);
         jobRequestService.save(jobRequest);
+
+        //busca pelo job que foi contratado, ao finalizar é adicionado no campo data e horário em que foi concluido.
+        Optional<JobContracted> oJobContracted = jobContractedService.findByJobRequest(jobRequest);
+        if(!oJobContracted.isPresent()) {
+            throw new EntityNotFoundException("O serviço não pode ser finalizado!");
+        }
+
+        JobContracted jobContracted = oJobContracted.get();
+        jobContracted.setFinishDate(new Date());
+        jobContractedService.save(jobContracted);
 
         return "redirect:/minha-conta/cliente#executados";
     }
@@ -717,9 +763,20 @@ public class ClientController {
             throw new EntityNotFoundException("Pedido não encontrado!");
         }
 
+        //muda o estado para contratado, mas a espera de confirmação do profissional
         JobRequest jobRequest = oJobRequest.get();
         jobRequest.setStatus(JobRequest.Status.TO_HIRED);
         jobRequestService.save(jobRequest);
+
+        //guarda a data de contratação
+        Optional<JobContracted> oJobContracted = jobContractedService.findByJobRequest(jobRequest);
+        if(!oJobContracted.isPresent()) {
+            throw new EntityNotFoundException("O profissional não pode ser contratado!");
+        }
+
+        JobContracted jobContracted = oJobContracted.get();
+        jobContracted.setHiredDate(new Date());
+        jobContractedService.save(jobContracted);
 
         return "redirect:/minha-conta/cliente/meus-pedidos/"+jobId;
     }

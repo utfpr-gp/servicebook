@@ -94,9 +94,12 @@ public class MyAccountController {
 
         CityMinDTO cityMinDTO = cityMapper.toMinDto(oCity.get());
 
+        SidePanelIndividualDTO individualInfo = sidePanelUtil.getIndividualInfo(oIndividual.get());
+
         ModelAndView mv = new ModelAndView("professional/edit-account");
         mv.addObject("professional", individualDTO);
         mv.addObject("city", cityMinDTO);
+        mv.addObject("individualInfo", individualInfo);
 
         return mv;
     }

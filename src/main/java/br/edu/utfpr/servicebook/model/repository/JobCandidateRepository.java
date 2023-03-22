@@ -75,6 +75,14 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
 
     List<JobCandidate> findByJobRequestOrderByChosenByBudgetDesc(JobRequest jobRequest);
 
+    /**
+     * Busca os candidatos de um job que foram ou não escolhidos para orçamento.
+     * @param jobRequest
+     * @param chosenByBudget
+     * @return
+     */
+    List<JobCandidate> findByJobRequestAndChosenByBudget(JobRequest jobRequest, boolean chosenByBudget);
+
     Page<JobCandidate> findByJobRequest_StatusAndJobRequest_Individual(JobRequest.Status status, Individual individual, Pageable pageable);
 
     @Transactional
@@ -85,9 +93,5 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
     @Query("select j from JobCandidate j where j.jobRequest.id = ?1 and j.individual.id = ?2")
     Optional<JobCandidate> findByJobIdAndIndividualId(Long jobId, Long individualId);
 
-    @Query("select j from JobCandidate j where j.hiredDate <= ?1")
-    List<JobCandidate> findAllByHiredDateLessThan(Date date);
 
-    @Query("select j from JobCandidate j where j.hiredDate <= ?1 and j.isQuit = false")
-    List<JobCandidate> findAllThatPass30DaysFromHired(Date date);
 }
