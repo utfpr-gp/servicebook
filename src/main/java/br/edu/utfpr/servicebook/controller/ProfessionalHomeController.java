@@ -469,9 +469,9 @@ public class ProfessionalHomeController {
             @PathVariable Long id
     ) throws Exception {
 
-        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
+        Optional<Individual> oIndividual = (individualService.findByEmail(authentication.getEmail()));
 
-        if (!oProfessional.isPresent()) {
+        if (!oIndividual.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
@@ -517,6 +517,8 @@ public class ProfessionalHomeController {
             mv.addObject("hasTodoDate",  hasToDoDate);
         }
 
+        SidePanelIndividualDTO individualInfo = sidePanelUtil.getIndividualInfo(oIndividual.get());
+
         mv.addObject("job", jobFull);
         mv.addObject("client", client);
         mv.addObject("city", city.getName());
@@ -526,6 +528,7 @@ public class ProfessionalHomeController {
         mv.addObject("percentCandidatesApplied", percentCandidatesApplied);
         mv.addObject("isAvailableJobRequest", isAvailableJobRequest);
         mv.addObject("isJobToHired", isJobToHired);
+        mv.addObject("individualInfo", individualInfo);
         return mv;
     }
 

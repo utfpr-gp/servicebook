@@ -3,10 +3,12 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:template title="Detalhes do serviço">
+<t:template title="Detalhes do serviço" individualInfo="${individualInfo}">
     <jsp:body>
 
         <main>
+            oiiii
+            ${individualInfo}
             <div class="row primary-background-color">
                 <div class="carousel carousel-slider center">
                     <div class="carousel-fixed-item center">

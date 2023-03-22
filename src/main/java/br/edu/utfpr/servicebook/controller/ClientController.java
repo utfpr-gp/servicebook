@@ -189,7 +189,6 @@ public class ClientController {
     public ModelAndView showDetailsRequest(@PathVariable Optional<Long> id) throws Exception {
 
         ModelAndView mv = new ModelAndView("client/details-request");
-        mv.addObject("user", this.getSidePanelUser());
 
         Optional<JobRequest> jobRequest = jobRequestService.findById(id.get());
 
@@ -198,7 +197,6 @@ public class ClientController {
         }
 
         JobRequestFullDTO jobDTO = jobRequestMapper.toFullDto(jobRequest.get());
-        mv.addObject("jobRequest", jobDTO);
 
         Long expertiseId = jobRequest.get().getExpertise().getId();
 
@@ -209,7 +207,6 @@ public class ClientController {
         }
 
         ExpertiseMinDTO expertiseDTO = expertiseMapper.toMinDto(expertise.get());
-        mv.addObject("expertise", expertiseDTO);
 
         List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequestOrderByChosenByBudgetDesc(jobRequest.get());
 
@@ -222,6 +219,9 @@ public class ClientController {
                 .collect(Collectors.toList());
 
         mv.addObject("candidates", jobCandidatesDTOs);
+        mv.addObject("individualInfo", this.getSidePanelUser());
+        mv.addObject("expertise", expertiseDTO);
+        mv.addObject("jobRequest", jobDTO);
         return mv;
     }
 
