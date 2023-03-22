@@ -86,22 +86,22 @@ VALUES ('false', '2021-01-01', '2021-01-01', 'Preciso de um Encanador 1!', 'true
        ('false', '2021-01-01', '2021-01-07', 'Preciso de um Encanador 3!', 'true', '15', 'AVAILABLE', '2', '1'),
        ('true', '2021-01-01', '2021-01-07', 'Preciso de um Encanador 30!', 'true', '15', 'TO_HIRED', '2', '1'),
        ('false', '2021-01-01', '2021-01-08', 'Preciso de um Encanador 4!', 'true', '20', 'TO_DO', '2', '1'), -- 4
-       ('false', '2021-01-01', '2021-01-08', 'Preciso de um Encanador 5!', 'true', '20', 'CANCELED', '2', '1'),
+       ('false', '2021-01-01', '2021-01-08', 'Preciso de um Encanador 5!', 'true', '20', 'DOING', '2', '1'),
        ('false', '2021-01-01', '2021-01-08', 'Preciso de um Encanador 6!', 'true', '20', 'CANCELED', '2', '1'),
        ('false', '2022-11-29', '2022-12-13', 'Preciso de um Encanador 7!', 'true', '20', 'DOING', '1', '1'),
        ('false', '2021-01-01', '2021-01-08', 'Preciso de um Encanador 8!', 'true', '20', 'DOING', '1', '1'),
-       ('false', '2021-01-01', '2021-01-30', 'Preciso de um Eletricista 1!', 'true', '5', 'AVAILABLE', '3', '2'),
-       ('false', '2021-01-01', '2021-02-02', 'Preciso de um Eletricista 2!', 'true', '10', 'AVAILABLE', '3', '2'),
+       ('false', '2021-01-01', '2021-01-30', 'Preciso de um Eletricista 1!', 'true', '5', 'TO_HIRED', '3', '2'),--10
+       ('false', '2021-01-01', '2021-02-02', 'Preciso de um Eletricista 2!', 'true', '10', 'CLOSED', '3', '2'),
        ('true', '2021-01-01', '2021-03-01', 'Preciso de um Eletricista 3!', 'true', '15', 'TO_HIRED', '4', '2'),
-       ('false', '2021-01-01', '2021-04-01', 'Preciso de um Eletricista 4!', 'true', '20', 'TO_DO', '4', '2'), -- 10
+       ('false', '2021-01-01', '2021-04-01', 'Preciso de um Eletricista 4!', 'true', '20', 'TO_DO', '4', '2'), -- 13
        ('false', '2021-01-01', '2021-04-01', 'Preciso de um Eletricista 5!', 'true', '20', 'CLOSED', '4', '2'),
        ('false', '2021-01-01', '2021-04-01', 'Preciso de um Eletricista 6!', 'true', '20', 'CLOSED', '4', '2'),
-       ('true', '2021-01-01', '2021-01-01', 'Preciso de um Pintor 1!', 'true', '5', 'AVAILABLE', '4', '3'),
+       ('true', '2021-01-01', '2021-01-01', 'Preciso de um Pintor 1!', 'true', '5', 'TO_HIRED', '4', '3'),
        ('true', '2021-01-01', '2021-01-02', 'Preciso de um Pintor 2!', 'true', '10', 'AVAILABLE', '4', '3'),
        ('true', '2021-01-01', '2021-01-03', 'Preciso de um Pintor 3!', 'true', '15', 'TO_HIRED', '4', '3'),
        ('true', '2021-01-01', '2021-01-04', 'Preciso de um Pintor 4!', 'true', '20', 'TO_DO', '1', '3'), -- 19
        ('true', '2021-01-01', '2021-01-04', 'Preciso de um Pintor 5!', 'true', '20', 'CLOSED', '4', '3'),
-       ('true', '2021-01-01', '2021-01-04', 'Preciso de um Pintor 6!', 'true', '20', 'CLOSED', '4', '3'),
+       ('true', '2021-01-01', '2021-01-04', 'Preciso de um Pintor 6!', 'true', '20', 'DOING', '4', '3'),
        ('true', '2021-08-26', '2021-08-27', 'Preciso de um Mecânico 1!', 'true', '5', 'AVAILABLE', '4', '4'),
        ('true', '2021-08-26', '2021-08-28', 'Preciso de um Mecânico 2!', 'true', '10', 'AVAILABLE', '4', '4'),
        ('true', '2021-08-26', '2021-09-01', 'Preciso de um Mecânico 3!', 'true', '15', 'AVAILABLE', '4', '4'),
@@ -110,18 +110,20 @@ VALUES ('false', '2021-01-01', '2021-01-01', 'Preciso de um Encanador 1!', 'true
 
 
 
-INSERT INTO job_contracted (comments, rating, job_request, professional, hired_date)
-VALUES ('Ótimo Encanador!', '5', '19', '4', '2021-04-01'),
-       ('Ótimo Eletricista!', '5', '10', '1', '2021-04-01'),
-       ('Ótimo Pintor!', '5', '16', '1', '2021-04-01'),
-       ('Bom Encanador!', '3', '5', '1', '2021-04-01'),
-       ('Bom Encanador!', '3', '8', '1', '2021-04-01'),
-       ('Bom Encanador!', '3', '9', '1', '2021-04-01'),
-       ('Péssimo Encanador!', '1', '6', '1', '2021-04-01'),
-       ('Bom Eletricista!', '3', '11', '1', '2021-04-01'),
-       ('Péssimo Eletricista!', '1', '12', '1', '2021-04-01'),
-       ('Bom Pintor!', '3', '17', '1', '2021-04-01'),
-       ('Péssimo Pintor!', '1', '18', '1', '2021-04-01');
+INSERT INTO job_contracted (comments, rating, job_request, professional, hired_date, todo_date)
+VALUES ('Ótimo Encanador!', '5', '19', '4', '2021-04-01', '2021-08-26'),
+       ('Ótimo Eletricista!', '5', '10', '1', '2021-04-01', '2021-08-26'),
+       ('Ótimo Pintor!', '5', '16', '1', '2021-04-01', '2021-08-26'),
+       ('Bom Encanador!', '3', '5', '1', '2021-04-01', '2021-08-26'),
+       ('Bom Encanador!', '3', '8', '1', '2021-04-01', '2021-08-26'),
+       ('Bom Encanador!', '3', '9', '1', '2021-04-01', '2021-08-26'),
+       ('Péssimo Encanador!', '1', '6', '1', '2021-04-01', '2021-08-26'),
+       ('Bom Eletricista!', '3', '11', '1', '2021-04-01', '2021-08-26'),
+       ('Péssimo Eletricista!', '1', '12', '1', '2021-04-01', '2021-08-26'),
+       ('Bom Pintor!', '3', '15', '1', '2021-04-01','2021-08-26'),
+       ('Bom Pintor!', '3', '20', '1', '2021-04-01', '2021-08-26'),
+       ('Bom Pintor!', '3', '21', '1', '2021-04-01', '2021-08-26'),
+       ('Péssimo Pintor!', '1', '14', '1', '2021-04-01', '2021-08-26');
 
 
 
@@ -130,13 +132,8 @@ VALUES ('1', '1', 'false'),
        ('1', '2', 'true'),
        ('1', '5', 'false'),
        ('2', '1', 'false'),
-       ('4', '1', 'true'),
-       ('5', '1', 'false'),
-       ('8', '1', 'false'),
-       ('6', '1', 'false'),
-       ('9', '1', 'true'),
-       ('10', '1', 'true'),
-       ('16', '1', 'true');
+       ('3', '1', 'true'),
+       ('17', '1', 'false');
 
 
 INSERT INTO follows (client_id, professional_id)
