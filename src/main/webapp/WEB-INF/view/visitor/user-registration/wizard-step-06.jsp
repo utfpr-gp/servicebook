@@ -30,7 +30,7 @@
                             <h3 class="center secondary-color-text">Nos conte mais sobre você!</h3>
                         </div>
 
-                        <form method="post" action="cadastrar-se/passo-6">
+                        <form method="post" action="${sessionScope.get('KEY_IS_REGISTER_COMPANY') == true ? 'cadastrar-se/empresa/passo-6' : 'cadastrar-se/individuo/passo-6'}">
                             <div class="row center spacing-buttons">
                                 <h4 class="center secondary-color-text">
                                     Qual o seu nome completo?
@@ -43,7 +43,7 @@
                                     <label for="name">Nome completo</label>
                                 </div>
                             </div>
-                            <c:if test="${sessionScope.get(WizardUtil.KEY_IS_REGISTER_COMPANY) == false}">
+                            <c:if test="${sessionScope.get('KEY_IS_REGISTER_COMPANY') == false}">
                                 <div class="row center spacing-buttons">
                                     <h4 class="center secondary-color-text">
                                         Qual o seu CPF?
@@ -58,7 +58,7 @@
                                     </div>
                                 </div>
                             </c:if>
-                            <c:if test="${sessionScope.get(WizardUtil.KEY_IS_REGISTER_COMPANY) == true}">
+                            <c:if test="${sessionScope.get('KEY_IS_REGISTER_COMPANY') == true}">
                                 <div class="row center spacing-buttons">
                                     <h4 class="center secondary-color-text">
                                         Qual o seu CNPJ?

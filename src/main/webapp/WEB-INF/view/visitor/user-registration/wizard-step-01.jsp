@@ -18,7 +18,7 @@
 
                 <div class="section">
                     <div class="row">
-                            <form method="post" action="" id="register-form">
+                            <form method="post" action="cadastrar-se/empresa/passo-1" id="register-form">
                                 <div class="row">
                                     <div id="tabButton" class="col s10 input-field col s12 m8 l6 xl6 offset-s1 offset-m2 offset-l3 offset-xl3">
                                         <ul class="tabs tabs_register">
