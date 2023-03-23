@@ -30,9 +30,9 @@ public class ProfessionalExpertise {
 	@ManyToOne
 	@MapsId("professionalId")
 	@JoinColumn(name = "professional_id")
-	private Individual professional;
+	private User professional;
 
-	public ProfessionalExpertise(Individual professional, Expertise expertise){
+	public ProfessionalExpertise(User professional, Expertise expertise){
 		this.expertise = expertise;
 		this.professional = professional;
 		this.id = new ProfessionalExpertisePK(expertise.getId(), professional.getId());

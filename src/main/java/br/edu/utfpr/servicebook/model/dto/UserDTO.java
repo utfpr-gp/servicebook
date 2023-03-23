@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook.model.dto;
 
 import br.edu.utfpr.servicebook.security.ProfileEnum;
+import br.edu.utfpr.servicebook.util.IWizardDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,16 +19,16 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class UserDTO implements Serializable {
+public class UserDTO implements IWizardDTO, Serializable {
 
     protected Long id;
 
-    @Pattern(regexp = "^(\\s?[A-ZÀ-Ú][a-zà-ú]*)+(\\s[a-zà-ú]*)?(\\s[A-ZÀ-Ú][a-zà-ú]*)+$", message = "Nome inválido! Por favor, insira o nome completo.", groups = UserDTO.RequestUserNameAndCPFInfoGroupValidation.class)
+    @Pattern(regexp = "^(\\s?[A-ZÀ-Ú][a-zà-ú]*)+(\\s[a-zà-ú]*)?(\\s[A-ZÀ-Ú][a-zà-ú]*)+$", message = "Nome inválido! Por favor, insira o nome completo.", groups = {UserDTO.RequestUserNameAndCPFInfoGroupValidation.class, UserDTO.RequestUserNameAndCNPJInfoGroupValidation.class})
     protected String name;
 
-    @CPF(message = "CPF inválido! Por favor, insira um CPF válido.", groups = UserDTO.RequestUserNameAndCPFInfoGroupValidation.class)
-    protected String cpf;
-    protected String cnpj;
+//    @CPF(message = "CPF inválido! Por favor, insira um CPF válido.", groups = UserDTO.RequestUserNameAndCPFInfoGroupValidation.class)
+//    protected String cpf;
+//    protected String cnpj;
 
     @NotBlank(message = "Email inválido! Por favor, insira o email.", groups = UserDTO.RequestUserEmailInfoGroupValidation.class)
     @Email(message = "Email inválido! Por favor, insira um email válido.", groups = UserDTO.RequestUserEmailInfoGroupValidation.class)
@@ -39,7 +40,6 @@ public class UserDTO implements Serializable {
 
     protected String repassword;
 
-    protected String type;
     protected String gender;
     protected String profilePicture;
     protected ProfileEnum profile;
@@ -69,6 +69,9 @@ public class UserDTO implements Serializable {
 
     public interface RequestUserNameAndCPFInfoGroupValidation {
 
+    }
+
+    public interface RequestUserNameAndCNPJInfoGroupValidation {
     }
 
     public interface RequestUserEmailInfoGroupValidation {
