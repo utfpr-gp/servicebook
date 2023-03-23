@@ -45,6 +45,7 @@ public class JobCandidate {
 	@JoinColumn(name = "professional_id")
 	private Individual individual;
 
+
 	public JobCandidate(JobRequest jobRequest, Individual individual) {
 		this.jobRequest = jobRequest;
 		this.individual = individual;

@@ -2,14 +2,8 @@ package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.follower.FollowsService;
-import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
-import br.edu.utfpr.servicebook.model.dto.IndividualDTO;
-import br.edu.utfpr.servicebook.model.dto.JobRequestFullDTO;
-import br.edu.utfpr.servicebook.model.dto.UserCodeDTO;
-import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.model.entity.JobRequest;
-import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
+import br.edu.utfpr.servicebook.model.dto.*;
+import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
@@ -20,6 +14,7 @@ import br.edu.utfpr.servicebook.sse.EventSseMapper;
 import br.edu.utfpr.servicebook.sse.SSEService;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelCompanyDTO;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelStatisticsDTO;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
@@ -53,7 +48,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/minha-conta/empresa")
 @Controller
 public class CompanyController {
-    public static final Logger log = LoggerFactory.getLogger(ProfessionalHomeController.class);
+    public static final Logger log = LoggerFactory.getLogger(CompanyController.class);
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -64,7 +59,12 @@ public class CompanyController {
     private IndividualService individualService;
 
     @Autowired
+    private CompanyService companyService;
+    @Autowired
     private IndividualMapper individualMapper;
+
+    @Autowired
+    private CompanyMapper companyMapper;
 
     @Autowired
     private CityService cityService;
@@ -75,6 +75,8 @@ public class CompanyController {
     @Autowired
     private ProfessionalExpertiseService professionalExpertiseService;
 
+    @Autowired
+    private CompanyExpertiseService companyExpertiseService;
     @Autowired
     private ExpertiseService expertiseService;
 
@@ -122,24 +124,30 @@ public class CompanyController {
 
 
     @GetMapping
+    @RolesAllowed({RoleType.COMPANY})
     public ModelAndView showMyAccountCompany(@RequestParam(required = false, defaultValue = "0") Optional<Long> expertiseId
     ) throws Exception {
-        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
+        Optional<Company> oProfessional = (companyService.findByEmail(authentication.getEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
         ModelAndView mv = new ModelAndView("company/my-account");
-        IndividualDTO professionalDTO = individualMapper.toDto(oProfessional.get());
 
-        Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(oProfessional.get());
+
+        CompanyDTO professionalDTO = companyMapper.toDto(oProfessional.get());
+
+        Optional<Long> oProfessionalFollowingAmount = followsService.countByCompany(oProfessional.get());
         professionalDTO.setFollowingAmount(oProfessionalFollowingAmount.get());
-        SidePanelIndividualDTO individualInfo = sidePanelUtil.getIndividualInfo(professionalDTO);
-        SidePanelStatisticsDTO statisticInfo = sidePanelUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId.get());
-        mv.addObject("individualInfo", individualInfo);
 
-        List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
+        SidePanelCompanyDTO companyInfo = sidePanelUtil.getCompanyInfo(professionalDTO);
+        SidePanelStatisticsDTO statisticInfo = sidePanelUtil.getCompanyStatisticInfo(oProfessional.get(), expertiseId.get());
+
+
+        mv.addObject("individualInfo", companyInfo);
+
+        List<CompanyExpertise> professionalExpertises = companyExpertiseService.findByProfessional(oProfessional.get());
         List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
                 .map(professionalExpertise -> professionalExpertise.getExpertise())
                 .map(expertise -> expertiseMapper.toDto(expertise))
@@ -152,12 +160,10 @@ public class CompanyController {
                     return eventSseMapper.toFullDto(eventSse);
                 })
                 .collect(Collectors.toList());
-        IndividualDTO professionalDTO1 = individualMapper.toResponseDto(oProfessional.get());
+        CompanyDTO professionalDTO1 = companyMapper.toResponseDto(oProfessional.get());
         mv.addObject("eventsse", eventSSEDTOs);
         mv.addObject("expertises", expertiseDTOs);
-        mv.addObject("individualInfo", individualInfo);
         mv.addObject("professionalDTO1", professionalDTO1);
-        mv.addObject("statisticInfo", statisticInfo);
         mv.addObject("company", true);
         return mv;
     }

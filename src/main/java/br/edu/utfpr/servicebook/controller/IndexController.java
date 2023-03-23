@@ -1,10 +1,13 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.entity.City;
+import br.edu.utfpr.servicebook.model.entity.Company;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.service.CityService;
+import br.edu.utfpr.servicebook.service.CompanyService;
 import br.edu.utfpr.servicebook.service.IndividualService;
+import br.edu.utfpr.servicebook.util.sidePanel.SidePanelCompanyDTO;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
 import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +36,6 @@ public class IndexController {
 
     @Autowired
     private IAuthentication authentication;
-
     @GetMapping
     @PermitAll
     public ModelAndView showIndexPage() {

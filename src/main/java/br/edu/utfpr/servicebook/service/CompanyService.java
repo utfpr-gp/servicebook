@@ -38,6 +38,9 @@ public class CompanyService {
     public Optional<Company> findByCnpj(String cnpj) {
         return this.companyRepository.findByCnpj(cnpj);
     }
+    public Optional<Company> findByEmail(String email) {
+        return this.companyRepository.findByEmail(email);
+    }
 
     @Transactional
     public void saveExpertisesCompany(Company company, CompanyExpertise companyExpertise) {

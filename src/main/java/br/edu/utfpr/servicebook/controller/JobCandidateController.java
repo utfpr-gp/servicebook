@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.dto.*;
+import br.edu.utfpr.servicebook.model.entity.Company;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.JobCandidate;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
@@ -9,6 +10,7 @@ import br.edu.utfpr.servicebook.model.mapper.JobCandidateMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
+import br.edu.utfpr.servicebook.service.CompanyService;
 import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobCandidateService;
 import br.edu.utfpr.servicebook.service.JobRequestService;

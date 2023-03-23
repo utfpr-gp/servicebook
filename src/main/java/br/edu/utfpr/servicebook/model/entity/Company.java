@@ -7,6 +7,8 @@ import lombok.*;
 
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode(exclude = {"jobRequest", "candidatures"})
+@ToString(exclude = {"candidatures", "jobRequest"})
 @Table(name = "companies")
 @Entity
 public class Company extends User	{

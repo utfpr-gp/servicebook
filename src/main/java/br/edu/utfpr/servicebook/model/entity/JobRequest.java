@@ -14,8 +14,8 @@ import lombok.*;
 @Table(name = "job_requests")
 @NoArgsConstructor
 @RequiredArgsConstructor
-@EqualsAndHashCode(exclude={"individual", "jobCandidates", "jobContracted", "expertise", "jobImages"})
-@ToString(exclude={"individual", "jobCandidates", "jobContracted", "expertise", "jobImages"})
+@EqualsAndHashCode(exclude={"individual", "jobCandidates", "jobContracted", "expertise", "jobImages", "company"})
+@ToString(exclude={"individual", "jobCandidates", "jobContracted", "expertise", "jobImages", "company"})
 @Entity
 public class JobRequest {
 	/**

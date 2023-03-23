@@ -42,7 +42,7 @@ public interface JobContractedRepository extends JpaRepository<JobContracted, Lo
     /**
      * Retorna o total de trabalhos contratados de um profissional para uma dada especialidade.
      *
-     * @param individual
+     * @param professional
      * @param expertise
      * @return Optional<Long>
      */
@@ -51,7 +51,7 @@ public interface JobContractedRepository extends JpaRepository<JobContracted, Lo
     /**
      * Retorna o total de avaliações dos trabalhos contratados de um profissional para uma dada especialidade.
      *
-     * @param individual
+     * @param professional
      * @param expertise
      * @return Optional<Long>
      */
@@ -71,5 +71,52 @@ public interface JobContractedRepository extends JpaRepository<JobContracted, Lo
     Page<JobContracted> findByJobRequest_StatusAndJobRequest_Individual(JobRequest.Status status, Individual individual, Pageable pageable);
 
     Page<JobContracted> findByJobRequest_StatusAndJobRequest_ExpertiseAndIndividual(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable);
+
+    /**
+     * Retorna o total de trabalhos contratados de um profissional.
+     *
+     * @param company
+     * @return Optional<Long>
+     */
+    Optional<Long> countByCompany(Company company);
+
+    /**
+     * Retorna o total de avaliações dos trabalhos contratados de um profissional.
+     *
+     * @param company
+     * @return Optional<Long>
+     */
+    Optional<Long> countRatingByCompany(Company company);
+    /**
+     * Retorna o total de comentários dos trabalhos contratados de um profissional.
+     *
+     * @param company
+     * @return Optional<Long>
+     */
+    Optional<Long> countCommentsByCompany(Company company);
+    /**
+     * Retorna o total de trabalhos contratados de um profissional para uma dada especialidade.
+     *
+     * @param company
+     * @param expertise
+     * @return Optional<Long>
+     */
+    Optional<Long> countByCompanyAndJobRequest_Expertise(Company company, Expertise expertise);
+    /**
+     * Retorna o total de avaliações dos trabalhos contratados de um profissional para uma dada especialidade.
+     *
+     * @param company
+     * @param expertise
+     * @return Optional<Long>
+     */
+    Optional<Long> countRatingByCompanyAndJobRequest_Expertise(Company company, Expertise expertise);
+    /**
+     * Retorna o total de comentários dos trabalhos contratados de um profissional para uma dada especialidade.
+     *
+     * @param company
+     * @param expertise
+     * @return Optional<Long>
+     */
+    Optional<Long> countCommentsByCompanyAndJobRequest_Expertise(Company company, Expertise expertise);
 
 }

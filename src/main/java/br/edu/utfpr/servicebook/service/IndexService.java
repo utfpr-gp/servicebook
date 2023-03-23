@@ -26,7 +26,8 @@ public class IndexService {
 
     @Autowired
     JobCandidateRepository jobCandidateRepository;
-
+    @Autowired
+    CompanyRepository companyRepository;
     @Autowired
     IndividualRepository clientRepository;
 
@@ -61,6 +62,13 @@ public class IndexService {
         Individual client1 = new Individual("João Silva", "joao@mail.com", "qwerty123", "(42)9 9999-9999", "85035-180");
         Individual client2 = new Individual("Thomaz Leite", "thomaz@mail.com", "qwerty123", "(42)9 9999-9999", "85035-180");
         clientRepository.saveAll(Arrays.asList(client1, client2));
+
+        Company company = new Company("Luke", "darth_vader@mail.com", "Senha123", "(42)9 9999-9999", CPFUtil.geraCPF());
+        company.setProfilePicture("https://i.imgur.com/owhNAKK.png");
+        company.setDescription("Sua falta de fé é perturbadora.");
+        company.setRating(5);
+        company.setDenounceAmount(1);
+        companyRepository.save(company);
 
         JobRequest jb1 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, new Date());
         jb1.setExpertise(expertise1);

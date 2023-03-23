@@ -66,4 +66,27 @@ public class JobContractedService {
     public Page<JobContracted> findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status status, Individual client, Pageable pageable){
         return this.jobContractedRepository.findByJobRequest_StatusAndJobRequest_Individual(status, client, pageable);
     }
+
+    public Optional<Long> countByCompany(Company company) {
+        return this.jobContractedRepository.countByCompany(company);
+    }
+
+    public Optional<Long> countRatingByCompany(Company company) {
+        return this.jobContractedRepository.countRatingByCompany(company);
+    }
+
+    public Optional<Long> countCommentsByCompany(Company company) {
+        return this.jobContractedRepository.countCommentsByCompany(company);
+    }
+
+    public Optional<Long> countByCompanyAndJobRequest_Expertise(Company company, Expertise expertise) {
+        return this.jobContractedRepository.countByCompanyAndJobRequest_Expertise(company, expertise);
+    }
+    public Optional<Long> countRatingByCompanyAndJobRequest_Expertise(Company company, Expertise expertise) {
+        return this.jobContractedRepository.countRatingByCompanyAndJobRequest_Expertise(company, expertise);
+    }
+    public Optional<Long> countCommentsByCompanyAndJobRequest_Expertise(Company company, Expertise expertise) {
+        return this.jobContractedRepository.countCommentsByCompanyAndJobRequest_Expertise(company, expertise);
+    }
+
 }

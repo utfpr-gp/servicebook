@@ -37,4 +37,8 @@ public class JobContracted {
 	@JoinColumn(name = "professional")
 	private Individual individual;
 
+	@NonNull
+	@OneToOne
+	@JoinColumn(name = "company")
+	private Company company;
 }

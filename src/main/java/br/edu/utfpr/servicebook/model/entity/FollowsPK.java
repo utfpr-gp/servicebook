@@ -18,4 +18,6 @@ public class FollowsPK implements Serializable {
 
 	Long clientId;
 	Long professionalId;
+
+	Long companyId;
 }

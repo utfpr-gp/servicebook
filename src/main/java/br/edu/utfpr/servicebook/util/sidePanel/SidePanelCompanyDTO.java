@@ -6,8 +6,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SidePanelCompanyDTO {
-    private Long jobs;
-    private Long comments;
-    private Long ratings;
-    private Integer ratingScore;
+    private Long id;
+    private String name;
+    private String description;
+    private int rating;
+    protected String profilePicture;
+    protected boolean phoneVerified;
+    protected boolean emailVerified;
+    protected boolean profileVerified;
+    protected Long followingAmount;
 }

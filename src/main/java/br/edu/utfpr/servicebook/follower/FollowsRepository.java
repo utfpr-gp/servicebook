@@ -1,5 +1,6 @@
 package br.edu.utfpr.servicebook.follower;
 
+import br.edu.utfpr.servicebook.model.entity.Company;
 import br.edu.utfpr.servicebook.model.entity.Follows;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -49,4 +50,7 @@ public interface FollowsRepository extends JpaRepository<Follows, Long> {
      * @return
      */
     Optional<Long> countByClient(Individual client);
+
+    Optional<Long> countByCompany(Company company);
+
 }

@@ -1,12 +1,13 @@
 package br.edu.utfpr.servicebook.util.sidePanel;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
+import br.edu.utfpr.servicebook.model.dto.CompanyDTO;
 import br.edu.utfpr.servicebook.model.dto.IndividualDTO;
 import br.edu.utfpr.servicebook.model.dto.ProfessionalDTO;
-import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
+import br.edu.utfpr.servicebook.model.entity.*;
+import br.edu.utfpr.servicebook.model.mapper.CompanyMapper;
 import br.edu.utfpr.servicebook.model.mapper.ProfessionalMapper;
+import br.edu.utfpr.servicebook.service.CompanyExpertiseService;
 import br.edu.utfpr.servicebook.service.ExpertiseService;
 import br.edu.utfpr.servicebook.service.JobContractedService;
 import br.edu.utfpr.servicebook.service.ProfessionalExpertiseService;
@@ -28,11 +29,16 @@ public class SidePanelUtil {
     private ProfessionalExpertiseService professionalExpertiseService;
 
     @Autowired
+    private CompanyExpertiseService companyExpertiseService;
+
+    @Autowired
     private JobContractedService jobContractedService;
 
     @Autowired
     private ProfessionalMapper professionalMapper;
 
+    @Autowired
+    private CompanyMapper companyMapper;
     /**
      * Retorna os dados do usuário a ser apresentado no menu lateral.
      * @param entity
@@ -46,6 +52,13 @@ public class SidePanelUtil {
         return new SidePanelIndividualDTO(entity.getId(), entity.getName(), entity.getDescription(), entity.getRating(), entity.getProfilePicture(), entity.isPhoneVerified(), entity.isEmailVerified(), entity.isProfileVerified(), 0L);
     }
 
+    public SidePanelCompanyDTO getCompanyInfo(CompanyDTO entity){
+        return new SidePanelCompanyDTO(entity.getId(), entity.getName(), entity.getDescription(), entity.getRating(), entity.getProfilePicture(), entity.isPhoneVerified(), entity.isEmailVerified(), entity.isProfileVerified(), 0L);
+    }
+
+    public SidePanelCompanyDTO getCompanyInfo(Company entity){
+        return new SidePanelCompanyDTO(entity.getId(), entity.getName(), entity.getDescription(), entity.getRating(), entity.getProfilePicture(), entity.isPhoneVerified(), entity.isEmailVerified(), entity.isProfileVerified(), 0L);
+    }
     /**
      * Retorna os dados estatísticos a serem apresentados no menu lateral para o perfil do profissional.
      * @param oProfessional
@@ -53,10 +66,10 @@ public class SidePanelUtil {
      * @return
      */
     public SidePanelStatisticsDTO getProfessionalStatisticInfo(Individual oProfessional, Long expertiseId) {
-        
+
         if (expertiseId == 0L) {
             ProfessionalDTO professional = professionalMapper.toResponseDto(oProfessional);
-            
+
             return new SidePanelStatisticsDTO(
                 jobContractedService.countByProfessional(oProfessional).orElse(0L),
                 jobContractedService.countRatingByProfessional(oProfessional).orElse(0L),
@@ -73,9 +86,9 @@ public class SidePanelUtil {
         if (!oExpertise.isPresent()) {
             throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
         }
-        
+
         Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(
-            oProfessional, 
+            oProfessional,
             oExpertise.get()
         );
 
@@ -98,15 +111,15 @@ public class SidePanelUtil {
         );
     }
 
-    public SidePanelCompanyDTO getCompanyStatisticInfo(Individual oProfessional, Long expertiseId) {
+    public SidePanelStatisticsDTO getCompanyStatisticInfo(Company oProfessional, Long expertiseId) {
 
         if (expertiseId == 0L) {
-            ProfessionalDTO professional = professionalMapper.toResponseDto(oProfessional);
+            CompanyDTO professional = companyMapper.toResponseDto(oProfessional);
 
-            return new SidePanelCompanyDTO(
-                    jobContractedService.countByProfessional(oProfessional).orElse(0L),
-                    jobContractedService.countRatingByProfessional(oProfessional).orElse(0L),
-                    jobContractedService.countCommentsByProfessional(oProfessional).orElse(0L),
+            return new SidePanelStatisticsDTO(
+                    jobContractedService.countByCompany(oProfessional).orElse(0L),
+                    jobContractedService.countRatingByCompany(oProfessional).orElse(0L),
+                    jobContractedService.countCommentsByCompany(oProfessional).orElse(0L),
                     professional.getRating()
             );
         }
@@ -120,7 +133,7 @@ public class SidePanelUtil {
             throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
         }
 
-        Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(
+        Optional<CompanyExpertise> oProfessionalExpertise = companyExpertiseService.findByCompanyAndExpertise(
                 oProfessional,
                 oExpertise.get()
         );
@@ -129,14 +142,14 @@ public class SidePanelUtil {
             throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
         }
 
-        Long totalJobsByExpertise = jobContractedService.countByProfessionalAndJobRequest_Expertise(
+        Long totalJobsByExpertise = jobContractedService.countByCompanyAndJobRequest_Expertise(
                 oProfessional, oExpertise.get()).orElse(0L);
-        Long totalRatingsByExpertise = jobContractedService.countRatingByProfessionalAndJobRequest_Expertise(
+        Long totalRatingsByExpertise = jobContractedService.countRatingByCompanyAndJobRequest_Expertise(
                 oProfessional, oExpertise.get()).orElse(0L);
-        Long totalCommentsByExpertise = jobContractedService.countCommentsByProfessionalAndJobRequest_Expertise(
+        Long totalCommentsByExpertise = jobContractedService.countCommentsByCompanyAndJobRequest_Expertise(
                 oProfessional, oExpertise.get()).orElse(0L);
 
-        return new SidePanelCompanyDTO(
+        return new SidePanelStatisticsDTO(
                 totalJobsByExpertise,
                 totalRatingsByExpertise,
                 totalCommentsByExpertise,

@@ -1,5 +1,6 @@
 package br.edu.utfpr.servicebook.follower;
 
+import br.edu.utfpr.servicebook.model.entity.Company;
 import br.edu.utfpr.servicebook.model.entity.Follows;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,10 @@ public class FollowsService {
 
     public Optional<Long> countByClient(Individual client){
         return followsRepository.countByClient(client);
+    }
+
+    public Optional<Long> countByCompany(Company company){
+        return followsRepository.countByCompany(company);
     }
 
     public List<Follows> findAll() { return followsRepository.findAll(); }

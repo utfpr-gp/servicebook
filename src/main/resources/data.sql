@@ -51,7 +51,7 @@ VALUES ('profissional1@gmail.com', 'true', 'Nome do Primeiro Profissional', '(42
        ('cliente2@gmail.com', 'true', 'Nome do Segundo Cliente', '(42) 99999-9994', 'true',
         'https://i.imgur.com/owhNAKK.png', 'true', '1', 1, 'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição profissional 1'),
        ('empresa@gmail.com', 'true', 'Nome Empresa', '(42) 99999-9994', 'true',
-        'https://i.imgur.com/owhNAKK.png', 'true', '1', 1, 'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição empresa 1'),
+        'https://i.imgur.com/owhNAKK.png', 'true', '1', 1, 'ROLE_COMPANY', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição empresa 1'),
        ('profissional3@gmail.com', 'true', 'Nome do Terceiro Profissional', '(42) 99999-9995', 'false',
         null, 'false', '1', 3, 'ROLE_USER', 'qwerty',  'Descrição profissional 1'),
        ('profissional4@gmail.com', 'true', 'Nome do Quarto Profissional', '(42) 99999-9996', 'true',
@@ -148,7 +148,7 @@ VALUES ('1', '1', 'false', '2021-01-01', null, 'false'),
        ('16', '1', 'true', '2021-01-02', null, 'false');
 
 
-INSERT INTO follows (client_id, professional_id)
-VALUES (4, 1)
+INSERT INTO follows (client_id, professional_id, company_id)
+VALUES (4, 1, 1 )
 
 

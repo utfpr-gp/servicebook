@@ -34,10 +34,16 @@ public class Follows {
 	@JoinColumn(name = "professional_id")
 	private Individual professional;
 
+	@ManyToOne
+	@MapsId("companyId")
+	@JoinColumn(name = "company_id")
+	private Company company;
+
 	public Follows(Individual client, Individual professional) {
 		this.client = client;
 		this.professional = professional;
-		this.id = new FollowsPK(client.getId(), professional.getId());
+		this.company = company;
+		this.id = new FollowsPK(client.getId(), professional.getId(), company.getId());
 	}
 
 	@PrePersist
