@@ -14,9 +14,6 @@ public class Company extends User	{
 	private static final long serialVersionUID = 1L;
 	private String cnpj;
 
-	@Enumerated(EnumType.STRING)
-	private ProfileEnum profile;
-
 	public Company(String name, String email, String password, String phoneNumber, String cnpj){
 		super(name, email, password, phoneNumber);
 		setCnpj(cnpj);

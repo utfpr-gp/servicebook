@@ -18,6 +18,9 @@
 
                 <div class="section">
                     <div class="row">
+                            <!-- o endereço do formulário está atrelado a aba clicada pelo usuário, ou seja, para
+                            cadastro de empresa ou indivíduo. Por default, a aba empresa é mostrada. A atualização
+                             do endereço é realizado via JavaScript.-->
                             <form method="post" action="cadastrar-se/empresa/passo-1" id="register-form">
                                 <div class="row">
                                     <div id="tabButton" class="col s10 input-field col s12 m8 l6 xl6 offset-s1 offset-m2 offset-l3 offset-xl3">
@@ -87,8 +90,6 @@
         else{
             $('#register-form').attr('action', 'cadastrar-se/individuo/passo-1');
         }
-
-
 
         // stop reload
         e.preventDefault();

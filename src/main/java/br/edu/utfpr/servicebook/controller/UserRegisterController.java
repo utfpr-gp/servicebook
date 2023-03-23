@@ -30,6 +30,11 @@ import java.util.stream.Collectors;
 
 import static br.edu.utfpr.servicebook.security.ProfileEnum.ROLE_COMPANY;
 
+/**
+ * Faz o cadastro do usuário individual ou empresa por meio de um wizard.
+ * O primeiro passo define se o cadastro será de empresa ou indivíduo e a distinção se dá pela rota acessada.
+ * A principal diferença entre as duas entidades é o CPF e CNPJ. Em relação aos demais atributos, usa-se a classe User.
+ */
 @Controller
 @Slf4j
 @RequestMapping("/cadastrar-se")

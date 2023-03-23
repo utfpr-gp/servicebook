@@ -29,7 +29,7 @@
                         <div class="row">
                             <h3 class="center secondary-color-text">Nos conte mais sobre você!</h3>
                         </div>
-
+                        <!-- verifica na sessão se o cadastro atual é de indivíduo e ajusta a URL -->
                         <form method="post" action="${sessionScope.get('KEY_IS_REGISTER_COMPANY') == true ? 'cadastrar-se/empresa/passo-6' : 'cadastrar-se/individuo/passo-6'}">
                             <div class="row center spacing-buttons">
                                 <h4 class="center secondary-color-text">
@@ -43,6 +43,7 @@
                                     <label for="name">Nome completo</label>
                                 </div>
                             </div>
+                            <!-- verifica na sessão se o cadastro atual é de indivíduo -->
                             <c:if test="${sessionScope.get('KEY_IS_REGISTER_COMPANY') == false}">
                                 <div class="row center spacing-buttons">
                                     <h4 class="center secondary-color-text">
@@ -58,6 +59,7 @@
                                     </div>
                                 </div>
                             </c:if>
+                            <!-- verifica na sessão se o cadastro atual é de empresa -->
                             <c:if test="${sessionScope.get('KEY_IS_REGISTER_COMPANY') == true}">
                                 <div class="row center spacing-buttons">
                                     <h4 class="center secondary-color-text">
@@ -99,14 +101,6 @@
 
 <script>
     $(document).ready(function () {
-        // let options = {
-        //     onKeyPress: function (cpf, ev, el, op) {
-        //         var masks = ['000.000.000-000', '00.000.000/0000-00'];
-        //         $('#cpf').mask((cpf.length > 14) ? masks[1] : masks[0], op);
-        //     }
-        // }
-        //
-        // $('#cpf').length > 11 ? $('#cpf').mask('00.000.000/0000-00', options) : $('#cpf').mask('000.000.000-00#', options);
         $('#cpf').mask('000.000.000-00', {reverse: true});
         $('#cnpj').mask('00.000.000/0000-00', {reverse: true});
     });
