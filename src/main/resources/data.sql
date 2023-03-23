@@ -88,29 +88,29 @@ INSERT INTO company_expertises (expertise_id, company_id, rating)
 VALUES (1, 1, 1);
 
 INSERT INTO job_requests
-(client_confirmation, date_created, date_expired, description, professional_confirmation, quantity_candidators_max,
+(client_confirmation, date_created, date_target, description, professional_confirmation, quantity_candidators_max,
  status, client_id, expertise_id)
 VALUES ('false', '2021-01-01', '2021-01-01', 'Preciso de um Encanador 1!', 'true', '5', 'AVAILABLE', '2', '1'),
        ('false', '2021-01-01', '2021-01-02', 'Preciso de um Encanador 2!', 'true', '10', 'AVAILABLE', '2', '1'),
        ('false', '2021-01-01', '2021-01-07', 'Preciso de um Encanador 3!', 'true', '15', 'AVAILABLE', '2', '1'),
        ('true', '2021-01-01', '2021-01-07', 'Preciso de um Encanador 30!', 'true', '15', 'TO_HIRED', '2', '1'),
        ('false', '2021-01-01', '2021-01-08', 'Preciso de um Encanador 4!', 'true', '20', 'TO_DO', '2', '1'), -- 4
-       ('false', '2021-01-01', '2021-01-08', 'Preciso de um Encanador 5!', 'true', '20', 'CANCELED', '2', '1'),
+       ('false', '2021-01-01', '2021-01-08', 'Preciso de um Encanador 5!', 'true', '20', 'DOING', '2', '1'),
        ('false', '2021-01-01', '2021-01-08', 'Preciso de um Encanador 6!', 'true', '20', 'CANCELED', '2', '1'),
        ('false', '2022-11-29', '2022-12-13', 'Preciso de um Encanador 7!', 'true', '20', 'DOING', '1', '1'),
        ('false', '2021-01-01', '2021-01-08', 'Preciso de um Encanador 8!', 'true', '20', 'DOING', '1', '1'),
-       ('false', '2021-01-01', '2021-01-30', 'Preciso de um Eletricista 1!', 'true', '5', 'AVAILABLE', '3', '2'),
-       ('false', '2021-01-01', '2021-02-02', 'Preciso de um Eletricista 2!', 'true', '10', 'AVAILABLE', '3', '2'),
+       ('false', '2021-01-01', '2021-01-30', 'Preciso de um Eletricista 1!', 'true', '5', 'TO_HIRED', '3', '2'),--10
+       ('false', '2021-01-01', '2021-02-02', 'Preciso de um Eletricista 2!', 'true', '10', 'CLOSED', '3', '2'),
        ('true', '2021-01-01', '2021-03-01', 'Preciso de um Eletricista 3!', 'true', '15', 'TO_HIRED', '4', '2'),
-       ('false', '2021-01-01', '2021-04-01', 'Preciso de um Eletricista 4!', 'true', '20', 'TO_DO', '4', '2'), -- 10
+       ('false', '2021-01-01', '2021-04-01', 'Preciso de um Eletricista 4!', 'true', '20', 'TO_DO', '4', '2'), -- 13
        ('false', '2021-01-01', '2021-04-01', 'Preciso de um Eletricista 5!', 'true', '20', 'CLOSED', '4', '2'),
        ('false', '2021-01-01', '2021-04-01', 'Preciso de um Eletricista 6!', 'true', '20', 'CLOSED', '4', '2'),
-       ('true', '2021-01-01', '2021-01-01', 'Preciso de um Pintor 1!', 'true', '5', 'AVAILABLE', '4', '3'),
+       ('true', '2021-01-01', '2021-01-01', 'Preciso de um Pintor 1!', 'true', '5', 'TO_HIRED', '4', '3'),
        ('true', '2021-01-01', '2021-01-02', 'Preciso de um Pintor 2!', 'true', '10', 'AVAILABLE', '4', '3'),
        ('true', '2021-01-01', '2021-01-03', 'Preciso de um Pintor 3!', 'true', '15', 'TO_HIRED', '4', '3'),
        ('true', '2021-01-01', '2021-01-04', 'Preciso de um Pintor 4!', 'true', '20', 'TO_DO', '1', '3'), -- 19
        ('true', '2021-01-01', '2021-01-04', 'Preciso de um Pintor 5!', 'true', '20', 'CLOSED', '4', '3'),
-       ('true', '2021-01-01', '2021-01-04', 'Preciso de um Pintor 6!', 'true', '20', 'CLOSED', '4', '3'),
+       ('true', '2021-01-01', '2021-01-04', 'Preciso de um Pintor 6!', 'true', '20', 'DOING', '4', '3'),
        ('true', '2021-08-26', '2021-08-27', 'Preciso de um Mecânico 1!', 'true', '5', 'AVAILABLE', '4', '4'),
        ('true', '2021-08-26', '2021-08-28', 'Preciso de um Mecânico 2!', 'true', '10', 'AVAILABLE', '4', '4'),
        ('true', '2021-08-26', '2021-09-01', 'Preciso de um Mecânico 3!', 'true', '15', 'AVAILABLE', '4', '4'),
@@ -119,33 +119,30 @@ VALUES ('false', '2021-01-01', '2021-01-01', 'Preciso de um Encanador 1!', 'true
 
 
 
-INSERT INTO job_contracted (comments, rating, job_request, professional)
-VALUES ('Ótimo Encanador!', '5', '19', '4'),
-       ('Ótimo Eletricista!', '5', '10', '1'),
-       ('Ótimo Pintor!', '5', '16', '1'),
-       ('Bom Encanador!', '3', '5', '1'),
-       ('Bom Encanador!', '3', '8', '1'),
-       ('Bom Encanador!', '3', '9', '1'),
-       ('Péssimo Encanador!', '1', '6', '1'),
-       ('Bom Eletricista!', '3', '11', '1'),
-       ('Péssimo Eletricista!', '1', '12', '1'),
-       ('Bom Pintor!', '3', '17', '1'),
-       ('Péssimo Pintor!', '1', '18', '1');
+INSERT INTO job_contracted (comments, rating, job_request, professional, hired_date, todo_date)
+VALUES ('Ótimo Encanador!', '5', '19', '4', '2021-04-01', '2021-08-26'),
+       ('Ótimo Eletricista!', '5', '10', '1', '2021-04-01', '2021-08-26'),
+       ('Ótimo Pintor!', '5', '16', '1', '2021-04-01', '2021-08-26'),
+       ('Bom Encanador!', '3', '5', '1', '2021-04-01', '2021-08-26'),
+       ('Bom Encanador!', '3', '8', '1', '2021-04-01', '2021-08-26'),
+       ('Bom Encanador!', '3', '9', '1', '2021-04-01', '2021-08-26'),
+       ('Péssimo Encanador!', '1', '6', '1', '2021-04-01', '2021-08-26'),
+       ('Bom Eletricista!', '3', '11', '1', '2021-04-01', '2021-08-26'),
+       ('Péssimo Eletricista!', '1', '12', '1', '2021-04-01', '2021-08-26'),
+       ('Bom Pintor!', '3', '15', '1', '2021-04-01','2021-08-26'),
+       ('Bom Pintor!', '3', '20', '1', '2021-04-01', '2021-08-26'),
+       ('Bom Pintor!', '3', '21', '1', '2021-04-01', '2021-08-26'),
+       ('Péssimo Pintor!', '1', '14', '1', '2021-04-01', '2021-08-26');
 
 
 
-INSERT INTO job_candidates (job_id, professional_id, chosen_by_budget, date, hired_date, is_quit)
-VALUES ('1', '1', 'false', '2021-01-01', null, 'false'),
-       ('1', '2', 'true', '2021-01-01', null, 'false'),
-       ('1', '5', 'false', '2021-01-01', null, 'false'),
-       ('2', '1', 'false', '2021-01-02', null, 'false'),
-       ('4', '1', 'true', '2021-01-02', null, 'false'),
-       ('5', '1', 'false', '2022-11-25', '2022-11-27', 'false'),
-       ('8', '1', 'false', '2022-11-30', '2022-12-13', 'false'),
-       ('6', '1', 'false', '2021-01-02', '2021-02-05', 'false'),
-       ('9', '1', 'true', '2022-11-25', '2022-12-30', 'false'),
-       ('10', '1', 'true', '2021-01-02', null, 'false'),
-       ('16', '1', 'true', '2021-01-02', null, 'false');
+INSERT INTO job_candidates (job_id, professional_id, chosen_by_budget)
+VALUES ('1', '1', 'false'),
+       ('1', '2', 'true'),
+       ('1', '5', 'false'),
+       ('2', '1', 'false'),
+       ('3', '1', 'true'),
+       ('17', '1', 'false');
 
 
 INSERT INTO follows (client_id, professional_id, company_id)

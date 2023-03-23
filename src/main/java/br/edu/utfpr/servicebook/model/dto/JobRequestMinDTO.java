@@ -21,7 +21,7 @@ public class JobRequestMinDTO implements Serializable {
 
     private String dateCreated;
 
-    private String dateExpired;
+    private String dateTarget;
 
     public String status;
 

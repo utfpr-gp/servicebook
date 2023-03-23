@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
-import java.time.ZoneId;
 import java.util.Optional;
 
 @Component
@@ -42,8 +41,8 @@ public class JobRequestMapper {
     public JobRequestDetailsDTO jobRequestDetailsDTO(JobRequest entity){
         JobRequestDetailsDTO dto = mapper.map(entity, JobRequestDetailsDTO.class);
         dto.setDateCreated(this.dateFormat.format(entity.getDateCreated()));
-        dto.setDateExpired(this.dateFormat.format(entity.getDateExpired()));
-        dto.setTextualDate(DateUtil.getTextualDate(DateUtil.toLocalDate(entity.getDateExpired())));
+        dto.setDateTarget(this.dateFormat.format(entity.getDateTarget()));
+        dto.setTextualDate(DateUtil.getTextualDate(DateUtil.toLocalDate(entity.getDateTarget())));
 
         return dto;
     }
@@ -53,7 +52,7 @@ public class JobRequestMapper {
         dto.setAmountOfCandidates(amountOfCandidates.get());
         dto.setExpertiseDTO(expertiseMapper.toDto(entity.getExpertise()));
         dto.setDateCreated(this.dateFormat.format(entity.getDateCreated()));
-        dto.setDateExpired(this.dateFormat.format(entity.getDateExpired()));
+        dto.setDateTarget(this.dateFormat.format(entity.getDateTarget()));
 
         return dto;
     }
@@ -61,7 +60,7 @@ public class JobRequestMapper {
     public JobRequestFullDTO toFullDto(JobRequest entity){
         JobRequestFullDTO dto = mapper.map(entity, JobRequestFullDTO.class);
         dto.setDateCreated(this.dateFormat.format(entity.getDateCreated()));
-        dto.setDateExpired(this.dateFormat.format(entity.getDateExpired()));
+        dto.setDateTarget(this.dateFormat.format(entity.getDateTarget()));
         return dto;
     }
 
@@ -69,8 +68,8 @@ public class JobRequestMapper {
         JobRequestFullDTO dto = mapper.map(entity, JobRequestFullDTO.class);
         dto.setTotalCandidates(totalCandidates.get());
         dto.setDateCreated(this.dateFormat.format(entity.getDateCreated()));
-        dto.setDateExpired(this.dateFormat.format(entity.getDateExpired()));
-        dto.setTextualDate(DateUtil.getTextualDate(DateUtil.toLocalDate(entity.getDateExpired())));
+        dto.setDateTarget(this.dateFormat.format(entity.getDateTarget()));
+        dto.setTextualDate(DateUtil.getTextualDate(DateUtil.toLocalDate(entity.getDateTarget())));
 
         return dto;
     }

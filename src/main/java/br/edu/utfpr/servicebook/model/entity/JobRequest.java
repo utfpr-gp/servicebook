@@ -1,13 +1,11 @@
 package br.edu.utfpr.servicebook.model.entity;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.*;
 
-import br.edu.utfpr.servicebook.util.DateUtil;
 import lombok.*;
 
 @Data
@@ -56,9 +54,13 @@ public class JobRequest {
 	@Temporal(TemporalType.DATE)
 	private Date dateCreated;
 
+	/**
+	 * Data que o cliente deseja que o serviço seja realizado, mas não necessariamente será a data de realização.
+	 * Esta data será negociada com o profissional, o qual definirá a data oficial no JobContracted
+	 */
 	@Temporal(TemporalType.DATE)
 	@NonNull
-	private Date dateExpired;
+	private Date dateTarget;
 
 	private boolean clientConfirmation;
 	
@@ -77,7 +79,6 @@ public class JobRequest {
 	public void onPersist(){
 		final Date now = new Date();
 		this.dateCreated = now;
-		this.dateExpired = now;
 		this.status = Status.AVAILABLE;
 	}
 

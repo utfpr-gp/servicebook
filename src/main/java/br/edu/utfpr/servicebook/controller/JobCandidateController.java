@@ -4,6 +4,7 @@ import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.Company;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.JobCandidate;
+import br.edu.utfpr.servicebook.model.entity.JobContracted;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobCandidateMapper;
@@ -13,9 +14,12 @@ import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.CompanyService;
 import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobCandidateService;
+import br.edu.utfpr.servicebook.service.JobContractedService;
 import br.edu.utfpr.servicebook.service.JobRequestService;
 import br.edu.utfpr.servicebook.sse.EventSSE;
 import br.edu.utfpr.servicebook.sse.SSEService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,8 +39,13 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/candidaturas")
 public class JobCandidateController {
+    public static final Logger log = LoggerFactory.getLogger(JobCandidateController.class);
+
     @Autowired
     private JobCandidateService jobCandidateService;
+
+    @Autowired
+    private JobContractedService jobContractedService;
 
     @Autowired
     private JobRequestService jobRequestService;
@@ -86,9 +95,6 @@ public class JobCandidateController {
             return samePageView;
         }
 
-        JobCandidate jobCandidate = new JobCandidate(oJobRequest.get(), oindividual.get());
-        jobCandidateService.save(jobCandidate);
-
         JobRequestDetailsDTO jobFull = jobRequestMapper.jobRequestDetailsDTO(oJobRequest.get());
 
         //envia a notificação SSE
@@ -129,6 +135,7 @@ public class JobCandidateController {
 
     /**
      * Usuário cancela a candidatura a um serviço
+     * FIXME Não pode deletar o JobRequest, apenas a candidatura.
      * @param id
      * @param redirectAttributes
      * @return
@@ -155,52 +162,5 @@ public class JobCandidateController {
     }
 
 
-    @PostMapping("/contratacao/{id}")
-    @RolesAllowed({RoleType.USER})
-    public String confirmHired(
-            @PathVariable Long id,
-            JobCandidateMinDTO dto,
-            RedirectAttributes redirectAttributes
-    ) throws IOException, ParseException {
-        String currentUserEmail = authentication.getEmail();
 
-        Optional<Individual> oindividual = individualService.findByEmail(currentUserEmail);
-        if(!oindividual.isPresent()){
-            throw new EntityNotFoundException("O usuário não foi encontrado!");
-        }
-
-        Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(id, oindividual.get().getId());
-        if(!oJobCandidate.isPresent()) {
-            throw new EntityNotFoundException("Candidatura não encontrada!");
-        }
-
-        JobCandidate jobCandidate = oJobCandidate.get();
-        Optional<JobRequest> oJobRequest = jobRequestService.findById(jobCandidate.getJobRequest().getId());
-        if(!oJobRequest.isPresent()) {
-            throw new EntityNotFoundException("Pedido não encontrado!");
-        }
-
-        if (dto.getChosenByBudget().equals(true)) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            jobCandidate.setHiredDate(formatter.parse(dto.getHiredDate()));
-
-            jobCandidate.setChosenByBudget(dto.getChosenByBudget());
-            jobCandidateService.save(jobCandidate);
-
-            JobRequest jobRequest = oJobRequest.get();
-            jobRequest.setStatus(JobRequest.Status.TO_DO);
-            jobRequestService.save(jobRequest);
-        } else {
-            jobCandidate.setChosenByBudget(dto.getChosenByBudget());
-            jobCandidateService.save(jobCandidate);
-
-            JobRequest jobRequest = oJobRequest.get();
-            jobRequest.setStatus(JobRequest.Status.BUDGET);
-            jobRequestService.save(jobRequest);
-        }
-
-        redirectAttributes.addFlashAttribute("msg", "Pedido salvo com sucesso!");
-
-        return "redirect:/minha-conta/profissional/detalhes-servico/" + id;
-    }
 }

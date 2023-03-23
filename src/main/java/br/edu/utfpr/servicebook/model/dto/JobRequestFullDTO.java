@@ -15,7 +15,7 @@ public class JobRequestFullDTO implements Serializable {
     private ExpertiseMinDTO expertise;
     private String dateCreated;
     private ClientMinDTO individual;
-    private String dateExpired;
+    private String dateTarget;
     private Integer quantityCandidatorsMax;
     private String description;
     private Long totalCandidates;

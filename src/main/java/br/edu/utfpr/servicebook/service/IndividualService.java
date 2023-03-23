@@ -7,7 +7,9 @@ import br.edu.utfpr.servicebook.model.repository.CompanyRepository;
 import br.edu.utfpr.servicebook.model.repository.IndividualRepository;
 import br.edu.utfpr.servicebook.model.repository.ProfessionalExpertiseRepository;
 import br.edu.utfpr.servicebook.model.repository.UserRepository;
+import br.edu.utfpr.servicebook.security.IAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +37,9 @@ public class IndividualService {
 
     @Autowired
     private ExpertiseMapper expertiseMapper;
+
+    @Autowired
+    private IAuthentication authentication;
 
     public void save(Individual entity) {
         individualRepository.save(entity);
@@ -94,6 +99,34 @@ public class IndividualService {
     public void saveExpertisesIndividual(Individual individual, ProfessionalExpertise professionalExpertise) {
         individualRepository.save(individual);
         professionalExpertiseRepository.save(professionalExpertise);
+    }
+
+    /**
+     * Verifica se a requisição corrente é de um usuário autenticado.
+     * @return
+     */
+    public boolean isAuthenticated(){
+        Optional<Individual> oIndividual = findByEmail(authentication.getEmail());
+
+        if (!oIndividual.isPresent()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Retorna o usuário autenticado ou nulo.
+     * @return
+     */
+    public User getAuthenticated(){
+        Optional<Individual> oIndividual = findByEmail(authentication.getEmail());
+
+        if (oIndividual.isPresent()) {
+            return oIndividual.get();
+        }
+
+        return null;
     }
 
     @Transactional
