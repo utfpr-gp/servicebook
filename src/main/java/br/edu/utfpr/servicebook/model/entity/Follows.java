@@ -22,19 +22,20 @@ public class Follows {
 
 	@EmbeddedId
 	private FollowsPK id;
+
 	private Date date;
 
 	@ManyToOne
 	@MapsId("clientId")
 	@JoinColumn(name = "client_id")
-	private Individual client;
+	private User client;
 
 	@ManyToOne
 	@MapsId("professionalId")
 	@JoinColumn(name = "professional_id")
-	private Individual professional;
+	private User professional;
 
-	public Follows(Individual client, Individual professional) {
+	public Follows(User client, User professional) {
 		this.client = client;
 		this.professional = professional;
 		this.id = new FollowsPK(client.getId(), professional.getId());

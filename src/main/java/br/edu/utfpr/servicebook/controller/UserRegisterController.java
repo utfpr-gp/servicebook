@@ -6,7 +6,7 @@ import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.security.ProfileEnum;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.PhoneNumberVerificationService;
-import br.edu.utfpr.servicebook.util.WizardUtil;
+import br.edu.utfpr.servicebook.util.UserWizardUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +41,7 @@ import static br.edu.utfpr.servicebook.security.ProfileEnum.ROLE_COMPANY;
 public class UserRegisterController {
 
     @Autowired
-    private WizardUtil wizardUtil;
+    private UserWizardUtil userWizardUtil;
 
     @Autowired
     private IndividualService individualService;
@@ -149,14 +149,14 @@ public class UserRegisterController {
                     .map(s -> expertiseMapper.toDto(s))
                     .collect(Collectors.toList());
 
-            IndividualDTO individualDTO = (IndividualDTO) wizardUtil.getWizardState(httpSession, IndividualDTO.class, WizardUtil.KEY_WIZARD_INDIVIDUAL);
-            CompanyDTO companyDTO = (CompanyDTO) wizardUtil.getWizardState(httpSession, CompanyDTO.class, WizardUtil.KEY_WIZARD_COMPANY);
+            IndividualDTO individualDTO = (IndividualDTO) userWizardUtil.getWizardState(httpSession, IndividualDTO.class, UserWizardUtil.KEY_WIZARD_INDIVIDUAL);
+            CompanyDTO companyDTO = (CompanyDTO) userWizardUtil.getWizardState(httpSession, CompanyDTO.class, UserWizardUtil.KEY_WIZARD_COMPANY);
 
             model.addAttribute("individual", individualDTO);
             model.addAttribute("expertises", expertiseDTOs);
             model.addAttribute("companies", companyDTO);
 
-            ProfessionalExpertiseDTO professionalExpertiseDTO = (ProfessionalExpertiseDTO) wizardUtil.getWizardState(httpSession, ProfessionalExpertiseDTO.class, WizardUtil.KEY_EXPERTISES);
+            ProfessionalExpertiseDTO professionalExpertiseDTO = (ProfessionalExpertiseDTO) userWizardUtil.getWizardState(httpSession, ProfessionalExpertiseDTO.class, UserWizardUtil.KEY_EXPERTISES);
 
             List<Expertise> professionalExpertises = new ArrayList<>();
 
@@ -181,10 +181,10 @@ public class UserRegisterController {
      * Remove os dados do cadastro corrente da sessão a fim de permitir um novo cadastro.
      */
     private void resetSessionAttributes(HttpSession httpSession) {
-        httpSession.removeAttribute(WizardUtil.KEY_IS_REGISTER_COMPANY);
-        wizardUtil.removeWizardState(httpSession, WizardUtil.KEY_WIZARD_INDIVIDUAL);
-        wizardUtil.removeWizardState(httpSession, WizardUtil.KEY_EXPERTISES);
-        wizardUtil.removeWizardState(httpSession, WizardUtil.KEY_WIZARD_COMPANY);
+        httpSession.removeAttribute(UserWizardUtil.KEY_IS_REGISTER_COMPANY);
+        userWizardUtil.removeWizardState(httpSession, UserWizardUtil.KEY_WIZARD_INDIVIDUAL);
+        userWizardUtil.removeWizardState(httpSession, UserWizardUtil.KEY_EXPERTISES);
+        userWizardUtil.removeWizardState(httpSession, UserWizardUtil.KEY_WIZARD_COMPANY);
     }
 
     /**
@@ -214,8 +214,8 @@ public class UserRegisterController {
             return this.userRegistrationErrorForwarding("1", dto, model, errors);
         }
 
-        String email = dto.getEmail();
-        httpSession.setAttribute(WizardUtil.KEY_IS_REGISTER_COMPANY, false);
+        String email = dto.getEmail().trim();
+        httpSession.setAttribute(UserWizardUtil.KEY_IS_REGISTER_COMPANY, false);
 
         //verifica se o email já está cadastrado em uma conta existente
         Optional<User> oUser = userService.findByEmail(email);
@@ -249,9 +249,9 @@ public class UserRegisterController {
         quartzService.sendEmailToConfirmationCode(email, actualCode, tokenLink);
 
         IndividualDTO userSessionDTO = null;
-        userSessionDTO = (IndividualDTO) wizardUtil.getWizardState(httpSession, IndividualDTO.class, WizardUtil.KEY_WIZARD_INDIVIDUAL);
+        userSessionDTO = (IndividualDTO) userWizardUtil.getWizardState(httpSession, IndividualDTO.class, UserWizardUtil.KEY_WIZARD_INDIVIDUAL);
         userSessionDTO.setProfile(ProfileEnum.ROLE_USER);
-        userSessionDTO.setEmail(dto.getEmail());
+        userSessionDTO.setEmail(email);
 
         return "redirect:/cadastrar-se?passo=2";
     }
@@ -283,8 +283,8 @@ public class UserRegisterController {
             return this.userRegistrationErrorForwarding("1", dto, model, errors);
         }
 
-        String email = dto.getEmail();
-        httpSession.setAttribute(WizardUtil.KEY_IS_REGISTER_COMPANY, true);
+        String email = dto.getEmail().trim();
+        httpSession.setAttribute(UserWizardUtil.KEY_IS_REGISTER_COMPANY, true);
 
         //verifica se o email já está cadastrado em uma conta existente
         Optional<User> oUser = userService.findByEmail(email);
@@ -321,9 +321,9 @@ public class UserRegisterController {
 
         //realiza o processamento particular de acordo com o tipo do usuário
         CompanyDTO companyDTO = (CompanyDTO) dto;
-        userSessionDTO = (CompanyDTO) wizardUtil.getWizardState(httpSession, CompanyDTO.class, WizardUtil.KEY_WIZARD_COMPANY);
+        userSessionDTO = (CompanyDTO) userWizardUtil.getWizardState(httpSession, CompanyDTO.class, UserWizardUtil.KEY_WIZARD_COMPANY);
         userSessionDTO.setProfile(ROLE_COMPANY);
-        userSessionDTO.setEmail(dto.getEmail());
+        userSessionDTO.setEmail(email);
 
         return "redirect:/cadastrar-se?passo=2";
     }
@@ -351,7 +351,7 @@ public class UserRegisterController {
             return this.userCodeErrorForwarding("2", dto, model, errors);
         }
 
-        UserDTO userSessionDTO = wizardUtil.getUserDTO(httpSession);
+        UserDTO userSessionDTO = userWizardUtil.getUserDTO(httpSession);
 
         Optional<UserCode> oUserCode = userCodeService.findByEmail(userSessionDTO.getEmail());
 
@@ -408,7 +408,7 @@ public class UserRegisterController {
             return this.userRegistrationErrorForwarding("3", dto, model, errors);
         }
 
-        UserDTO userSessionDTO = wizardUtil.getUserDTO(httpSession);
+        UserDTO userSessionDTO = userWizardUtil.getUserDTO(httpSession);
         userSessionDTO.setPassword(dto.getPassword());
         userSessionDTO.setRepassword(dto.getRepassword());
 
@@ -443,7 +443,7 @@ public class UserRegisterController {
         phoneNumberVerificationService.sendSMSToVerification();
 
         //salva o telefone na sessão
-        UserDTO userSessionDTO = wizardUtil.getUserDTO(httpSession);
+        UserDTO userSessionDTO = userWizardUtil.getUserDTO(httpSession);
         userSessionDTO.setPhoneNumber(dto.getPhoneNumber());
 
         return "redirect:/cadastrar-se?passo=5";
@@ -472,7 +472,7 @@ public class UserRegisterController {
             return this.userSmsErrorForwarding("5", dto, model, errors);
         }
 
-        UserDTO userSessionDTO = wizardUtil.getUserDTO(httpSession);
+        UserDTO userSessionDTO = userWizardUtil.getUserDTO(httpSession);
         String phoneNumber = userSessionDTO.getPhoneNumber();
 
         PhoneNumberVerificationService phoneNumberVerificationService = new PhoneNumberVerificationService(twilioAccountSid, twilioAuthToken, twilioVerifyServiceSid, phoneNumber);
@@ -550,7 +550,7 @@ public class UserRegisterController {
         }
 
         //salva na sessão
-        IndividualDTO userSessionDTO = (IndividualDTO) wizardUtil.getWizardState(httpSession, IndividualDTO.class, WizardUtil.KEY_WIZARD_INDIVIDUAL);
+        IndividualDTO userSessionDTO = (IndividualDTO) userWizardUtil.getWizardState(httpSession, IndividualDTO.class, UserWizardUtil.KEY_WIZARD_INDIVIDUAL);
         userSessionDTO.setName(dto.getName());
         userSessionDTO.setCpf(dto.getCpf());
         userSessionDTO.setProfileVerified(true);
@@ -585,9 +585,9 @@ public class UserRegisterController {
         }
 
         //salva na sessão
-        CompanyDTO companySessionDTO = (CompanyDTO) wizardUtil.getWizardState(httpSession, CompanyDTO.class,WizardUtil.KEY_WIZARD_COMPANY);
-        companySessionDTO.setName(dto.getName());
-        companySessionDTO.setCnpj(dto.getCnpj());
+        CompanyDTO companySessionDTO = (CompanyDTO) userWizardUtil.getWizardState(httpSession, CompanyDTO.class, UserWizardUtil.KEY_WIZARD_COMPANY);
+        companySessionDTO.setName(dto.getName().trim());
+        companySessionDTO.setCnpj(dto.getCnpj().trim());
         companySessionDTO.setProfileVerified(true);
 
         return "redirect:/cadastrar-se?passo=7";
@@ -629,13 +629,13 @@ public class UserRegisterController {
         CityMidDTO cityMidDTO = cityMapper.toMidDto(oCity.get());
 
         AddressFullDTO addressFullDTO = new AddressFullDTO();
-        addressFullDTO.setStreet(dto.getStreet());
-        addressFullDTO.setNumber(dto.getNumber());
-        addressFullDTO.setPostalCode(dto.getPostalCode());
-        addressFullDTO.setNeighborhood(dto.getNeighborhood());
+        addressFullDTO.setStreet(dto.getStreet().trim());
+        addressFullDTO.setNumber(dto.getNumber().trim());
+        addressFullDTO.setPostalCode(dto.getPostalCode().trim());
+        addressFullDTO.setNeighborhood(dto.getNeighborhood().trim());
         addressFullDTO.setCity(cityMidDTO);
 
-        UserDTO userSessionDTO = wizardUtil.getUserDTO(httpSession);
+        UserDTO userSessionDTO = userWizardUtil.getUserDTO(httpSession);
         userSessionDTO.setAddress(addressFullDTO);
 
         return "redirect:/cadastrar-se?passo=8";
@@ -651,11 +651,11 @@ public class UserRegisterController {
             IndividualDTO individualDTO
     )throws Exception{
 
-        UserDTO userSessionDTO = wizardUtil.getUserDTO(httpSession);
+        UserDTO userSessionDTO = userWizardUtil.getUserDTO(httpSession);
         List<Integer> ids = dto.getIds();
 
         if(ids != null){
-            ProfessionalExpertiseDTO professionalExpertiseSessionDTO = (ProfessionalExpertiseDTO) wizardUtil.getWizardState(httpSession, ProfessionalExpertiseDTO.class, WizardUtil.KEY_EXPERTISES);
+            ProfessionalExpertiseDTO professionalExpertiseSessionDTO = (ProfessionalExpertiseDTO) userWizardUtil.getWizardState(httpSession, ProfessionalExpertiseDTO.class, UserWizardUtil.KEY_EXPERTISES);
             for (int id : ids) {
                 Optional<Expertise> oExpertise =  expertiseService.findById((Long.valueOf(id)));
                 if (!oExpertise.isPresent()) {
@@ -679,11 +679,11 @@ public class UserRegisterController {
             SessionStatus status
     )throws Exception {
 
-        boolean isCompany = (Boolean) httpSession.getAttribute(WizardUtil.KEY_IS_REGISTER_COMPANY);
+        boolean isCompany = (Boolean) httpSession.getAttribute(UserWizardUtil.KEY_IS_REGISTER_COMPANY);
         String email = null;
 
         if(isCompany){
-            CompanyDTO userSessionDTO = (CompanyDTO) wizardUtil.getWizardState(httpSession, CompanyDTO.class, WizardUtil.KEY_WIZARD_COMPANY);
+            CompanyDTO userSessionDTO = (CompanyDTO) userWizardUtil.getWizardState(httpSession, CompanyDTO.class, UserWizardUtil.KEY_WIZARD_COMPANY);
 
             validator.validate(userSessionDTO, errors, new Class[]{
                     IndividualDTO.RequestUserEmailInfoGroupValidation.class,
@@ -702,7 +702,7 @@ public class UserRegisterController {
             companyService.save(company);
         }
         else{
-            IndividualDTO userSessionDTO = (IndividualDTO) wizardUtil.getWizardState(httpSession, IndividualDTO.class, WizardUtil.KEY_WIZARD_INDIVIDUAL);
+            IndividualDTO userSessionDTO = (IndividualDTO) userWizardUtil.getWizardState(httpSession, IndividualDTO.class, UserWizardUtil.KEY_WIZARD_INDIVIDUAL);
 
             validator.validate(userSessionDTO, errors, new Class[]{
                     IndividualDTO.RequestUserEmailInfoGroupValidation.class,
@@ -728,7 +728,7 @@ public class UserRegisterController {
         }
 
         //faz a busca pelas especialidades informadas e relaciona ao profissional
-        ProfessionalExpertiseDTO professionalExpertiseDTO = (ProfessionalExpertiseDTO) wizardUtil.getWizardState(httpSession, ProfessionalExpertiseDTO.class, WizardUtil.KEY_EXPERTISES);
+        ProfessionalExpertiseDTO professionalExpertiseDTO = (ProfessionalExpertiseDTO) userWizardUtil.getWizardState(httpSession, ProfessionalExpertiseDTO.class, UserWizardUtil.KEY_EXPERTISES);
         if (professionalExpertiseDTO.getIds() != null) {
             for (int id : professionalExpertiseDTO.getIds()) {
                 Optional<Expertise> e = expertiseService.findById((Long.valueOf(id)));

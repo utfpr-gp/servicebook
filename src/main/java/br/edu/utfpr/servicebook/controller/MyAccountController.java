@@ -8,8 +8,8 @@ import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
+import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +63,7 @@ public class MyAccountController {
     private IAuthentication authentication;
 
     @Autowired
-    private SidePanelUtil sidePanelUtil;
+    private TemplateUtil templateUtil;
 
     @GetMapping
     public String home(HttpServletRequest request) {
@@ -94,7 +94,7 @@ public class MyAccountController {
 
         CityMinDTO cityMinDTO = cityMapper.toMinDto(oCity.get());
 
-        SidePanelIndividualDTO individualInfo = sidePanelUtil.getIndividualInfo(oIndividual.get());
+        UserTemplateInfo individualInfo = templateUtil.getUserInfo(oIndividual.get());
 
         ModelAndView mv = new ModelAndView("professional/edit-account");
         mv.addObject("professional", individualDTO);

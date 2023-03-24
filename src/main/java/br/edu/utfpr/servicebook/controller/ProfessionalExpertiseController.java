@@ -15,9 +15,9 @@ import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobContractedService;
 import br.edu.utfpr.servicebook.service.ProfessionalExpertiseService;
 
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelStatisticsDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
+import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateStatisticDTO;
+import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +65,7 @@ public class ProfessionalExpertiseController {
     private ProfessionalExpertiseMapper professionalExpertiseMapper;
 
     @Autowired
-    private SidePanelUtil sidePanelUtil;
+    private TemplateUtil templateUtil;
 
     @Autowired
     private IAuthentication authentication;
@@ -87,11 +87,11 @@ public class ProfessionalExpertiseController {
 
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(professional);
 
-        SidePanelIndividualDTO sidePanelIndividualDTO = sidePanelUtil.getIndividualInfo(professionalMinDTO);
-        SidePanelStatisticsDTO sidePanelStatisticDTO = sidePanelUtil.getProfessionalStatisticInfo(professional, id.get());
+        UserTemplateInfo userTemplateInfo = templateUtil.getUserInfo(professionalMinDTO);
+        UserTemplateStatisticDTO sidePanelStatisticDTO = templateUtil.getProfessionalStatisticInfo(professional, id.get());
 
         mv.addObject("statisticInfo", sidePanelStatisticDTO);
-        mv.addObject("individualInfo", sidePanelIndividualDTO);
+        mv.addObject("individualInfo", userTemplateInfo);
 
         mv.addObject("id", id.orElse(0L));
 
@@ -166,14 +166,14 @@ public class ProfessionalExpertiseController {
     @GetMapping("/estatistica/{id}")
     @ResponseBody
     @RolesAllowed({RoleType.USER})
-    public SidePanelStatisticsDTO getExpertiseData(@PathVariable("id") Long expertiseId) throws Exception {
+    public UserTemplateStatisticDTO getExpertiseData(@PathVariable("id") Long expertiseId) throws Exception {
         Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        return sidePanelUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId);
+        return templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId);
     }
 
     /**

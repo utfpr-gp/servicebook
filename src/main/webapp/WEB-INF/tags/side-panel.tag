@@ -1,7 +1,7 @@
 <%@tag description="Template para painel lateral" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@attribute name="individualInfo" type="br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO" %>
-<%@attribute name="statisticProfessionalInfo" type="br.edu.utfpr.servicebook.util.sidePanel.SidePanelStatisticsDTO" %>
+<%@attribute name="individualInfo" type="br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo" %>
+<%@attribute name="statisticProfessionalInfo" type="br.edu.utfpr.servicebook.util.sidePanel.UserTemplateStatisticDTO" %>
 <%@attribute name="companyInfo" type="br.edu.utfpr.servicebook.util.sidePanel.SidePanelCompanyDTO" %>
 <%@attribute name="followdto" type="br.edu.utfpr.servicebook.follower.FollowsDTO" %>
 

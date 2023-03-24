@@ -17,12 +17,8 @@ import java.util.Optional;
 public class CompanyMapper {
     @Autowired
     private ModelMapper mapper;
-    public CompanyDTO toDto(Company entity) {
-        CompanyDTO dto = mapper.map(entity, CompanyDTO.class);
-        return dto;
-    }
 
-    public CompanyDTO toDto(Optional entity) {
+    public CompanyDTO toDto(Company entity) {
         CompanyDTO dto = mapper.map(entity, CompanyDTO.class);
         return dto;
     }

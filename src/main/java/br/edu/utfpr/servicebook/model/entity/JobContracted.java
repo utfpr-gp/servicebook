@@ -50,10 +50,13 @@ public class JobContracted {
 	@JoinColumn(name = "job_request")
 	private JobRequest jobRequest;
 
+	/**
+	 * Profissional indivíduo ou empresa contratado.
+	 */
 	@NonNull
 	@OneToOne
 	@JoinColumn(name = "professional")
-	private Individual individual;
+	private User user;
 
 	@PrePersist
 	public void onSave() {

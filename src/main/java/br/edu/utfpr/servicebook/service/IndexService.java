@@ -64,17 +64,16 @@ public class IndexService {
 
         JobRequest jb1 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, new Date());
         jb1.setExpertise(expertise1);
-        jb1.setIndividual(client1);
+        jb1.setUser(client1);
 
         JobRequest jb2 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, new Date());
         jb1.setExpertise(expertise1);
-        jb1.setIndividual(client2);
+        jb1.setUser(client2);
 
         jobRequestRepository.save(jb1);
 
         JobCandidate jobCandidate = new JobCandidate(jb1, individual1);
         jobCandidateRepository.save(jobCandidate);
-
     }
 
 }

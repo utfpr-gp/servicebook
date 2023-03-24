@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpSession;
 
 @Component
-public class WizardUtil {
+public class UserWizardUtil {
 
     public static final String KEY_WIZARD_INDIVIDUAL = "KEY_WIZARD_INDIVIDUAL";
 
@@ -71,14 +71,14 @@ public class WizardUtil {
     }
 
     public UserDTO getUserDTO(HttpSession httpSession){
-        boolean isCompany = (boolean)httpSession.getAttribute(WizardUtil.KEY_IS_REGISTER_COMPANY);
+        boolean isCompany = (boolean)httpSession.getAttribute(UserWizardUtil.KEY_IS_REGISTER_COMPANY);
 
         UserDTO userSessionDTO = null;
         if(!isCompany){
-            userSessionDTO = (IndividualDTO) this.getWizardState(httpSession, IndividualDTO.class, WizardUtil.KEY_WIZARD_INDIVIDUAL);
+            userSessionDTO = (IndividualDTO) this.getWizardState(httpSession, IndividualDTO.class, UserWizardUtil.KEY_WIZARD_INDIVIDUAL);
         }
         else{
-            userSessionDTO = (CompanyDTO) this.getWizardState(httpSession, CompanyDTO.class, WizardUtil.KEY_WIZARD_COMPANY);
+            userSessionDTO = (CompanyDTO) this.getWizardState(httpSession, CompanyDTO.class, UserWizardUtil.KEY_WIZARD_COMPANY);
         }
         return userSessionDTO;
     }

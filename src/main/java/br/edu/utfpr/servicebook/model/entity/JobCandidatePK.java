@@ -21,5 +21,6 @@ import lombok.*;
 public class JobCandidatePK implements Serializable {
 
 	Long jobRequestId;
+
 	Long professionalId;
 }

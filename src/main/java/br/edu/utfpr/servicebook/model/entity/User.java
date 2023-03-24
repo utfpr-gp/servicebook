@@ -59,10 +59,10 @@ public class User implements Serializable {
 	@OneToOne(cascade = CascadeType.PERSIST)
 	protected Address address;
 
-	@OneToMany(mappedBy = "individual")
+	@OneToMany(mappedBy = "user")
 	protected Set<JobRequest> jobRequest = new HashSet<>();
 
-	@OneToMany(mappedBy = "individual")
+	@OneToMany(mappedBy = "user")
 	Set<JobCandidate> candidatures;
 
 	protected String description;

@@ -19,42 +19,42 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
      * @param id
      * @return
      */
-    List<JobCandidate> findByIndividual_Id(Long id);
+    List<JobCandidate> findByUser_Id(Long id);
 
     /**
      * Retorna uma lista de candidaturas de um dado profissional
-     * @param individual
+     * @param user
      * @return
      */
-    List<JobCandidate> findByIndividual(Individual individual);
+    List<JobCandidate> findByUser(User user);
 
     /**
      * Retorna uma lista de candidaturas de um profissional que foram escolhidas para orçamento
-     * @param individual
+     * @param user
      * @param chosen
      * @return
      */
-    List<JobCandidate> findByIndividualAndChosenByBudget(Individual individual, boolean chosen);
+    List<JobCandidate> findByUserAndChosenByBudget(User user, boolean chosen);
 
     /**
      * Retorna uma lista de candidaturas de um profissional para requisições de um certo estado.
      * @param status
-     * @param individual
+     * @param user
      * @return
      */
-    List<JobCandidate> findByJobRequest_StatusAndIndividual(JobRequest.Status status, Individual individual);
+    List<JobCandidate> findByJobRequest_StatusAndUser(JobRequest.Status status, User user);
 
     /**
      * Retorna uma lista de candidaturas de um profissional para requisições de um certo estado.
      * Retorna com paginação.
      *
      * @param status
-     * @param individual
+     * @param user
      * @param pageable
      *
      * @returnPage<JobCandidate>
      */
-    Page<JobCandidate> findByJobRequest_StatusAndIndividual(JobRequest.Status status, Individual individual, Pageable pageable);
+    Page<JobCandidate> findByJobRequest_StatusAndUser(JobRequest.Status status, User user, Pageable pageable);
 
     /**
      * Retorna uma lista de candidaturas de um profissional para requisições de um certo estado.
@@ -62,12 +62,12 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
      *
      * @param status
      * @param expertise
-     * @param individual
+     * @param user
      * @param pageable
      *
      * @returnPage<JobCandidate>
      */
-    Page<JobCandidate> findByJobRequest_StatusAndJobRequest_ExpertiseAndIndividual(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable);
+    Page<JobCandidate> findByJobRequest_StatusAndJobRequest_ExpertiseAndUser(JobRequest.Status status, Expertise expertise, User user, Pageable pageable);
 
     Optional<Long> countByJobRequest(JobRequest jobRequest);
 
@@ -83,15 +83,15 @@ public interface JobCandidateRepository extends JpaRepository<JobCandidate, JobC
      */
     List<JobCandidate> findByJobRequestAndChosenByBudget(JobRequest jobRequest, boolean chosenByBudget);
 
-    Page<JobCandidate> findByJobRequest_StatusAndJobRequest_Individual(JobRequest.Status status, Individual individual, Pageable pageable);
+    Page<JobCandidate> findByJobRequest_StatusAndJobRequest_User(JobRequest.Status status, User user, Pageable pageable);
 
     @Transactional
     @Modifying
-    @Query("delete from JobCandidate j where j.jobRequest.id = ?1 and j.individual.id = ?2")
-    void deleteById(Long jobId, Long individualId);
+    @Query("delete from JobCandidate j where j.jobRequest.id = ?1 and j.user.id = ?2")
+    void deleteById(Long jobId, Long userId);
 
-    @Query("select j from JobCandidate j where j.jobRequest.id = ?1 and j.individual.id = ?2")
-    Optional<JobCandidate> findByJobIdAndIndividualId(Long jobId, Long individualId);
+    @Query("select j from JobCandidate j where j.jobRequest.id = ?1 and j.user.id = ?2")
+    Optional<JobCandidate> findByJobIdAndUserId(Long jobId, Long userId);
 
 
 }

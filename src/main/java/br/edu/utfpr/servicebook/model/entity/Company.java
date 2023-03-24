@@ -10,8 +10,8 @@ import lombok.*;
 @Table(name = "companies")
 @Entity
 public class Company extends User	{
-
 	private static final long serialVersionUID = 1L;
+
 	private String cnpj;
 
 	public Company(String name, String email, String password, String phoneNumber, String cnpj){

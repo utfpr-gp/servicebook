@@ -14,8 +14,8 @@ import br.edu.utfpr.servicebook.sse.EventSseMapper;
 import br.edu.utfpr.servicebook.sse.SSEService;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
+import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +90,7 @@ public class ClientController {
     private FollowsService followsService;
 
     @Autowired
-    private SidePanelUtil sidePanelUtil;
+    private TemplateUtil templateUtil;
 
     @Autowired
     private PaginationUtil paginationUtil;
@@ -119,7 +119,7 @@ public class ClientController {
         clientDTO.setFollowingAmount(oClientFollowingAmount.get());
 
         //cria o dto para passar ao painel lateral
-        SidePanelIndividualDTO sidePanelIndividualDTO = sidePanelUtil.getIndividualInfo(clientDTO);
+        UserTemplateInfo userTemplateInfo = templateUtil.getUserInfo(clientDTO);
 
         List<JobRequest> jobRequests = jobRequestService.findByClientOrderByDateCreatedDesc(oClient.get());
 
@@ -135,7 +135,7 @@ public class ClientController {
                 .collect(Collectors.toList());
 
         ModelAndView mv = new ModelAndView("client/my-requests");
-        mv.addObject("user", sidePanelIndividualDTO);
+        mv.addObject("user", userTemplateInfo);
         mv.addObject("jobRequests", jobRequestDTOs);
         mv.addObject("eventsse", eventSseDTOs);
 
@@ -165,7 +165,7 @@ public class ClientController {
             throw new EntityNotFoundException("Solicitação não foi encontrada pelo id informado.");
         }
 
-        Long jobRequestClientId = jobRequest.get().getIndividual().getId();
+        Long jobRequestClientId = jobRequest.get().getUser().getId();
         Long clientId = individual.get().getId();
 
         if (jobRequestClientId != clientId) {
@@ -212,8 +212,8 @@ public class ClientController {
 
         List<JobCandidateDTO> jobCandidatesDTOs = jobCandidates.stream()
                 .map(candidate -> {
-                    Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(candidate.getIndividual());
-                    candidate.getIndividual().setFollowsAmount(oProfessionalFollowingAmount.get());
+                    Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(candidate.getUser());
+                    candidate.getUser().setFollowsAmount(oProfessionalFollowingAmount.get());
                     return jobCandidateMapper.toDto(candidate);
                 })
                 .collect(Collectors.toList());
@@ -607,7 +607,7 @@ public class ClientController {
 
         JobRequest jobRequest = oJobRequest.get();
 
-        Long jobRequestClientId = jobRequest.getIndividual().getId();
+        Long jobRequestClientId = jobRequest.getUser().getId();
         Long clientId = oClient.get().getId();
 
         if (jobRequestClientId != clientId) {
@@ -625,7 +625,7 @@ public class ClientController {
         return "redirect:/minha-conta/meus-pedidos?tab=paraOrcamento";
     }
 
-    private SidePanelIndividualDTO getSidePanelUser() throws Exception {
+    private UserTemplateInfo getSidePanelUser() throws Exception {
         Optional<Individual> client = (individualService.findByEmail(authentication.getEmail()));
 
         if (!client.isPresent()) {
@@ -633,7 +633,7 @@ public class ClientController {
         }
         IndividualDTO individualDTO = individualMapper.toDto(client.get());
 
-        return sidePanelUtil.getIndividualInfo(individualDTO);
+        return templateUtil.getUserInfo(individualDTO);
     }
 
     /**
@@ -664,7 +664,7 @@ public class ClientController {
         //verifica se o usuário logado é o dono do dado
         User user = individualService.getAuthenticated();
 
-        if(jobRequest.getIndividual().getId() != user.getId()){
+        if(jobRequest.getUser().getId() != user.getId()){
             throw new InvalidParamsException("O usuário não tem permissão de alterar este dado!");
         }
 
@@ -715,7 +715,7 @@ public class ClientController {
         JobRequest jobRequest = oJobRequest.get();
 
         //verifica se o usuário é realmente o dono do anúncio
-        User user = jobRequest.getIndividual();
+        User user = jobRequest.getUser();
 
         Optional<Individual> oClient = individualService.findByEmail(authentication.getEmail());
 

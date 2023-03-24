@@ -3,13 +3,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Optional;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SidePanelIndividualDTO {
-
+public class UserTemplateInfo {
     private Long id;
     private String name;
     private String description;

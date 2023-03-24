@@ -1,11 +1,12 @@
 package br.edu.utfpr.servicebook.util.sidePanel;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
-import br.edu.utfpr.servicebook.model.dto.IndividualDTO;
 import br.edu.utfpr.servicebook.model.dto.ProfessionalDTO;
+import br.edu.utfpr.servicebook.model.dto.UserDTO;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
+import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.model.mapper.ProfessionalMapper;
 import br.edu.utfpr.servicebook.service.ExpertiseService;
 import br.edu.utfpr.servicebook.service.JobContractedService;
@@ -19,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SidePanelUtil {
+public class TemplateUtil {
 
     @Autowired
     private ExpertiseService expertiseService;
@@ -38,12 +39,12 @@ public class SidePanelUtil {
      * @param entity
      * @return
      */
-    public SidePanelIndividualDTO getIndividualInfo(IndividualDTO entity){
-        return new SidePanelIndividualDTO(entity.getId(), entity.getName(), entity.getDescription(), entity.getRating(), entity.getProfilePicture(), entity.isPhoneVerified(), entity.isEmailVerified(), entity.isProfileVerified(), entity.getFollowingAmount());
+    public UserTemplateInfo getUserInfo(UserDTO entity){
+        return new UserTemplateInfo(entity.getId(), entity.getName(), entity.getDescription(), entity.getRating(), entity.getProfilePicture(), entity.isPhoneVerified(), entity.isEmailVerified(), entity.isProfileVerified(), entity.getFollowingAmount());
     }
 
-    public SidePanelIndividualDTO getIndividualInfo(Individual entity){
-        return new SidePanelIndividualDTO(entity.getId(), entity.getName(), entity.getDescription(), entity.getRating(), entity.getProfilePicture(), entity.isPhoneVerified(), entity.isEmailVerified(), entity.isProfileVerified(), 0L);
+    public UserTemplateInfo getUserInfo(User entity){
+        return new UserTemplateInfo(entity.getId(), entity.getName(), entity.getDescription(), entity.getRating(), entity.getProfilePicture(), entity.isPhoneVerified(), entity.isEmailVerified(), entity.isProfileVerified(), 0L);
     }
 
     /**
@@ -52,12 +53,12 @@ public class SidePanelUtil {
      * @param expertiseId
      * @return
      */
-    public SidePanelStatisticsDTO getProfessionalStatisticInfo(Individual oProfessional, Long expertiseId) {
+    public UserTemplateStatisticDTO getProfessionalStatisticInfo(User oProfessional, Long expertiseId) {
         
         if (expertiseId == 0L) {
             ProfessionalDTO professional = professionalMapper.toResponseDto(oProfessional);
             
-            return new SidePanelStatisticsDTO(
+            return new UserTemplateStatisticDTO(
                 jobContractedService.countByProfessional(oProfessional).orElse(0L),
                 jobContractedService.countRatingByProfessional(oProfessional).orElse(0L),
                 jobContractedService.countCommentsByProfessional(oProfessional).orElse(0L),
@@ -90,7 +91,7 @@ public class SidePanelUtil {
         Long totalCommentsByExpertise = jobContractedService.countCommentsByProfessionalAndJobRequest_Expertise(
             oProfessional, oExpertise.get()).orElse(0L);
 
-        return new SidePanelStatisticsDTO(
+        return new UserTemplateStatisticDTO(
             totalJobsByExpertise,
             totalRatingsByExpertise,
             totalCommentsByExpertise,

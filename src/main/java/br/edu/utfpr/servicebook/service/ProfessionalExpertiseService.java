@@ -1,9 +1,6 @@
 package br.edu.utfpr.servicebook.service;
 
-import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
-import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertisePK;
+import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.repository.ProfessionalExpertiseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,11 +18,11 @@ public class ProfessionalExpertiseService {
         return this.professionalExpertiseRepository.selectRatingByProfessionalAndExpertise(professional_id, expertise_id);
     }
 
-    public Optional<ProfessionalExpertise> findByProfessionalAndExpertise(Individual individual, Expertise expertise) {
+    public Optional<ProfessionalExpertise> findByProfessionalAndExpertise(User individual, Expertise expertise) {
         return this.professionalExpertiseRepository.findByProfessionalAndExpertise(individual, expertise);
     }
 
-    public List<ProfessionalExpertise> findByProfessional(Individual individual) {
+    public List<ProfessionalExpertise> findByProfessional(User individual) {
         return this.professionalExpertiseRepository.findByProfessional(individual);
     }
 
