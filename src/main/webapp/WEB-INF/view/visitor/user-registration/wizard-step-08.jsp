@@ -39,7 +39,7 @@
                                 <c:otherwise>
                                     <div class="col s12">
                                         <div class="row center expertises">
-                                            <c:forEach var="professionalExpertises" items="${professionalExpertises}">
+                                            <c:forEach var="professionalExpertise" items="${professionalExpertises}">
                                                 <div class="col s12 m5 offset-m1 card-expertise-list row">
                                                     <div class="col s2 delete-exerpertise expertise-icon">
                                                         <i class="material-icons">work</i>
@@ -47,7 +47,7 @@
                                                     <div class="col s8">
                                                         <p class="center">
                                                             <strong>
-                                                                    ${professionalExpertises.name}
+                                                                    ${professionalExpertise.name}
                                                             </strong>
                                                         </p>
                                                     </div>

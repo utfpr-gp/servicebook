@@ -23,9 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.annotation.security.PermitAll;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static br.edu.utfpr.servicebook.security.ProfileEnum.ROLE_COMPANY;
@@ -161,7 +159,7 @@ public class UserRegisterController {
             List<Expertise> professionalExpertises = new ArrayList<>();
 
             if(professionalExpertiseDTO.getIds() != null){
-                for (int id : professionalExpertiseDTO.getIds()) {
+                for (Integer id : professionalExpertiseDTO.getIds()) {
                     Optional<Expertise> oExpertises =  expertiseService.findById((Long.valueOf(id)));
                     if (!oExpertises.isPresent()) {
                         throw new Exception("Não existe essa especialidade!");
@@ -647,16 +645,15 @@ public class UserRegisterController {
             HttpSession httpSession,
             ProfessionalExpertiseDTO dto,
             RedirectAttributes redirectAttributes,
-            Model model,
-            IndividualDTO individualDTO
+            Model model
     )throws Exception{
 
         UserDTO userSessionDTO = userWizardUtil.getUserDTO(httpSession);
-        List<Integer> ids = dto.getIds();
+        Set<Integer> ids = dto.getIds();
 
         if(ids != null){
             ProfessionalExpertiseDTO professionalExpertiseSessionDTO = (ProfessionalExpertiseDTO) userWizardUtil.getWizardState(httpSession, ProfessionalExpertiseDTO.class, UserWizardUtil.KEY_EXPERTISES);
-            for (int id : ids) {
+            for (Integer id : ids) {
                 Optional<Expertise> oExpertise =  expertiseService.findById((Long.valueOf(id)));
                 if (!oExpertise.isPresent()) {
                     throw new Exception("Não existe essa especialidade!");
@@ -730,7 +727,7 @@ public class UserRegisterController {
         //faz a busca pelas especialidades informadas e relaciona ao profissional
         ProfessionalExpertiseDTO professionalExpertiseDTO = (ProfessionalExpertiseDTO) userWizardUtil.getWizardState(httpSession, ProfessionalExpertiseDTO.class, UserWizardUtil.KEY_EXPERTISES);
         if (professionalExpertiseDTO.getIds() != null) {
-            for (int id : professionalExpertiseDTO.getIds()) {
+            for (Integer id : professionalExpertiseDTO.getIds()) {
                 Optional<Expertise> e = expertiseService.findById((Long.valueOf(id)));
                 if (!e.isPresent()) {
                     throw new Exception("Não existe essa especialidade!");
