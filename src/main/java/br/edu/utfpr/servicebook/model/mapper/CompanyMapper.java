@@ -1,9 +1,6 @@
 package br.edu.utfpr.servicebook.model.mapper;
 
-import br.edu.utfpr.servicebook.model.dto.CompanyDTO;
-import br.edu.utfpr.servicebook.model.dto.CompanyMinDTO;
-import br.edu.utfpr.servicebook.model.dto.IndividualDTO;
-import br.edu.utfpr.servicebook.model.dto.UserDTO;
+import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.Company;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.User;
@@ -11,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -32,6 +30,9 @@ public class CompanyMapper {
         dto.setId(dto.getId());
         dto.setProfile(dto.getProfile());
         dto.setCnpj(dto.getCnpj());
+        dto.setDescription(dto.getDescription());
+        dto.setRating(dto.getRating());
+        dto.setDenounceAmount(dto.getDenounceAmount());
         return dto;
     }
 
@@ -44,5 +45,9 @@ public class CompanyMapper {
         CompanyMinDTO dto = mapper.map(entity, CompanyMinDTO.class);
         return dto;
     }
-
+    public ProfessionalSearchItemDTO toSearchItemDto(Company entity, List<ExpertiseDTO> expertises){
+        ProfessionalSearchItemDTO dto = mapper.map(entity, ProfessionalSearchItemDTO.class);
+        dto.setExpertises(expertises);
+        return dto;
+    }
 }

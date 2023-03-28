@@ -4,6 +4,7 @@ import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.CompanyDTO;
 import br.edu.utfpr.servicebook.model.dto.IndividualDTO;
 import br.edu.utfpr.servicebook.model.dto.ProfessionalDTO;
+import br.edu.utfpr.servicebook.model.dto.UserDTO;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.CompanyMapper;
 import br.edu.utfpr.servicebook.model.mapper.ProfessionalMapper;
@@ -52,8 +53,17 @@ public class SidePanelUtil {
         return new SidePanelIndividualDTO(entity.getId(), entity.getName(), entity.getDescription(), entity.getRating(), entity.getProfilePicture(), entity.isPhoneVerified(), entity.isEmailVerified(), entity.isProfileVerified(), 0L);
     }
 
+
+    public SidePanelUserDTO getUserInfo(UserDTO entity){
+        return new SidePanelUserDTO(entity.getId(), entity.getName(), entity.getDescription(), entity.getRating(), entity.getProfilePicture(), entity.isPhoneVerified(), entity.isEmailVerified(), entity.isProfileVerified(), entity.getFollowingAmount());
+    }
+
+    public SidePanelUserDTO getUserInfo(User entity){
+        return new SidePanelUserDTO(entity.getId(), entity.getName(), entity.getDescription(), entity.getRating(), entity.getProfilePicture(), entity.isPhoneVerified(), entity.isEmailVerified(), entity.isProfileVerified(), 0L);
+    }
+
     public SidePanelCompanyDTO getCompanyInfo(CompanyDTO entity){
-        return new SidePanelCompanyDTO(entity.getId(), entity.getName(), entity.getDescription(), entity.getRating(), entity.getProfilePicture(), entity.isPhoneVerified(), entity.isEmailVerified(), entity.isProfileVerified(), 0L);
+        return new SidePanelCompanyDTO(entity.getId(), entity.getName(), entity.getDescription(), entity.getRating(), entity.getProfilePicture(), entity.isPhoneVerified(), entity.isEmailVerified(), entity.isProfileVerified(), entity.getFollowingAmount());
     }
 
     public SidePanelCompanyDTO getCompanyInfo(Company entity){

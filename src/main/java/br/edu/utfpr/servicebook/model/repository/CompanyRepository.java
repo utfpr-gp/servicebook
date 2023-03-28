@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
+
     /**
      * Retorna o usuário por cnpj.
      *

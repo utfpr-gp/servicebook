@@ -424,7 +424,17 @@ public class IndividualRegisterController {
             }
 
         }
+        if(dto.getType() == "company"){
+            Optional<Company> oCompany = companyService.findByCnpj(dto.getCpf());
 
+            if (oCompany.isPresent()) {
+                errors.rejectValue("cpf", "error.dto", "CNPJ já cadastrado! Por favor, insira um CNPJ não cadastrado.");
+            }
+
+            if (errors.hasErrors()) {
+                return this.userRegistrationErrorForwarding("6", dto, model, errors);
+            }
+        }
         IndividualDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, IndividualDTO.class, WizardSessionUtil.KEY_WIZARD_USER);
         CompanyDTO companyDTO1= wizardSessionUtilCompany.getWizardState(httpSession, CompanyDTO.class, WizardSessionUtil.KEY_WIZARD_COMPANY);
 
@@ -525,13 +535,13 @@ public class IndividualRegisterController {
         ProfessionalExpertiseDTO professionalExpertiseDTO= wizardSessionUtilExpertise.getWizardState(httpSession, ProfessionalExpertiseDTO.class, WizardSessionUtil.KEY_EXERPERTISES);
         CompanyDTO companyDTO = wizardSessionUtilCompany.getWizardState(httpSession, CompanyDTO.class, WizardSessionUtil.KEY_WIZARD_COMPANY);
 
-//        validator.validate(sessionDTO, errors, new Class[]{
-//                IndividualDTO.RequestUserEmailInfoGroupValidation.class,
-//                IndividualDTO.RequestUserPasswordInfoGroupValidation.class,
-//                IndividualDTO.RequestUserPhoneInfoGroupValidation.class,
-//                IndividualDTO.RequestUserNameAndCPFInfoGroupValidation.class,
-//                AddressDTO.RequestUserAddressInfoGroupValidation.class
-//        });
+        validator.validate(sessionDTO, errors, new Class[]{
+                IndividualDTO.RequestUserEmailInfoGroupValidation.class,
+                IndividualDTO.RequestUserPasswordInfoGroupValidation.class,
+                IndividualDTO.RequestUserPhoneInfoGroupValidation.class,
+                IndividualDTO.RequestUserNameAndCPFInfoGroupValidation.class,
+                UserDTO.RequestUserNameAndCNPJInfoGroupValidation.class
+        });
 
         if (errors.hasErrors()) {
             return this.userRegistrationErrorForwarding("8", dto, model, errors);

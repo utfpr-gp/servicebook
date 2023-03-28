@@ -48,9 +48,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/minha-conta/empresa")
 @Controller
 public class CompanyController {
-    public static final Logger log = LoggerFactory.getLogger(CompanyController.class);
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    public static final Logger log = LoggerFactory.getLogger(CompanyController.class);
 
     @Autowired
     private FollowsService followsService;
@@ -67,12 +66,6 @@ public class CompanyController {
     private CompanyMapper companyMapper;
 
     @Autowired
-    private CityService cityService;
-
-    @Autowired
-    private CityMapper cityMapper;
-
-    @Autowired
     private ProfessionalExpertiseService professionalExpertiseService;
 
     @Autowired
@@ -84,12 +77,6 @@ public class CompanyController {
     private ExpertiseMapper expertiseMapper;
 
     @Autowired
-    private JobContractedService jobContractedService;
-
-    @Autowired
-    private JobContractedMapper jobContractedMapper;
-
-    @Autowired
     private JobRequestService jobRequestService;
 
     @Autowired
@@ -97,12 +84,6 @@ public class CompanyController {
 
     @Autowired
     private JobCandidateService jobCandidateService;
-
-    @Autowired
-    private JobCandidateMapper jobCandidateMapper;
-
-    @Autowired
-    private StateService stateService;
 
     @Autowired
     private SidePanelUtil sidePanelUtil;
@@ -114,40 +95,37 @@ public class CompanyController {
     private EventSseMapper eventSseMapper;
 
     @Autowired
-    private JobAvailableToHideService jobAvailableToHideService;
-
-    @Autowired
     private IAuthentication authentication;
 
     @Autowired
     private PaginationUtil paginationUtil;
 
-
     @GetMapping
     @RolesAllowed({RoleType.COMPANY})
     public ModelAndView showMyAccountCompany(@RequestParam(required = false, defaultValue = "0") Optional<Long> expertiseId
     ) throws Exception {
-        Optional<Company> oProfessional = (companyService.findByEmail(authentication.getEmail()));
 
-        if (!oProfessional.isPresent()) {
+        Optional<Company> oCompany = companyService.findByEmail(authentication.getEmail());
+
+        log.debug("ServiceBook: Minha conta.");
+
+        if (!oCompany.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
         ModelAndView mv = new ModelAndView("company/my-account");
 
+        CompanyDTO professionalDTO = companyMapper.toDto(oCompany.get());
 
-        CompanyDTO professionalDTO = companyMapper.toDto(oProfessional.get());
-
-        Optional<Long> oProfessionalFollowingAmount = followsService.countByCompany(oProfessional.get());
+        Optional<Long> oProfessionalFollowingAmount = followsService.countByCompany(oCompany.get());
         professionalDTO.setFollowingAmount(oProfessionalFollowingAmount.get());
 
         SidePanelCompanyDTO companyInfo = sidePanelUtil.getCompanyInfo(professionalDTO);
-        SidePanelStatisticsDTO statisticInfo = sidePanelUtil.getCompanyStatisticInfo(oProfessional.get(), expertiseId.get());
-
+        SidePanelStatisticsDTO statisticInfo = sidePanelUtil.getCompanyStatisticInfo(oCompany.get(), expertiseId.get());
 
         mv.addObject("individualInfo", companyInfo);
 
-        List<CompanyExpertise> professionalExpertises = companyExpertiseService.findByProfessional(oProfessional.get());
+        List<CompanyExpertise> professionalExpertises = companyExpertiseService.findByProfessional(oCompany.get());
         List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
                 .map(professionalExpertise -> professionalExpertise.getExpertise())
                 .map(expertise -> expertiseMapper.toDto(expertise))
@@ -160,15 +138,15 @@ public class CompanyController {
                     return eventSseMapper.toFullDto(eventSse);
                 })
                 .collect(Collectors.toList());
-        CompanyDTO professionalDTO1 = companyMapper.toResponseDto(oProfessional.get());
+        CompanyDTO professionalDTO1 = companyMapper.toResponseDto(oCompany.get());
         mv.addObject("eventsse", eventSSEDTOs);
         mv.addObject("expertises", expertiseDTOs);
         mv.addObject("professionalDTO1", professionalDTO1);
         mv.addObject("company", true);
         return mv;
     }
-
     @GetMapping("/adicionar-profissional")
+    @RolesAllowed({RoleType.COMPANY})
     public ModelAndView newProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> expertiseId
     ) throws Exception {
         ModelAndView mv = new ModelAndView("company/new-professional");
@@ -206,7 +184,7 @@ public class CompanyController {
     }
 
     @GetMapping("/disponiveis")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.COMPANY})
     public ModelAndView showAvailableJobs(
             HttpServletRequest request,
             @RequestParam(required = false, defaultValue = "0") Long id,
@@ -228,7 +206,7 @@ public class CompanyController {
 
         return mv;
     }
-
+    @RolesAllowed({RoleType.COMPANY})
     private Page<JobRequest> findJobRequests(Long expertiseId, JobRequest.Status status, int page, int size){
         Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
 
@@ -287,6 +265,8 @@ public class CompanyController {
             return null;
         }
     }
+    @RolesAllowed({RoleType.COMPANY})
+
     private List<JobRequestFullDTO> generateJobRequestDTOList(Page<JobRequest> jobRequestPage){
         return jobRequestPage.stream().distinct()
                 .map(jobRequest -> {

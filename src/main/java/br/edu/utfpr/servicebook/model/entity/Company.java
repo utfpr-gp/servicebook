@@ -1,22 +1,26 @@
 package br.edu.utfpr.servicebook.model.entity;
 
-import javax.persistence.*;
-
 import br.edu.utfpr.servicebook.security.ProfileEnum;
 import lombok.*;
 
-@NoArgsConstructor
+import javax.persistence.*;
+import java.util.Date;
+
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode(exclude = {"jobRequest", "candidatures"})
 @ToString(exclude = {"candidatures", "jobRequest"})
+
 @Table(name = "companies")
 @Entity
-public class Company extends User	{
+public class Company extends User {
 
 	private static final long serialVersionUID = 1L;
+
 	private String cnpj;
 
 	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	private ProfileEnum profile;
 
 	public Company(String name, String email, String password, String phoneNumber, String cnpj){

@@ -1,12 +1,9 @@
 package br.edu.utfpr.servicebook.service;
-
 import br.edu.utfpr.servicebook.model.entity.Company;
 import br.edu.utfpr.servicebook.model.entity.CompanyExpertise;
-import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
 import br.edu.utfpr.servicebook.model.repository.CompanyExpertiseRepository;
 import br.edu.utfpr.servicebook.model.repository.CompanyRepository;
-import br.edu.utfpr.servicebook.model.repository.ProfessionalExpertiseRepository;
+import br.edu.utfpr.servicebook.security.IAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +13,14 @@ import java.util.Optional;
 
 @Service
 public class CompanyService {
+
     @Autowired
     private CompanyRepository companyRepository;
 
     @Autowired
-    private ProfessionalExpertiseRepository professionalExpertiseRepository;
-    @Autowired
+    private IAuthentication authentication;
 
+    @Autowired
     private CompanyExpertiseRepository companyExpertiseRepository;
 
     public void save(Company entity) {
@@ -46,5 +44,27 @@ public class CompanyService {
     public void saveExpertisesCompany(Company company, CompanyExpertise companyExpertise) {
         companyRepository.save(company);
         companyExpertiseRepository.save(companyExpertise);
+    }
+    public boolean isAuthenticated(){
+        Optional<Company> oCompany = findByEmail(authentication.getEmail());
+
+        if (!oCompany.isPresent()) {
+            return false;
+        }
+
+        return true;
+    }
+    /**
+     * Retorna o usuário autenticado ou nulo.
+     * @return
+     */
+    public Company getAuthenticated(){
+        Optional<Company> oCompany = findByEmail(authentication.getEmail());
+
+        if (oCompany.isPresent()) {
+            return oCompany.get();
+        }
+
+        return null;
     }
 }

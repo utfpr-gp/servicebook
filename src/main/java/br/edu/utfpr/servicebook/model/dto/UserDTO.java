@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.Valid;
@@ -27,6 +28,7 @@ public class UserDTO implements Serializable {
 
     @CPF(message = "CPF inválido! Por favor, insira um CPF válido.", groups = UserDTO.RequestUserNameAndCPFInfoGroupValidation.class)
     protected String cpf;
+    @CNPJ(message = "CNPJ inválido! Por favor, insira um CNPJ válido.", groups = UserDTO.RequestUserNameAndCNPJInfoGroupValidation.class)
     protected String cnpj;
 
     @NotBlank(message = "Email inválido! Por favor, insira o email.", groups = UserDTO.RequestUserEmailInfoGroupValidation.class)
@@ -82,5 +84,7 @@ public class UserDTO implements Serializable {
     public interface RequestUserPhoneInfoGroupValidation {
 
     }
+    public interface RequestUserNameAndCNPJInfoGroupValidation {
 
+    }
 }
