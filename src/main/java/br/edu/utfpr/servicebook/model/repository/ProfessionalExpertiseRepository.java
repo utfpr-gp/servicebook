@@ -23,19 +23,19 @@ public interface ProfessionalExpertiseRepository extends JpaRepository<Professio
     /**
      * Retorna uma especialidade profissional, dado um profissional e sua especialidade
      *
-     * @param individual
+     * @param user
      * @param expertise
      * @return Optional<ProfessionalExpertise>
      */
-    Optional<ProfessionalExpertise> findByProfessionalAndExpertise(Individual individual, Expertise expertise);
+    Optional<ProfessionalExpertise> findByProfessionalAndExpertise(User user, Expertise expertise);
 
     /**
      * Retorna uma lista de especialidades de um profissional
      *
-     * @param individual
+     * @param user
      * @return
      */
 
-    List<ProfessionalExpertise> findByProfessional(Individual individual);
+    List<ProfessionalExpertise> findByProfessional(User user);
 
 }

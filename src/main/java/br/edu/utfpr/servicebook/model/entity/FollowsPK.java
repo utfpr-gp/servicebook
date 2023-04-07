@@ -17,7 +17,6 @@ import java.io.Serializable;
 public class FollowsPK implements Serializable {
 
 	Long clientId;
-	Long professionalId;
 
-	Long companyId;
+	Long professionalId;
 }

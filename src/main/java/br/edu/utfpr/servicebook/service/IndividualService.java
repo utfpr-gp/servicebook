@@ -129,6 +129,8 @@ public class IndividualService {
         return null;
     }
 
+
+
     @Transactional
     public void saveExpertisesCompany(Company company, ProfessionalExpertise professionalExpertise) {
         professionalExpertiseRepository.save(professionalExpertise);

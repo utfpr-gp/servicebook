@@ -1,7 +1,7 @@
 <%@tag description="Template inicial" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ attribute name="title" %>
-<%@ attribute name="individualInfo" type="br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO"%>
+<%@ attribute name="individualInfo" type="br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo"%>
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>

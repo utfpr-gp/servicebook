@@ -53,10 +53,10 @@ VALUES ('profissional1@gmail.com', 'true', 'Nome do Primeiro Profissional', '(42
        ('empresa@gmail.com', 'true', 'Nome Empresa', '(42) 99999-9994', 'true',
         'https://i.imgur.com/owhNAKK.png', 'true', '1', 1, 'ROLE_COMPANY', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição empresa 1'),
        ('profissional3@gmail.com', 'true', 'Nome do Terceiro Profissional', '(42) 99999-9995', 'false',
-        null, 'false', '1', 3, 'ROLE_USER', 'qwerty',  'Descrição profissional 1'),
-       ('profissional4@gmail.com', 'true', 'Nome do Quarto Profissional', '(42) 99999-9996', 'true',
-        'https://i.imgur.com/owhNAKK.png', 'true', '1', 2, 'ROLE_USER', 'qwerty123', 'Descrição profissional 1');
-
+        null, 'false', '1', 3, 'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição profissional 1'),
+       ('empresa1@gmail.com', 'true', 'Alguma Empresa', '(42) 99999-9996', 'true',
+        'https://i.imgur.com/owhNAKK.png', 'true', '1', 2, 'ROLE_COMPANY', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS', 'Descrição profissional 1');
+-- qwerty123
 INSERT INTO individuals (cpf, gender, birth_date, id)
 VALUES ('982.988.640-93', 'MASCULINE', '2003-01-01', '1'),
        ('998.045.450-47', 'MASCULINE', '2000-01-01', '2'),
@@ -82,9 +82,6 @@ VALUES (1, 1, 1),
 
 INSERT INTO companies (cnpj, id)
 VALUES ('98.988.640/0001-91', 1);
-
-INSERT INTO company_expertises (expertise_id, company_id, rating)
-VALUES (1, 1, 1);
 
 INSERT INTO job_requests
 (client_confirmation, date_created, date_target, description, professional_confirmation, quantity_candidators_max,
@@ -144,7 +141,7 @@ VALUES ('1', '1', 'false'),
        ('17', '1', 'false');
 
 
-INSERT INTO follows (client_id, professional_id, company_id)
-VALUES (4, 1, 1 )
+INSERT INTO follows (client_id, professional_id)
+VALUES (4, 1)
 
 

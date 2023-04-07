@@ -14,10 +14,9 @@ import br.edu.utfpr.servicebook.sse.EventSseMapper;
 import br.edu.utfpr.servicebook.sse.SSEService;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelCompanyDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelStatisticsDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
+import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateStatisticDTO;
+import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,40 +24,37 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 @RequestMapping("/minha-conta/empresa")
 @Controller
 public class CompanyController {
 
     public static final Logger log = LoggerFactory.getLogger(CompanyController.class);
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     @Autowired
     private FollowsService followsService;
 
     @Autowired
-    private IndividualService individualService;
+    private CompanyService companyService;
 
     @Autowired
-    private CompanyService companyService;
+    private UserService userService;
+
+    @Autowired
+    private UserMapper userMapper;
+
     @Autowired
     private IndividualMapper individualMapper;
 
@@ -68,8 +64,6 @@ public class CompanyController {
     @Autowired
     private ProfessionalExpertiseService professionalExpertiseService;
 
-    @Autowired
-    private CompanyExpertiseService companyExpertiseService;
     @Autowired
     private ExpertiseService expertiseService;
 
@@ -85,8 +79,13 @@ public class CompanyController {
     @Autowired
     private JobCandidateService jobCandidateService;
 
+    private JobCandidateMapper jobCandidateMapper;
+
     @Autowired
-    private SidePanelUtil sidePanelUtil;
+    private StateService stateService;
+
+    @Autowired
+    private TemplateUtil templateUtil;
 
     @Autowired
     private SSEService sseService;
@@ -104,60 +103,21 @@ public class CompanyController {
     @RolesAllowed({RoleType.COMPANY})
     public ModelAndView showMyAccountCompany(@RequestParam(required = false, defaultValue = "0") Optional<Long> expertiseId
     ) throws Exception {
-
-        Optional<Company> oCompany = companyService.findByEmail(authentication.getEmail());
+        Optional<User> oProfessional = (userService.findByEmail(authentication.getEmail()));
 
         log.debug("ServiceBook: Minha conta.");
 
-        if (!oCompany.isPresent()) {
+        if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
         ModelAndView mv = new ModelAndView("company/my-account");
-
-        CompanyDTO professionalDTO = companyMapper.toDto(oCompany.get());
-
-        Optional<Long> oProfessionalFollowingAmount = followsService.countByCompany(oCompany.get());
-        professionalDTO.setFollowingAmount(oProfessionalFollowingAmount.get());
-
-        SidePanelCompanyDTO companyInfo = sidePanelUtil.getCompanyInfo(professionalDTO);
-        SidePanelStatisticsDTO statisticInfo = sidePanelUtil.getCompanyStatisticInfo(oCompany.get(), expertiseId.get());
-
-        mv.addObject("individualInfo", companyInfo);
-
-        List<CompanyExpertise> professionalExpertises = companyExpertiseService.findByProfessional(oCompany.get());
-        List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
-                .map(professionalExpertise -> professionalExpertise.getExpertise())
-                .map(expertise -> expertiseMapper.toDto(expertise))
-                .collect(Collectors.toList());
-
-        //envia a notificação ao usuário
-        List<EventSSE> eventSsesList = sseService.findPendingEventsByEmail(authentication.getEmail());
-        List<EventSSEDTO> eventSSEDTOs = eventSsesList.stream()
-                .map(eventSse -> {
-                    return eventSseMapper.toFullDto(eventSse);
-                })
-                .collect(Collectors.toList());
-        CompanyDTO professionalDTO1 = companyMapper.toResponseDto(oCompany.get());
-        mv.addObject("eventsse", eventSSEDTOs);
-        mv.addObject("expertises", expertiseDTOs);
-        mv.addObject("professionalDTO1", professionalDTO1);
-        mv.addObject("company", true);
-        return mv;
-    }
-    @GetMapping("/adicionar-profissional")
-    @RolesAllowed({RoleType.COMPANY})
-    public ModelAndView newProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> expertiseId
-    ) throws Exception {
-        ModelAndView mv = new ModelAndView("company/new-professional");
-        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
-
-        IndividualDTO professionalDTO = individualMapper.toDto(oProfessional.get());
+        UserDTO professionalDTO = userMapper.toDto(oProfessional.get());
 
         Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(oProfessional.get());
         professionalDTO.setFollowingAmount(oProfessionalFollowingAmount.get());
-        SidePanelIndividualDTO individualInfo = sidePanelUtil.getIndividualInfo(professionalDTO);
-        SidePanelStatisticsDTO statisticInfo = sidePanelUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId.get());
+        UserTemplateInfo individualInfo = templateUtil.getUserInfo(professionalDTO);
+        UserTemplateStatisticDTO statisticInfo = templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId.get());
         mv.addObject("individualInfo", individualInfo);
 
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
@@ -173,7 +133,45 @@ public class CompanyController {
                     return eventSseMapper.toFullDto(eventSse);
                 })
                 .collect(Collectors.toList());
-        IndividualDTO professionalDTO1 = individualMapper.toResponseDto(oProfessional.get());
+        UserDTO professionalDTO1 = userMapper.toDto(oProfessional.get());
+        mv.addObject("eventsse", eventSSEDTOs);
+        mv.addObject("expertises", expertiseDTOs);
+        mv.addObject("individualInfo", individualInfo);
+        mv.addObject("professionalDTO1", professionalDTO1);
+        mv.addObject("statisticInfo", statisticInfo);
+        mv.addObject("company", true);
+        return mv;
+    }
+    @GetMapping("/adicionar-profissional")
+    @RolesAllowed({RoleType.COMPANY})
+    public ModelAndView newProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> expertiseId
+    ) throws Exception {
+        ModelAndView mv = new ModelAndView("company/new-professional");
+        Optional<User> oProfessional = (userService.findByEmail(authentication.getEmail()));
+
+        UserDTO professionalDTO = userMapper.toDto(oProfessional.get());
+
+        Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(oProfessional.get());
+        professionalDTO.setFollowingAmount(oProfessionalFollowingAmount.get());
+        UserTemplateInfo individualInfo = templateUtil.getUserInfo(professionalDTO);
+        UserTemplateStatisticDTO statisticInfo = templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId.get());
+        mv.addObject("individualInfo", individualInfo);
+
+        List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
+        List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
+                .map(professionalExpertise -> professionalExpertise.getExpertise())
+                .map(expertise -> expertiseMapper.toDto(expertise))
+                .collect(Collectors.toList());
+
+        //envia a notificação ao usuário
+        List<EventSSE> eventSsesList = sseService.findPendingEventsByEmail(authentication.getEmail());
+        List<EventSSEDTO> eventSSEDTOs = eventSsesList.stream()
+                .map(eventSse -> {
+                    return eventSseMapper.toFullDto(eventSse);
+                })
+                .collect(Collectors.toList());
+
+        UserDTO professionalDTO1 = userMapper.toDto(oProfessional.get());
         mv.addObject("eventsse", eventSSEDTOs);
         mv.addObject("expertises", expertiseDTOs);
         mv.addObject("individualInfo", individualInfo);
@@ -208,13 +206,13 @@ public class CompanyController {
     }
     @RolesAllowed({RoleType.COMPANY})
     private Page<JobRequest> findJobRequests(Long expertiseId, JobRequest.Status status, int page, int size){
-        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
+        Optional<User> oProfessional = (userService.findByEmail(authentication.getEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new EntityNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateExpired").ascending());
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("dateTarget").ascending());
         Page<JobRequest> jobRequestPage = null;
         List<JobRequestFullDTO> jobRequestFullDTOs = null;
 

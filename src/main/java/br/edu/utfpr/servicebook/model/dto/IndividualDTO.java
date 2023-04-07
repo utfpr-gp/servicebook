@@ -1,5 +1,6 @@
 package br.edu.utfpr.servicebook.model.dto;
 
+import br.edu.utfpr.servicebook.util.IWizardDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,24 +19,9 @@ import java.util.Optional;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class IndividualDTO extends UserDTO implements Serializable {
+public class IndividualDTO extends UserDTO implements IWizardDTO, Serializable {
 
     private Long id;
-    @CPF(message = "CPF inválido! Por favor, insira um CPF válido.", groups = IndividualDTO.RequestUserNameAndCPFInfoGroupValidation.class)
+    @CPF(message = "CPF inválido! Por favor, insira um CPF válido.", groups = UserDTO.RequestUserNameAndCPFInfoGroupValidation.class)
     private String cpf;
-
-    private String gender;
-
-    private Date birthDate;
-
-    private String type;
-
-    @Pattern(regexp = "^\\(?\\d{2}\\)?\\s?(9\\d{4})-?(\\d{4})$", message = "Telefone inválido! Por favor, insira um número de telefone válido.", groups = IndividualDTO.RequestUserPhoneInfoGroupValidation.class)
-    private String phoneNumber;
-
-
-
-    public String getOnlyNumbersFromPhone() {
-        return getPhoneNumber().replaceAll("[^0-9]", "");
-    }
 }

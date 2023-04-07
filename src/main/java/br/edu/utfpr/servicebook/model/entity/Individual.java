@@ -20,21 +20,15 @@ public class Individual extends User {
     public enum Gender {
         MASCULINE, FEMININE
     };
-//    private int id;
+
     @NonNull
     @Column(unique = true)
     private String cpf;
-
-    private String type;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
     private Date birthDate;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ProfileEnum profile;
 
     public Individual(String name, String email, String password, String phoneNumber, String cpf){
         super(name, email, password, phoneNumber);

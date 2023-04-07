@@ -163,7 +163,8 @@ public class LoginController {
             return this.emailErrorForwarding(dto, model, errors);
         }
 
-        Optional<Individual> oUser = individualService.findByEmail(dto.getEmail());
+        String email = dto.getEmail();
+        Optional<Individual> oUser = individualService.findByEmail(email);
 
         if (!oUser.isPresent()) {
             errors.rejectValue(null, "not-found", "O email não foi encontrado! Por favor, realize o cadastro!");
@@ -172,21 +173,21 @@ public class LoginController {
 
         log.debug("ServiceBook: Existe usuário.");
 
-        Optional<UserCode> oUserCode = userCodeService.findByEmail(dto.getEmail());
+        Optional<UserCode> oUserCode = userCodeService.findByEmail(email);
 
         //se o código não for encontrado, gera um novo. Caso contrário, envia o código cadastrado para este email.
         if (!oUserCode.isPresent()) {
             String code = authenticationCodeGeneratorService.generateAuthenticationCode();
 
-            UserCode userCode = new UserCode(dto.getEmail(), code);
+            UserCode userCode = new UserCode(email, code);
             userCodeService.save(userCode);
 
             String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/codigo/" + code;
-            quartzService.sendEmailWithAuthenticatationCode(dto.getEmail(), code, tokenLink, oUser.get().getName());
+            quartzService.sendEmailWithAuthenticatationCode(email, code, tokenLink, oUser.get().getName());
 
         } else {
             String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/codigo/" + oUserCode.get().getCode();
-            quartzService.sendEmailWithAuthenticatationCode(dto.getEmail(), oUserCode.get().getCode(), tokenLink, oUser.get().getName());
+            quartzService.sendEmailWithAuthenticatationCode(email, oUserCode.get().getCode(), tokenLink, oUser.get().getName());
 
         }
 
@@ -234,7 +235,7 @@ public class LoginController {
 
         LoginDTO loginDTO = loginSessionUtil.getWizardState(httpSession, LoginDTO.class, WizardSessionUtil.KEY_LOGIN);
 
-        Optional<UserCode> oUserCode = userCodeService.findByEmail(loginDTO.getEmail());
+        Optional<UserCode> oUserCode = userCodeService.findByEmail(loginDTO.getEmail().trim());
 
         if (!oUserCode.isPresent()) {
             errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de autenticação.");

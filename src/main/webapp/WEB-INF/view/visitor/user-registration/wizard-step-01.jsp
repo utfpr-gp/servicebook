@@ -18,7 +18,10 @@
 
                 <div class="section">
                     <div class="row">
-                            <form method="post" action="cadastrar-se/passo-1">
+                            <!-- o endereço do formulário está atrelado a aba clicada pelo usuário, ou seja, para
+                            cadastro de empresa ou indivíduo. Por default, a aba empresa é mostrada. A atualização
+                             do endereço é realizado via JavaScript.-->
+                            <form method="post" action="cadastrar-se/empresa/passo-1" id="register-form">
                                 <div class="row">
                                     <div id="tabButton" class="col s10 input-field col s12 m8 l6 xl6 offset-s1 offset-m2 offset-l3 offset-xl3">
                                         <ul class="tabs tabs_register">
@@ -29,10 +32,6 @@
                                                 <a data-tabName="individual" href="#individual">Cliente/Profissional</a>
                                             </li>
                                         </ul>
-
-                                        <input type="hidden" name="type" value="" id="result">
-                                        <input type="hidden" name="profile" value="" id="role">
-
                                     </div>
 
                                     <div class="input-field col s12 m8 l6 xl6 offset-s1 offset-m2 offset-l3 offset-xl3">
@@ -73,8 +72,6 @@
 </t:template>
 
 <script>
-    $("#result").val('company');
-    $("#role").val('ROLE_COMPANY');
 
     $("#tabButton ul li a").click(function(e){
         // active deactivate tab buttons
@@ -82,18 +79,16 @@
         $(this).addClass('active');
 
         // show hide tab content
-        var tabName = $(this).attr('data-tabName');
+        let tabName = $(this).attr('data-tabName');
         $("#tabContent .tab").removeClass('active');
         $("#tabContent #"+tabName).addClass('active');
 
-        $("#result").val(tabName);
-
-        if(tabName == 'company') {
-            $("#role").val('ROLE_COMPANY');
+        //altera o endereço do action do form de acordo com o tipo de usuário cadastrado
+        if(tabName == 'company'){
+            $('#register-form').attr('action', 'cadastrar-se/empresa/passo-1');
         }
-
-        if(tabName == 'individual') {
-            $("#role").val('ROLE_USER');
+        else{
+            $('#register-form').attr('action', 'cadastrar-se/individuo/passo-1');
         }
 
         // stop reload

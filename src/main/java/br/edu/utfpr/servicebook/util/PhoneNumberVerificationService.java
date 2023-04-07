@@ -4,7 +4,7 @@ import com.twilio.Twilio;
 import com.twilio.rest.verify.v2.service.Verification;
 import com.twilio.rest.verify.v2.service.VerificationCheck;
 
-public class NumberValidator {
+public class PhoneNumberVerificationService {
     private final String twilioVerifyServiceSid;
 
     public final String APPROVED = "approved";
@@ -13,17 +13,17 @@ public class NumberValidator {
 
     private String status;
 
-    public NumberValidator(String twilioAccountSid, String twilioAuthToken, String twilioVerifyServiceSid, String number) {
+    public PhoneNumberVerificationService(String twilioAccountSid, String twilioAuthToken, String twilioVerifyServiceSid, String number) {
         this.number = "+55" + number;
         this.twilioVerifyServiceSid = twilioVerifyServiceSid;
         Twilio.init(twilioAccountSid, twilioAuthToken);
     }
 
-    public void sendVerifySms() {
+    public void sendSMSToVerification() {
         Verification.creator(twilioVerifyServiceSid, this.number, "sms").create();
     }
 
-    public void sendVerifyCode(String code) throws Exception {
+    public void verify(String code) throws Exception {
         this.status = VerificationCheck.creator(twilioVerifyServiceSid, code).setTo(this.number).create().getStatus();
     }
 

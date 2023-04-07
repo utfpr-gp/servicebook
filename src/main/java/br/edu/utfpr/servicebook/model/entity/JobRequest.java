@@ -33,9 +33,12 @@ public class JobRequest {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	/**
+	 * Cliente que criou o anúncio do serviço, podendo ser um indivíduo ou empresa.
+	 */
 	@ManyToOne
 	@JoinColumn(name = "client_id")
-	private Individual individual;
+	private User user;
 	
 	@ManyToOne
 	@JoinColumn(name = "expertise_id")

@@ -30,42 +30,42 @@ public class JobContractedService {
     }
 
     public List<JobContracted> findByIdProfessional(Long id) {
-        return this.jobContractedRepository.findByIdIndividual(id);
+        return this.jobContractedRepository.findByUserId(id);
     }
 
-    public Optional<Long> countByProfessional(Individual individual) {
-        return this.jobContractedRepository.countByIndividual(individual);
+    public Optional<Long> countByProfessional(User user) {
+        return this.jobContractedRepository.countByUser(user);
     }
 
-    public Optional<Long> countRatingByProfessional(Individual individual) {
-        return this.jobContractedRepository.countRatingByIndividual(individual);
+    public Optional<Long> countRatingByProfessional(User user) {
+        return this.jobContractedRepository.countRatingByUser(user);
     }
 
-    public Optional<Long> countCommentsByProfessional(Individual individual) {
-        return this.jobContractedRepository.countCommentsByIndividual(individual);
+    public Optional<Long> countCommentsByProfessional(User user) {
+        return this.jobContractedRepository.countCommentsByUser(user);
     }
 
-    public Optional<Long> countByProfessionalAndJobRequest_Expertise(Individual individual, Expertise expertise) {
-        return this.jobContractedRepository.countByIndividualAndJobRequest_Expertise(individual, expertise);
+    public Optional<Long> countByProfessionalAndJobRequest_Expertise(User user, Expertise expertise) {
+        return this.jobContractedRepository.countByUserAndJobRequest_Expertise(user, expertise);
     }
 
-    public Optional<Long> countRatingByProfessionalAndJobRequest_Expertise(Individual individual, Expertise expertise) {
-        return this.jobContractedRepository.countRatingByIndividualAndJobRequest_Expertise(individual, expertise);
+    public Optional<Long> countRatingByProfessionalAndJobRequest_Expertise(User user, Expertise expertise) {
+        return this.jobContractedRepository.countRatingByUserAndJobRequest_Expertise(user, expertise);
     }
 
-    public Optional<Long> countCommentsByProfessionalAndJobRequest_Expertise(Individual individual, Expertise expertise) {
-        return this.jobContractedRepository.countCommentsByIndividualAndJobRequest_Expertise(individual, expertise);
+    public Optional<Long> countCommentsByProfessionalAndJobRequest_Expertise(User user, Expertise expertise) {
+        return this.jobContractedRepository.countCommentsByUserAndJobRequest_Expertise(user, expertise);
     }
 
-    public Page<JobContracted> findByJobRequest_StatusAndProfessional (JobRequest.Status status, Individual individual, Pageable pageable){
-        return this.jobContractedRepository.findByJobRequest_StatusAndIndividual(status, individual, pageable);
+    public Page<JobContracted> findByJobRequest_StatusAndProfessional (JobRequest.Status status, User user, Pageable pageable){
+        return this.jobContractedRepository.findByJobRequest_StatusAndUser(status, user, pageable);
     }
 
-    public Page<JobContracted> findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional (JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable){
-        return this.jobContractedRepository.findByJobRequest_StatusAndJobRequest_ExpertiseAndIndividual(status, expertise, individual, pageable);
+    public Page<JobContracted> findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional (JobRequest.Status status, Expertise expertise, User user, Pageable pageable){
+        return this.jobContractedRepository.findByJobRequest_StatusAndJobRequest_ExpertiseAndUser(status, expertise, user, pageable);
     }
-    public Page<JobContracted> findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status status, Individual client, Pageable pageable){
-        return this.jobContractedRepository.findByJobRequest_StatusAndJobRequest_Individual(status, client, pageable);
+    public Page<JobContracted> findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status status, User client, Pageable pageable){
+        return this.jobContractedRepository.findByJobRequest_StatusAndJobRequest_User(status, client, pageable);
     }
 
     /**
@@ -107,25 +107,5 @@ public class JobContractedService {
         return this.jobContractedRepository.findAllJobContractedExpired(new Date(), days, JobRequest.Status.TO_HIRED);
     }
 
-    public Optional<Long> countByCompany(Company company) {
-        return this.jobContractedRepository.countByCompany(company);
-    }
 
-    public Optional<Long> countRatingByCompany(Company company) {
-        return this.jobContractedRepository.countRatingByCompany(company);
-    }
-
-    public Optional<Long> countCommentsByCompany(Company company) {
-        return this.jobContractedRepository.countCommentsByCompany(company);
-    }
-
-    public Optional<Long> countByCompanyAndJobRequest_Expertise(Company company, Expertise expertise) {
-        return this.jobContractedRepository.countByCompanyAndJobRequest_Expertise(company, expertise);
-    }
-    public Optional<Long> countRatingByCompanyAndJobRequest_Expertise(Company company, Expertise expertise) {
-        return this.jobContractedRepository.countRatingByCompanyAndJobRequest_Expertise(company, expertise);
-    }
-    public Optional<Long> countCommentsByCompanyAndJobRequest_Expertise(Company company, Expertise expertise) {
-        return this.jobContractedRepository.countCommentsByCompanyAndJobRequest_Expertise(company, expertise);
-    }
 }

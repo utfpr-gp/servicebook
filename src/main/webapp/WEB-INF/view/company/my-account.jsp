@@ -6,8 +6,6 @@
     <jsp:body>
         <main class="container">
             <div class="row">
-                    ${company}
-
                 <t:side-panel followdto="${followdto}" ></t:side-panel>
                 <div class="col m10 offset-m1 l9">
                     <a id="show-area-perfil"

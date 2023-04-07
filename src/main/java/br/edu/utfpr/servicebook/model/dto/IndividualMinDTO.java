@@ -12,4 +12,6 @@ import java.util.Optional;
 public class IndividualMinDTO extends UserDTO {
 
     private Long id;
+
+    private String cpf;
 }

@@ -12,4 +12,6 @@ import java.io.Serializable;
 public class CompanyMinDTO extends UserDTO {
     private Long id;
 
+    private String cnpj;
+
 }

@@ -31,18 +31,18 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
      * Retorna uma lista de requisições em um certo estado e de uma certa classe de especialidade e ainda, referente a um dado profissional
      * @param status
      * @param expertise
-     * @param individual
+     * @param user
      * @return
      */
-    List<JobRequest> findByStatusAndExpertiseAndJobCandidates_Individual(JobRequest.Status status, Expertise expertise, Individual individual);
+    List<JobRequest> findByStatusAndExpertiseAndJobCandidates_User(JobRequest.Status status, Expertise expertise, User user);
 
     /**
      * Retorna uma lista de requisições em um certo estado de todas as especialidades e ainda, referente a um dado profissional
      * @param status
-     * @param individual
+     * @param user
      * @return
      */
-    List<JobRequest> findByStatusAndJobCandidates_Individual(JobRequest.Status status, Individual individual);
+    List<JobRequest> findByStatusAndJobCandidates_User(JobRequest.Status status, User user);
 
     /**
      * Retorna uma lista de requisições de um determinado Status e Especialidade que ainda não receberam candidaturas.
@@ -68,92 +68,92 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
      * portanto, não tem como alcançar a propriedade Professional
      * @param status
      * @param expertise
-     * @param individual
+     * @param user
      * @return
      */
-    List<JobRequest> findByStatusAndExpertiseAndJobCandidates_IndividualNot(JobRequest.Status status, Expertise expertise, Individual individual);
+    List<JobRequest> findByStatusAndExpertiseAndJobCandidates_UserNot(JobRequest.Status status, Expertise expertise, User user);
 
     /**
      * Retorna uma lista de requisições de um determinado Status e de todas Especialidades que um dado profissional ainda não se
      * candidatou.
      * @param status
-     * @param individual
+     * @param user
      * @return
      */
-    List<JobRequest> findByStatusAndJobCandidates_IndividualNot(JobRequest.Status status, Individual individual);
+    List<JobRequest> findByStatusAndJobCandidates_UserNot(JobRequest.Status status, User user);
 
     /**
      * Retorna uma lista de requisições de um determinado Status e Especialidade que ainda não tiveram candidaturas ou
      * que um determinado profissional ainda não se candidatou.
      * @param status
      * @param expertise
-     * @param individual
+     * @param user
      * @return
      */
-    List<JobRequest> findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_IndividualNot(JobRequest.Status status, Expertise expertise, Individual individual);
+    List<JobRequest> findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_UserNot(JobRequest.Status status, Expertise expertise, User user);
 
     /**
      * Retorna uma lista de requisições de um determinado Status e Especialidade que ainda não tiveram candidaturas ou
      * que um determinado profissional ainda não se candidatou.
      * @param status
      * @param expertise
-     * @param individual
+     * @param user
      * @return
      */
-    Page<JobRequest> findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_IndividualNot(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable);
+    Page<JobRequest> findByStatusAndExpertiseAndJobCandidatesIsNullOrJobCandidates_UserNot(JobRequest.Status status, Expertise expertise, User user, Pageable pageable);
 
     /**
      * Retorna uma lista de requisições de um determinado Status e Especialidade que não são de autoria do próprio usuário
      * e que não foram marcadas como Não Quero, ou seja, que não foram escondidas pelo profissional.
      * @param status
      * @param expertise
-     * @param individual
+     * @param user
      * @param pageable
      * @return
      */
-    @Query("SELECT jr FROM JobRequest jr WHERE jr.status = :status AND jr.expertise = :expertise AND jr.individual <> :individual AND " +
-            "jr.id NOT IN (SELECT jh.jobRequest.id FROM JobAvailableToHide jh WHERE jh.user.id = :individual)")
-    Page<JobRequest> findAvailableByExpertise(JobRequest.Status status, Expertise expertise, Long individual, Pageable pageable);
+    @Query("SELECT jr FROM JobRequest jr WHERE jr.status = :status AND jr.expertise = :expertise AND jr.user.id <> :userId AND " +
+            "jr.id NOT IN (SELECT jh.jobRequest.id FROM JobAvailableToHide jh WHERE jh.user.id = :userId)")
+    Page<JobRequest> findAvailableByExpertise(JobRequest.Status status, Expertise expertise, Long userId, Pageable pageable);
 
-    @Query("SELECT jr FROM JobRequest jr WHERE jr.status = :status AND jr.individual.id <> :individual AND " +
-            "jr.id NOT IN (SELECT jh.jobRequest.id FROM JobAvailableToHide jh WHERE jh.user.id = :individual)")
-    Page<JobRequest> findAvailableAllExpertises(JobRequest.Status status, Long individual, Pageable pageable);
+    @Query("SELECT jr FROM JobRequest jr WHERE jr.status = :status AND jr.user.id <> :userId AND " +
+            "jr.id NOT IN (SELECT jh.jobRequest.id FROM JobAvailableToHide jh WHERE jh.user.id = :userId)")
+    Page<JobRequest> findAvailableAllExpertises(JobRequest.Status status, Long userId, Pageable pageable);
 
     /**
      * Retorna uma lista de requisições de um determinado Status e todas especialidades que ainda não tiveram candidaturas ou
      * que um determinado profissional ainda não se candidatou.
      * @param status
-     * @param individual
+     * @param user
      * @return
      */
-    List<JobRequest> findByStatusAndJobCandidatesIsNullOrJobCandidates_IndividualNot(JobRequest.Status status, Individual individual);
+    List<JobRequest> findByStatusAndJobCandidatesIsNullOrJobCandidates_UserNot(JobRequest.Status status, User user);
 
     /**
      * Retorna uma lista de requisições de um determinado Status e todas especialidades que ainda não tiveram candidaturas ou
      * que um determinado profissional ainda não se candidatou.
      * Retorna com paginação.
      * @param status
-     * @param individual
+     * @param user
      * @return
      */
-    Page<JobRequest> findByStatusAndJobCandidatesIsNullOrJobCandidates_IndividualNot(JobRequest.Status status, Individual individual, Pageable pageable);
+    Page<JobRequest> findByStatusAndJobCandidatesIsNullOrJobCandidates_UserNot(JobRequest.Status status, User user, Pageable pageable);
 
     /**
      * Retorna uma lista de requisições em certo Status e Especialidade cujo o profissional foi contratado para realizar
      * Neste caso, o Status pode ser CLOSED ou TO_DO, quando um JobContracted é criado após um orçamento.
      * @param status
      * @param expertise
-     * @param individual
+     * @param user
      * @return
      */
-    List<JobRequest> findByStatusAndExpertiseAndJobContracted_Individual(JobRequest.Status status, Expertise expertise, Individual individual);
+    List<JobRequest> findByStatusAndExpertiseAndJobContracted_User(JobRequest.Status status, Expertise expertise, User user);
 
-    Page<JobRequest> findByStatusAndJobContracted_Individual(JobRequest.Status status, Individual individual, Pageable pageable);
+    Page<JobRequest> findByStatusAndJobContracted_User(JobRequest.Status status, User user, Pageable pageable);
 
-    Page<JobRequest> findByStatusAndExpertiseAndJobContracted_Individual(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable);
+    Page<JobRequest> findByStatusAndExpertiseAndJobContracted_User(JobRequest.Status status, Expertise expertise, User user, Pageable pageable);
 
-    List<JobRequest> findByIndividualOrderByDateCreatedDesc(Individual client);
+    List<JobRequest> findByUserOrderByDateCreatedDesc(User client);
 
-    Page<JobRequest> findByStatusAndIndividual(JobRequest.Status status, Individual client, Pageable pageable);
+    Page<JobRequest> findByStatusAndUser(JobRequest.Status status, User client, Pageable pageable);
 
 }

@@ -75,7 +75,7 @@ class JobContractedRepositoryTest {
         Optional<Individual> individual = individualRepository.findByEmail("professional@mail.com");
         System.out.println("Prof" + individual);
 
-        Optional<Long> jobs = jobContractedRepository.countByIndividual(individual.get());
+        Optional<Long> jobs = jobContractedRepository.countByUser(individual.get());
 
         Assertions.assertEquals(jobs.get(), 1);
     }
@@ -85,7 +85,7 @@ class JobContractedRepositoryTest {
     @DisplayName("Deve retornar o total de avaliações dos trabalhos contratados de um profissional")
     public void countRatingByProfessional() {
         Optional<Individual> individual = individualRepository.findByEmail("professional@mail.com");
-        Optional<Long> ratings = jobContractedRepository.countRatingByIndividual(individual.get());
+        Optional<Long> ratings = jobContractedRepository.countRatingByUser(individual.get());
 
         Assertions.assertFalse(ratings.get() == 0);
         Assertions.assertEquals(ratings.get(), 1);
@@ -96,7 +96,7 @@ class JobContractedRepositoryTest {
     @DisplayName("Deve retornar o total de comentários dos trabalhos contratados de um profissional")
     public void countCommentsByProfessional() {
         Optional<Individual> individual = individualRepository.findByEmail("professional@mail.com");
-        Optional<Long> comments = jobContractedRepository.countCommentsByIndividual(individual.get());
+        Optional<Long> comments = jobContractedRepository.countCommentsByUser(individual.get());
 
         Assertions.assertFalse(comments.get() == 0);
         Assertions.assertEquals(comments.get(), 1);
@@ -109,7 +109,7 @@ class JobContractedRepositoryTest {
         Optional<Individual> individual = individualRepository.findByEmail("professional@mail.com");
         Optional<Expertise> expertise = expertiseRepository.findByName("Expertise");
 
-        Optional<Long> jobs = jobContractedRepository.countByIndividualAndJobRequest_Expertise(individual.get(), expertise.get());
+        Optional<Long> jobs = jobContractedRepository.countByUserAndJobRequest_Expertise(individual.get(), expertise.get());
 
         Assertions.assertFalse(jobs.get() == 0);
         Assertions.assertEquals(jobs.get(), 1);
@@ -122,7 +122,7 @@ class JobContractedRepositoryTest {
         Optional<Individual> individual = individualRepository.findByEmail("professional@mail.com");
         Optional<Expertise> expertise = expertiseRepository.findByName("Expertise");
 
-        Optional<Long> ratings = jobContractedRepository.countRatingByIndividualAndJobRequest_Expertise(individual.get(), expertise.get());
+        Optional<Long> ratings = jobContractedRepository.countRatingByUserAndJobRequest_Expertise(individual.get(), expertise.get());
 
         Assertions.assertFalse(ratings.get() == 0);
         Assertions.assertEquals(ratings.get(), 1);
@@ -135,7 +135,7 @@ class JobContractedRepositoryTest {
         Optional<Individual> individual = individualRepository.findByEmail("professional@mail.com");
         Optional<Expertise> expertise = expertiseRepository.findByName("Expertise");
 
-        Optional<Long> comments = jobContractedRepository.countCommentsByIndividualAndJobRequest_Expertise(individual.get(), expertise.get());
+        Optional<Long> comments = jobContractedRepository.countCommentsByUserAndJobRequest_Expertise(individual.get(), expertise.get());
 
         Assertions.assertFalse(comments.get() == 0);
         Assertions.assertEquals(comments.get(), 1);

@@ -14,9 +14,9 @@ import br.edu.utfpr.servicebook.sse.EventSseMapper;
 import br.edu.utfpr.servicebook.sse.SSEService;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelStatisticsDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
+import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateStatisticDTO;
+import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,7 +89,7 @@ public class ProfessionalHomeController {
     private StateService stateService;
 
     @Autowired
-    private SidePanelUtil sidePanelUtil;
+    private TemplateUtil templateUtil;
 
     @Autowired
     private SSEService sseService;
@@ -135,8 +135,8 @@ public class ProfessionalHomeController {
         Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(oProfessional.get());
         professionalDTO.setFollowingAmount(oProfessionalFollowingAmount.get());
 
-        SidePanelIndividualDTO individualInfo = sidePanelUtil.getIndividualInfo(professionalDTO);
-        SidePanelStatisticsDTO statisticInfo = sidePanelUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId.get());
+        UserTemplateInfo individualInfo = templateUtil.getUserInfo(professionalDTO);
+        UserTemplateStatisticDTO statisticInfo = templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId.get());
 
         //envia a notificação ao usuário
         List<EventSSE> eventSsesList = sseService.findPendingEventsByEmail(authentication.getEmail());
@@ -517,7 +517,7 @@ public class ProfessionalHomeController {
             mv.addObject("hasTodoDate",  hasToDoDate);
         }
 
-        SidePanelIndividualDTO individualInfo = sidePanelUtil.getIndividualInfo(oIndividual.get());
+        UserTemplateInfo individualInfo = templateUtil.getUserInfo(oIndividual.get());
 
         mv.addObject("job", jobFull);
         mv.addObject("client", client);

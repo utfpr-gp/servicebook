@@ -24,6 +24,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
      * @return Optional<User>
      */
     Optional<Company> findByEmail(String email);
+
     /**
      * Retorna o usuário por telefone.
      *

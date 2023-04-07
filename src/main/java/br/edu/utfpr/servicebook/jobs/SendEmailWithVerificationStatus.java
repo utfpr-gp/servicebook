@@ -44,7 +44,7 @@ public class SendEmailWithVerificationStatus implements Job {
                     List<JobCandidate> jobCandidates = jobCandidateService.findByJobRequest(jobRequest);
     
                     for (JobCandidate jobCandidate : jobCandidates) {
-                        String email = jobCandidate.getIndividual().getEmail();
+                        String email = jobCandidate.getUser().getEmail();
                         String text = "Olá, o anuncio foi removido!";
     
                         try {

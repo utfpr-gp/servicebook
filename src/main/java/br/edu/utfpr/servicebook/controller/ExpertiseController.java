@@ -13,7 +13,7 @@ import br.edu.utfpr.servicebook.service.JobContractedService;
 import br.edu.utfpr.servicebook.service.ProfessionalExpertiseService;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
+import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -74,7 +74,7 @@ public class ExpertiseController {
     private ProfessionalMapper professionalMapper;
 
     @Autowired
-    private SidePanelUtil sidePanelUtil;
+    private TemplateUtil templateUtil;
 
     @Autowired
     private IAuthentication authentication;
