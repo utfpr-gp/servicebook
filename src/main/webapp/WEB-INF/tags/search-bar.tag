@@ -4,27 +4,32 @@
     <div class="container center-align">
         <div class="row">
             <div class="col s12">
-                <h3>O que você precisa?</h3>
+                <h3>O QUE VOCÊ PRECISA?</h3>
             </div>
         </div>
-        <div class="row">
+
             <form action="profissionais/busca" method="get">
-                <div class="col s10">
-                    <nav class="grey lighten-4">
-                        <div class="nav-wrapper">
-                            <div class="input-field">
-                                <input id="search" type="search" name="termo-da-busca" placeholder="Digite aqui..." value="${searchTerm}" required>
-                                <label class="label-icon" for="search"><i class="material-icons black-text">search</i></label>
-                                <i class="material-icons">close</i>
+                <div class="row">
+                    <div class="col s12">
+                        <nav class="grey lighten-4">
+                            <div class="nav-wrapper">
+                                <div class="input-field">
+                                    <input id="search" type="search" name="termo-da-busca" placeholder="Digite aqui..." value="${searchTerm}" required>
+                                    <i class="material-icons">close</i>
+                                </div>
                             </div>
-                        </div>
-                    </nav>
+                        </nav>
+                    </div>
                 </div>
-                <div class="col s2">
-                    <button type="submit" class="waves-effect waves-light btn-large">Buscar</button>
+                <div class="row">
+                    <div class="col s12">
+                        <button type="submit" class="waves-effect waves-light btn-large right">
+                            <i class="material-icons left">search</i>Buscar
+                        </button>
+                    </div>
                 </div>
             </form>
-        </div>
+
     </div>
 
 </div>

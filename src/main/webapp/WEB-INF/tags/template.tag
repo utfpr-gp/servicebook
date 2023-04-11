@@ -23,6 +23,7 @@
 </head>
 
 <body>
+<main>
 <c:set var="currenturl" value="${requestScope['javax.servlet.forward.request_uri']}"/>
 <nav class="nav-main" role="navigation">
     <div class="nav-wrapper container">
@@ -65,7 +66,7 @@
 </nav>
 
 <jsp:doBody/>
-
+</main>
 <footer class="page-footer">
 
     <div class="footer-copyright">

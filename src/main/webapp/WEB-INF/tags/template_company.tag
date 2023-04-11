@@ -6,6 +6,8 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
+<c:set var="currenturl" value="${requestScope['javax.servlet.forward.request_uri']}"/>
+
 <div class="right">
     <a class="left menu-link" href="requisicoes?passo=1">ANUNCIAR</a>
 
@@ -15,7 +17,7 @@
                 <a class='dropdown-trigger btn' href='#' data-target='dropdown-cliente'>SOU CLIENTE<i class="tiny material-icons right">arrow_drop_down</i></a>
                 <ul id='dropdown-cliente' class='dropdown-content'>
                     <li><a href="minha-conta/profissional">Sou profissional</a></li>
-                    <li><a href="minha-conta/empresa">Sou empresa</a></li>
+                    <!--li><a href="minha-conta/empresa">Sou empresa</a></li-->
                 </ul>
             </li>
         </c:if>
@@ -24,19 +26,19 @@
                 <a class='dropdown-trigger btn' href='#' data-target='dropdown-profissional'>SOU PROFISSIONAL<i class="tiny material-icons right">arrow_drop_down</i></a>
                 <ul id='dropdown-profissional' class='dropdown-content'>
                     <li><a href="minha-conta/cliente">Sou Cliente</a></li>
-                    <li><a href="minha-conta/empresa">Sou empresa</a></li>
+                    <!--li><a href="minha-conta/empresa">Sou empresa</a></li-->
                 </ul>
             </li>
         </c:if>
 
         <c:if test="${fn:contains(currenturl, 'empresa')}">
-            <li>
+            <!--li>
                 <a class='dropdown-trigger btn' href='#' data-target='dropdown-empresa'>SOU EMPRESA<i class="tiny material-icons right">arrow_drop_down</i></a>
                 <ul id='dropdown-empresa' class='dropdown-content'>
                     <li><a href="minha-conta/cliente">Sou Cliente</a></li>
                     <li><a href="minha-conta/profissional">Sou profissional</a></li>
                 </ul>
-            </li>
+            </li-->
         </c:if>
         <form action="logout" method="post" hidden>
             <button type="submit" hidden id="my-button"></button>

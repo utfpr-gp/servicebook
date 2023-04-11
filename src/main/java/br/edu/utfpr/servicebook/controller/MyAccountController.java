@@ -3,6 +3,7 @@ package br.edu.utfpr.servicebook.controller;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.City;
 import br.edu.utfpr.servicebook.model.entity.Individual;
+import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.model.entity.UserCode;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.security.IAuthentication;
@@ -39,7 +40,13 @@ public class MyAccountController {
     private IndividualService individualService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private IndividualMapper individualMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     private CityService cityService;
@@ -76,30 +83,32 @@ public class MyAccountController {
      * @throws IOException
      */
     @GetMapping("/perfil")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView editProfile() throws IOException {
 
-        Optional<Individual> oIndividual = (individualService.findByEmail(authentication.getEmail()));
+        Optional<User> oUser = (userService.findByEmail(authentication.getEmail()));
 
-        if (!oIndividual.isPresent()) {
+        if (!oUser.isPresent()) {
             throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        IndividualDTO individualDTO = individualMapper.toDto(oIndividual.get());
+        User user = oUser.get();
 
-        Optional<City> oCity = cityService.findById(oIndividual.get().getAddress().getCity().getId());
+        UserDTO userDTO = userMapper.toDto(user);
+
+        Optional<City> oCity = cityService.findById(user.getAddress().getCity().getId());
         if (!oCity.isPresent()) {
             throw new EntityNotFoundException("Cidade não foi encontrada pelo id informado.");
         }
 
         CityMinDTO cityMinDTO = cityMapper.toMinDto(oCity.get());
 
-        UserTemplateInfo individualInfo = templateUtil.getUserInfo(oIndividual.get());
+        UserTemplateInfo templateInfo = templateUtil.getUserInfo(user);
 
         ModelAndView mv = new ModelAndView("professional/edit-account");
-        mv.addObject("professional", individualDTO);
+        mv.addObject("professional", userDTO);
         mv.addObject("city", cityMinDTO);
-        mv.addObject("individualInfo", individualInfo);
+        mv.addObject("individualInfo", templateInfo);
 
         return mv;
     }
@@ -112,38 +121,42 @@ public class MyAccountController {
      * @throws IOException
      */
     @GetMapping("/meu-anuncio/{id}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showMyAd(@PathVariable Long id) throws IOException {
 
-        Optional<Individual> oProfessional = this.individualService.findByEmail(authentication.getEmail());
+        Optional<User> oUser = this.userService.findByEmail(authentication.getEmail());
 
-        if (!oProfessional.isPresent()) {
+        if (!oUser.isPresent()) {
             throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        IndividualMinDTO individualMinDTO = individualMapper.toMinDto(oProfessional.get());
+        User user = oUser.get();
+        UserDTO userDTO = userMapper.toDto(user);
+
+        UserTemplateInfo templateInfo = templateUtil.getUserInfo(user);
 
         ModelAndView mv = new ModelAndView("professional/account/my-ad");
+        mv.addObject("user", userDTO);
+        mv.addObject("individualInfo", templateInfo);
 
-        mv.addObject("professional", individualMinDTO);
 
         return mv;
     }
 
     @PatchMapping("/cadastra-descricao/{id}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String updateDescriptionProfessional(@PathVariable Long id, HttpServletRequest request, RedirectAttributes redirectAttributes) throws IOException {
 
-        Optional<Individual> oProfessional = this.individualService.findByEmail(authentication.getEmail());
+        Optional<User> oUser = this.userService.findByEmail(authentication.getEmail());
 
-        if(!oProfessional.isPresent()) {
+        if(!oUser.isPresent()) {
             throw new EntityNotFoundException("Profissional não encontrado pelo id informado.");
         }
 
-        Individual professional = oProfessional.get();
+        User user = oUser.get();
         String description = request.getParameter("description");
-        professional.setDescription(description);
-        this.individualService.save(professional);
+        user.setDescription(description);
+        this.userService.save(user);
 
         return "redirect:/minha-conta/meu-anuncio/{id}";
     }

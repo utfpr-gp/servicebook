@@ -14,9 +14,9 @@
                         <h6>Descreva suas experiências, sua forma de trabalho e especialidades. Enfim, este é o seu espaço para o marketing profissional.</h6>
                     </div>
                     <c:choose>
-                        <c:when test="${professional.description == ''}">
+                        <c:when test="${user.description == ''}">
                             <div class="row">
-                                <form class="col s12" action="${pageContext.request.contextPath}/minha-conta/cadastra-descricao/${professional.id}" method="post">
+                                <form class="col s12" action="${pageContext.request.contextPath}/minha-conta/cadastra-descricao/${user.id}" method="post">
                                     <input type="hidden" name="_method" value="PATCH"/>
                                     <div class="row">
                                         <div class="input-field col s12">
@@ -32,15 +32,15 @@
                                 <div class="texto">
                                     <a href="#" class="waves-effect waves-light btn exibir">Editar</a>
                                     <div class="exibir">
-                                        <p>${professional.description}</p>
+                                        <p>${user.description}</p>
                                     </div>
                                 </div>
                                 <div class="formulario">
-                                    <form class="col s12" action="${pageContext.request.contextPath}/minha-conta/cadastra-descricao/${professional.id}" method="post">
+                                    <form class="col s12" action="${pageContext.request.contextPath}/minha-conta/cadastra-descricao/${user.id}" method="post">
                                         <input type="hidden" name="_method" value="PATCH"/>
                                         <div class="row">
                                             <div class="input-field col s12">
-                                                <textarea name="description" cols="10" rows="5" class="browser-default">${professional.description}</textarea>
+                                                <textarea name="description" cols="10" rows="5" class="browser-default">${user.description}</textarea>
                                             </div>
                                             <button class="waves-effect waves-light btn">salvar</button>
                                             <a href="#" id="ocultar">x</a>

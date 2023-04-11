@@ -100,7 +100,7 @@
 
             </div>
         </div>
-        <c:if test="${statisticProfessionalInfo == null && company != true}">
+        <c:if test="${statisticProfessionalInfo == null && company == false}">
             <div class="row primary-background-color no-margin">
                 <div class="col s12">
                         <p class="header-verification tertiary-color-text center">PROFISSIONAIS FAVORITOS</p>
@@ -169,7 +169,8 @@
                 </div>
             </div>
         </c:if>
-        <c:if test="${statisticProfessionalInfo == null}">
+        <!-- apenas apresenta o acesso quando for cliente e não for empresa -->
+        <c:if test="${statisticProfessionalInfo == null and empty company }">
             <div class="row no-margin center">
                 <div class="col s12 no-margin no-padding input-field area-profission-select">
                     <div class="spacing-buttons">

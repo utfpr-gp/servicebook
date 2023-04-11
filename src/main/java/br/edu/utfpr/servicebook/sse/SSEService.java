@@ -41,22 +41,22 @@ public class SSEService {
     /**
      * Tenta enviar a mensagem para o cliente. Caso o cliente esteja offline, remove o emissor e guarda
      * a mensagem no banco de dados.
-     * @param eventSSEDto
+     * @param eventSSEDTO
      */
-    public void send(EventSSE eventSSEDto) {
-        inMemorySseEmitterRepository.get(eventSSEDto.getToEmail()).ifPresent(emitter -> {
+    public void send(EventSSE eventSSEDTO) {
+        inMemorySseEmitterRepository.get(eventSSEDTO.getToEmail()).ifPresent(emitter -> {
             try {
-                emitter.send(eventSSEDto);
-                System.err.println("enviando emiter: " + eventSSEDto);
+                emitter.send(eventSSEDTO);
+                System.err.println("enviando emiter: " + eventSSEDTO);
 
-                eventSeeRepository.save(eventSSEDto);
-                //TODO salvar o evento como lido no banco para futuramente criar pagina notificações antigas.
-                System.err.println("user online...salvando em banco emiter: " + eventSSEDto);
+                eventSeeRepository.save(eventSSEDTO);
+                //salvar o evento como lido no banco para futuramente criar pagina notificações antigas
+                System.err.println("user online...salvando em banco emiter: " + eventSSEDTO);
             } catch (Exception e) {
                 //esta removendo pois não esta logado
-                inMemorySseEmitterRepository.remove(eventSSEDto.getToEmail());
-                eventSeeRepository.save(eventSSEDto);
-                System.err.println("user offline...salvando em banco emiter: " + eventSSEDto);
+                inMemorySseEmitterRepository.remove(eventSSEDTO.getToEmail());
+                eventSeeRepository.save(eventSSEDTO);
+                System.err.println("user offline...salvando em banco emiter: " + eventSSEDTO);
             }
         });
     }

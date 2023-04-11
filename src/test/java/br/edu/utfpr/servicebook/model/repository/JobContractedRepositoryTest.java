@@ -58,7 +58,7 @@ class JobContractedRepositoryTest {
         jobCandidate.setChosenByBudget(true);
         jobCandidateRepository.save(jobCandidate);
 
-        JobContracted jobContracted = new JobContracted(jobRequest, individual);
+        JobContracted jobContracted = new JobContracted(jobRequest, individual, null);
         jobContracted.setRating(5);
         jobContracted.setComments("Comments");
 
