@@ -106,7 +106,7 @@ class JobRequestRepositoryTest {
         JobCandidate candidate5 = new JobCandidate(jb5, joao);
         jobCandidateRepository.save(candidate5);
 
-        JobContracted jobContracted1 = new JobContracted(jb5, joao);
+        JobContracted jobContracted1 = new JobContracted(jb5, joao, null);
         jobContracted1 = jobContractedRepository.save(jobContracted1);
         jb5.setJobContracted(jobContracted1);
         jobRequestRepository.save(jb5);

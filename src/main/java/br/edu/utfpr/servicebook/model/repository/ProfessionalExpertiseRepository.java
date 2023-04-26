@@ -1,9 +1,6 @@
 package br.edu.utfpr.servicebook.model.repository;
 
-import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
-import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertisePK;
+import br.edu.utfpr.servicebook.model.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,19 +23,19 @@ public interface ProfessionalExpertiseRepository extends JpaRepository<Professio
     /**
      * Retorna uma especialidade profissional, dado um profissional e sua especialidade
      *
-     * @param individual
+     * @param user
      * @param expertise
      * @return Optional<ProfessionalExpertise>
      */
-    Optional<ProfessionalExpertise> findByProfessionalAndExpertise(Individual individual, Expertise expertise);
+    Optional<ProfessionalExpertise> findByProfessionalAndExpertise(User user, Expertise expertise);
 
     /**
      * Retorna uma lista de especialidades de um profissional
      *
-     * @param individual
+     * @param user
      * @return
      */
 
-    List<ProfessionalExpertise> findByProfessional(Individual individual);
+    List<ProfessionalExpertise> findByProfessional(User user);
 
 }

@@ -12,8 +12,8 @@ import lombok.*;
 @Table(name = "job_requests")
 @NoArgsConstructor
 @RequiredArgsConstructor
-@EqualsAndHashCode(exclude={"individual", "jobCandidates", "jobContracted", "expertise", "jobImages"})
-@ToString(exclude={"individual", "jobCandidates", "jobContracted", "expertise", "jobImages"})
+@EqualsAndHashCode(exclude={"individual", "jobCandidates", "jobContracted", "expertise", "jobImages", "company"})
+@ToString(exclude={"individual", "jobCandidates", "jobContracted", "expertise", "jobImages", "company"})
 @Entity
 public class JobRequest {
 	/**
@@ -33,9 +33,12 @@ public class JobRequest {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	/**
+	 * Cliente que criou o anúncio do serviço, podendo ser um indivíduo ou empresa.
+	 */
 	@ManyToOne
 	@JoinColumn(name = "client_id")
-	private Individual individual;
+	private User user;
 	
 	@ManyToOne
 	@JoinColumn(name = "expertise_id")

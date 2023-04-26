@@ -3,7 +3,7 @@ package br.edu.utfpr.servicebook.model.mapper;
 
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
+import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,8 +27,8 @@ public class IndividualMapper {
         return dto;
     }
 
-    public SidePanelIndividualDTO toDtoside(Individual entity) {
-        SidePanelIndividualDTO dto = mapper.map(entity, SidePanelIndividualDTO.class);
+    public UserTemplateInfo toDtoside(Individual entity) {
+        UserTemplateInfo dto = mapper.map(entity, UserTemplateInfo.class);
 //        dto.setExpertise(mapper.map(entity1, ExpertiseDTO.class));
         return dto;
     }
@@ -45,6 +45,7 @@ public class IndividualMapper {
         dto.setDescription(dto.getDescription());
         dto.setRating(dto.getRating());
         dto.setDenounceAmount(dto.getDenounceAmount());
+        dto.setProfile(dto.getProfile());
         return dto;
     }
 

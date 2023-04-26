@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.servlet.ModelAndView;
 
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelStatisticsDTO;
+import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateStatisticDTO;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Map;
@@ -35,7 +35,7 @@ public class ProfessionalHomeControllerTest {
 
             Assertions.assertTrue(modelObjects.containsKey("dataIndividual"));
             Object dataIndividual = modelObjects.get("dataIndividual");
-            SidePanelStatisticsDTO sidePanelItems = (SidePanelStatisticsDTO) dataIndividual;
+            UserTemplateStatisticDTO sidePanelItems = (UserTemplateStatisticDTO) dataIndividual;
             Assertions.assertEquals("Integer", sidePanelItems.getRatingScore().getClass().getSimpleName());
         } catch (Exception e) {
             log.debug("TEST ERROR:" + e.getMessage());

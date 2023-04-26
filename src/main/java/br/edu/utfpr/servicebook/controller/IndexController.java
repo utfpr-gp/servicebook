@@ -1,12 +1,13 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.entity.City;
-import br.edu.utfpr.servicebook.model.entity.Individual;
+import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.service.CityService;
-import br.edu.utfpr.servicebook.service.IndividualService;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
+import br.edu.utfpr.servicebook.service.UserService;
+
+import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
+import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -26,10 +27,10 @@ public class IndexController {
     private CityService cityService;
 
     @Autowired
-    private IndividualService individualService;
+    private UserService userService;
 
     @Autowired
-    private SidePanelUtil sidePanelUtil;
+    private TemplateUtil templateUtil;
 
     @Autowired
     private IAuthentication authentication;
@@ -41,9 +42,9 @@ public class IndexController {
         ModelAndView mv = new ModelAndView("visitor/index");
         System.out.println("Principal: " + authentication.getAuthentication().getPrincipal());
         if(!(authentication.getAuthentication() instanceof AnonymousAuthenticationToken)){
-            Optional<Individual> oIndividual = individualService.findByEmail(authentication.getEmail());
-            SidePanelIndividualDTO individualInfo = sidePanelUtil.getIndividualInfo(oIndividual.get());
-            mv.addObject("individualInfo", individualInfo);
+            Optional<User> oUser = userService.findByEmail(authentication.getEmail());
+            UserTemplateInfo userInfo = templateUtil.getUserInfo(oUser.get());
+            mv.addObject("individualInfo", userInfo);
         }
 
         List<City> cities = cityService.findAll();

@@ -13,65 +13,65 @@ import java.util.Optional;
 
 public interface JobContractedRepository extends JpaRepository<JobContracted, Long> {
 
-    @Query("SELECT j FROM JobContracted j WHERE j.individual.id = :professional_id")
-    List<JobContracted> findByIdIndividual(@Param("professional_id") Long professional_id);
+    @Query("SELECT j FROM JobContracted j WHERE j.user.id = :professionalId")
+    List<JobContracted> findByUserId(@Param("professionalId") Long professionalId);
 
     /**
      * Retorna o total de trabalhos contratados de um profissional.
      *
-     * @param individual
+     * @param user
      * @return Optional<Long>
      */
-    Optional<Long> countByIndividual(Individual individual);
+    Optional<Long> countByUser(User user);
 
     /**
      * Retorna o total de avaliações dos trabalhos contratados de um profissional.
      *
-     * @param individual
+     * @param user
      * @return Optional<Long>
      */
-    Optional<Long> countRatingByIndividual(Individual individual);
+    Optional<Long> countRatingByUser(User user);
 
     /**
      * Retorna o total de comentários dos trabalhos contratados de um profissional.
      *
-     * @param individual
+     * @param user
      * @return Optional<Long>
      */
-    Optional<Long> countCommentsByIndividual(Individual individual);
+    Optional<Long> countCommentsByUser(User user);
 
     /**
      * Retorna o total de trabalhos contratados de um profissional para uma dada especialidade.
      *
-     * @param individual
+     * @param user
      * @param expertise
      * @return Optional<Long>
      */
-    Optional<Long> countByIndividualAndJobRequest_Expertise(Individual individual, Expertise expertise);
+    Optional<Long> countByUserAndJobRequest_Expertise(User user, Expertise expertise);
 
     /**
      * Retorna o total de avaliações dos trabalhos contratados de um profissional para uma dada especialidade.
      *
-     * @param individual
+     * @param user
      * @param expertise
      * @return Optional<Long>
      */
-    Optional<Long> countRatingByIndividualAndJobRequest_Expertise(Individual individual, Expertise expertise);
+    Optional<Long> countRatingByUserAndJobRequest_Expertise(User user, Expertise expertise);
 
     /**
      * Retorna o total de comentários dos trabalhos contratados de um profissional para uma dada especialidade.
      *
-     * @param individual
+     * @param user
      * @param expertise
      * @return Optional<Long>
      */
-    Optional<Long> countCommentsByIndividualAndJobRequest_Expertise(Individual individual, Expertise expertise);
+    Optional<Long> countCommentsByUserAndJobRequest_Expertise(User user, Expertise expertise);
 
-    Page<JobContracted> findByJobRequest_StatusAndIndividual(JobRequest.Status status, Individual individual, Pageable pageable);
+    Page<JobContracted> findByJobRequest_StatusAndUser(JobRequest.Status status, User user, Pageable pageable);
 
-    Page<JobContracted> findByJobRequest_StatusAndJobRequest_Individual(JobRequest.Status status, Individual individual, Pageable pageable);
+    Page<JobContracted> findByJobRequest_StatusAndJobRequest_User(JobRequest.Status status, User user, Pageable pageable);
 
-    Page<JobContracted> findByJobRequest_StatusAndJobRequest_ExpertiseAndIndividual(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable);
+    Page<JobContracted> findByJobRequest_StatusAndJobRequest_ExpertiseAndUser(JobRequest.Status status, Expertise expertise, User user, Pageable pageable);
 
     //@Query("SELECT j FROM JobContracted j WHERE j.jobRequest.id = :job_request_id")
     Optional<JobContracted> getJobContractedByJobRequest_Id(Long jobRequestId);

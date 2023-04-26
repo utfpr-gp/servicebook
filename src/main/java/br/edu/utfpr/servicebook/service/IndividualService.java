@@ -1,11 +1,9 @@
 package br.edu.utfpr.servicebook.service;
 
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
-import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
-import br.edu.utfpr.servicebook.model.entity.User;
+import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
+import br.edu.utfpr.servicebook.model.repository.CompanyRepository;
 import br.edu.utfpr.servicebook.model.repository.IndividualRepository;
 import br.edu.utfpr.servicebook.model.repository.ProfessionalExpertiseRepository;
 import br.edu.utfpr.servicebook.model.repository.UserRepository;
@@ -26,6 +24,8 @@ public class IndividualService {
 
     @Autowired
     private IndividualRepository individualRepository;
+    @Autowired
+    private CompanyRepository companyRepository;
 
     @Autowired
     private ProfessionalExpertiseRepository professionalExpertiseRepository;
@@ -131,4 +131,9 @@ public class IndividualService {
 
 
 
+    @Transactional
+    public void saveExpertisesCompany(Company company, ProfessionalExpertise professionalExpertise) {
+        professionalExpertiseRepository.save(professionalExpertise);
+        companyRepository.save(company);
+    }
 }

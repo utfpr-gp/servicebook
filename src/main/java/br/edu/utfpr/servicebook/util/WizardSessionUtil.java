@@ -14,7 +14,8 @@ public class WizardSessionUtil<T> {
     public static final String KEY_ERROR_JOB_REQUEST = "KEY_ERROR_JOB_REQUEST";
 
     public static final String KEY_LOGIN = "loginUser";
-    public static final String KEY_EXERPERTISES = "wizardExerpertises";
+    public static final String KEY_EXPERTISES = "wizardExerpertises";
+    public static final String KEY_WIZARD_COMPANY = "wizardCompany";
 
     /**
      * Retorna um objeto DTO para armazenar os dados do Wizard na sessão.

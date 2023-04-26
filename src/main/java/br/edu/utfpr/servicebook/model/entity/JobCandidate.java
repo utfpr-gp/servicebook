@@ -47,15 +47,19 @@ public class JobCandidate {
 	@JoinColumn(name = "job_id")
 	private JobRequest jobRequest;
 
+	/**
+	 * Profissional que se candidatou a um anúncio de serviço.
+	 * Pode ser indivíduo ou empresa.
+	 */
 	@ManyToOne
 	@MapsId("professionalId")
 	@JoinColumn(name = "professional_id")
-	private Individual individual;
+	private User user;
 
-	public JobCandidate(JobRequest jobRequest, Individual individual) {
+	public JobCandidate(JobRequest jobRequest, User user) {
 		this.jobRequest = jobRequest;
-		this.individual = individual;
-		this.id = new JobCandidatePK(jobRequest.getId(), individual.getId());
+		this.user = user;
+		this.id = new JobCandidatePK(jobRequest.getId(), user.getId());
 	}
 
 	@PrePersist

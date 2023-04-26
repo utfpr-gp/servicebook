@@ -2,6 +2,8 @@ package br.edu.utfpr.servicebook.model.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -23,39 +25,51 @@ public class User implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	protected Long id;
 
 	@NonNull
-	private String name;
+	protected String name;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private ProfileEnum profile;
+	protected ProfileEnum profile;
 
 	@NonNull
 	@Column(unique = true)
-	private String email;
+	protected String email;
 
-	private String password;
+	protected String password;
 
 	@NonNull
-	private String phoneNumber;
+	protected String phoneNumber;
 
-	private String profilePicture;
+	protected String profilePicture;
 
-	private boolean phoneVerified;
+	protected boolean phoneVerified;
 
-	private boolean emailVerified;
+	protected boolean emailVerified;
 
-	private boolean profileVerified;
+	protected boolean profileVerified;
 
-	private Integer rating;
+	protected Integer rating;
 
 	@OneToOne(mappedBy = "user")
-	private UserToken userToken;
+	protected UserToken userToken;
 
 	@OneToOne(cascade = CascadeType.PERSIST)
-	private Address address;
+	protected Address address;
+
+	@OneToMany(mappedBy = "user")
+	protected Set<JobRequest> jobRequest = new HashSet<>();
+
+	@OneToMany(mappedBy = "user")
+	Set<JobCandidate> candidatures;
+
+	protected String description;
+
+	protected Integer denounceAmount;
+
+	protected Long followsAmount;
 
 	@PrePersist
 	@PreUpdate

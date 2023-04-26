@@ -50,32 +50,33 @@
                     </a>
                 </div>
 
-                <div class="divider"></div>
+                <c:if test="${logged == false}">
+                    <div class="divider"></div>
 
-                <div class="row center-align">
-                    <h4 class="center-align">ACESSE O <span class="facebook-color-text">SERVICEBOOK</span></h4>
-                    PARA TER MAIORES INFORMAÇÕES ANTES DE ENTRAR EM CONTATO COM O PROFISSIONAL OU EMPRESA
-                    </br>
-                    <p class="primary-color-text">
-                        HISTÓRICO DE SERVIÇOS REALIZADOS E AVALIAÇÕES COM COMENTÁRIOS FEITAS POR
-                        CLIENTES REAIS
-                    </p>
-                    OU
-                    </br>
-                    PRINCIPALMENTE PARA SIMPLIFICAR A TAREFA DE ENCONTRAR O MELHOR PROFISSIONAL OU EMPRESA PARA REALIZAR O SEU SERVICO.
-                    </br>
-                    DE FORMA GRATUITA!
-                    </br>
-                    DESCREVA O SERVIÇO A SER REALIZADO E RECEBA AS INFORMAÇÕES DE CONTATO APENAS DE PROFISSIONAIS OU EMPRESAS COM
-                    </br>
-                    <p class="primary-color-text">
-                        INTERESSE NO SERVIÇO, DISPONÍVEL PARA A DATA ESPECIFICADA E COM EXPERIÊNCIA NO TIPO DE
-                        SERVIÇO QUE VOCÊ PRECISA!
-                    </p>
-                    <c:if test="${logged == false}">
+                    <div class="row center-align">
+                        <h4 class="center-align">ACESSE O <span class="facebook-color-text">SERVICEBOOK</span></h4>
+                        PARA TER MAIORES INFORMAÇÕES ANTES DE ENTRAR EM CONTATO COM O PROFISSIONAL OU EMPRESA
+                        </br>
+                        <p class="primary-color-text">
+                            HISTÓRICO DE SERVIÇOS REALIZADOS E AVALIAÇÕES COM COMENTÁRIOS FEITAS POR
+                            CLIENTES REAIS
+                        </p>
+                        OU
+                        </br>
+                        PRINCIPALMENTE PARA SIMPLIFICAR A TAREFA DE ENCONTRAR O MELHOR PROFISSIONAL OU EMPRESA PARA REALIZAR O SEU SERVICO.
+                        </br>
+                        DE FORMA GRATUITA!
+                        </br>
+                        DESCREVA O SERVIÇO A SER REALIZADO E RECEBA AS INFORMAÇÕES DE CONTATO APENAS DE PROFISSIONAIS OU EMPRESAS COM
+                        </br>
+                        <p class="primary-color-text">
+                            INTERESSE NO SERVIÇO, DISPONÍVEL PARA A DATA ESPECIFICADA E COM EXPERIÊNCIA NO TIPO DE
+                            SERVIÇO QUE VOCÊ PRECISA!
+                        </p>
+
                         <a class="waves-effect waves-light btn" href="login">Entrar</a>
-                    </c:if>
-                </div>
+                    </div>
+                </c:if>
                 <c:if test="${logged == false}">
                     <div class="divider"></div>
 

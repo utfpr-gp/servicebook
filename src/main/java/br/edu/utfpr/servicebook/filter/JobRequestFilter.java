@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import br.edu.utfpr.servicebook.model.dto.JobRequestDTO;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.SmartValidator;
@@ -119,7 +120,7 @@ public class JobRequestFilter implements Filter {
 
                     //salva no BD
                     JobRequest jr = jobRequestMapper.toEntity(jobRequestDTO);
-                    jr.setIndividual(oIndividual.get());
+                    jr.setUser(oIndividual.get());
                     jr.setExpertise(oExpertise.get());
                     jobRequestService.save(jr);
                 }

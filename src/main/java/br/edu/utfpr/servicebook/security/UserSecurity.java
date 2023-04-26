@@ -14,8 +14,8 @@ public class UserSecurity implements UserDetails {
     private Collection<? extends GrantedAuthority> authorities;
 
     public UserSecurity(String username, String password, Collection<? extends GrantedAuthority> authorities) {
-        this.username = username;
-        this.password = password;
+        this.username = username.trim();
+        this.password = password.trim();
         this.authorities = authorities;
     }
 

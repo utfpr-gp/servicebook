@@ -3,13 +3,13 @@ package br.edu.utfpr.servicebook.follower;
 import br.edu.utfpr.servicebook.controller.ExpertiseController;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
-import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobCandidateMapper;
+import br.edu.utfpr.servicebook.model.mapper.UserMapper;
 import br.edu.utfpr.servicebook.security.IAuthentication;
-import br.edu.utfpr.servicebook.service.IndividualService;
 import br.edu.utfpr.servicebook.service.JobCandidateService;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelIndividualDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelUtil;
+import br.edu.utfpr.servicebook.service.UserService;
+import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +33,10 @@ public class FollowingController {
     public static final Logger log = LoggerFactory.getLogger(ExpertiseController.class);
 
     @Autowired
-    private IndividualService individualService;
+    private UserService userService;
 
     @Autowired
-    private IndividualMapper individualMapper;
+    private UserMapper userMapper;
 
     @Autowired
     FollowsService followingService;
@@ -57,7 +57,7 @@ public class FollowingController {
     IAuthentication authentication;
 
     @Autowired
-    SidePanelUtil sidePanelUtil;
+    TemplateUtil templateUtil;
 
     /**
      * Apresenta a lista de profissionais favoritos de um cliente.
@@ -69,16 +69,16 @@ public class FollowingController {
 
         ModelAndView mv = new ModelAndView("client/details-follows");
 
-        Optional<Individual> oIndividual = individualService.findByEmail(authentication.getEmail());
-        IndividualDTO clientDTO = individualMapper.toDto(oIndividual.get());
+        Optional<User> oIndividual = userService.findByEmail(authentication.getEmail());
+        UserDTO clientDTO = userMapper.toDto(oIndividual.get());
 
-        SidePanelIndividualDTO sidePanelIndividualDTO = sidePanelUtil.getIndividualInfo(clientDTO);
-        mv.addObject("individualInfo", sidePanelIndividualDTO);
+        UserTemplateInfo userTemplateInfo = templateUtil.getUserInfo(clientDTO);
+        mv.addObject("individualInfo", userTemplateInfo);
 
         //lista de seguidores
         List<Follows> followingList = followingService.findFollowingByClient(oIndividual.get());
 
-        List<Individual> oProfessionalList = followingList.stream()
+        List<User> oProfessionalList = followingList.stream()
                 .map(follows -> {
                     return follows.getProfessional();
                 })
@@ -128,8 +128,8 @@ public class FollowingController {
 
         String currentUserEmail = authentication.getEmail();
 
-        Optional<Individual> oClient = individualService.findByEmail(currentUserEmail);
-        Optional<Individual> oProfessional = individualService.findById(professionalId);
+        Optional<User> oClient = userService.findByEmail(currentUserEmail);
+        Optional<User> oProfessional = userService.findById(professionalId);
 
         if(!oProfessional.isPresent() || !oClient.isPresent()){
             return ResponseEntity.badRequest().build();

@@ -1,12 +1,10 @@
 package br.edu.utfpr.servicebook.model.entity;
 
+import br.edu.utfpr.servicebook.security.ProfileEnum;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
 
 @Data
 @NoArgsConstructor
@@ -22,7 +20,7 @@ public class Individual extends User {
     public enum Gender {
         MASCULINE, FEMININE
     };
-//    private int id;
+
     @NonNull
     @Column(unique = true)
     private String cpf;
@@ -31,18 +29,6 @@ public class Individual extends User {
     private Gender gender;
 
     private Date birthDate;
-
-    @OneToMany(mappedBy = "individual")
-    private Set<JobRequest> jobRequest = new HashSet<>();
-
-    @OneToMany(mappedBy = "individual")
-    Set<JobCandidate> candidatures;
-
-    private String description;
-
-    private Integer denounceAmount;
-
-    private Long followsAmount;
 
     public Individual(String name, String email, String password, String phoneNumber, String cpf){
         super(name, email, password, phoneNumber);

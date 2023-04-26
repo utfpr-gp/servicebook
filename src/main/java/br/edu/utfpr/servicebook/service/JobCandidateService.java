@@ -23,20 +23,20 @@ public class JobCandidateService {
         return this.jobCandidateRepository.countByJobRequest(jobRequest);
     }
 
-    public Page<JobCandidate> findByJobRequest_StatusAndProfessional(JobRequest.Status status, Individual individual, Pageable pageable) {
-        return this.jobCandidateRepository.findByJobRequest_StatusAndIndividual(status, individual, pageable);
+    public Page<JobCandidate> findByJobRequest_StatusAndProfessional(JobRequest.Status status, User user, Pageable pageable) {
+        return this.jobCandidateRepository.findByJobRequest_StatusAndUser(status, user, pageable);
     }
 
     public List<JobCandidate> findByJobRequest(JobRequest jobRequest) {
         return this.jobCandidateRepository.findByJobRequest(jobRequest);
     }
 
-    public Page<JobCandidate> findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status status, Individual client, Pageable pageable) {
-        return this.jobCandidateRepository.findByJobRequest_StatusAndJobRequest_Individual(status, client, pageable);
+    public Page<JobCandidate> findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status status, User client, Pageable pageable) {
+        return this.jobCandidateRepository.findByJobRequest_StatusAndJobRequest_User(status, client, pageable);
     }
 
-    public Page<JobCandidate> findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status status, Expertise expertise, Individual individual, Pageable pageable) {
-        return this.jobCandidateRepository.findByJobRequest_StatusAndJobRequest_ExpertiseAndIndividual(status, expertise, individual, pageable);
+    public Page<JobCandidate> findByJobRequest_StatusAndJobRequest_ExpertiseAndProfessional(JobRequest.Status status, Expertise expertise, User user, Pageable pageable) {
+        return this.jobCandidateRepository.findByJobRequest_StatusAndJobRequest_ExpertiseAndUser(status, expertise, user, pageable);
     }
 
     public JobCandidate save(JobCandidate entity){
@@ -48,11 +48,11 @@ public class JobCandidateService {
     }
 
     public Optional<JobCandidate> findById(Long jobId, Long individualId) {
-        return jobCandidateRepository.findByJobIdAndIndividualId(jobId, individualId);
+        return jobCandidateRepository.findByJobIdAndUserId(jobId, individualId);
     }
 
-    public List<JobCandidate> findByIndividual(Individual individual) {
-        return jobCandidateRepository.findByIndividual(individual);
+    public List<JobCandidate> findByUser(User user) {
+        return jobCandidateRepository.findByUser(user);
     }
 
     public List<JobCandidate> findByJobRequestOrderByChosenByBudgetDesc(JobRequest jobRequest) {
