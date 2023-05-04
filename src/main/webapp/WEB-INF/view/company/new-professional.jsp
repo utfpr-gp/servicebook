@@ -30,13 +30,13 @@
                             </div>
 
 
-                            <div id="modal-delete" class="modal">
+                            <div id="modal-delete" class="modal modal-delete-professional">
                                 <div class="modal-content">
                                     <form action="" method="POST">
                                         <input type="hidden" name="_method" value="DELETE"/>
 
                                         <div class="modal-content">
-                                            <h4>Você tem certeza que deseja remover o profissional da lista de funcionários?</h4>
+                                            <h4>Você tem certeza que deseja remover o profissional <strong id="strong-name"></strong> da lista de funcionários?</h4>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
@@ -69,6 +69,7 @@
 
                                             <div class="col s5" style="text-align: left">
                                                 <p class="name-professional-company">${professional.name}</p>
+                                                <input value="${professional.name}" id="name-professional" type="hidden">
                                                 <span class="email-professional-company">${professional.email}</span>
                                             </div>
 
@@ -161,11 +162,11 @@
         $("#getCopyLink").text('Link copiado');
     })
 
-    $('a.remove').click(function(e) {
-        e.preventDefault();
-        var form = $(this).next('form');
-        form.submit();
-        window.location.href = '/users';
-    });
+
+        $(".delete-exerpertise-professional").on("click", function() {
+            var firstValue = $("#name-professional").val();
+            $("#strong-name").text(firstValue);
+        });
+
 
 </script>

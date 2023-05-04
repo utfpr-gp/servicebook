@@ -20,19 +20,16 @@ public class CompanyProfessional {
 
     @EmbeddedId
     private CompanyProfessionalPK id;
-
     private Integer rating;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @MapsId("professionalId")
     @JoinColumn(name = "professional_id")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private User professional;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @MapsId("companyId")
     @JoinColumn(name = "company_id")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private User company;
 
     public CompanyProfessional(User company, User professional){

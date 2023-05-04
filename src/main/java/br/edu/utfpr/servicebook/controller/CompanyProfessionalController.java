@@ -29,6 +29,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@RestController
+
 @RequestMapping("/minha-conta/empresa/profissionais")
 @Controller
 public class CompanyProfessionalController {
@@ -118,21 +120,20 @@ public class CompanyProfessionalController {
         return mv;
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    @ResponseBody
-    public String delete(@PathVariable User id, RedirectAttributes redirectAttributes) throws Exception {
+    @DeleteMapping("/{id}")
+    @RolesAllowed({RoleType.COMPANY})
+    public void delete(@PathVariable("id") User id, RedirectAttributes redirectAttributes) throws Exception {
 
         log.debug("Removendo um profissional com id {}", id);
-//        User company = this.getCompany();
-//
-//        Optional <CompanyProfessional> optionalProfession = this.companyProfessionalService.findByCompanyAndProfessional(company,id);
-//
-//        if(!optionalProfession.isPresent()){
-//            throw new EntityNotFoundException("Erro ao remover, registro não encontrado para o id " + id);
-//        }
-//
-//        this.companyProfessionalService.delete(optionalProfession.get().getId());
-        return "redirect:/minha-conta/empresa/profissionais";
+        User company = this.getCompany();
+
+        Optional <CompanyProfessional> optionalProfession = this.companyProfessionalService.findByCompanyAndProfessional(company,id);
+
+        if(!optionalProfession.isPresent()){
+            throw new EntityNotFoundException("Erro ao remover, registro não encontrado para o id " + id);
+        }
+
+        this.companyProfessionalService.delete(optionalProfession.get().getId());
     }
 
     /**
