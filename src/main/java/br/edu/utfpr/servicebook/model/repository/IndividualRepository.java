@@ -53,4 +53,8 @@ public interface IndividualRepository extends JpaRepository<Individual, Long> {
             "or lower(p.description) like lower(concat('%', :term, '%')) " +
             "or lower(pe.expertise.name) like lower(concat('%', :term, '%'))")
     List<Individual> findDistinctByTermIgnoreCase(String term);
+
+    @Query("SELECT distinct e FROM Individual e WHERE e.profile = 'ROLE_USER'")
+    List<Individual> findProfessionals();
+
 }

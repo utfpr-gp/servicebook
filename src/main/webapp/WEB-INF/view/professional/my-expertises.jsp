@@ -139,12 +139,11 @@
 </t:template>
 
 <script>
-
     $(function(){
         $("#txtBusca").keyup(function(){
             var texto = $(this).val();
 
-            //$("#search-expertises li").css("display", "block");
+            // $("#search-expertises li").css("display", "block");
             $("#search-expertises li").css("display", "none");
             $("#search-expertises li").each(function(){
                 if($(this).text().toUpperCase().indexOf(texto.toUpperCase()) < 0)

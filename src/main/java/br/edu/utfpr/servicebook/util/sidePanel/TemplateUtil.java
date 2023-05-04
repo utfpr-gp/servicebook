@@ -99,7 +99,7 @@ public class TemplateUtil {
         );
     }
 
-    public SidePanelCompanyDTO getCompanyStatisticInfo(Individual oProfessional, Long expertiseId) {
+    public SidePanelCompanyDTO getCompanyStatisticInfo(User oProfessional, Long expertiseId) {
 
         if (expertiseId == 0L) {
             ProfessionalDTO professional = professionalMapper.toResponseDto(oProfessional);

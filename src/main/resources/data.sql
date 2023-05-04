@@ -83,6 +83,11 @@ VALUES (1, 1, 1),
 INSERT INTO companies (cnpj, id)
 VALUES ('98.988.640/0001-91', 1);
 
+INSERT INTO company_professionals (company_id, professional_id, rating)
+VALUES (7, 2, 1),
+       (5, 6, 1),
+       (7, 6, 1);
+
 INSERT INTO job_requests
 (client_confirmation, date_created, date_target, description, professional_confirmation, quantity_candidators_max,
  status, client_id, expertise_id)

@@ -23,6 +23,10 @@ public class Company extends User {
 	@Column(nullable = false)
 	private ProfileEnum profile;
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
 	public Company(String name, String email, String password, String phoneNumber, String cnpj){
 		super(name, email, password, phoneNumber);
 		setCnpj(cnpj);

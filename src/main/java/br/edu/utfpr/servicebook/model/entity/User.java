@@ -71,6 +71,9 @@ public class User implements Serializable {
 
 	protected Long followsAmount;
 
+	public User(Long id, String name) {
+	}
+
 	@PrePersist
 	@PreUpdate
 	public void onSave() {

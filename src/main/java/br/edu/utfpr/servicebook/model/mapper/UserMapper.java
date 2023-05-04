@@ -1,7 +1,9 @@
 package br.edu.utfpr.servicebook.model.mapper;
 
 
+import br.edu.utfpr.servicebook.model.dto.CompanyProfessionalDTO2;
 import br.edu.utfpr.servicebook.model.dto.UserDTO;
+import br.edu.utfpr.servicebook.model.entity.CompanyProfessional;
 import br.edu.utfpr.servicebook.model.entity.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,13 @@ public class UserMapper {
     public User toEntity(UserDTO dto) {
         User entity = mapper.map(dto, User.class);
         return entity;
+    }
+
+    public UserDTO toResponseDTO(User entity) {
+        UserDTO dto = mapper.map(entity, UserDTO.class);
+        dto.setId(entity.getId());
+        dto.setName(entity.getName());
+        return dto;
     }
 
 }
