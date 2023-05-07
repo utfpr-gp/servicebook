@@ -28,7 +28,7 @@
                         <div class="modal-content">
                             <form action="" method="post">
 
-                                <input type="hidden" name="_method" value="DELETE"/>
+                                    <input type="hidden" name="_method" value="DELETE"/>
 
                                 <div class="modal-content">
                                     <h4>Você tem certeza que deseja remover <strong id="strong-name"></strong> das suas especialidades?</h4>

@@ -34,12 +34,15 @@ public class CompanyProfessionalService {
         return this.companyProfessionalRepository.selectRatingByProfessionalAndExpertise(professional_id, expertise_id);
     }
 
-    public Optional<CompanyProfessional> findByCompanyAndProfessional(User company, User professional) {
-        return this.companyProfessionalRepository.findByProfessionalAndCompany(company, professional);
-    }
-
     public List<CompanyProfessional> findByCompany(User user) {return this.companyProfessionalRepository.findByCompany(user);}
 
-    public List<CompanyProfessional> findByProfessional(User user) {return this.companyProfessionalRepository.findByProfessional(user);}
+    public List<CompanyProfessional> findByProfessional(User individual) {
+        return this.companyProfessionalRepository.findByProfessional(individual);
+    }
+
+    public Optional<CompanyProfessional> findByCompanyAndProfessional(User company, User professional) {
+        return this.companyProfessionalRepository.findByCompanyAndProfessional(company, professional);
+    }
+
 
 }

@@ -22,12 +22,12 @@ public class CompanyProfessional {
     private CompanyProfessionalPK id;
     private Integer rating;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @MapsId("professionalId")
     @JoinColumn(name = "professional_id")
     private User professional;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @MapsId("companyId")
     @JoinColumn(name = "company_id")
     private User company;

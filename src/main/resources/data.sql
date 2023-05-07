@@ -81,12 +81,18 @@ VALUES (1, 1, 1),
        (2, 6, 4);
 
 INSERT INTO companies (cnpj, id)
-VALUES ('98.988.640/0001-91', 1);
+VALUES ('98.988.640/0001-91', 1),
+       ('01.988.640/0001-10', 2),
+       ('01.988.640/0001-78', 3),
+       ('01.988.640/0001-65', 4),
+       ('01.988.640/0001-24', 5),
+       ('01.988.640/0001-15', 6),
+       ('78.988.640/0001-02', 7);
 
-INSERT INTO company_professionals (company_id, professional_id, rating)
-VALUES (7, 2, 1),
-       (5, 6, 1),
-       (7, 6, 1);
+-- INSERT INTO company_professionals (company_id, professional_id, rating)
+-- VALUES (7, 2, 1),
+--        (5, 6, 1),
+--        (7, 6, 1);
 
 INSERT INTO job_requests
 (client_confirmation, date_created, date_target, description, professional_confirmation, quantity_candidators_max,

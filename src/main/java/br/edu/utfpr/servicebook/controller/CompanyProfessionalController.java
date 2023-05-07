@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -28,15 +29,10 @@ import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-
-@RestController
-
 @RequestMapping("/minha-conta/empresa/profissionais")
 @Controller
 public class CompanyProfessionalController {
-
     public static final Logger log = LoggerFactory.getLogger(CompanyProfessionalController.class);
-
     @Autowired
     private UserService userService;
 
@@ -122,18 +118,21 @@ public class CompanyProfessionalController {
 
     @DeleteMapping("/{id}")
     @RolesAllowed({RoleType.COMPANY})
-    public void delete(@PathVariable("id") User id, RedirectAttributes redirectAttributes) throws Exception {
-
-        log.debug("Removendo um profissional com id {}", id);
+    @Transactional
+    public String delete(@PathVariable User id, RedirectAttributes redirectAttributes) throws Exception {
         User company = this.getCompany();
+        Optional<User> oProfessional = userService.findById(id.getId());
 
-        Optional <CompanyProfessional> optionalProfession = this.companyProfessionalService.findByCompanyAndProfessional(company,id);
+        Optional<CompanyProfessional> optionalCompanyProfessional = companyProfessionalService.findByCompanyAndProfessional(company, oProfessional.get());
 
-        if(!optionalProfession.isPresent()){
-            throw new EntityNotFoundException("Erro ao remover, registro não encontrado para o id " + id);
+//        if(!optionalProfession.isPresent()){
+//            throw new EntityNotFoundException("Erro ao remover, registro não encontrado para o id " + id);
+//        }
+//
+        if (optionalCompanyProfessional.get().getProfessional().getId().equals(id.getId())) {
+            this.companyProfessionalService.delete(optionalCompanyProfessional.get().getId());
         }
-
-        this.companyProfessionalService.delete(optionalProfession.get().getId());
+        return "redirect:/minha-conta/empresa/profissionais";
     }
 
     /**

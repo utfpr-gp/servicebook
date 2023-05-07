@@ -30,22 +30,6 @@
                             </div>
 
 
-                            <div id="modal-delete" class="modal modal-delete-professional">
-                                <div class="modal-content">
-                                    <form action="" method="POST">
-                                        <input type="hidden" name="_method" value="DELETE"/>
-
-                                        <div class="modal-content">
-                                            <h4>Você tem certeza que deseja remover o profissional <strong id="strong-name"></strong> da lista de funcionários?</h4>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
-                                            <button type="submit" class="modal-close btn waves-effect waves-light gray remove">Sim</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-
                             <c:forEach var="professional" items="${professionalExpertises}">
                             <div class="col s12">
                                     <div class="card">
@@ -72,16 +56,31 @@
                                                 <input value="${professional.name}" id="name-professional" type="hidden">
                                                 <span class="email-professional-company">${professional.email}</span>
                                             </div>
-
                                             <div class="col s5 button-remove-professional-company">
                                                 <a href="#modal-delete" id="delete-exerpertise-professional" class="myclass waves-effect waves-teal btn-flat delete-exerpertise-professional modal-trigger"
-                                                   data-url="${pageContext.request.contextPath}/minha-conta/empresa/profissionais/${professional.id}"
+                                                   data-url="${pageContext.request.contextPath}/minha-conta/empresa/profissionais/${professional.id.professionalId}"
                                                    data-name="${professional.name}"><i class="myclass material-icons">delete</i></a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </c:forEach>
+
+                            <div id="modal-delete" class="modal modal-delete-professional">
+                                <div class="modal-content">
+                                    <form action="" method="post" class="form-delete">
+                                        <input type="hidden" name="_method" value="DELETE"/>
+
+                                        <div class="modal-content">
+                                            <h4>Você tem certeza que deseja remover o profissional <strong id="strong-name"></strong> da lista de funcionários?</h4>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
+                                            <button type="submit" class="modal-close btn waves-effect waves-light gray remove">Sim</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
 
                             <div id="modal-professionals" class="modal">
                                 <div class="modal-content ui-front">
@@ -148,6 +147,17 @@
     select{ display: block !important; } input.select-dropdown.dropdown-trigger{ display: none; !important; }
 </style>
 <script>
+    $('.modal-delete-professional').modal({
+        onOpenEnd: function (modal, trigger) {
+            var url = $(trigger).data('url');
+            var name = $(trigger).data('name');
+
+            modal = $(modal);
+            var form = modal.find('.form-delete');
+            form.attr('action', url);
+            modal.find('#strong-name').text(name);
+        }
+    });
 
     $("#single").select2({
         placeholder: "Nome do profissional",
@@ -165,7 +175,9 @@
 
         $(".delete-exerpertise-professional").on("click", function() {
             var firstValue = $("#name-professional").val();
+            var fomr = $("#delete-exerpertise-professional").data('url');
             $("#strong-name").text(firstValue);
+            $(".form-delete").attr('action', fomr);
         });
 
 

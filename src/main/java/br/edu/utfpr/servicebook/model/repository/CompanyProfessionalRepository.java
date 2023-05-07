@@ -19,6 +19,10 @@ public interface CompanyProfessionalRepository extends JpaRepository<CompanyProf
      */
     Optional<CompanyProfessional> findByProfessionalAndCompany(User company, User user);
 
+    @Query("SELECT pe FROM CompanyProfessional pe WHERE pe.professional.id = :professional_id AND pe.company.id = :company_id")
+    Optional<Integer> findByProfessionalAndCompany1(@Param("professional_id") Long professional_id, @Param("company_id") Long company_id);
+
+
     @Query("select distinct p from User p left join CompanyProfessional pe on p.id = pe.professional.id where " +
             "lower(p.name) like lower(concat('%', :term, '%'))" +
             "or lower(p.email) like lower(concat('%', :term, '%')) " )
@@ -38,5 +42,15 @@ public interface CompanyProfessionalRepository extends JpaRepository<CompanyProf
 
 
     List<CompanyProfessional> findByCompany(User user);
+
+    /**
+     * Retorna uma especialidade profissional, dado um profissional e sua especialidade
+     *
+     * @param company
+     * @param professional
+     * @return Optional<CompanyProfessional>
+     */
+    Optional<CompanyProfessional> findByCompanyAndProfessional(User company, User professional);
+
 
 }
