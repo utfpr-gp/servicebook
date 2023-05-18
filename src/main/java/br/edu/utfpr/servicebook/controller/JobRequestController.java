@@ -2,6 +2,7 @@ package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
+import br.edu.utfpr.servicebook.model.dto.IndividualDTO;
 import br.edu.utfpr.servicebook.model.dto.JobRequestDTO;
 import br.edu.utfpr.servicebook.model.dto.ProfessionalSearchItemDTO;
 import br.edu.utfpr.servicebook.model.entity.*;
@@ -13,6 +14,8 @@ import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.DateUtil;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
+import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
+import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -84,6 +87,9 @@ public class JobRequestController {
     @Autowired
     private IAuthentication authentication;
 
+    @Autowired
+    private TemplateUtil templateUtil;
+
 
     public enum RequestDateSelect{
         today(0), tomorrow(1) , thisweek(2), nextweek(3), thismonth(4), nextmonth(5);
@@ -104,13 +110,14 @@ public class JobRequestController {
     @PermitAll
     public String showWizard(@RequestParam(value = "passo", required = false, defaultValue = "1") Long step,
                              HttpSession httpSession,
-                             Model model) {
+                             Model model) throws Exception {
         log.debug("Mostrando o passo {}", step);
         if(step < 1 || step > 8){
             step = 1L;
         }
         JobRequestDTO dto = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         model.addAttribute("dto", dto);
+        model.addAttribute("individualInfo", this.getSidePanelUser());
 
         if(step == 1L){
             List<Expertise> expertise = expertiseService.findAll();
@@ -125,7 +132,7 @@ public class JobRequestController {
 
     @PostMapping("/passo-1")
     @PermitAll
-    public String saveFormRequestedJob(HttpSession httpSession, @Validated(JobRequestDTO.RequestExpertiseGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model){
+    public String saveFormRequestedJob(HttpSession httpSession, @Validated(JobRequestDTO.RequestExpertiseGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model) throws Exception {
         Optional<Expertise> oExpertise = null;
 
         if(dto.getExpertiseId() != null) {
@@ -138,6 +145,7 @@ public class JobRequestController {
         if(errors.hasErrors()){
             model.addAttribute("dto", dto);
             model.addAttribute("errors", errors.getAllErrors());
+            model.addAttribute("individualInfo", this.getSidePanelUser());
 
             List<Expertise> expertises = expertiseService.findAll();
             List<ExpertiseDTO> expertiseDTOs = expertises.stream()
@@ -159,20 +167,20 @@ public class JobRequestController {
 
     @PostMapping("/passo-2")
     @PermitAll
-    public String saveFormDateJob(HttpSession httpSession, @Validated(JobRequestDTO.RequestExpirationGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model){
+    public String saveFormDateJob(HttpSession httpSession, @Validated(JobRequestDTO.RequestExpirationGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model) throws Exception {
 
 
         if(errors.hasErrors()){
             model.addAttribute("dto", dto);
             model.addAttribute("errors", errors.getAllErrors());
+            model.addAttribute("individualInfo", this.getSidePanelUser());
             log.debug("Passo 2 {}", dto);
             log.debug("Errors 2 {}", errors);
             return "client/job-request/wizard-step-02";
 
         }
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
-
-
+        System.out.println("dto.getDateProximity()" + dto.getDateProximity());
         if(dto.getDateProximity() == RequestDateSelect.today.value){
             //Hoje
             log.debug("HOJE: {}", sessionDTO);
@@ -210,10 +218,11 @@ public class JobRequestController {
     }
     @PostMapping("/passo-3")
     @PermitAll
-    public String saveFormMaxCandidates(HttpSession httpSession, @Validated(JobRequestDTO.RequestMaxCandidatesGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model){
+    public String saveFormMaxCandidates(HttpSession httpSession, @Validated(JobRequestDTO.RequestMaxCandidatesGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model) throws Exception {
         if(errors.hasErrors()){
             model.addAttribute("dto", dto);
             model.addAttribute("errors", errors.getAllErrors());
+            model.addAttribute("individualInfo", this.getSidePanelUser());
             log.debug("Passo 3 {}", dto);
             log.debug("Errors 3 {}", errors);
             return "client/job-request/wizard-step-03";
@@ -230,11 +239,12 @@ public class JobRequestController {
 
     @PostMapping("/passo-4")
     @PermitAll
-    public String saveFormDescription(HttpSession httpSession, @Validated(JobRequestDTO.RequestDescriptionGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model){
+    public String saveFormDescription(HttpSession httpSession, @Validated(JobRequestDTO.RequestDescriptionGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model) throws Exception {
 
         if(errors.hasErrors()){
             model.addAttribute("dto", dto);
             model.addAttribute("errors", errors.getAllErrors());
+            model.addAttribute("individualInfo", this.getSidePanelUser());
             log.debug("Passo 4 {}", dto);
             log.debug("Errors 4 {}", errors);
             return "client/job-request/wizard-step-04";
@@ -250,10 +260,19 @@ public class JobRequestController {
 
     }
 
+    /**
+     * Cadastra várias imagens, mas um POST para cada imagem.
+     * Para cadastrar várias imagens, é necessário fazer um POST para cada imagem.
+     * @param httpSession
+     * @param redirectAttributes
+     * @param dto
+     * @param model
+     * @return
+     * @throws IOException
+     */
     @PostMapping("/passo-5")
     @PermitAll
     public String saveFormImagePath(HttpSession httpSession, RedirectAttributes redirectAttributes, JobRequestDTO dto, Model model) throws IOException {
-
 
         //persiste na sessão
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
@@ -270,35 +289,37 @@ public class JobRequestController {
             sessionDTO.setImageSession((String)data.get("url"));
             log.debug("Passo 5 {}", sessionDTO);
 
-            return "redirect:/requisicoes/passo=6";
+            return "redirect:/requisicoes/passo=5";
         } else {
-            return "redirect:/requisicoes/passo=6";
+            return "redirect:/requisicoes/passo=5";
         }
     }
 
-    @GetMapping("passo=6")
+    /**
+     * Mostra os dados do anuncio para confirmação
+     * @param httpSession
+     * @param errors
+     * @param dto
+     * @param redirectAttributes
+     * @param model
+     * @param status
+     * @return
+     */
+    @GetMapping("/passo-6")
     @PermitAll
-    protected ModelAndView showProfessionals(HttpSession httpSession) {
-        ModelAndView mv = new ModelAndView("client/job-request/wizard-step-06");
-
-        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
-
-        Optional<Expertise> expertise = expertiseService.findById(sessionDTO.getExpertiseId());
-
-        List<Individual> professionals = individualService.findDistinctByTermIgnoreCase(expertise.get().getName());
-
-        List<ProfessionalSearchItemDTO> professionalSearchItemDTOS = professionals.stream().limit(3)
-                .map(s -> individualMapper.toSearchItemDto(s, individualService.getExpertises(s)))
-                .collect(Collectors.toList());
-
-        mv.addObject("professionals", professionalSearchItemDTOS);
-        mv.addObject("professionalsAmount", professionalSearchItemDTOS.size());
-
-        return mv;
+    public String formConfirmation(HttpSession httpSession, BindingResult errors,JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
+        return "redirect:/requisicoes/passo=6";
     }
 
-
-
+    /**
+     * Salva a requisição
+     * @param httpSession
+     * @param dto
+     * @param redirectAttributes
+     * @param model
+     * @param status
+     * @return
+     */
     @PostMapping("/passo-7")
     @PermitAll
     public String saveFormVerification(HttpSession httpSession, JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
@@ -324,14 +345,40 @@ public class JobRequestController {
         jobRequestService.save(jobRequest);
         redirectAttributes.addFlashAttribute("msg", "Requisição confirmada!");
         status.setComplete();
-        return "redirect:/requisicoes?passo=8";
-    }
-
-    @PostMapping("/passo-8")
-    @PermitAll
-    public String formConfirmation(HttpSession httpSession, BindingResult errors,JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
         return "redirect:/requisicoes";
     }
+
+    /**
+     * Mostra os profissionais resultado da busca
+     * @param httpSession
+     * @return
+     */
+    @GetMapping("/passo-8")
+    @PermitAll
+    protected ModelAndView showProfessionals(HttpSession httpSession) {
+        ModelAndView mv = new ModelAndView("client/job-request/wizard-step-08");
+
+        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
+
+        Optional<Expertise> expertise = expertiseService.findById(sessionDTO.getExpertiseId());
+
+        List<Individual> professionals = individualService.findDistinctByTermIgnoreCase(expertise.get().getName());
+
+        List<ProfessionalSearchItemDTO> professionalSearchItemDTOS = professionals.stream().limit(3)
+                .map(s -> individualMapper.toSearchItemDto(s, individualService.getExpertises(s)))
+                .collect(Collectors.toList());
+
+        mv.addObject("professionals", professionalSearchItemDTOS);
+        mv.addObject("professionalsAmount", professionalSearchItemDTOS.size());
+
+        return mv;
+    }
+
+
+
+
+
+
 
     /**
      * Apresenta a página de sucesso ou falha, quando o usuário preenche uma requisição de serviço como visitante e só
@@ -344,13 +391,14 @@ public class JobRequestController {
      */
     @GetMapping("pedido-recebido")
     @RolesAllowed({RoleType.USER})
-    protected ModelAndView showMessageSuccessful(@RequestParam(value = "erro", required = false, defaultValue = "false") boolean isError, HttpSession httpSession) {
+    protected ModelAndView showMessageSuccessful(@RequestParam(value = "erro", required = false, defaultValue = "false") boolean isError, HttpSession httpSession) throws Exception {
         System.out.println("Parâmetro erro: " + isError);
         ModelAndView mv = new ModelAndView("client/job-requested");
 
         Optional<Individual> individual = individualService.findByEmail(authentication.getEmail());
 
         mv.addObject("client", individual.get().getName());
+        mv.addObject("individualInfo", this.getSidePanelUser());
 
         //apaga a sessão
         httpSession.invalidate();
@@ -397,5 +445,16 @@ public class JobRequestController {
         this.jobAvailableToHideService.save(jobAvailableToHide);
 
         return "redirect:/minha-conta/profissional#disponiveis";
+    }
+
+    private UserTemplateInfo getSidePanelUser() throws Exception {
+        Optional<Individual> client = (individualService.findByEmail(authentication.getEmail()));
+
+        if (!client.isPresent()) {
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+        IndividualDTO individualDTO = individualMapper.toDto(client.get());
+
+        return templateUtil.getUserInfo(individualDTO);
     }
 }
