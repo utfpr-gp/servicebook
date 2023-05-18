@@ -211,7 +211,7 @@ public class JobRequestController {
             log.debug("Proximo Mês: {}", sessionDTO);
             sessionDTO.setDateTarget(DateUtil.getNextMonth());
         }
-        sessionDTO.setDateCreated(DateUtil.getToday());
+        sessionDTO.setDateTarget(DateUtil.getToday());
         log.debug("Passo 2 {}", sessionDTO);
         return "redirect:/requisicoes?passo=3";
 
@@ -305,11 +305,11 @@ public class JobRequestController {
      * @param status
      * @return
      */
-    @GetMapping("/passo-6")
-    @PermitAll
-    public String formConfirmation(HttpSession httpSession, BindingResult errors,JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
-        return "redirect:/requisicoes/passo=6";
-    }
+//    @GetMapping("/passo-6")
+//    @PermitAll
+//    public String formConfirmation(HttpSession httpSession, BindingResult errors,JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
+//        return "redirect:/requisicoes/passo=6";
+//    }
 
     /**
      * Salva a requisição
@@ -325,27 +325,36 @@ public class JobRequestController {
     public String saveFormVerification(HttpSession httpSession, JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
 
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
-
         Optional<Expertise> oExpertise = expertiseService.findById(sessionDTO.getExpertiseId());
 
         if(!oExpertise.isPresent()){
             throw new InvalidParamsException("A especilidade informada não foi encontrada!");
         }
 
+        /* Verifica se o usuário está logado, pois pode submeter um anuncio sem estar logado.  */
+        User user = null;
+        Optional<User> oUser = userService.findByEmail(authentication.getEmail());
+        if(oUser.isPresent()){
+           user = oUser.get();
+        }
+
         Expertise exp = oExpertise.get();
         sessionDTO.setClientConfirmation(true);
         sessionDTO.setDateCreated(DateUtil.getToday());
-        sessionDTO.setStatus("Requerido");
+        sessionDTO.setStatus(JobRequest.Status.AVAILABLE.toString());
 
         log.debug("Passo 7 {}", sessionDTO);
         JobRequest jobRequest = jobRequestMapper.toEntity(sessionDTO);
         jobRequest.setExpertise(exp);
+        jobRequest.setUser(user);
 
         //jobRequest.setImage(sessionDTO.getImageSession());
         jobRequestService.save(jobRequest);
         redirectAttributes.addFlashAttribute("msg", "Requisição confirmada!");
         status.setComplete();
-        return "redirect:/requisicoes";
+        //remove o sessionDTO
+        wizardSessionUtil.removeWizardState(httpSession, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
+        return "redirect:/requisicoes/passo-8";
     }
 
     /**
@@ -374,12 +383,6 @@ public class JobRequestController {
         return mv;
     }
 
-
-
-
-
-
-
     /**
      * Apresenta a página de sucesso ou falha, quando o usuário preenche uma requisição de serviço como visitante e só
      * depois que realizao login na aplicação.
@@ -389,22 +392,22 @@ public class JobRequestController {
      * @param httpSession
      * @return
      */
-    @GetMapping("pedido-recebido")
-    @RolesAllowed({RoleType.USER})
-    protected ModelAndView showMessageSuccessful(@RequestParam(value = "erro", required = false, defaultValue = "false") boolean isError, HttpSession httpSession) throws Exception {
-        System.out.println("Parâmetro erro: " + isError);
-        ModelAndView mv = new ModelAndView("client/job-requested");
-
-        Optional<Individual> individual = individualService.findByEmail(authentication.getEmail());
-
-        mv.addObject("client", individual.get().getName());
-        mv.addObject("individualInfo", this.getSidePanelUser());
-
-        //apaga a sessão
-        httpSession.invalidate();
-
-        return mv;
-    }
+//    @GetMapping("pedido-recebido")
+//    @RolesAllowed({RoleType.USER})
+//    protected ModelAndView showMessageSuccessful(@RequestParam(value = "erro", required = false, defaultValue = "false") boolean isError, HttpSession httpSession) throws Exception {
+//        System.out.println("Parâmetro erro: " + isError);
+//        ModelAndView mv = new ModelAndView("client/job-requested");
+//
+//        Optional<Individual> individual = individualService.findByEmail(authentication.getEmail());
+//
+//        mv.addObject("client", individual.get().getName());
+//        mv.addObject("individualInfo", this.getSidePanelUser());
+//
+//        //apaga a sessão
+//        httpSession.invalidate();
+//
+//        return mv;
+//    }
 
     public boolean isValidateImage(MultipartFile image){
         List<String> contentTypes = Arrays.asList("image/png", "image/jpg", "image/jpeg");

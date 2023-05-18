@@ -19,10 +19,10 @@
                         <h3 class="center secondary-color-text"><strong>Olá João, recebemos a sua solicitação de serviço!</strong></h3>
                         Dados do anúncio...
                         <p class="center secondary-color-text text-form-dados">Confirma os dados?</p>
-                        <form action="requisicoes/passo-7">
+                        <form action="requisicoes/passo-7" method="post">
                             <div class="col s12 l6 offset-l3 spacing-standard">
                                 <div class="center">
-                                    <a type="submit" class="waves-effect waves-light btn">Confirmo!</a>
+                                    <button type="submit" class="waves-effect waves-light btn">Confirmo!</button>
                                 </div>
                             </div>
                         </form>
