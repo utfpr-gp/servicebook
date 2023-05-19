@@ -23,7 +23,7 @@
                         <div class="row center">
                             <div class="rowspacing-standard">
                                 <form method="post" action="requisicoes/passo-5" enctype="multipart/form-data">
-                                    <div class="col s12 m6 offset-m3 l4 offset-l4 ">
+                                    <div class="col s12">
                                         <div class="file-field input-field">
                                             <div class="btn">
                                                 <span>Choose File</span>
@@ -33,6 +33,9 @@
                                                 <input class="file-path validate" placeholder="image.jpg"  type="text">
                                             </div>
                                         </div>
+                                        <div>
+                                            <button type="submit" class="waves-effect waves-light btn" >Adiciona imagem</button>
+                                        </div>
                                     </div>
                                     <div class="col s6 m6 spacing-buttons">
                                         <div class="center">
@@ -41,7 +44,7 @@
                                     </div>
                                     <div class="col s6 m6 spacing-buttons">
                                         <div class="center">
-                                            <button class="waves-effect waves-light btn" >Próximo</button>
+                                            <a href="requisicoes?passo=6" class="waves-effect waves-light btn">Próximo</a>
                                         </div>
                                     </div>
                                 </form>

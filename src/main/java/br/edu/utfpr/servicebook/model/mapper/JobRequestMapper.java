@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Optional;
 
 @Component
@@ -35,6 +38,13 @@ public class JobRequestMapper {
         //Fazer ignorar
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         JobRequest entity = mapper.map(dto, JobRequest.class);
+
+        ZoneId zoneId = ZoneId.systemDefault();
+        Instant instantDateCreated = dto.getDateCreated().atStartOfDay(zoneId).toInstant();
+        entity.setDateCreated(Date.from(instantDateCreated));
+
+        Instant instantDateTarget = dto.getDateTarget().atStartOfDay(zoneId).toInstant();
+        entity.setDateTarget(Date.from(instantDateTarget));
         return entity;
     }
 

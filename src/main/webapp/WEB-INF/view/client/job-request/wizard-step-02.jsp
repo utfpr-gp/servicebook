@@ -20,7 +20,7 @@
                         <form method="post" action="requisicoes/passo-2">
                             <div class="row center">
                                 <div class="col col s12 m6 offset-m3 l4 offset-l4 input-field">
-                                    <select id="dateProximity" name="dateProximity" class="white-text select-city">
+                                    <select name="dateProximity" class="white-text select-city">
                                         <option value=0 selected><p class="white-text">Hoje </p></option>
                                         <option value=1><p>Amanhã</p></option>
                                         <option value=2><p>Esta semana</p></option>
