@@ -13,6 +13,18 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
+    <meta property=”og:title” content="${jobRequest.description}"/>
+    <meta property=”og:type” content=”website“/>
+    <meta property=”og:description” content=”SERVICEBOOK - O MELHOR PROFISSIONAL QUE VOCÊ PRECISA ESTÁ AQUI!“/>
+    <meta property=”og:image”content="${jobCandidate.individual.profilePicture}"/>
+    <meta property=”og:site_name” content=”Servicebook“/>
+
+    <meta name=”twitter:card” content=”photo“>
+    <meta name=”twitter:url” content="$(location).attr('href')">
+    <meta name=”twitter:title” content="${jobRequest.description}">
+    <meta name=”twitter:description” content=”SERVICEBOOK - O MELHOR PROFISSIONAL QUE VOCÊ PRECISA ESTÁ AQUI!“>
+    <meta name=”twitter:image”content="${jobCandidate.individual.profilePicture}">
+
     <title>${title}</title>
 
     <base href="${pageContext.request.contextPath}/">
@@ -20,6 +32,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="assets/libraries/materialize/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
     <link href="assets/resources/styles/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+
 </head>
 
 <body>
@@ -88,6 +102,5 @@
         this.location = "#" + objID;
     }
 </script>
-
 </body>
 </html>

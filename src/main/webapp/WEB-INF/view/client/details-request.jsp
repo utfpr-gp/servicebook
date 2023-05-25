@@ -28,7 +28,7 @@
                         <h2 class="secondary-color-text spacing-standard tertiary-color-text">Escolha um ${expertise.name}!</h2>
                       </div>
                      </c:if>
-                    <div class="col s12 m6 tertiary-color-text description-job  text-info-request">
+                    <div id="job-details" class="col s12 m6 tertiary-color-text description-job  text-info-request">
                       <p>${jobRequest.description}</p>
                       <p>Pedido expedido em ${jobRequest.dateTarget}</p>
                     </div>
@@ -272,7 +272,6 @@
         });
       }
     });
-
-
   });
 </script>
+<script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=646fc0e45380390019971ecd&product=sticky-share-buttons&source=platform" async="async"></script>
