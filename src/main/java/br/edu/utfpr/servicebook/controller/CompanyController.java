@@ -14,9 +14,9 @@ import br.edu.utfpr.servicebook.sse.EventSseMapper;
 import br.edu.utfpr.servicebook.sse.SSEService;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateStatisticDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
+import br.edu.utfpr.servicebook.util.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.UserTemplateStatisticInfo;
+import br.edu.utfpr.servicebook.util.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,8 +117,8 @@ public class CompanyController {
         Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(oProfessional.get());
         professionalDTO.setFollowingAmount(oProfessionalFollowingAmount.get());
         UserTemplateInfo individualInfo = templateUtil.getUserInfo(professionalDTO);
-        UserTemplateStatisticDTO statisticInfo = templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId.get());
-        mv.addObject("individualInfo", individualInfo);
+        UserTemplateStatisticInfo statisticInfo = templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId.get());
+        mv.addObject("userInfo", individualInfo);
 
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
         List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
@@ -136,7 +136,7 @@ public class CompanyController {
         UserDTO professionalDTO1 = userMapper.toDto(oProfessional.get());
         mv.addObject("eventsse", eventSSEDTOs);
         mv.addObject("expertises", expertiseDTOs);
-        mv.addObject("individualInfo", individualInfo);
+        mv.addObject("userInfo", individualInfo);
         mv.addObject("professionalDTO1", professionalDTO1);
         mv.addObject("statisticInfo", statisticInfo);
         mv.addObject("company", true);
@@ -154,8 +154,8 @@ public class CompanyController {
         Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(oProfessional.get());
         professionalDTO.setFollowingAmount(oProfessionalFollowingAmount.get());
         UserTemplateInfo individualInfo = templateUtil.getUserInfo(professionalDTO);
-        UserTemplateStatisticDTO statisticInfo = templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId.get());
-        mv.addObject("individualInfo", individualInfo);
+        UserTemplateStatisticInfo statisticInfo = templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId.get());
+        mv.addObject("userInfo", individualInfo);
 
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
         List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
@@ -174,7 +174,7 @@ public class CompanyController {
         UserDTO professionalDTO1 = userMapper.toDto(oProfessional.get());
         mv.addObject("eventsse", eventSSEDTOs);
         mv.addObject("expertises", expertiseDTOs);
-        mv.addObject("individualInfo", individualInfo);
+        mv.addObject("userInfo", individualInfo);
         mv.addObject("professionalDTO1", professionalDTO1);
         mv.addObject("statisticInfo", statisticInfo);
         mv.addObject("company", true);

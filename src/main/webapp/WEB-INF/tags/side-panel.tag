@@ -1,8 +1,7 @@
 <%@tag description="Template para painel lateral" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@attribute name="individualInfo" type="br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo" %>
-<%@attribute name="statisticProfessionalInfo" type="br.edu.utfpr.servicebook.util.sidePanel.UserTemplateStatisticDTO" %>
-<%@attribute name="companyInfo" type="br.edu.utfpr.servicebook.util.sidePanel.SidePanelCompanyDTO" %>
+<%@attribute name="userInfo" type="br.edu.utfpr.servicebook.util.UserTemplateInfo" %>
+<%@attribute name="statisticInfo" type="br.edu.utfpr.servicebook.util.UserTemplateStatisticInfo" %>
 <%@attribute name="followdto" type="br.edu.utfpr.servicebook.follower.FollowsDTO" %>
 
     <div class="col m2 l3 hide-on-med-and-down" style="padding-left: 0" id="area-perfil">
@@ -11,13 +10,13 @@
                 <div class="row center">
                     <div class="col s12 dark-color-text">
                         <div class="row tooltipped" data-position="bottom"
-                             data-tooltip="${individualInfo.rating} estrela (s).">
+                             data-tooltip="${userInfo.rating} estrela (s).">
 
                             <c:forEach var="star" begin="1" end="5">
-                                <c:if test="${star <= individualInfo.rating}">
+                                <c:if test="${star <= userInfo.rating}">
                                     <i class="material-icons yellow-text small">star</i>
                                 </c:if>
-                                <c:if test="${star > individualInfo.rating}">
+                                <c:if test="${star > userInfo.rating}">
                                     <i class="material-icons yellow-text small">star_border</i>
                                 </c:if>
                             </c:forEach>
@@ -28,22 +27,22 @@
             </div>
             <div class="col s12 center">
 
-                <c:if test="${individualInfo.profilePicture == null}">
+                <c:if test="${userInfo.profilePicture == null}">
                     <svg class="icon-person" style="width:250px;height:250px" viewBox="0 0 24 24">
                         <path class="dark-color-icon"
                               d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
                     </svg>
                 </c:if>
 
-                <c:if test="${individualInfo.profilePicture != null}">
+                <c:if test="${userInfo.profilePicture != null}">
                     <div class="row">
-                        <img src="${individualInfo.profilePicture}" alt="Profissional - Imagem de perfil."
+                        <img src="${userInfo.profilePicture}" alt="Profissional - Imagem de perfil."
                              style="width:250px;height:250px">
                     </div>
                 </c:if>
 
                 <div class="row">
-                    <p>${individualInfo.description != null ? individualInfo.description : 'Perfil sem descrição.'}</p>
+                    <p>${userInfo.description != null ? userInfo.description : 'Perfil sem descrição.'}</p>
                 </div>
                 <h5 class="edit-link tertiary-color-text">
                     <a class="tertiary-color-text" href="minha-conta/perfil">Editar perfil</a>
@@ -53,7 +52,7 @@
         <div class="row secondary-background-color no-margin">
             <div class="col s12">
                 <h5 class="name-header no-margin center white-text">
-                    <strong>${individualInfo.name}</strong>
+                    <strong>${userInfo.name}</strong>
                 </h5>
             </div>
         </div>
@@ -65,11 +64,11 @@
         <div class="row secondary-background-color no-margin">
             <div class="col s4 center no-padding">
 
-                <c:if test="${individualInfo.profileVerified}">
+                <c:if test="${userInfo.profileVerified}">
                     <i class="medium material-icons green-text tooltipped" data-position="top"
                        data-tooltip="Perfil verificado.">person</i>
                 </c:if>
-                <c:if test="${!individualInfo.profileVerified}">
+                <c:if test="${!userInfo.profileVerified}">
                     <i class="medium material-icons gray-text tooltipped" data-position="top"
                        data-tooltip="Perfil não verificado.">person</i>
                 </c:if>
@@ -77,11 +76,11 @@
             </div>
             <div class="col s4 center no-padding">
 
-                <c:if test="${individualInfo.emailVerified}">
+                <c:if test="${userInfo.emailVerified}">
                     <i class="medium material-icons green-text tooltipped" data-position="top"
                        data-tooltip="Email verificado.">email</i>
                 </c:if>
-                <c:if test="${!individualInfo.emailVerified}">
+                <c:if test="${!userInfo.emailVerified}">
                     <i class="medium material-icons gray-text tooltipped" data-position="top"
                        data-tooltip="Email não verificado.">email</i>
                 </c:if>
@@ -89,18 +88,18 @@
             </div>
             <div class="col s4 center no-padding">
 
-                <c:if test="${individualInfo.phoneVerified}">
+                <c:if test="${userInfo.phoneVerified}">
                     <i class="medium material-icons green-text tooltipped" data-position="top"
                        data-tooltip="Telefone verificado.">phone</i>
                 </c:if>
-                <c:if test="${!individualInfo.phoneVerified}">
+                <c:if test="${!userInfo.phoneVerified}">
                     <i class="medium material-icons gray-text tooltipped" data-position="top"
                        data-tooltip="Telefone não verificado.">phone</i>
                 </c:if>
 
             </div>
         </div>
-        <c:if test="${statisticProfessionalInfo == null && company == false}">
+        <c:if test="${statisticInfo == null && company == false}">
             <div class="row primary-background-color no-margin">
                 <div class="col s12">
                         <p class="header-verification tertiary-color-text center">PROFISSIONAIS FAVORITOS</p>
@@ -109,7 +108,7 @@
             <div class="row secondary-background-color no-margin">
                 <div class="col s12">
                     <h5 class="name-header no-margin center white-text">
-                        <strong><a href="profissionais-favoritos">${individualInfo.followingAmount}</a></strong>
+                        <strong><a href="profissionais-favoritos">${userInfo.followingAmount}</a></strong>
                     </h5>
                 </div>
             </div>
@@ -124,7 +123,7 @@
             <div class="row secondary-background-color no-margin">
                 <div class="col s12">
                     <h5 class="name-header no-margin center white-text">
-                        <strong><a href="profissionais-favoritos">${individualInfo.followingAmount}</a></strong>
+                        <strong><a href="profissionais-favoritos">${userInfo.followingAmount}</a></strong>
                     </h5>
                 </div>
             </div>
@@ -137,7 +136,7 @@
             <div class="row secondary-background-color no-margin">
                 <div class="col s12">
                     <h5 class="name-header no-margin center white-text">
-                        <strong><a href="profissionais-favoritos">${individualInfo.followingAmount}</a></strong>
+                        <strong><a href="profissionais-favoritos">${userInfo.followingAmount}</a></strong>
                     </h5>
                 </div>
             </div>
@@ -155,7 +154,7 @@
         </c:if>
 
 
-        <c:if test="${statisticProfessionalInfo != null}">
+        <c:if test="${statisticInfo != null}">
             <div class="row primary-background-color no-margin">
                 <div class="col s12">
                     <p class="header-verification tertiary-color-text center">SEGUIDORES</p>
@@ -164,13 +163,13 @@
             <div class="row secondary-background-color no-margin">
                 <div class="col s12 left-align">
                     <h5 class="name-header no-margin center white-text">
-                        <strong>${individualInfo.followingAmount}</strong>
+                        <strong>${userInfo.followingAmount}</strong>
                     </h5>
                 </div>
             </div>
         </c:if>
         <!-- apenas apresenta o acesso quando for cliente e não for empresa -->
-        <c:if test="${statisticProfessionalInfo == null and empty company }">
+        <c:if test="${statisticInfo == null and empty company }">
             <div class="row no-margin center">
                 <div class="col s12 no-margin no-padding input-field area-profission-select">
                     <div class="spacing-buttons">
@@ -231,7 +230,7 @@
             </div>
         </c:if>
 
-        <c:if test="${statisticProfessionalInfo != null}">
+        <c:if test="${statisticInfo != null}">
             <div class="row no-margin center">
                 <div class="col s12 no-margin no-padding input-field area-profission-select">
 
@@ -293,10 +292,10 @@
 
                                 <c:if test="${statisticInfo.ratingScore == 0}">
                                     <c:forEach var="star" begin="1" end="5">
-                                        <c:if test="${star <= individualInfo.rating}">
+                                        <c:if test="${star <= userInfo.rating}">
                                             <i class="expertise-rating-star material-icons yellow-text small">star</i>
                                         </c:if>
-                                        <c:if test="${star > individualInfo.rating}">
+                                        <c:if test="${star > userInfo.rating}">
                                             <i class="expertise-rating-star material-icons yellow-text small">star_border</i>
                                         </c:if>
                                     </c:forEach>

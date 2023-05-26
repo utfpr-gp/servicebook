@@ -10,9 +10,9 @@ import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
 
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateStatisticDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
+import br.edu.utfpr.servicebook.util.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.UserTemplateStatisticInfo;
+import br.edu.utfpr.servicebook.util.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,10 +89,10 @@ public class ProfessionalExpertiseController {
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(professional);
 
         UserTemplateInfo userTemplateInfo = templateUtil.getUserInfo(professionalMinDTO);
-        UserTemplateStatisticDTO sidePanelStatisticDTO = templateUtil.getProfessionalStatisticInfo(professional, id.get());
+        UserTemplateStatisticInfo sidePanelStatisticDTO = templateUtil.getProfessionalStatisticInfo(professional, id.get());
 
         mv.addObject("statisticInfo", sidePanelStatisticDTO);
-        mv.addObject("individualInfo", userTemplateInfo);
+        mv.addObject("userInfo", userTemplateInfo);
 
         mv.addObject("id", id.orElse(0L));
 
@@ -166,7 +166,7 @@ public class ProfessionalExpertiseController {
     @GetMapping("/estatistica/{id}")
     @ResponseBody
     @RolesAllowed({RoleType.USER})
-    public UserTemplateStatisticDTO getExpertiseData(@PathVariable("id") Long expertiseId) throws Exception {
+    public UserTemplateStatisticInfo getExpertiseData(@PathVariable("id") Long expertiseId) throws Exception {
         Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
 
         if (!oProfessional.isPresent()) {

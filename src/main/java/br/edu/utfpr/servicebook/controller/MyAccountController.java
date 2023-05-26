@@ -9,8 +9,8 @@ import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
-import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
+import br.edu.utfpr.servicebook.util.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,7 +108,7 @@ public class MyAccountController {
         ModelAndView mv = new ModelAndView("professional/edit-account");
         mv.addObject("professional", userDTO);
         mv.addObject("city", cityMinDTO);
-        mv.addObject("individualInfo", templateInfo);
+        mv.addObject("userInfo", templateInfo);
 
         return mv;
     }
@@ -137,7 +137,7 @@ public class MyAccountController {
 
         ModelAndView mv = new ModelAndView("professional/account/my-ad");
         mv.addObject("user", userDTO);
-        mv.addObject("individualInfo", templateInfo);
+        mv.addObject("userInfo", templateInfo);
 
 
         return mv;

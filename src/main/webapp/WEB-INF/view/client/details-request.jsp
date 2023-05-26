@@ -7,7 +7,7 @@
   <jsp:body>
     <main>
       <div class="row">
-        <t:side-panel individualInfo="${individualInfo}"></t:side-panel>
+        <t:side-panel userInfo="${userInfo}"></t:side-panel>
         <div class="col m10 offset-m1 l9">
           <a id="show-area-perfil" class="hide-on-large-only show-area-perfil waves-effect waves-light btn btn-floating grey darken-3 z-depth-A">
             <i class="material-icons">compare_arrows</i>
