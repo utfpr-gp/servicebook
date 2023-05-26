@@ -135,9 +135,9 @@ public class ClientController {
                 .collect(Collectors.toList());
 
         ModelAndView mv = new ModelAndView("client/my-requests");
-        mv.addObject("user", userTemplateInfo);
         mv.addObject("jobRequests", jobRequestDTOs);
         mv.addObject("eventsse", eventSseDTOs);
+        mv.addObject("individualInfo", userTemplateInfo);
 
         return mv;
     }
