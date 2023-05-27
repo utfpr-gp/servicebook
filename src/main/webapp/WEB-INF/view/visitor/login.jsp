@@ -42,12 +42,11 @@
                                 </div>
                                 <div class="card-tabs">
                                     <ul class="tabs tabs-fixed-width">
-                                        <li class="tab"><a href="#token">TOKEN</a></li>
-                                        <li class="tab"><a class="active" href="#senha">SENHA</a></li>
-                                            <%--                                        <li class="tab"><a href="#test6">Test 3</a></li>--%>
+                                        <li class="tab"><a class="active" href="#senha">Credencias de Acesso</a></li>
+                                        <li class="tab"><a href="#token">Código por Email</a></li>
                                     </ul>
                                 </div>
-                                <div class="card-content login-email">
+                                <div class="card-content login-token">
                                     <div id="token">
                                         <form class="login-form input-login" action="login/email" method="post">
                                             <div class="row">
@@ -64,7 +63,7 @@
                                         </form>
                                     </div>
                                     <div id="senha">
-                                        <form class="login-form" method="POST" action="login">
+                                        <form class="login-form" method="POST" action="login" id="login-form">
                                             <div class="row">
                                                 <div class="input-field col offset-s1 s10">
                                                     <input id="username" name="username" type="text" class="validate white-text" placeholder="joao@gmail.com">
@@ -112,9 +111,28 @@
 
             </div>
         </main>
-        <%--        <script src="https://www.google.com/recaptcha/api.js" async defer></script>--%>
-        <%--        <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"--%>
-        <%--        async defer>--%>
+        <script type="text/javascript">
+            let verifyCallback = function(response) {
+                console.log(response);
+            };
+            function onloadCallback () {
+                grecaptcha.render('divRecaptcha', {
+                    'sitekey': "${recaptchaSiteKey}",
+                    'callback' : verifyCallback
+                });
+            };
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                let response = grecaptcha.getResponse();
+                if (response.length == 0) {
+                    document.getElementById("marque").hidden = false;
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+        </script>
+        <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit">
+        </script>
 
 
     </jsp:body>

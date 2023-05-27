@@ -20,27 +20,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="assets/libraries/materialize/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
     <link href="assets/resources/styles/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-<%--    <script src="https://www.google.com/recaptcha/api.js" async defer></script>--%>
-    <script type="text/javascript">
-        var onloadCallback = function() {
-            grecaptcha.render('divRecaptcha', {
-                'sitekey': '6LfxQAwmAAAAAL5GYrNBgl9bIDtZ3d8XL5h5CnsT'
-            });
-        };
-
-        document.addEventListener('submit', function(e) {
-            let response = grecaptcha.getResponse();
-            if (response.length == 0) {
-                document.getElementById("marque").hidden = false;
-                e.preventDefault();
-                return false;
-            }
-        });
-
-    </script>
-    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
-            async defer>
-    </script>
+<%--    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit">--%>
+<%--    </script>--%>
 </head>
 
 <body>
