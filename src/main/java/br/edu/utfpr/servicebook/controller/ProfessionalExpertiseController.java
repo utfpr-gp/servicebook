@@ -89,24 +89,23 @@ public class ProfessionalExpertiseController {
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(professional);
 
         UserTemplateInfo userTemplateInfo = templateUtil.getUserInfo(professionalMinDTO);
-        UserTemplateStatisticInfo sidePanelStatisticDTO = templateUtil.getProfessionalStatisticInfo(professional, id.get());
+        UserTemplateStatisticInfo statisticInfo = templateUtil.getProfessionalStatisticInfo(professional, id.get());
 
-        mv.addObject("statisticInfo", sidePanelStatisticDTO);
+        mv.addObject("statisticInfo", statisticInfo);
         mv.addObject("userInfo", userTemplateInfo);
+        mv.addObject("currentExpertiseId", id.orElse(0L));
 
-        mv.addObject("id", id.orElse(0L));
-
-        List<ProfessionalExpertiseDTO2> professionalExpertiseDTOs = professionalExpertises.stream()
-                                                                    .map(s -> professionalExpertiseMapper.toResponseDTO(s))
-                                                                    .collect(Collectors.toList());
+        List<ExpertiseDTO> professionalExpertiseDTOs = professionalExpertises.stream()
+                .map(professionalExpertise -> professionalExpertise.getExpertise())
+                .map(expertise -> expertiseMapper.toDto(expertise))
+                .collect(Collectors.toList());
         List<Expertise> professionPage = expertiseService.findExpertiseNotExist(getProfessional().getId());
 
-        List<ExpertiseDTO> expertiseDTOs = professionPage.stream()
+        List<ExpertiseDTO> otherExpertisesDTOs = professionPage.stream()
                 .map(s -> expertiseMapper.toDto(s))
-                .collect(Collectors.toList());  
+                .collect(Collectors.toList());
 
-
-        mv.addObject("expertises", expertiseDTOs);
+        mv.addObject("otherExpertises", otherExpertisesDTOs);
         mv.addObject("professionalExpertises", professionalExpertiseDTOs);
         return mv;
     }

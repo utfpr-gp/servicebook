@@ -49,6 +49,8 @@ public class TemplateUtil {
 
     /**
      * Retorna os dados estatísticos a serem apresentados no menu lateral para o perfil do profissional.
+     * Se o id for 0, então retorna para a soma de todas as especialidades do profissional.
+     * Caso contrário, retorna as estatísticas apenas para a especialidade.
      * @param oProfessional
      * @param expertiseId
      * @return

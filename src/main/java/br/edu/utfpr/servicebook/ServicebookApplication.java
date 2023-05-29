@@ -94,8 +94,12 @@ public class ServicebookApplication {
 //        return registrationBean;
 //    }
 
+    /**
+     * Filtro para enviar os dados para apresentação no template quando usuário está logado.
+     * @return
+     */
     @Bean
-    public FilterRegistrationBean<TemplateInfoFilter> templeteInfoFilterFilterRegistrationBean(){
+    public FilterRegistrationBean<TemplateInfoFilter> templateInfoFilterRegistrationBean(){
         FilterRegistrationBean<TemplateInfoFilter> registrationBean
                 = new FilterRegistrationBean<>();
 

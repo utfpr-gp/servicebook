@@ -317,12 +317,11 @@ public class JobRequestController {
      * @param dto
      * @param redirectAttributes
      * @param model
-     * @param status
      * @return
      */
     @PostMapping("/passo-7")
     @PermitAll
-    public String saveFormVerification(HttpSession httpSession, JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
+    public String saveFormVerification(HttpSession httpSession, JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model){
 
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         Optional<Expertise> oExpertise = expertiseService.findById(sessionDTO.getExpertiseId());
@@ -351,9 +350,7 @@ public class JobRequestController {
         //jobRequest.setImage(sessionDTO.getImageSession());
         jobRequestService.save(jobRequest);
         redirectAttributes.addFlashAttribute("msg", "Requisição confirmada!");
-        status.setComplete();
-        //remove o sessionDTO
-        wizardSessionUtil.removeWizardState(httpSession, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
+
         return "redirect:/requisicoes/passo-8";
     }
 
@@ -379,6 +376,9 @@ public class JobRequestController {
 
         mv.addObject("professionals", professionalSearchItemDTOS);
         mv.addObject("professionalsAmount", professionalSearchItemDTOS.size());
+
+        //remove o sessionDTO
+        wizardSessionUtil.removeWizardState(httpSession, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
 
         return mv;
     }

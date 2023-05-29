@@ -15,6 +15,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
 
+/**
+ * Filtro para adicionar informações do usuário logado no template
+ */
 public class TemplateInfoFilter implements Filter {
 
     @Autowired

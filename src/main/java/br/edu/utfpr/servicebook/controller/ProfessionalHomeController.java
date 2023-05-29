@@ -125,7 +125,7 @@ public class ProfessionalHomeController {
         ModelAndView mv = new ModelAndView("professional/my-account");
     
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
-        List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
+        List<ExpertiseDTO> professionalExpertiseDTOs = professionalExpertises.stream()
                 .map(professionalExpertise -> professionalExpertise.getExpertise())
                 .map(expertise -> expertiseMapper.toDto(expertise))
                 .collect(Collectors.toList());
@@ -147,7 +147,7 @@ public class ProfessionalHomeController {
                 .collect(Collectors.toList());
 
         mv.addObject("eventsse", eventSSEDTOs);
-        mv.addObject("expertises", expertiseDTOs);
+        mv.addObject("professionalExpertises", professionalExpertiseDTOs);
         mv.addObject("userInfo", individualInfo);
         mv.addObject("statisticInfo", statisticInfo);
 
@@ -556,13 +556,13 @@ public class ProfessionalHomeController {
                 return jobRequestPage = jobRequestService.findAvailableAllExpertises(JobRequest.Status.AVAILABLE, oProfessional.get().getId(), pageRequest);
             }
             else if(status == JobRequest.Status.TO_DO){
-                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_Professional(JobRequest.Status.TO_DO, oProfessional.get(), pageRequest);
+                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_User(JobRequest.Status.TO_DO, oProfessional.get(), pageRequest);
             }
             else if(status == JobRequest.Status.DOING){
-                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_Professional(JobRequest.Status.DOING, oProfessional.get(), pageRequest);
+                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_User(JobRequest.Status.DOING, oProfessional.get(), pageRequest);
             }
             else if(status == JobRequest.Status.CANCELED){
-                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_Professional(JobRequest.Status.CANCELED, oProfessional.get(), pageRequest);
+                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_User(JobRequest.Status.CANCELED, oProfessional.get(), pageRequest);
             }
             return null;
         } else {
