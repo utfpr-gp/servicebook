@@ -1,0 +1,20 @@
+.city-name {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background-color: #f5f5f5;
+}
+
+.expanded {
+    transform: rotate(180deg);
+}
+
+#city-panel {
+    display: none;
+}
+
+#painel {
+    padding: 0;
+}

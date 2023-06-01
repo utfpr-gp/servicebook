@@ -20,6 +20,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="assets/libraries/materialize/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
     <link href="assets/resources/styles/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="assets/resources/styles/style-banner-hidden.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 
 <body>
@@ -82,6 +83,7 @@
 <script src="assets/resources/scripts/main.js"></script>
 <script src="assets/resources/scripts/init.js"></script>
 <script src="assets/resources/scripts/sse.js"></script>
+<script src="assets/resources/scripts/banner-hidden.js"></script>
 <!--script src="assets/resources/scripts/expertise-sidepanel-ajax.js"></script!-->
 <script type="text/javascript">
     function rolar(objID) {
