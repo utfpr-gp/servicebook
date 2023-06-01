@@ -1,5 +1,6 @@
 package br.edu.utfpr.servicebook.model.repository;
 
+import br.edu.utfpr.servicebook.model.entity.Company;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,4 +36,6 @@ public interface ExpertiseRepository extends JpaRepository<Expertise, Long> {
         "AND pe.id.professionalId = :user)")
     List<Expertise> findExpertiseNotExist(@Param("user") Long user);
 
+    @Query("SELECT COUNT(*) FROM Expertise")
+    Optional<Expertise> countAll();
 } 

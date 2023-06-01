@@ -116,4 +116,7 @@ public interface JobContractedRepository extends JpaRepository<JobContracted, Lo
     @Query("select j from JobContracted j where j.jobRequest.status = :status and j.todoDate >= :now")
     List<JobContracted> findAllJobContractedToDoing(Date now, JobRequest.Status status);
 
+    @Query("SELECT COUNT(*) FROM JobContracted ")
+    Optional<JobContracted> countAll();
+
 }

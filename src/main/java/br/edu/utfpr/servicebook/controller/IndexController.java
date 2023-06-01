@@ -1,9 +1,11 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.entity.City;
+import br.edu.utfpr.servicebook.model.entity.Company;
 import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.service.CityService;
+import br.edu.utfpr.servicebook.service.CompanyService;
 import br.edu.utfpr.servicebook.service.UserService;
 
 import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
@@ -25,6 +27,9 @@ public class IndexController {
 
     @Autowired
     private CityService cityService;
+
+    @Autowired
+    private CompanyService companyService;
 
     @Autowired
     private UserService userService;
@@ -49,6 +54,9 @@ public class IndexController {
 
         List<City> cities = cityService.findAll();
         mv.addObject("cities", cities);
+
+       // List<Company> companies = companyService;
+       // mv.addObject("companies", companies);
 
         return mv;
     }
