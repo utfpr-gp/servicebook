@@ -3,12 +3,12 @@ uri="http://www.springframework.org/tags/form" prefix="form" %> <%@taglib
 prefix="t" tagdir="/WEB-INF/tags" %> <%@ taglib prefix="c"
 uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:template title="Minhas Solicitações" individualInfo="${user}">
+<t:template title="Minhas Solicitações" userInfo="${user}">
   <jsp:body>
     <main class="container">
       <div class="row">
 
-        <t:side-panel individualInfo="${user}"></t:side-panel>
+        <t:side-panel userInfo="${user}"></t:side-panel>
 
         <div class="col m10 offset-m1 l9">
           <a

@@ -8,8 +8,8 @@ import br.edu.utfpr.servicebook.model.mapper.UserMapper;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.service.JobCandidateService;
 import br.edu.utfpr.servicebook.service.UserService;
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
-import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
+import br.edu.utfpr.servicebook.util.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +73,7 @@ public class FollowingController {
         UserDTO clientDTO = userMapper.toDto(oIndividual.get());
 
         UserTemplateInfo userTemplateInfo = templateUtil.getUserInfo(clientDTO);
-        mv.addObject("individualInfo", userTemplateInfo);
+        mv.addObject("userInfo", userTemplateInfo);
 
         //lista de seguidores
         List<Follows> followingList = followingService.findFollowingByClient(oIndividual.get());

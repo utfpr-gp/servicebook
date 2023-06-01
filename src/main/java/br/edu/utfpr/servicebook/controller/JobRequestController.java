@@ -13,6 +13,8 @@ import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.DateUtil;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
+import br.edu.utfpr.servicebook.util.TemplateUtil;
+import br.edu.utfpr.servicebook.util.UserTemplateInfo;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -302,27 +304,17 @@ public class JobRequestController {
     protected ModelAndView showProfessionals(HttpSession httpSession) {
         ModelAndView mv = new ModelAndView("client/job-request/wizard-step-06");
 
-        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
-
-        Optional<Expertise> expertise = expertiseService.findById(sessionDTO.getExpertiseId());
-
-        List<Individual> professionals = individualService.findDistinctByTermIgnoreCase(expertise.get().getName());
-
-        List<ProfessionalSearchItemDTO> professionalSearchItemDTOS = professionals.stream().limit(3)
-                .map(s -> individualMapper.toSearchItemDto(s, individualService.getExpertises(s)))
-                .collect(Collectors.toList());
-
-        mv.addObject("professionals", professionalSearchItemDTOS);
-        mv.addObject("professionalsAmount", professionalSearchItemDTOS.size());
-
-        return mv;
-    }
-
-
-
+    /**
+     * Salva a requisição
+     * @param httpSession
+     * @param dto
+     * @param redirectAttributes
+     * @param model
+     * @return
+     */
     @PostMapping("/passo-7")
     @PermitAll
-    public String saveFormVerification(HttpSession httpSession, JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
+    public String saveFormVerification(HttpSession httpSession, JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model){
 
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
 
@@ -344,14 +336,32 @@ public class JobRequestController {
         //jobRequest.setImage(sessionDTO.getImageSession());
         jobRequestService.save(jobRequest);
         redirectAttributes.addFlashAttribute("msg", "Requisição confirmada!");
-        status.setComplete();
-        return "redirect:/requisicoes?passo=8";
+
+        return "redirect:/requisicoes/passo-8";
     }
 
     @PostMapping("/passo-8")
     @PermitAll
-    public String formConfirmation(HttpSession httpSession, BindingResult errors,JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
-        return "redirect:/requisicoes";
+    protected ModelAndView showProfessionals(HttpSession httpSession) {
+        ModelAndView mv = new ModelAndView("client/job-request/wizard-step-08");
+
+        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
+
+        Optional<Expertise> expertise = expertiseService.findById(sessionDTO.getExpertiseId());
+
+        List<Individual> professionals = individualService.findDistinctByTermIgnoreCase(expertise.get().getName());
+
+        List<ProfessionalSearchItemDTO> professionalSearchItemDTOS = professionals.stream().limit(3)
+                .map(s -> individualMapper.toSearchItemDto(s, individualService.getExpertises(s)))
+                .collect(Collectors.toList());
+
+        mv.addObject("professionals", professionalSearchItemDTOS);
+        mv.addObject("professionalsAmount", professionalSearchItemDTOS.size());
+
+        //remove o sessionDTO
+        wizardSessionUtil.removeWizardState(httpSession, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
+
+        return mv;
     }
 
     /**

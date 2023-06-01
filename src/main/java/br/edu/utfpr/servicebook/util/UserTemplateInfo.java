@@ -1,4 +1,4 @@
-package br.edu.utfpr.servicebook.util.sidePanel;
+package br.edu.utfpr.servicebook.util;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

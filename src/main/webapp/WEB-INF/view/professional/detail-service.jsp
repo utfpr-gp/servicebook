@@ -3,12 +3,9 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:template title="Detalhes do serviço" individualInfo="${individualInfo}">
+<t:template title="Detalhes do serviço" userInfo="${userInfo}">
     <jsp:body>
-
         <main>
-            oiiii
-            ${individualInfo}
             <div class="row primary-background-color">
                 <div class="carousel carousel-slider center">
                     <div class="carousel-fixed-item center">
@@ -64,7 +61,7 @@
                             <div class="col s12 m6 left area-info-request-client-left">
                                 <p class="text-area-info-cli primary-color-text"><i class="small material-icons dark-color-text">person</i> ${job.expertise.name}</p>
                                 <p class="text-area-info-cli primary-color-text"><i class="small material-icons dark-color-text">access_time</i>${job.textualDate}</p>
-                                <p class="text-area-info-cli primary-color-text"><i class="small material-icons dark-color-text">location_on</i> ${job.individual.address.street}, ${job.individual.address.neighborhood}, ${job.individual.address.number}, ${city} - ${state}</p>
+                                <p class="text-area-info-cli primary-color-text"><i class="small material-icons dark-color-text">location_on</i> ${job.user.address.street}, ${job.user.address.neighborhood}, ${job.user.address.number}, ${city} - ${state}</p>
                             </div>
                             <div class="col s12 m6 left area-info-request-client-right">
                                <div class="row">
