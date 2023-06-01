@@ -276,8 +276,13 @@ public class JobRequestController {
             dto.getImageFile().transferTo(jobImage);
             Map data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "jobs"));
 
+
+
             //fAZER A VALIDAÇÃO AQUI
             if(nsfwFilter((String)data.get("url"))){
+                String publicId = (String) data.get("public_id");
+                cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+                redirectAttributes.addFlashAttribute("msg", "A imagem enviada contém conteúdo impróprio. Por favor, envie outra foto.");
                 return "redirect:/requisicoes?passo=5";
             }
 
