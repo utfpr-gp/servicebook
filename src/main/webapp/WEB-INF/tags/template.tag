@@ -20,8 +20,6 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="assets/libraries/materialize/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
     <link href="assets/resources/styles/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-<%--    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit">--%>
-<%--    </script>--%>
 </head>
 
 <body>
@@ -60,7 +58,7 @@
             <li><a class="menu-itens" href="passo-1">ANUNCIAR</a></li>
             <li><a href="minha-conta/profissional">Sou profissional</a></li>
             <li><a href="minha-conta">Sou empresa</a></li>
-            <li><a class="menu-itens" href="#!">SAIR</a></li>
+            <li><a class="menu-itens" href="logout">SAIR</a></li>
         </ul>
 
         <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>

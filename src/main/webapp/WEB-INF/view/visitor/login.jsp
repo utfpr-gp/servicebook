@@ -76,21 +76,12 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col offset-s1 s12 offset-m1 m6">
-                                                    <div id="divRecaptcha"></div>
+                                                <div class="col s11">
+                                                    <button class="g-recaptcha waves-effect waves-light btn right"
+                                                            data-sitekey="${recaptchaSiteKey}"
+                                                            data-callback='onSubmit'
+                                                            data-action='submit'>ENTRAR</button>
                                                 </div>
-                                                <div class="col s12 m4">
-                                                    <button id="logar1" type="submit" class="waves-effect waves-light btn right">ENTRAR</button>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col s2"></div>
-                                                <div class="col s8">
-                                                    <ul class="collection center">
-                                                        <li id="marque" class="collection-item red lighten-3" hidden="True">Favor, marque a caixa "Não sou robô"</li>
-                                                    </ul>
-                                                </div>
-                                                <div class="col s2"></div>
                                             </div>
                                         </form>
                                     </div>
@@ -112,26 +103,32 @@
             </div>
         </main>
         <script type="text/javascript">
-            let verifyCallback = function(response) {
-                console.log(response);
-            };
-            function onloadCallback () {
-                grecaptcha.render('divRecaptcha', {
-                    'sitekey': "${recaptchaSiteKey}",
-                    'callback' : verifyCallback
-                });
-            };
-            document.getElementById('login-form').addEventListener('submit', function(e) {
-                let response = grecaptcha.getResponse();
-                if (response.length == 0) {
-                    document.getElementById("marque").hidden = false;
-                    e.preventDefault();
-                    return false;
-                }
-            });
+            <%--let verifyCallback = function(response) {--%>
+            <%--    console.log(response);--%>
+            <%--};--%>
+            <%--function onloadCallback () {--%>
+            <%--    grecaptcha.render('divRecaptcha', {--%>
+            <%--        'sitekey': "${recaptchaSiteKey}",--%>
+            <%--        'callback' : verifyCallback--%>
+            <%--    });--%>
+            <%--};--%>
+            <%--document.getElementById('login-form').addEventListener('submit', function(e) {--%>
+            <%--    let response = grecaptcha.getResponse();--%>
+            <%--    if (response.length == 0) {--%>
+            <%--        document.getElementById("marque").hidden = false;--%>
+            <%--        e.preventDefault();--%>
+            <%--        return false;--%>
+            <%--    }--%>
+            <%--});--%>
 
         </script>
-        <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit">
+<%--        <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit">--%>
+<%--        </script>--%>
+        <script src="https://www.google.com/recaptcha/api.js"></script>
+        <script>
+            function onSubmit(token) {
+                document.getElementById("login-form").submit();
+            }
         </script>
 
 
