@@ -66,9 +66,7 @@ public class User implements Serializable {
 	Set<JobCandidate> candidatures;
 
 	protected String description;
-
 	protected Integer denounceAmount;
-
 	protected Long followsAmount;
 
 	@PrePersist

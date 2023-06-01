@@ -14,8 +14,8 @@ import br.edu.utfpr.servicebook.sse.EventSseMapper;
 import br.edu.utfpr.servicebook.sse.SSEService;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
-import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
+import br.edu.utfpr.servicebook.util.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +96,7 @@ public class ClientController {
     private PaginationUtil paginationUtil;
 
     @GetMapping
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView show() throws Exception {
 
         Optional<Individual> oClient = individualService.findByEmail(authentication.getEmail());
@@ -150,7 +150,7 @@ public class ClientController {
      * @throws IOException
      */
     @DeleteMapping("/meus-pedidos/{id}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String delete (@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
         Optional<Individual> individual = (individualService.findByEmail(authentication.getEmail()));
@@ -185,7 +185,7 @@ public class ClientController {
      * @throws Exception
      */
     @GetMapping("/meus-pedidos/{id}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showDetailsRequest(@PathVariable Optional<Long> id) throws Exception {
 
         ModelAndView mv = new ModelAndView("client/details-request");
@@ -219,7 +219,7 @@ public class ClientController {
                 .collect(Collectors.toList());
 
         mv.addObject("candidates", jobCandidatesDTOs);
-        mv.addObject("individualInfo", this.getSidePanelUser());
+        mv.addObject("userInfo", this.getSidePanelUser());
         mv.addObject("expertise", expertiseDTO);
         mv.addObject("jobRequest", jobDTO);
         return mv;
@@ -233,7 +233,7 @@ public class ClientController {
      * @throws Exception
      */
     @GetMapping("/meus-pedidos/{jobId}/detalhes/{candidateId}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showDetailsRequestCandidate(@PathVariable Optional<Long> jobId, @PathVariable Optional<Long> candidateId) throws Exception {
         ModelAndView mv = new ModelAndView("client/details-request-candidate");
 
@@ -262,7 +262,7 @@ public class ClientController {
     }
 
     @GetMapping("/meus-pedidos/disponiveis")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showAvailableJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -311,7 +311,7 @@ public class ClientController {
      * @return
      */
     @DeleteMapping("/desistir/{id}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String desist(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         String currentUserEmail = authentication.getEmail();
 
@@ -333,7 +333,7 @@ public class ClientController {
     }
 
     @GetMapping("/meus-pedidos/para-orcamento")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showDisputedJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -385,7 +385,7 @@ public class ClientController {
      * @throws Exception
      */
     @GetMapping("/meus-pedidos/para-fazer")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showTodoJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -437,7 +437,7 @@ public class ClientController {
      * @throws Exception
      */
     @GetMapping("/meus-pedidos/para-confirmar")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showForHiredJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -479,7 +479,7 @@ public class ClientController {
     }
 
     @GetMapping("/meus-pedidos/fazendo")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showDoingJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -535,7 +535,7 @@ public class ClientController {
      * @throws Exception
      */
     @GetMapping("/meus-pedidos/executados")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showJobsPerformed(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -590,7 +590,7 @@ public class ClientController {
      * @throws IOException
      */
     @PatchMapping("/encerra-pedido/{id}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String updateRequest(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
         Optional<Individual> oClient = (individualService.findByEmail(authentication.getEmail()));
@@ -646,7 +646,7 @@ public class ClientController {
      * @throws IOException
      */
     @PatchMapping("/orcamento-ao/{candidateId}/para/{jobId}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String markAsBudget(@PathVariable Long jobId, @PathVariable Long candidateId, RedirectAttributes redirectAttributes) throws IOException {
 
         Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(jobId, candidateId);
@@ -700,7 +700,7 @@ public class ClientController {
      * @throws IOException
      */
     @PatchMapping("/informa-finalizado/{jobId}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String markAsClose(
             @PathVariable Long jobId,
             JobCandidateMinDTO dto,
@@ -749,7 +749,7 @@ public class ClientController {
      * @throws IOException
      */
     @PatchMapping("/contrata/{individualId}/para/{jobId}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String markAsHided(@PathVariable Long jobId, @PathVariable Long individualId, RedirectAttributes redirectAttributes) throws IOException {
         Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(jobId, individualId);
 

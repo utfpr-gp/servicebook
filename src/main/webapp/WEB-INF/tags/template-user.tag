@@ -1,7 +1,7 @@
 <%@tag description="Template inicial" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ attribute name="title" %>
-<%@ attribute name="individualInfo" type="br.edu.utfpr.servicebook.util.sidePanel.SidePanelUserDTO"%>
+<%@ attribute name="userInfo" type="br.edu.utfpr.servicebook.util.UserTemplateInfo"%>
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -9,42 +9,13 @@
 <c:set var="currenturl" value="${requestScope['javax.servlet.forward.request_uri']}"/>
 
 <div class="right">
-    <a class="left menu-link" href="requisicoes?passo=1">ANUNCIAR</a>
 
     <ul class="right nav-btn hide-on-med-and-down">
-        <c:if test="${fn:contains(currenturl, 'cliente')}">
-            <li>
-                <a class='dropdown-trigger btn' href='#' data-target='dropdown-cliente'>SOU CLIENTE<i class="tiny material-icons right">arrow_drop_down</i></a>
-                <ul id='dropdown-cliente' class='dropdown-content'>
-                    <li><a href="minha-conta/profissional">Sou profissional</a></li>
-                    <!--li><a href="minha-conta/empresa">Sou empresa</a></li-->
-                </ul>
-            </li>
-        </c:if>
-        <c:if test="${fn:contains(currenturl, 'profissional')}">
-            <li>
-                <a class='dropdown-trigger btn' href='#' data-target='dropdown-profissional'>SOU PROFISSIONAL<i class="tiny material-icons right">arrow_drop_down</i></a>
-                <ul id='dropdown-profissional' class='dropdown-content'>
-                    <li><a href="minha-conta/cliente">Sou Cliente</a></li>
-                    <!--li><a href="minha-conta/empresa">Sou empresa</a></li-->
-                </ul>
-            </li>
-        </c:if>
-
-        <c:if test="${fn:contains(currenturl, 'empresa')}">
-            <!--li>
-                <a class='dropdown-trigger btn' href='#' data-target='dropdown-empresa'>SOU EMPRESA<i class="tiny material-icons right">arrow_drop_down</i></a>
-                <ul id='dropdown-empresa' class='dropdown-content'>
-                    <li><a href="minha-conta/cliente">Sou Cliente</a></li>
-                    <li><a href="minha-conta/profissional">Sou profissional</a></li>
-                </ul>
-            </li-->
-        </c:if>
 
         <li>
-            <a class='dropdown-trigger btn truncate' href='#' data-target='dropdown-perfil'>${individualInfo.name}<i class="tiny material-icons right">arrow_drop_down</i></a>
+            <a class='dropdown-trigger btn truncate' href='#' data-target='dropdown-perfil'>${userInfo.name}<i class="tiny material-icons right">arrow_drop_down</i></a>
             <ul id='dropdown-perfil' class='dropdown-content'>
-                <li><a href="/servicebook/minha-conta/empresa">Minha Conta</a></li>
+                <li><a href="/servicebook/minha-conta/cliente">Minha Conta</a></li>
                 <li><a href="/servicebook/minha-conta/perfil">Meu perfil</a></li>
                 <li class="divider" tabindex="-1"></li>
                 <li>

@@ -10,9 +10,9 @@ import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
 
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateStatisticDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
+import br.edu.utfpr.servicebook.util.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.UserTemplateStatisticInfo;
+import br.edu.utfpr.servicebook.util.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,24 +89,23 @@ public class ProfessionalExpertiseController {
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(professional);
 
         UserTemplateInfo userTemplateInfo = templateUtil.getUserInfo(professionalMinDTO);
-        UserTemplateStatisticDTO sidePanelStatisticDTO = templateUtil.getProfessionalStatisticInfo(professional, id.get());
+        UserTemplateStatisticInfo statisticInfo = templateUtil.getProfessionalStatisticInfo(professional, id.get());
 
-        mv.addObject("statisticInfo", sidePanelStatisticDTO);
-        mv.addObject("individualInfo", userTemplateInfo);
+        mv.addObject("statisticInfo", statisticInfo);
+        mv.addObject("userInfo", userTemplateInfo);
+        mv.addObject("currentExpertiseId", id.orElse(0L));
 
-        mv.addObject("id", id.orElse(0L));
-
-        List<ProfessionalExpertiseDTO2> professionalExpertiseDTOs = professionalExpertises.stream()
-                                                                    .map(s -> professionalExpertiseMapper.toResponseDTO(s))
-                                                                    .collect(Collectors.toList());
+        List<ExpertiseDTO> professionalExpertiseDTOs = professionalExpertises.stream()
+                .map(professionalExpertise -> professionalExpertise.getExpertise())
+                .map(expertise -> expertiseMapper.toDto(expertise))
+                .collect(Collectors.toList());
         List<Expertise> professionPage = expertiseService.findExpertiseNotExist(getProfessional().getId());
 
-        List<ExpertiseDTO> expertiseDTOs = professionPage.stream()
+        List<ExpertiseDTO> otherExpertisesDTOs = professionPage.stream()
                 .map(s -> expertiseMapper.toDto(s))
-                .collect(Collectors.toList());  
+                .collect(Collectors.toList());
 
-
-        mv.addObject("expertises", expertiseDTOs);
+        mv.addObject("otherExpertises", otherExpertisesDTOs);
         mv.addObject("professionalExpertises", professionalExpertiseDTOs);
         return mv;
     }
@@ -166,7 +165,7 @@ public class ProfessionalExpertiseController {
     @GetMapping("/estatistica/{id}")
     @ResponseBody
     @RolesAllowed({RoleType.USER})
-    public UserTemplateStatisticDTO getExpertiseData(@PathVariable("id") Long expertiseId) throws Exception {
+    public UserTemplateStatisticInfo getExpertiseData(@PathVariable("id") Long expertiseId) throws Exception {
         Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
 
         if (!oProfessional.isPresent()) {
