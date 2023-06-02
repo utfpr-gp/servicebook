@@ -10,7 +10,7 @@
                     <div class="col s12" id="painel">
                         <div class="city-name" onclick="toggleCityPanel()">
                             <i id="iconeSeta" class="material-icons">keyboard_arrow_up</i>
-                            <span>${cities[0].name}</span>
+                            <span>${cities[0].name} - PR</span>
                         </div>
                         <div id="city-panel">
                             <t:banner cities="${cities}"></t:banner>
