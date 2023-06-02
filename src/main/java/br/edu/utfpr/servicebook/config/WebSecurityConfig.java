@@ -55,6 +55,7 @@ public class WebSecurityConfig {
                 //.and().httpBasic() //janela flutuante
                 .and().formLogin()//tela de login padrão
                 .loginPage("/login").permitAll()
+                .failureUrl("/login?error=true")
                 .and()
                 .logout(logout -> logout.deleteCookies("JSESSIONID").logoutSuccessUrl("/").permitAll())
                 .sessionManagement(session -> session.invalidSessionUrl("/login"))//Se a sessão estiver expirada ou o usuário removeu o cookie JSESSIONID, então encaminha para a tela de login.
