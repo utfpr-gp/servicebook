@@ -857,3 +857,30 @@ textarea {
   margin-top: 40px;
 }
 
+.primary_card {
+  margin-left: 4% !important;
+  height: 120px;
+
+}
+
+.middle_card{
+  height: 120px;
+}
+
+.last_card{
+  height: 120px;
+}
+
+@media (max-width: 600px){
+  .primary_card{
+    width: 100% !important;
+  }
+  .middle_card {
+    margin-left: 4% !important;
+    width: 100% !important;
+  }
+  .last_card {
+    margin-left: 4% !important;
+    width: 100% !important;
+  }
+}

@@ -76,4 +76,8 @@ public class JobRequestService {
     public Page<JobRequest> findByStatusAndClient(JobRequest.Status status,  User client, Pageable pageable) {
         return this.jobRequestRepository.findByStatusAndUser(status, client, pageable);
     }
+
+    public Long countAll(){
+        return this.jobRequestRepository.countAll();
+    }
 }

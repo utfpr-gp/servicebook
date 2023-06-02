@@ -37,5 +37,5 @@ public interface ExpertiseRepository extends JpaRepository<Expertise, Long> {
     List<Expertise> findExpertiseNotExist(@Param("user") Long user);
 
     @Query("SELECT COUNT(*) FROM Expertise")
-    Optional<Expertise> countAll();
+    Long countAll();
 } 

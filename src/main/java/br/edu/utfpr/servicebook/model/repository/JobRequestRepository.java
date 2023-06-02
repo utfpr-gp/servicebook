@@ -158,6 +158,6 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
     Page<JobRequest> findByStatusAndUser(JobRequest.Status status, User client, Pageable pageable);
 
     @Query("SELECT COUNT(*) FROM JobRequest")
-    Optional<JobRequest> countAll();
+    Long countAll();
 
 }
