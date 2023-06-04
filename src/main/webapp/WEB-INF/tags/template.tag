@@ -126,6 +126,15 @@
     function rolar(objID) {
         this.location = "#" + objID;
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // let delimitador = document.getElementById('sub-tab');
+        let elems = document.querySelectorAll('.dropdown-trigger');
+        console.log((elems))
+        let t = M.Dropdown.init(elems, {
+            coverTrigger:false,
+        });
+    });
 </script>
 
 </body>
