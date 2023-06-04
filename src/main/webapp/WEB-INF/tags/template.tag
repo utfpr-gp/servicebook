@@ -1,11 +1,11 @@
-<%@tag description="Template inicial" pageEncoding="UTF-8" %>
+<%@ tag description="Template inicial" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ attribute name="title" %>
-<%@ attribute name="individualInfo" type="br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo"%>
+<%@ attribute name="userInfo" type="br.edu.utfpr.servicebook.util.UserTemplateInfo"%>
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -47,20 +47,59 @@
         </sec:authorize>
 
         <sec:authorize access="hasRole('COMPANY')">
-            <t:template_company></t:template_company>
+            <t:template-company userInfo="${userInfo}"></t:template-company>
         </sec:authorize>
 
         <sec:authorize access="hasRole('USER')">
-            <t:template_user></t:template_user>
+            <t:template-user userInfo="${userInfo}"></t:template-user>
         </sec:authorize>
 
-        <%-- Usuário --%>
+        <%-- Usuário logado --%>
+        <sec:authorize access="isAuthenticated()">
+            <ul class="right nav-btn hide-on-med-and-down">
+                <a class="left menu-link" href="requisicoes?passo=1">ANUNCIAR</a>
+                <c:choose>
+                    <c:when test="${fn:contains(currenturl, '/minha-conta/cliente')}">
+                        <li>
+                            <a class='dropdown-trigger btn' href='#' data-target='dropdown-cliente'>SOU CLIENTE<i class="tiny material-icons right">arrow_drop_down</i></a>
+                            <ul id='dropdown-cliente' class='dropdown-content'>
+                                <li><a href="minha-conta/profissional">Sou profissional</a></li>
+                            </ul>
+                        </li>
+                    </c:when>
+                    <c:when test="${fn:contains(currenturl, '/minha-conta/profissional')}">
+                        <li>
+                            <a class='dropdown-trigger btn' href='#' data-target='dropdown-profissional'>SOU PROFISSIONAL<i class="tiny material-icons right">arrow_drop_down</i></a>
+                            <ul id='dropdown-profissional' class='dropdown-content'>
+                                <li><a href="minha-conta/cliente">Sou Cliente</a></li>
+                            </ul>
+                        </li>
+                    </c:when>
+                    <c:when test="${fn:contains(currenturl, '/minha-conta/empresa')}">
+                        <li>
+                            <a class='dropdown-trigger btn' href='#' data-target='dropdown-company'>SOU EMPRESA<i class="tiny material-icons right">arrow_drop_down</i></a>
+                            <ul id='dropdown-company' class='dropdown-content'>
+                                <li><a href="minha-conta/cliente">Sou cliente</a></li>
+                            </ul>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <li>
+                            <a class='dropdown-trigger btn' href='#' data-target='dropdown-cliente-default'>SOU CLIENTE<i class="tiny material-icons right">arrow_drop_down</i></a>
+                            <ul id='dropdown-cliente-default' class='dropdown-content'>
+                                <li><a href="minha-conta/profissional">Sou profissional</a></li>
+                            </ul>
+                        </li>
+                    </c:otherwise>
+                </c:choose>
+            </ul>
+        </sec:authorize>
 
         <ul id="nav-mobile" class="sidenav">
             <li><a class="menu-itens" href="passo-1">ANUNCIAR</a></li>
             <li><a href="minha-conta/profissional">Sou profissional</a></li>
             <li><a href="minha-conta">Sou empresa</a></li>
-            <li><a class="menu-itens" href="#!">SAIR</a></li>
+            <li><a class="menu-itens" href="logout">SAIR</a></li>
         </ul>
 
         <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>

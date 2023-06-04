@@ -103,7 +103,7 @@ p {
 
 .login-email{
   background-color: #1c2231;
-  height: 330px !important;
+  height: 350px !important;
 }
 .login-logo-text{
   color: white;
@@ -758,7 +758,6 @@ textarea {
 
 .menu-link{
   font-size: 110%;
-  margin-top: 10px;
   margin-right: 5rem;
   color: #53b1ed;
 }

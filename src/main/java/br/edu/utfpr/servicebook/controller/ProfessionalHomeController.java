@@ -14,9 +14,9 @@ import br.edu.utfpr.servicebook.sse.EventSseMapper;
 import br.edu.utfpr.servicebook.sse.SSEService;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateStatisticDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
+import br.edu.utfpr.servicebook.util.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.UserTemplateStatisticInfo;
+import br.edu.utfpr.servicebook.util.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,7 +125,7 @@ public class ProfessionalHomeController {
         ModelAndView mv = new ModelAndView("professional/my-account");
     
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
-        List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
+        List<ExpertiseDTO> professionalExpertiseDTOs = professionalExpertises.stream()
                 .map(professionalExpertise -> professionalExpertise.getExpertise())
                 .map(expertise -> expertiseMapper.toDto(expertise))
                 .collect(Collectors.toList());
@@ -136,7 +136,7 @@ public class ProfessionalHomeController {
         professionalDTO.setFollowingAmount(oProfessionalFollowingAmount.get());
 
         UserTemplateInfo individualInfo = templateUtil.getUserInfo(professionalDTO);
-        UserTemplateStatisticDTO statisticInfo = templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId.get());
+        UserTemplateStatisticInfo statisticInfo = templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId.get());
 
         //envia a notificação ao usuário
         List<EventSSE> eventSsesList = sseService.findPendingEventsByEmail(authentication.getEmail());
@@ -147,8 +147,8 @@ public class ProfessionalHomeController {
                 .collect(Collectors.toList());
 
         mv.addObject("eventsse", eventSSEDTOs);
-        mv.addObject("expertises", expertiseDTOs);
-        mv.addObject("individualInfo", individualInfo);
+        mv.addObject("professionalExpertises", professionalExpertiseDTOs);
+        mv.addObject("userInfo", individualInfo);
         mv.addObject("statisticInfo", statisticInfo);
 
         return mv;
@@ -488,10 +488,10 @@ public class ProfessionalHomeController {
 
         Optional oClient, oCity, oState;
 
-        oClient = individualService.findById(jobFull.getIndividual().getId());
+        oClient = individualService.findById(jobFull.getUser().getId());
         Individual client = (Individual) oClient.get();
 
-        oCity = cityService.findById(jobFull.getIndividual().getAddress().getCity().getId());
+        oCity = cityService.findById(jobFull.getUser().getAddress().getCity().getId());
 
         City city = (City) oCity.get();
         oState = stateService.findById(city.getState().getId());
@@ -528,7 +528,7 @@ public class ProfessionalHomeController {
         mv.addObject("percentCandidatesApplied", percentCandidatesApplied);
         mv.addObject("isAvailableJobRequest", isAvailableJobRequest);
         mv.addObject("isJobToHired", isJobToHired);
-        mv.addObject("individualInfo", individualInfo);
+        mv.addObject("userInfo", individualInfo);
         return mv;
     }
 
@@ -556,13 +556,13 @@ public class ProfessionalHomeController {
                 return jobRequestPage = jobRequestService.findAvailableAllExpertises(JobRequest.Status.AVAILABLE, oProfessional.get().getId(), pageRequest);
             }
             else if(status == JobRequest.Status.TO_DO){
-                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_Professional(JobRequest.Status.TO_DO, oProfessional.get(), pageRequest);
+                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_User(JobRequest.Status.TO_DO, oProfessional.get(), pageRequest);
             }
             else if(status == JobRequest.Status.DOING){
-                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_Professional(JobRequest.Status.DOING, oProfessional.get(), pageRequest);
+                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_User(JobRequest.Status.DOING, oProfessional.get(), pageRequest);
             }
             else if(status == JobRequest.Status.CANCELED){
-                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_Professional(JobRequest.Status.CANCELED, oProfessional.get(), pageRequest);
+                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_User(JobRequest.Status.CANCELED, oProfessional.get(), pageRequest);
             }
             return null;
         } else {

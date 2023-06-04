@@ -7,10 +7,8 @@ import br.edu.utfpr.servicebook.model.repository.UserRepository;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
-import br.edu.utfpr.servicebook.util.sidePanel.SidePanelCompanyDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateStatisticDTO;
+import br.edu.utfpr.servicebook.util.TemplateUtil;
+import br.edu.utfpr.servicebook.util.UserTemplateInfo;
 import com.cloudinary.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,13 +16,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -54,6 +56,20 @@ public class CompanyProfessionalController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private QuartzService quartzService;
+
+    @Autowired
+    private UserCodeMapper userCodeMapper;
+
+    @Autowired
+    private UserCodeService userCodeService;
+
+    @Autowired
+    private UserTokenMapper userTokenMapper;
+
+    @Autowired
+    private UserTokenService userTokenService;
     /**
      * Apresenta a tela para a empresa adicionar profissionais.
      * @param id
@@ -70,9 +86,9 @@ public class CompanyProfessionalController {
         ModelAndView mv = new ModelAndView("company/new-professional");
 
         UserTemplateInfo userTemplateInfo = templateUtil.getUserInfo(professionalMinDTO);
-        SidePanelCompanyDTO sidePanelStatisticDTO = templateUtil.getCompanyStatisticInfo(company, id.get());
+//        SidePanelCompanyDTO sidePanelStatisticDTO = templateUtil.getCompanyStatisticInfo(company, id.get());
 
-        mv.addObject("statisticInfo", sidePanelStatisticDTO);
+//        mv.addObject("statisticInfo", sidePanelStatisticDTO);
         mv.addObject("individualInfo", userTemplateInfo);
 
         mv.addObject("id", id.orElse(0L));
@@ -85,7 +101,6 @@ public class CompanyProfessionalController {
                 .map(s -> companyProfessionalMapper.toResponseDTO(s))
                 .collect(Collectors.toList());
 
-
         mv.addObject("expertises", company);
         mv.addObject("professionals", professionals);
         mv.addObject("professionalExpertises", companyProfessionalDTO2s);
@@ -97,21 +112,33 @@ public class CompanyProfessionalController {
     public ModelAndView saveProfessionals(@Valid CompanyProfessionalDTO dto, BindingResult errors, RedirectAttributes redirectAttributes) throws Exception {
 
         ModelAndView mv = new ModelAndView("redirect:profissionais");
-        Set<Integer> ids = dto.getIds();
+        String ids = dto.getIds();
+        User company = this.getCompany();
+        Optional<User> company_name = userService.findById(company.getId());
+        Optional<User> oCompany = (userService.findByEmail(authentication.getEmail()));
 
         if (ids == null) {
-            return mv;
+//            return mv;
         }
+        String companyCode = "";
 
-        User company = this.getCompany();
-//
-        for (int id : ids) {
-            Optional<User> e = userService.findById((Long.valueOf(id)));
+        Optional<User> oProfessional = userService.findByEmail(ids);
+        if(!oProfessional.isPresent()){
+            Date date = new Date();
+            String code = "R0"+company.getId()+date;
 
-            if (!e.isPresent()) {
-                throw new Exception("Não existe esse profissional!");
-            }
-            CompanyProfessional p = companyProfessionalService.save(new CompanyProfessional(company, e.get()));
+            UserTokenDTO userTokenDTO = new UserTokenDTO(code, dto.getIds(), company_name.get());
+            UserToken userToken = userTokenMapper.toEntity(userTokenDTO);
+            userTokenService.save(userToken);
+            companyCode = code;
+
+            //envia o código por email ao usuário
+            String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString()
+                    + "/cadastrar-se?empresa=" + company.getId() + "&email=" + dto.getIds();
+            quartzService.sendEmailToRegisterUser(dto.getIds(), oCompany.get().getName(), tokenLink);
+        } else {
+            String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/confirmar?empresa=" + company_name.get().getName() +"&email=" + dto.getIds();
+            quartzService.sendEmailWithConfirmationUser(dto.getIds(), company.getName(), tokenLink);
         }
         return mv;
     }

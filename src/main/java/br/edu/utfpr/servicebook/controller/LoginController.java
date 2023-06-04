@@ -12,6 +12,7 @@ import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -57,10 +58,14 @@ public class LoginController {
     private QuartzService quartzService;
     private static final Logger log = LoggerFactory.getLogger(LoginController.class);
 
+    @Value("${recaptcha.sitekey}")
+    private String recaptchaSiteKey;
+
     @GetMapping
     @PermitAll
     public ModelAndView showLogin() {
         ModelAndView mv = new ModelAndView("visitor/login");
+        mv.addObject("recaptchaSiteKey", recaptchaSiteKey);
         return mv;
     }
 

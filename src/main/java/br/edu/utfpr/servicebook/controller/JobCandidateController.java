@@ -98,7 +98,7 @@ public class JobCandidateController {
         JobRequestDetailsDTO jobFull = jobRequestMapper.jobRequestDetailsDTO(oJobRequest.get());
 
         //envia a notificação SSE
-        EventSSE eventSse = new EventSSE(EventSSE.Status.NEW_CANDIDATURE, jobFull.getDescription().toString(), currentUserEmail, jobFull.getIndividual().getName(), jobFull.getIndividual().getEmail());
+        EventSSE eventSse = new EventSSE(EventSSE.Status.NEW_CANDIDATURE, jobFull.getDescription().toString(), currentUserEmail, jobFull.getUser().getName(), jobFull.getUser().getEmail());
         sseService.send(eventSse);
 
         redirectAttributes.addFlashAttribute("msg", "Candidatura realizada com sucesso!");

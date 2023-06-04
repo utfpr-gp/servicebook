@@ -1,7 +1,6 @@
 package br.edu.utfpr.servicebook.service;
 
 import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.JobRequest;
 import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.model.repository.JobRequestRepository;
@@ -66,7 +65,7 @@ public class JobRequestService {
         return this.jobRequestRepository.findAvailableAllExpertises(status, userId, pageable);
     }
 
-    public Page<JobRequest> findByStatusAndJobContracted_Professional(JobRequest.Status status, User user, Pageable pageable) {
+    public Page<JobRequest> findByStatusAndJobContracted_User(JobRequest.Status status, User user, Pageable pageable) {
         return this.jobRequestRepository.findByStatusAndJobContracted_User(status, user, pageable);
     }
 

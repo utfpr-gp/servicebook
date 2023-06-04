@@ -12,5 +12,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompanyProfessionalDTO implements IWizardDTO, Serializable {
-    private Set<Integer> ids = new HashSet<>();
+    private String ids;
+//    private Set<Integer> ids = new HashSet<>();
 }

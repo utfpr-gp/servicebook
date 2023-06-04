@@ -64,9 +64,7 @@ public class User implements Serializable {
 	Set<JobCandidate> candidatures;
 
 	protected String description;
-
 	protected Integer denounceAmount;
-
 	protected Long followsAmount;
 
 	public User(Long id, String name) {

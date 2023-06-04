@@ -2,11 +2,11 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:template title="ServiceBook - Minha conta" individualInfo="${individualInfo}">
+<t:template title="ServiceBook - Minha conta" userInfo="${userInfo}">
     <jsp:body>
         <main class="container">
             <div class="row">
-                <t:side-panel individualInfo="${individualInfo}" followdto="${followdto}" statisticProfessionalInfo="${statisticInfo}"></t:side-panel>
+                <t:side-panel userInfo="${userInfo}" followdto="${followdto}" statisticInfo="${statisticInfo}"></t:side-panel>
                 <div class="col m10 offset-m1 l9">
                     <a id="show-area-perfil"
                        class="hide-on-large-only show-area-perfil waves-effect waves-light btn btn-floating grey darken-3 z-depth-A">

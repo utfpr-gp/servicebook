@@ -6,8 +6,8 @@ import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.service.CityService;
 import br.edu.utfpr.servicebook.service.UserService;
 
-import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.TemplateUtil;
+import br.edu.utfpr.servicebook.util.UserTemplateInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.stereotype.Controller;
@@ -44,7 +44,7 @@ public class IndexController {
         if(!(authentication.getAuthentication() instanceof AnonymousAuthenticationToken)){
             Optional<User> oUser = userService.findByEmail(authentication.getEmail());
             UserTemplateInfo userInfo = templateUtil.getUserInfo(oUser.get());
-            mv.addObject("individualInfo", userInfo);
+            mv.addObject("userInfo", userInfo);
         }
 
         List<City> cities = cityService.findAll();

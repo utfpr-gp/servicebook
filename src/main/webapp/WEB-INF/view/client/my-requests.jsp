@@ -6,12 +6,12 @@
 <%@ taglib prefix="c"
            uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:template title="Minhas Solicitações" individualInfo="${individualInfo}">
-    <jsp:body>
-        <main class="container">
-            <div class="row">
+<t:template title="Minhas Solicitações" userInfo="${user}">
+  <jsp:body>
+    <main class="container">
+      <div class="row">
 
-                <t:side-panel individualInfo="${individualInfo}"></t:side-panel>
+        <t:side-panel userInfo="${user}"></t:side-panel>
 
                 <div class="col m10 offset-m1 l9">
                     <a id="show-area-perfil"
