@@ -70,6 +70,7 @@ public class CompanyProfessionalController {
 
     @Autowired
     private UserTokenService userTokenService;
+
     /**
      * Apresenta a tela para a empresa adicionar profissionais.
      * @param id
@@ -117,25 +118,24 @@ public class CompanyProfessionalController {
         Optional<User> company_name = userService.findById(company.getId());
         Optional<User> oCompany = (userService.findByEmail(authentication.getEmail()));
 
-        if (ids == null) {
-//            return mv;
-        }
-        String companyCode = "";
-
         Optional<User> oProfessional = userService.findByEmail(ids);
         if(!oProfessional.isPresent()){
-            Date date = new Date();
-            String code = "R0"+company.getId()+date;
+            Random random = new Random();
+            int numberRandom = random.nextInt(100 - 1) + 1;
 
-            UserTokenDTO userTokenDTO = new UserTokenDTO(code, dto.getIds(), company_name.get());
+            String token = "RP0"+company.getId()+numberRandom;
+            UserTokenDTO userTokenDTO = new UserTokenDTO();
+            userTokenDTO.setUser(company);
+            userTokenDTO.setEmail(ids);
+            userTokenDTO.setToken(token);
             UserToken userToken = userTokenMapper.toEntity(userTokenDTO);
-            userTokenService.save(userToken);
-            companyCode = code;
 
-            //envia o código por email ao usuário
+            userTokenService.save(userToken);
+
             String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString()
-                    + "/cadastrar-se?empresa=" + company.getId() + "&email=" + dto.getIds();
-            quartzService.sendEmailToRegisterUser(dto.getIds(), oCompany.get().getName(), tokenLink);
+                    + "/cadastrar-se?passo-1&code="+token;
+
+            quartzService.sendEmailToRegisterUser(dto.getIds(), company.getName(), tokenLink);
         } else {
             String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/confirmar?empresa=" + company_name.get().getName() +"&email=" + dto.getIds();
             quartzService.sendEmailWithConfirmationUser(dto.getIds(), company.getName(), tokenLink);
@@ -152,10 +152,6 @@ public class CompanyProfessionalController {
 
         Optional<CompanyProfessional> optionalCompanyProfessional = companyProfessionalService.findByCompanyAndProfessional(company, oProfessional.get());
 
-//        if(!optionalProfession.isPresent()){
-//            throw new EntityNotFoundException("Erro ao remover, registro não encontrado para o id " + id);
-//        }
-//
         if (optionalCompanyProfessional.get().getProfessional().getId().equals(id.getId())) {
             this.companyProfessionalService.delete(optionalCompanyProfessional.get().getId());
         }

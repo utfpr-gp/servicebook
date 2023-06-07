@@ -41,21 +41,21 @@ VALUES ('Industrial', '800', '85053525', 'Avenida Professora Laura Pacheco Basto
 
 INSERT INTO users
 (email, email_verified, name, phone_number, phone_verified, profile_picture, profile_verified,
- address_id, rating, profile, password, description)
+ address_id, rating, profile, password, description, is_confirmed)
 VALUES ('profissional1@gmail.com', 'true', 'Nome do Primeiro Profissional', '(42) 99999-9991', 'true',
-        'https://i.imgur.com/owhNAKK.png', 'true', '1', 2, 'ROLE_ADMIN','$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição profissional 1'),
+        'https://i.imgur.com/owhNAKK.png', 'true', '1', 2, 'ROLE_ADMIN','$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição profissional 1', 'true'),
        ('profissional2@gmail.com', 'true', 'Nome do Segundo Profissional', '(42) 99999-9992', 'true',
-        'https://i.imgur.com/sHAg9pz.png', 'true', '1', 4,'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição profissional 1'),
+        'https://i.imgur.com/sHAg9pz.png', 'true', '1', 4,'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição profissional 1', 'true'),
        ('cliente1@gmail.com', 'true', 'Nome do Primeiro Cliente', '(42) 99999-9993', 'true',
-        'https://i.imgur.com/y9dH2bJ.jpeg', 'true', '1', 5, 'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição profissional 1'),
+        'https://i.imgur.com/y9dH2bJ.jpeg', 'true', '1', 5, 'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição profissional 1', 'false'),
        ('cliente2@gmail.com', 'true', 'Nome do Segundo Cliente', '(42) 99999-9994', 'true',
-        'https://i.imgur.com/owhNAKK.png', 'true', '1', 1, 'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição profissional 1'),
+        'https://i.imgur.com/owhNAKK.png', 'true', '1', 1, 'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição profissional 1', 'false'),
        ('empresa@gmail.com', 'true', 'Nome Empresa', '(42) 99999-9994', 'true',
-        'https://i.imgur.com/owhNAKK.png', 'true', '1', 1, 'ROLE_COMPANY', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição empresa 1'),
+        'https://i.imgur.com/owhNAKK.png', 'true', '1', 1, 'ROLE_COMPANY', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição empresa 1', 'false'),
        ('profissional3@gmail.com', 'true', 'Nome do Terceiro Profissional', '(42) 99999-9995', 'false',
-        null, 'false', '1', 3, 'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição profissional 1'),
+        null, 'false', '1', 3, 'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição profissional 1', 'true'),
        ('empresa1@gmail.com', 'true', 'Alguma Empresa', '(42) 99999-9996', 'true',
-        'https://i.imgur.com/owhNAKK.png', 'true', '1', 2, 'ROLE_COMPANY', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS', 'Descrição profissional 1');
+        'https://i.imgur.com/owhNAKK.png', 'true', '1', 2, 'ROLE_COMPANY', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS', 'Descrição profissional 1', 'false');
 -- qwerty123
 INSERT INTO individuals (cpf, gender, birth_date, id)
 VALUES ('982.988.640-93', 'MASCULINE', '2003-01-01', '1'),
@@ -89,10 +89,10 @@ VALUES ('98.988.640/0001-91', 1),
        ('01.988.640/0001-15', 6),
        ('78.988.640/0001-02', 7);
 
--- INSERT INTO company_professionals (company_id, professional_id, rating)
--- VALUES (7, 2, 1),
---        (5, 6, 1),
---        (7, 6, 1);
+INSERT INTO company_professionals (company_id, professional_id, rating)
+VALUES (7, 2, 1),
+       (5, 6, 1),
+       (7, 6, 1);
 
 INSERT INTO job_requests
 (client_confirmation, date_created, date_target, description, professional_confirmation, quantity_candidators_max,

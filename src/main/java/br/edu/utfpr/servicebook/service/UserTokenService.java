@@ -5,8 +5,6 @@ import br.edu.utfpr.servicebook.model.repository.UserTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,8 +13,9 @@ public class UserTokenService {
     @Autowired
     private UserTokenRepository userTokenRepository;
 
-    public void save(UserToken entity) {
+    public UserToken save(UserToken entity) {
         userTokenRepository.save(entity);
+        return entity;
     }
 
     public void deleteById(Long id) {
@@ -25,6 +24,10 @@ public class UserTokenService {
 
     public Optional<UserToken> findByEmail(String email) {
         return this.userTokenRepository.findByEmail(email);
+    }
+
+    public UserToken findByUserToken(String token) {
+        return this.userTokenRepository.findByToken(token);
     }
 
 }

@@ -895,3 +895,16 @@ textarea {
 .select2-container--default .select2-selection--single .select2-selection__rendered {
   line-height: 40px !important;
 }
+
+.register_individual_company a{
+  color: black !important;
+}
+
+.indicator_register_individual_company {
+  left: 170px !important;
+  right: 0px !important;
+}
+
+.remove_active{
+  color: #0D47A1 !important;
+}

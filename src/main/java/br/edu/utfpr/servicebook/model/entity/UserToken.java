@@ -22,9 +22,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Entity
 public class UserToken {
-
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -35,13 +34,14 @@ public class UserToken {
 	private User user;
 	
 	@NonNull
-	@Column(unique = true)
 	private String token;
 	
 	@NonNull
 	private String type;
-	
+
+	@NonNull
+	private String email;
+
 	@NonNull
 	private Date expiredDate;
-	
 }

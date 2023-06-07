@@ -66,6 +66,7 @@ public class User implements Serializable {
 	protected String description;
 	protected Integer denounceAmount;
 	protected Long followsAmount;
+	protected boolean isConfirmed;
 
 	public User(Long id, String name) {
 	}

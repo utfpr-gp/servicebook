@@ -148,65 +148,19 @@ public class CompanyController {
         mv.addObject("company", true);
         return mv;
     }
-//    @GetMapping("/adicionar-profissional")
-//    @RolesAllowed({RoleType.COMPANY})
-//    public ModelAndView newProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> expertiseId
-//    ) throws Exception {
-//        ModelAndView mv = new ModelAndView("company/new-professional");
-//        Optional<User> oProfessional = (userService.findByEmail(authentication.getEmail()));
-//
-//        UserDTO professionalDTO = userMapper.toDto(oProfessional.get());
-//
-//        Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(oProfessional.get());
-//        professionalDTO.setFollowingAmount(oProfessionalFollowingAmount.get());
-//        UserTemplateInfo individualInfo = templateUtil.getUserInfo(professionalDTO);
-//        UserTemplateStatisticDTO statisticInfo = templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId.get());
-//        mv.addObject("individualInfo", individualInfo);
-//
-//        List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
-//        List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
-//                .map(professionalExpertise -> professionalExpertise.getExpertise())
-//                .map(expertise -> expertiseMapper.toDto(expertise))
-//                .collect(Collectors.toList());
-//
-//        //envia a notificação ao usuário
-//        List<EventSSE> eventSsesList = sseService.findPendingEventsByEmail(authentication.getEmail());
-//        List<EventSSEDTO> eventSSEDTOs = eventSsesList.stream()
-//                .map(eventSse -> {
-//                    return eventSseMapper.toFullDto(eventSse);
-//                })
-//                .collect(Collectors.toList());
-//
-//        UserDTO professionalDTO1 = userMapper.toDto(oProfessional.get());
-//        List<User> users = userService.findProfessionals();
-//
-//        List<User> professionPage = userService.findProfessionals();
-//
-//        List<UserDTO> professionDTOs = professionPage.stream()
-//                .map(s -> userMapper.toDto(s))
-//                .collect(Collectors.toList());
-//
-//        mv.addObject("eventsse", eventSSEDTOs);
-//        mv.addObject("expertises", professionDTOs);
-//        mv.addObject("individualInfo", individualInfo);
-//        mv.addObject("professionalDTO1", professionalDTO1);
-//        mv.addObject("statisticInfo", statisticInfo);
-//        mv.addObject("cities", users);
-//        mv.addObject("company", true);
-//        return mv;
-//    }
+    @GetMapping("/adicionar-profissional")
+    @RolesAllowed({RoleType.COMPANY})
+    public ModelAndView newProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> expertiseId
+    ) throws Exception {
+        ModelAndView mv = new ModelAndView("company/new-professional");
+        Optional<User> oProfessional = (userService.findByEmail(authentication.getEmail()));
 
-    @RequestMapping(value = "/autocomplete", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public List<String> getAutocompleteData(@RequestParam("term") String term) {
-        // Buscar os dados correspondentes ao termo pesquisado
-        List<String> data = Arrays.asList("Produto 1", "Produto 2", "Produto 3");
+        UserDTO professionalDTO = userMapper.toDto(oProfessional.get());
 
         Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(oProfessional.get());
         professionalDTO.setFollowingAmount(oProfessionalFollowingAmount.get());
         UserTemplateInfo individualInfo = templateUtil.getUserInfo(professionalDTO);
-        UserTemplateStatisticInfo statisticInfo = templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId.get());
-        mv.addObject("userInfo", individualInfo);
+        mv.addObject("individualInfo", individualInfo);
 
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
         List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
@@ -223,11 +177,19 @@ public class CompanyController {
                 .collect(Collectors.toList());
 
         UserDTO professionalDTO1 = userMapper.toDto(oProfessional.get());
+        List<User> users = userService.findProfessionalsNotExist();
+
+        List<User> professionPage = userService.findProfessionalsNotExist();
+
+        List<UserDTO> professionDTOs = professionPage.stream()
+                .map(s -> userMapper.toDto(s))
+                .collect(Collectors.toList());
+
         mv.addObject("eventsse", eventSSEDTOs);
-        mv.addObject("expertises", expertiseDTOs);
-        mv.addObject("userInfo", individualInfo);
+        mv.addObject("expertises", professionDTOs);
+        mv.addObject("individualInfo", individualInfo);
         mv.addObject("professionalDTO1", professionalDTO1);
-        mv.addObject("statisticInfo", statisticInfo);
+        mv.addObject("cities", users);
         mv.addObject("company", true);
         return mv;
     }

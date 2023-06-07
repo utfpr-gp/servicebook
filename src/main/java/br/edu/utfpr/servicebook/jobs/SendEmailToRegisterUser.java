@@ -24,9 +24,8 @@ public class SendEmailToRegisterUser implements Job {
         JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
         String email = (String) jobDataMap.get(SendEmailWithVerificationCodeJob.RECIPIENT_KEY);
         String code = (String) jobDataMap.get(SendEmailWithVerificationCodeJob.CODE_KEY);
-        String company = (String) jobDataMap.get(SendEmailToRegisterUser.CODE_KEY);
+        String company = (String) jobDataMap.get(SendEmailToRegisterUser.USER_KEY);
         String link = (String) jobDataMap.get(SendEmailToAuthenticateJob.LINK_KEY);
-        String user = (String) jobDataMap.get(SendEmailToAuthenticateJob.USER_KEY);
 
         String text = "Olá <br> <p> A empresa "+ company + ", deseja incluir você ao quadro de funcionários." +
                 " <br> Para isto é necessário realizar o cadastro na plataforma, você pode se cadastrar usando o link: " + link + ".</p> ";

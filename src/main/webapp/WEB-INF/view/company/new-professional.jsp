@@ -101,12 +101,7 @@
                                         </div>
                                         <div class="col s12" style="margin-top: 20px">
                                             <form class="s12" id="form-professionals-company" action="minha-conta/empresa/profissionais" method="post">
-                                                <select id="single" class="js-example-responsive" style="width: 100%" name='ids'>
-                                                    <c:forEach var="profissional" items="${professionals}">
-                                                        <option></option>
-                                                        <option value="${profissional.id}"> ${profissional.name}</option>
-                                                    </c:forEach>
-                                                </select>
+                                                <input name="ids" placeholder="Adicione o email do profissional que deseja incluir"/>
 
                                                 <div class="input-field col s8 offset-s1" style="margin-top: 12%">
                                                     <button id="submit-professional-company" type="submit" class="btn waves-effect waves-light left">Salvar</button>
@@ -115,21 +110,6 @@
                                                     <a class="btn waves-effect waves-light modal-close">Fechar</a>
                                                 </div>
                                             </form>
-                                        </div>
-
-                                        <div class="col s12" style="margin-top: 10px">
-                                            <div class="row">
-                                                <div class="input-field col s12">
-                                                    <i class="material-icons prefix" style="margin: 3px 0 0">link</i>
-                                                    <label for="getCopyLink">
-                                                        Convidar funcionário para fazer parte do ServiceBook.
-                                                        <a id="getCopyLink" class="waves-effect waves-light" style="font-size: 1rem">
-                                                            <i class="material-icons left" style="font-size: 1rem; margin: 3px 0 0">content_copy</i>
-                                                            Copiar Link
-                                                        </a>
-                                                    </label>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>

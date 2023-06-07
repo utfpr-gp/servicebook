@@ -72,6 +72,10 @@ public class MyAccountController {
     @Autowired
     private TemplateUtil templateUtil;
 
+
+    @Autowired
+    private CompanyProfessionalService companyProfessionalService;
+
     @GetMapping
     public String home(HttpServletRequest request) {
         return "redirect:/minha-conta/cliente";
