@@ -49,7 +49,6 @@ public class IndexController {
 
         List<City> cities = cityService.findAll();
         mv.addObject("cities", cities);
-
         return mv;
     }
 

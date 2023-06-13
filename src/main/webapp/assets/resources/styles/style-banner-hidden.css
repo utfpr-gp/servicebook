@@ -1,20 +1,29 @@
 .city-name {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 100%;
     padding: 10px;
     background-color: #f5f5f5;
+    color: #0d47a1;
 }
 
+.cityNameContent {
+    display: flex;
+    justify-content: start;
+}
 .expanded {
     transform: rotate(180deg);
 }
 
-#city-panel {
-    display: none;
-}
-
 #painel {
     padding: 0;
+}
+
+#togleCityId {
+    cursor: pointer;
+    margin-left: 1.2em;
+}
+
+@media screen and (max-width: 600px) {
+    .cityNameContent {
+        justify-content: space-between;
+    }
 }

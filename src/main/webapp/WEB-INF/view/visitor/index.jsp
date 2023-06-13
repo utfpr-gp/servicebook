@@ -8,9 +8,11 @@
             <div id="panel-heading">
                 <div class="row">
                     <div class="col s12" id="painel">
-                        <div class="city-name" onclick="toggleCityPanel()">
-                            <i id="iconeSeta" class="material-icons">keyboard_arrow_up</i>
-                            <span>${cities[0].name} - ${cities[0].state.uf}</span>
+                        <div class="city-name">
+                            <div class="container cityNameContent">
+                                <span id="selectCityName">${cities[0].name} - ${cities[0].state.uf}</span>
+                                <span id="togleCityId">Alterar a cidade</span>
+                            </div>
                         </div>
                         <div id="city-panel">
                             <t:banner cities="${cities}"></t:banner>
@@ -22,3 +24,5 @@
         </main>
     </jsp:body>
 </t:template>
+
+<script></script>
