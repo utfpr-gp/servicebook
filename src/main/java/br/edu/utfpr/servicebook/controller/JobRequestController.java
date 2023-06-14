@@ -262,23 +262,16 @@ public class JobRequestController {
     @PermitAll
     public String saveFormImagePath(HttpSession httpSession, RedirectAttributes redirectAttributes, JobRequestDTO dto, Model model) throws IOException {
 
-
         //persiste na sessão
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         sessionDTO.setImageFile(dto.getImageFile());
-
-        System.out.println(sessionDTO.getExpertiseId());
-        System.out.println("entrei no passo 5");
-        System.out.println(dto.getImageFile());
 
         if(isValidateImage(dto.getImageFile())){
             File jobImage = Files.createTempFile("temp", dto.getImageFile().getOriginalFilename()).toFile();
             dto.getImageFile().transferTo(jobImage);
             Map data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "jobs"));
 
-
-
-            //fAZER A VALIDAÇÃO AQUI
+            //realiza a moderação da imagem
             if(nsfwFilter((String)data.get("url"))){
                 String publicId = (String) data.get("public_id");
                 cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
@@ -287,7 +280,6 @@ public class JobRequestController {
             }
 
             sessionDTO.setImageSession((String)data.get("url"));
-
 
             log.debug("Passo 5 {}", sessionDTO);
 
@@ -420,7 +412,12 @@ public class JobRequestController {
         return "redirect:/minha-conta/profissional#disponiveis";
     }
 
-    public boolean nsfwFilter(String imageUrl){
+    /**
+     * Verifica se a imagem que acessível via URL apresenta conteúdo NSFW (Not Safe For Work).
+     * @param imageUrl
+     * @return
+     */
+    public boolean nsfwFilter(String imageUrl) {
         RestTemplate restTemplate = new RestTemplate();
 
         // Define o URL da API que será chamada
@@ -438,26 +435,31 @@ public class JobRequestController {
         // Cria a requisição POST com os parâmetros do cabeçalho e corpo
         HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
 
-        // Faz a requisição POST para a API
-        ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, String.class);
+        try {
 
-        // Verifica o código de status da resposta
-        if (response.getStatusCode().is2xxSuccessful()) {
-            String responseBody = response.getBody();
-            String subtexto = responseBody.substring(14, 18);
-            // Processa a resposta da API conforme necessário
-            float numeroFloat = Float.parseFloat(subtexto);
+            // Faz a requisição POST para a API
+            ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, String.class);
 
-            System.out.println("Resposta da API: " + subtexto);
-            if(numeroFloat > 0.5){
-                return true;
+            // Verifica o código de status da resposta
+            if (response.getStatusCode().is2xxSuccessful()) {
+                String responseBody = response.getBody();
+                String subtexto = responseBody.substring(14, 18);
+                // Processa a resposta da API conforme necessário
+                float numeroFloat = Float.parseFloat(subtexto);
+
+                System.out.println("Resposta da API: " + subtexto);
+                if (numeroFloat > 0.5) {
+                    return true;
+                } else {
+                    return false;
+                }
+
+            } else {
+                System.out.println("A requisição falhou com o código de status: " + response.getStatusCode());
             }
-            else{
-                return false;
-            }
-
-        } else {
-            System.out.println("A requisição falhou com o código de status: " + response.getStatusCode());
+        }
+        catch (Exception e){
+            System.out.println("A requisição falhou.");
         }
         return true;
     }
