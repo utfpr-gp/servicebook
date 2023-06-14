@@ -854,3 +854,11 @@ textarea {
 .div_email {
   margin-top: 40px;
 }
+
+/* Professional */
+.expertise-select-card{
+  cursor: pointer;
+}
+.expertise-select-card:hover{
+  background-color: #4962B3;
+}

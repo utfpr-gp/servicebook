@@ -2,20 +2,38 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+
 <t:template title="ServiceBook - Minha conta" userInfo="${userInfo}">
     <jsp:body>
         <main class="container">
             <div class="row">
-                <t:side-panel userInfo="${userInfo}" followdto="${followdto}" statisticInfo="${statisticInfo}"></t:side-panel>
-                <div class="col m10 offset-m1 l9">
-                    <a id="show-area-perfil"
-                       class="hide-on-large-only show-area-perfil waves-effect waves-light btn btn-floating grey darken-3 z-depth-A">
-                        <i class="material-icons">compare_arrows</i>
-                    </a>
+                <!-- Painel lateral -->
+                <div class="col m4 l3 hide-on-med-and-down">
+                    <t:side-panel userInfo="${userInfo}" followdto="${followdto}" statisticInfo="${statisticInfo}"></t:side-panel>
+                </div>
+
+                <!-- Painel com as solicitações de serviços -->
+                <div class="col s12 l9">
                     <div class="row">
                         <div class="col s12">
                             <h2 class="secondary-color-text">Anúncios de serviços</h2>
                         </div>
+
+                        <div class="col s12">
+                            <label>
+                                <input name="group1" type="radio" id="open-radio" checked />
+                                <span style="color: rgb(63 81 181)">ABERTOS</span>
+                            </label>
+                            <label>
+                                <input name="group1" type="radio" id="todo-radio" class="blue"/>
+                                <span style="color: rgb(63 81 181)">PARA FAZER</span>
+                            </label>
+                            <label>
+                                <input name="group1" type="radio" id="closed-radio" class="blue"/>
+                                <span style="color: rgb(63 81 181)">REALIZADOS</span>
+                            </label>
+                        </div>
+
                         <div class="col s12">
                             <c:if test="${not empty msg}">
                                 <div class="row">
@@ -26,72 +44,49 @@
                                     </div>
                                 </div>
                             </c:if>
-                                <%--                            <div class="row">--%>
-                            <div class="row" style="margin-top: 20px">
-                                <div class="tab col" style="width: 150px; border-bottom-width: 1px; border-bottom-color: #00b0ff; border-bottom-style: solid; margin-right: 10px">
-                                    <a id="tab-default" data-url="minha-conta/profissional/disponiveis"
-                                       href="#disponiveis" class="truncate">
-                                        Disponíveis
-                                    </a>
-                                </div>
+                        </div>
 
-                                <div class="tab col dropdown-trigger sub-tab" data-target='pendentes'
-                                     style="width: 150px; border-bottom-width: 1px; border-bottom-color: #00b0ff; border-bottom-style: solid; margin-right: 10px">
-                                    <a>Pendentes<i class="material-icons right">expand_more</i></a>
-                                    </a>
-                                    <ul id='pendentes' class='dropdown-content' style="width: 150px">
-                                        <li><a data-url="minha-conta/profissional/em-disputa" href="#emDisputa" style="width: 150px">Disputas</a></li>
-                                        <li class="divider" tabindex="-1"></li>
-                                        <li><a data-url="minha-conta/profissional/em-orcamento" href="#paraOrcamento">Orçamento</a></li>
-                                        <li class="divider" tabindex="-1"></li>
-                                        <li><a data-url="minha-conta/profissional/para-contratar" href="#paraContratar">A contratar</a></li>
-                                    </ul>
-                                </div>
-
-                                <div class="tab col dropdown-trigger sub-tab" data-target='atuais'
-                                     style="width: 150px; border-bottom-width: 1px; border-bottom-color: #00b0ff; border-bottom-style: solid; margin-right: 10px">
-                                    <a>Atuais<i class="material-icons right">expand_more</i></a>
-                                    </a>
-                                    <ul id='atuais' class='dropdown-content' style="width: 150px">
-                                        <li><a data-url="minha-conta/profissional/para-fazer" href="#paraFazer" style="width: 150px">Para fazer</a></li>
-                                        <li class="divider" tabindex="-1"></li>
-                                        <li><a data-url="minha-conta/profissional/fazendo" href="#fazendo">Fazendo</a></li>
-                                    </ul>
-                                </div>
-
-                                <div class="tab col dropdown-trigger sub-tab" data-target='finalizados'
-                                     style="width: 150px; border-bottom-width: 1px; border-bottom-color: #00b0ff; border-bottom-style: solid; margin-right: 10px">
-                                    <a>Finalizados<i class="material-icons right">expand_more</i></a>
-                                    </a>
-                                    <ul id='finalizados' class='dropdown-content' style="width: 150px">
-                                        <li><a data-url="minha-conta/profissional/executados" href="#executados" style="width: 150px">Executados</a></li>
-                                        <li class="divider" tabindex="-1"></li>
-                                        <li><a data-url="minha-conta/profissional/cancelados" href="#cancelados">Cancelados</a></li>
-                                    </ul>
-                                </div>
-
-                                <div class="right-align">
-                                    <a href="minha-conta/profissional" class="waves-effect waves-light btn"><i class="material-icons right">sync</i>ATUALIZAR</a>
-                                </div>
+                        <!-- TABS -->
+                        <div class="row" style="margin-top: 20px">
+                            <ul class="tabs tabs-fixed-width center">
+                                <li class="tab open-jobs" id="1">
+                                    <a id="tab-default" data-url="minha-conta/profissional/em-disputa" href="#emDisputa">EM DISPUTA</a>
+                                </li>
+                                <li class="tab open-jobs" id="2">
+                                    <a data-url="minha-conta/profissional/em-orcamento" href="#paraOrcamento">PARA ORÇAMENTO</a>
+                                </li>
+                                <li class="tab open-jobs" id="3">
+                                    <a data-url="minha-conta/profissional/para-contratar" href="#paraContratar">PARA CONFIRMAR</a>
+                                </li>
+                                <li class="tab todo-jobs" id="4" style="display: none">
+                                    <a id="tab-default-todo" data-url="minha-conta/profissional/para-fazer" href="#paraFazer">PARA FAZER</a>
+                                </li>
+                                <li class="tab todo-jobs" id="5" style="display: none">
+                                    <a data-url="minha-conta/profissional/fazendo" href="#fazendo">FAZENDO</a>
+                                </li>
+                                <li class="tab closed-jobs" id="6" style="display: none">
+                                    <a id="tab-default-closed" data-url="minha-conta/profissional/executados" href="#executados">EXECUTADOS</a>
+                                </li>
+                                <li class="tab closed-jobs" id="7" style="display: none">
+                                    <a data-url="minha-conta/profissional/cancelados" href="#cancelados">CANCELADOS</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Fim TABS -->
+                        <div>
+                            <div id="emDisputa" class="col s12">
                             </div>
-
-                            <div id="conteudo">
-                                <div id="disponiveis" class="col s12">
-                                </div>
-                                <div id="emDisputa" class="col s12">
-                                </div>
-                                <div id="paraOrcamento" class="col s12">
-                                </div>
-                                <div id="paraContratar" class="col s12">
-                                </div>
-                                <div id="paraFazer" class="col s12">
-                                </div>
-                                <div id="fazendo" class="col s12">
-                                </div>
-                                <div id="executados" class="col s12">
-                                </div>
-                                <div id="cancelados" class="col s12">
-                                </div>
+                            <div id="paraOrcamento" class="col s12">
+                            </div>
+                            <div id="paraContratar" class="col s12">
+                            </div>
+                            <div id="paraFazer" class="col s12">
+                            </div>
+                            <div id="fazendo" class="col s12">
+                            </div>
+                            <div id="executados" class="col s12">
+                            </div>
+                            <div id="cancelados" class="col s12">
                             </div>
                         </div>
                     </div>
@@ -103,30 +98,49 @@
 </t:template>
 
 <script>
-    $(document).ready(function () {
-        // $('.tabs').tabs();
+    console.log('oi')
 
-        $('#disponiveis').load($('.tab').attr("data-url"), function (result) {
-            window.location.hash = "#disponiveis";
+    $(document).ready(function () {
+        $('.tabs').tabs();
+
+        $('#emDisputa').load($('.tab .active').attr("data-url"), function (result) {
+            window.location.hash = "#emDisputa";
             $('#tab-default').click();
+        });
+
+        $('#open-radio').click(function (){
+            $('.todo-jobs').hide();
+            $('.closed-jobs').hide();
+            $('.open-jobs').show();
+            setTimeout(function () {
+                $('#tab-default').click();
+            }, 100);
+            //$('#tab-default').click();
+        });
+
+        $('#todo-radio').click(function (){
+            $('.open-jobs').hide();
+            $('.closed-jobs').hide();
+            $('.todo-jobs').show();
+            setTimeout(function () {
+                $('#tab-default-todo').click();
+            }, 100);
+            //$('#tab-default-todo').click();
+        });
+
+        $('#closed-radio').click(function (){
+            $('.todo-jobs').hide();
+            $('.closed-jobs').show();
+            $('.open-jobs').hide();
+            setTimeout(function () {
+                $('#tab-default-closed').click();
+            }, 100);
+            //$('#tab-default-closed').click();
         });
     });
 
-    function ine () {
-        return $('#conteudo').html('' +
-            '<div id="disponiveis" class="col s12">' +
-            '</div><div id="emDisputa" class="col s12"></div>' +
-            '<div id="paraOrcamento" class="col s12"></div>' +
-            '<div id="paraContratar" class="col s12"></div>' +
-            '<div id="paraFazer" class="col s12"></div>' +
-            '<div id="fazendo" class="col s12"></div>' +
-            '<div id="executados" class="col s12"></div>' +
-            '<div id="cancelados" class="col s12"></div>');
-    };
-
     $('.tab a').click(function (e) {
         e.preventDefault();
-        ine()
         let url = $(this).attr("data-url");
         let href = this.hash;
         window.location.hash = href;
@@ -137,19 +151,8 @@
         console.log(url);
         // console.log(href)
         $(href).load(url, function (result) {
-            // console.log(result)
+            console.log(result)
+            //window.scrollTo(0,0);
         });
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // let delimitador = document.getElementById('sub-tab');
-        let elems = document.querySelectorAll('.sub-tab');
-        console.log((elems))
-        let t = M.Dropdown.init(elems, {
-            coverTrigger:false,
-            constrainWidth:false,
-            // container:delimitador
-        });
-        // console.log(t)
     });
 </script>
