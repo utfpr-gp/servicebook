@@ -10,8 +10,8 @@
                     <div class="col s12" id="painel">
                         <div class="city-name">
                             <div class="container cityNameContent">
-                                <span id="selectCityName">${cities[0].name} - ${cities[0].state.uf}</span>
-                                <span id="togleCityId">Alterar a cidade</span>
+                                <span id="select-city-name">${cities[0].name} - ${cities[0].state.uf}</span>
+                                <a id="toggle-city-id">ALTERAR A CIDADE</a>
                             </div>
                         </div>
                         <div id="city-panel">

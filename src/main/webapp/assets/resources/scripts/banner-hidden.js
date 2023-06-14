@@ -1,12 +1,11 @@
 $(document).ready(function(){
-    $("#togleCityId").click(function(){
+
+    $("#toggle-city-id").click(function(e){
+        e.preventDefault();
         $("#city-panel").slideToggle(350);
     });
-});
 
-
-$(document).ready(function(){
-    $("select").change(function () {
-        $("#selectCityName").text($("#select-city option[value ='" + this.value +"']").text().trim())
+    $("#select-city").change(function () {
+        $("#select-city-name").text($("#select-city option[value ='" + this.value +"']").text().trim())
     });
 });

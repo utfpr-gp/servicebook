@@ -89,8 +89,7 @@ public class CityController {
 
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
         Page<City> cityPage = cityService.findAll(pageRequest);
-        System.out.println(cityPage);
-        System.out.println("cityPage");
+
         mv.addObject("states", listStateDTO());
         mv.addObject("cities", listCityDTO(cityPage));
 
