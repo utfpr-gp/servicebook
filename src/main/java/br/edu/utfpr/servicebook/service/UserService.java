@@ -45,4 +45,12 @@ public class UserService {
     public Optional<User> findByPhoneNumber(String phoneNumber) {
         return this.userRepository.findByPhoneNumber(phoneNumber);
     }
+
+    public Long countProfessionals(){
+        return this.userRepository.countProfessionals();
+    }
+
+    public Long countUsersWithoutExpertise(){
+        return this.userRepository.countUsersWithoutExpertise();
+    }
 }

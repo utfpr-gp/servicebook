@@ -12,10 +12,6 @@
 
     <ul class="right nav-btn hide-on-med-and-down">
 
-        <form action="logout" method="post" hidden>
-            <button type="submit" hidden id="my-button"></button>
-        </form>
-
         <li>
             <a class='dropdown-trigger btn truncate' href='#' data-target='dropdown-perfil'>${userInfo.name}<i class="tiny material-icons right">arrow_drop_down</i></a>
             <ul id='dropdown-perfil' class='dropdown-content'>
@@ -23,7 +19,7 @@
                 <li><a href="/servicebook/minha-conta/perfil">Meu perfil</a></li>
                 <li class="divider" tabindex="-1"></li>
                 <li>
-                    <a onclick="document.getElementById('my-button').click()">Sair</a>
+                    <a href="logout">Sair</a>
                 </li>
             </ul>
         </li>
