@@ -36,6 +36,18 @@ public class IndexController {
     private CityService cityService;
 
     @Autowired
+    private CompanyService companyService;
+
+    @Autowired
+    private JobRequestService jobRequestService;
+
+    @Autowired
+    private ExpertiseService expertiseService;
+
+    @Autowired
+    private JobContractedService jobContractedService;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
@@ -66,6 +78,14 @@ public class IndexController {
 
         List<City> cities = cityService.findAll();
         mv.addObject("cities", cities);
+
+
+        mv.addObject("totalCompanies", companyService.countAll());
+        mv.addObject("totalJobRequests", jobRequestService.countAll());
+        mv.addObject("totalExpertises", expertiseService.countAll());
+        mv.addObject("totalJobContracted", jobContractedService.countAll());
+        mv.addObject("totalProfessionals", userService.countProfessionals());
+        mv.addObject("totalClients", userService.countUsersWithoutExpertise());
 
         return mv;
     }

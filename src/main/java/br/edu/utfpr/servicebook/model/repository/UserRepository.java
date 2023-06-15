@@ -38,4 +38,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT  e.name  FROM User e")
     List<String> findProfessionalsNames();
+
+    @Query("SELECT COUNT(DISTINCT pe.professional.id) FROM ProfessionalExpertise pe")
+      Long countProfessionals();
+
+    @Query("SELECT COUNT(u) FROM User u WHERE NOT EXISTS (SELECT pe FROM ProfessionalExpertise pe WHERE pe.professional = u)")
+    Long countUsersWithoutExpertise();
+
 }
