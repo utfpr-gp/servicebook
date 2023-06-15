@@ -19,7 +19,7 @@
                                 <img src="${professional.profilePicture}" alt="Profissional - Imagem de perfil." style="width:200px;height:200px"/>
                             </div>
                         </c:if>
-                       <h5 class="center edit-link tertiary-color-text"><a class="tertiary-color-text" href="">Editar foto</a></h5>
+                       <h5 class="center edit-link tertiary-color-text"><a class="tertiary-color-text" href="${pageContext.request.contextPath}/minha-conta/editar">Editar foto</a></h5>
                     </div>
                     <div class="col s12 m8 center">
                         <h3 class="center secondary-color-text"><strong>${professional.name}</strong></h3>

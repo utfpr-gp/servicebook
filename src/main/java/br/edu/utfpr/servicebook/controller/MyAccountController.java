@@ -22,12 +22,21 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
+import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
+import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Optional;
+import java.util.Map;
 
 @RequestMapping("/minha-conta")
 @Controller
@@ -71,6 +80,9 @@ public class MyAccountController {
 
     @Autowired
     private TemplateUtil templateUtil;
+
+    @Autowired
+    private Cloudinary cloudinary;
 
     @GetMapping
     public String home(HttpServletRequest request) {
@@ -246,6 +258,15 @@ public class MyAccountController {
         return "redirect:/minha-conta/meu-email/{id}";
     }
 
+    @GetMapping("/editar")
+    public ModelAndView redirecionarParaJSP() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("professional/edit-picture");
+        return modelAndView;
+    }
+
+
+
     @PostMapping("/validar-email/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String saveUserEmailCode(
@@ -286,5 +307,44 @@ public class MyAccountController {
 
         return "redirect:/minha-conta/meu-email/{id}";
     }
+
+
+    @PostMapping("/atualizar-foto/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public String updateProfilePicture(
+            @PathVariable Long id,
+            @RequestParam("profilePicture") MultipartFile profilePictureFile,
+            RedirectAttributes redirectAttributes) throws IOException {
+
+        // ...
+
+        if (!profilePictureFile.isEmpty()) {
+            // Enviar a imagem para o Cloudinary
+            Map uploadResult = cloudinary.uploader().upload(profilePictureFile.getBytes(), ObjectUtils.emptyMap());
+
+            // Obter a URL da imagem enviada para o Cloudinary
+            String profilePictureUrl = (String) uploadResult.get("secure_url");
+
+            // Verificar se o ID do usuário é válido
+            Optional<User> oUser = userService.findById(id);
+            if (oUser.isEmpty()) {
+                // Usuário não encontrado, lidar com o erro apropriadamente
+                redirectAttributes.addFlashAttribute("error", "Usuário não encontrado.");
+                return "redirect:/";
+            }
+
+            User user = oUser.get();
+
+            // Atualizar o caminho da foto de perfil do usuário
+            user.setProfilePicture(profilePictureUrl);
+            userService.save(user);
+        }
+
+        return "!";
+    }
+
+    // ...
 }
+
+
 
