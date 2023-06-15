@@ -6,11 +6,8 @@ import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.model.entity.UserToken;
 import br.edu.utfpr.servicebook.model.mapper.UserTokenMapper;
 import br.edu.utfpr.servicebook.security.IAuthentication;
-import br.edu.utfpr.servicebook.service.CityService;
-import br.edu.utfpr.servicebook.service.CompanyProfessionalService;
-import br.edu.utfpr.servicebook.service.UserService;
+import br.edu.utfpr.servicebook.service.*;
 
-import br.edu.utfpr.servicebook.service.UserTokenService;
 import br.edu.utfpr.servicebook.util.TemplateUtil;
 import br.edu.utfpr.servicebook.util.UserTemplateInfo;
 import org.springframework.beans.factory.annotation.Autowired;
