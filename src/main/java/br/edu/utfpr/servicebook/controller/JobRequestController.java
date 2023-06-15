@@ -43,7 +43,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import org.json.JSONObject;
+import org.json.JSONException;
 
 @Controller
 @Slf4j
@@ -424,7 +425,7 @@ public class JobRequestController {
         RestTemplate restTemplate = new RestTemplate();
 
         // Define o URL da API que será chamada
-        String apiUrl = "https://nsfw-image-classification1.p.rapidapi.com/img/nsfw";
+        String apiUrl = "https://image-labeling1.p.rapidapi.com/img/label";
 
         // Define o cabeçalho da requisição
         HttpHeaders headers = new HttpHeaders();
@@ -432,7 +433,6 @@ public class JobRequestController {
         headers.set("X-Rapidapi-Key", rapidapiKey);
         headers.set("X-Rapidapi-Host", rapidapiHots);
 
-        // Define o corpo da requisição
         String requestBody = "{\"url\": \"" + imageUrl + "\"}";
 
         // Cria a requisição POST com os parâmetros do cabeçalho e corpo
@@ -444,21 +444,23 @@ public class JobRequestController {
         // Verifica o código de status da resposta
         if (response.getStatusCode().is2xxSuccessful()) {
             String responseBody = response.getBody();
-            String subtexto = responseBody.substring(14, 18);
-            // Processa a resposta da API conforme necessário
-            float numeroFloat = Float.parseFloat(subtexto);
+            System.out.println(responseBody);
 
-            System.out.println("Resposta da API: " + subtexto);
-            if(numeroFloat > 0.5){
-                return true;
-            }
-            else{
-                return false;
-            }
+            // Processa a resposta da API
+            try {
+                JSONObject jsonObject = new JSONObject(responseBody);
+                double organValue = jsonObject.getDouble("Organ");
 
+                if (organValue > 0.60) {
+                    System.out.println("A imagem está incorreta!");
+                }
+            } catch (JSONException e) {
+                System.out.println("Erro ao processar a resposta da API: " + e.getMessage());
+            }
         } else {
             System.out.println("A requisição falhou com o código de status: " + response.getStatusCode());
         }
+
         return true;
     }
 }
