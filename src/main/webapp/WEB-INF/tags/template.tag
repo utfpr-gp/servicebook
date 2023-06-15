@@ -15,6 +15,19 @@
 
     <title>${title}</title>
 
+    <meta property="og:title" content="${jobRequest.description}"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:description" content="SERVICEBOOK - O MELHOR PROFISSIONAL QUE VOCÊ PRECISA ESTÁ AQUI!"/>
+    <meta property="og:image" content="${jobCandidate.individual.profilePicture}"/>
+    <meta property="og:site_name" content="Servicebook"/>
+
+    <meta name="twitter:card" content="photo">
+    <meta name="twitter:url" content="$(location).attr('href')">
+    <meta name="twitter:title" content="${jobRequest.description}">
+    <meta name="twitter:description" content="SERVICEBOOK - O MELHOR PROFISSIONAL QUE VOCÊ PRECISA ESTÁ AQUI!">
+    <meta name="twitter:image "content="${jobCandidate.individual.profilePicture}">
+
+
     <base href="${pageContext.request.contextPath}/">
     <link rel="shortcut icon" href="assets/resources/images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">

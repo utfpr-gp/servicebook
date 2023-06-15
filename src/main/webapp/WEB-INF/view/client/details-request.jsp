@@ -276,3 +276,4 @@
 
   });
 </script>
+<script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=646f45c1a660b80019d55d12&product=sticky-share-buttons' async='async'></script>
