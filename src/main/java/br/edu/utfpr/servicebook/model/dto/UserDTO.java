@@ -58,6 +58,7 @@ public class UserDTO implements IWizardDTO, Serializable {
     protected boolean phoneVerified;
     protected boolean emailVerified;
     protected boolean profileVerified;
+    protected boolean isConfirmed;
 
     private String description;
 

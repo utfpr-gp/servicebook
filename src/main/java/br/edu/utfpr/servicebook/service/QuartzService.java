@@ -213,4 +213,46 @@ public class QuartzService {
             System.out.println(e.getMessage());
         }
     }
+
+    public void sendEmailToRegisterUser(String email, String company, String link) {
+        try {
+            JobDetail job = JobBuilder.newJob(SendEmailToRegisterUser.class)
+                    .withIdentity(SendEmailToRegisterUser.class.getSimpleName(), GROUP).build();
+            job.getJobDataMap().put(SendEmailToRegisterUser.RECIPIENT_KEY, email);
+            job.getJobDataMap().put(SendEmailToRegisterUser.USER_KEY, company);
+            job.getJobDataMap().put(SendEmailToRegisterUser.LINK_KEY, link);
+
+            Trigger trigger = getTrigger(SendEmailToRegisterUser.class.getSimpleName(), GROUP);
+
+            scheduler.scheduleJob(job, trigger);
+
+            if (!scheduler.isStarted()) {
+                scheduler.start();
+            }
+
+        }catch (SchedulerException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void sendEmailWithConfirmationUser(String email, String company, String link) {
+        try {
+            JobDetail job = JobBuilder.newJob(SendEmailWithConfirmationUser.class)
+                    .withIdentity(SendEmailWithConfirmationUser.class.getSimpleName(), GROUP).build();
+            job.getJobDataMap().put(SendEmailWithConfirmationUser.RECIPIENT_KEY, email);
+            job.getJobDataMap().put(SendEmailWithConfirmationUser.USER_KEY, company);
+            job.getJobDataMap().put(SendEmailWithConfirmationUser.LINK_KEY, link);
+
+            Trigger trigger = getTrigger(SendEmailWithConfirmationUser.class.getSimpleName(), GROUP);
+
+            scheduler.scheduleJob(job, trigger);
+
+            if (!scheduler.isStarted()) {
+                scheduler.start();
+            }
+
+        }catch (SchedulerException e){
+            System.out.println(e.getMessage());
+        }
+    }
 }

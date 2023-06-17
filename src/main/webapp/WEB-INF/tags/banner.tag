@@ -5,6 +5,15 @@
 <div id="index-banner" class="parallax-container">
     <div class="section no-pad-bot">
         <div class="container">
+            <c:if test="${not empty msg}">
+                <div class="row">
+                    <div class="col s12">
+                        <div class="card-panel green lighten-1 msg-view center-align">
+                            <span class="white-text">${msg}</span>
+                        </div>
+                    </div>
+                </div>
+            </c:if>
             <br><br>
             <h3 class="header center logo-text logo-text-parallax">ServiceBook</h3>
             <c:if test="${not empty cities}">

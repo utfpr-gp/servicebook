@@ -212,8 +212,6 @@ blockquote{
   padding-left: 20px;
 }
 
-
-
 .area-profission-select  .select-wrapper input.select-dropdown {
   text-align: center;
   padding-left: 0px !important;
@@ -856,3 +854,71 @@ textarea {
   margin-top: 40px;
 }
 
+/*CADASTRO DE PROFISSIONAIS NA EMPRESA*/
+.card-infos{
+  /*display: inline-flex;*/
+  padding: 10px;
+}
+.img-professional-company{
+  border-radius: 15px;
+}
+
+.button-remove-professional-company{
+  float: right;
+  text-align: right;
+}
+.remove-professional-company{
+  background-color: transparent;
+  border: none;
+}
+#modal-professionals{
+  height: 50%;
+}
+#form-professionals-company{
+  margin-top: 20px;
+}
+
+.js-example-responsive{
+  margin: 30px 0;
+}
+
+.select2.select2-container .select2-selection--single {
+  height: auto;
+  min-height: 44px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow{
+  top: 10px !important
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  line-height: 40px !important;
+}
+
+.register_individual_company a{
+  color: black !important;
+}
+
+.indicator_register_individual_company {
+  left: 170px !important;
+  right: 0px !important;
+}
+
+.remove_active{
+  color: #0D47A1 !important;
+}
+
+.error-message {
+  color: red;
+  font-size: 12px;
+}
+
+.icon_invite{
+  color: #607d8b;
+  margin-left: 10px;
+}
+
+.icon_invite_icon{
+  font-size: 1rem !important;
+  color: #607d8b;
+  margin: 5px 0;
+}

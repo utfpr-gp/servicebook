@@ -21,6 +21,7 @@ public class UserWizardUtil {
      */
     public static final String KEY_IS_REGISTER_COMPANY = "KEY_IS_REGISTER_COMPANY";
 
+    public static final String KEY_WIZARD_COMPANY_ID = "KEY_WIZARD_COMPANY_ID";
 
     /**
      * Retorna um objeto DTO para armazenar os dados do Wizard na sessão.

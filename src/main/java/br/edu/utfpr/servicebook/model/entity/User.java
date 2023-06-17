@@ -1,9 +1,7 @@
 package br.edu.utfpr.servicebook.model.entity;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.*;
 
@@ -68,6 +66,10 @@ public class User implements Serializable {
 	protected String description;
 	protected Integer denounceAmount;
 	protected Long followsAmount;
+	protected boolean isConfirmed;
+
+	public User(Long id, String name) {
+	}
 
 	@PrePersist
 	@PreUpdate

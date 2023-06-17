@@ -4,7 +4,9 @@ import br.edu.utfpr.servicebook.security.ProfileEnum;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -22,6 +24,10 @@ public class Company extends User {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private ProfileEnum profile;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
 	public Company(String name, String email, String password, String phoneNumber, String cnpj){
 		super(name, email, password, phoneNumber);

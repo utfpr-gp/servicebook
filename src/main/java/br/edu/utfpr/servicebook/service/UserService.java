@@ -1,8 +1,12 @@
 package br.edu.utfpr.servicebook.service;
 
+import br.edu.utfpr.servicebook.model.entity.CompanyProfessional;
+import br.edu.utfpr.servicebook.model.entity.Expertise;
+import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.model.repository.ProfessionalExpertiseRepository;
 import br.edu.utfpr.servicebook.model.repository.UserRepository;
+import br.edu.utfpr.servicebook.security.ProfileEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +49,14 @@ public class UserService {
     public Optional<User> findByPhoneNumber(String phoneNumber) {
         return this.userRepository.findByPhoneNumber(phoneNumber);
     }
+
+    public List<User> findProfessionalsNotExist() {
+        return this.userRepository.findProfessionals();
+    }
+    public List<String> findAllByNames() {
+        return this.userRepository.findProfessionalsNames();
+    }
+
 
     public Long countProfessionals(){
         return this.userRepository.countProfessionals();

@@ -186,7 +186,7 @@
                 <div class="row no-margin center">
                     <div class="col s12 no-margin no-padding input-field area-profission-select">
                         <div class="spacing-buttons">
-                            <a class="waves-effect waves-light btn" href="minha-conta/empresa/adicionar-profissional">
+                            <a class="waves-effect waves-light btn" href="minha-conta/empresa/profissionais">
                                 Adicionar Funcionário </a>
                         </div>
                     </div>
@@ -241,6 +241,22 @@
                 </div>
             </div>
             <!-- Fim Especialidades -->
+            <c:if test="${fn:contains(currenturl, '/minha-conta/empresa')}">
+            <!-- Tabela de Preços Profissional/empresa -->
+            <div class="row no-margin center">
+                <div class="col s12 no-margin no-padding input-field area-profission-select">
+                    <div class="row no-margin center">
+                        <div class="col s12 no-margin no-padding input-field area-profission-select">
+                            <div class="spacing-buttons">
+                                <a class="waves-effect waves-light btn" href="minha-conta/tabela-preços">
+                                    TABELA DE PREÇOS </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </c:if>
+            <!-- Fim Tabela de preços -->
 
             <!-- Estatísticas -->
             <div class="row no-margin">

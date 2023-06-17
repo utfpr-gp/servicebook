@@ -101,6 +101,12 @@ public class UserRegisterController {
     @Autowired
     private ProfessionalExpertiseMapper professionalExpertiseMapper;
 
+    @Autowired
+    private UserTokenService userTokenService;
+
+    @Autowired
+    private UserTokenMapper userTokenMapper;
+
     private String userRegistrationErrorForwarding(String step, UserDTO dto, Model model, BindingResult errors) {
         model.addAttribute("dto", dto);
         model.addAttribute("errors", errors.getAllErrors());
@@ -133,12 +139,25 @@ public class UserRegisterController {
     @PermitAll
     public String showUserRegistrationWizard(
             @RequestParam(value = "passo", required = false, defaultValue = "1") Long step,
+            @RequestParam(value = "code", required = false, defaultValue = "") String tokenCompany,
             HttpSession httpSession,
             Model model
     ) throws Exception{
 
         if (step < 1 || step > 9) {
             step = 1L;
+        }
+
+        if(tokenCompany != "" && step == 1){
+            UserToken userToken = userTokenService.findByUserToken(tokenCompany);
+            if(userToken != null){
+                model.addAttribute("emailProfessional", userToken.getEmail());
+                UserTokenDTO userTokenDTO = (UserTokenDTO) userWizardUtil.getWizardState(httpSession, UserTokenDTO.class, UserWizardUtil.KEY_WIZARD_COMPANY_ID);
+                model.addAttribute("userTokenDTO", userTokenDTO);
+                userTokenDTO.setToken(tokenCompany);
+                userTokenDTO.setUser(userToken.getUser());
+                userTokenDTO.setEmail(userToken.getEmail());
+            }
         }
 
         if(step == 8){
@@ -171,7 +190,6 @@ public class UserRegisterController {
                 model.addAttribute("professionalExpertises", professionalExpertises);
             }
         }
-
         return "visitor/user-registration/wizard-step-0" + step;
     }
 
@@ -183,6 +201,7 @@ public class UserRegisterController {
         userWizardUtil.removeWizardState(httpSession, UserWizardUtil.KEY_WIZARD_INDIVIDUAL);
         userWizardUtil.removeWizardState(httpSession, UserWizardUtil.KEY_EXPERTISES);
         userWizardUtil.removeWizardState(httpSession, UserWizardUtil.KEY_WIZARD_COMPANY);
+        userWizardUtil.removeWizardState(httpSession, UserWizardUtil.KEY_WIZARD_COMPANY_ID);
     }
 
     /**
@@ -206,11 +225,11 @@ public class UserRegisterController {
             BindingResult errors,
             RedirectAttributes redirectAttributes,
             Model model
-    ) throws MessagingException {
+            ) throws MessagingException {
 
-        if(errors.hasErrors()) {
-            return this.userRegistrationErrorForwarding("1", dto, model, errors);
-        }
+//        if(errors.hasErrors()) {
+//            return this.userRegistrationErrorForwarding("1", dto, model, errors);
+//        }
 
         String email = dto.getEmail().trim();
         httpSession.setAttribute(UserWizardUtil.KEY_IS_REGISTER_COMPANY, false);
@@ -222,9 +241,9 @@ public class UserRegisterController {
             errors.rejectValue("email", "error.dto", "Email já cadastrado! Por favor, insira um email não cadastrado.");
         }
 
-        if (errors.hasErrors()) {
-            return this.userRegistrationErrorForwarding("1", dto, model, errors);
-        }
+//        if (errors.hasErrors()) {
+//            return this.userRegistrationErrorForwarding("1", dto, model, errors);
+//        }
 
         //gera um código para validar o email no passo seguinte
         Optional<UserCode> oUserCode = userCodeService.findByEmail(email);
@@ -370,7 +389,6 @@ public class UserRegisterController {
         }
 
         userSessionDTO.setEmailVerified(true);
-
         redirectAttributes.addFlashAttribute("msg", "Email verificado com sucesso!");
 
         return "redirect:/cadastrar-se?passo=3";
@@ -394,6 +412,7 @@ public class UserRegisterController {
             RedirectAttributes redirectAttributes,
             Model model
     ) {
+
         if (errors.hasErrors()) {
             return this.userRegistrationErrorForwarding("3", dto, model, errors);
         }
@@ -410,6 +429,7 @@ public class UserRegisterController {
         userSessionDTO.setPassword(dto.getPassword());
         userSessionDTO.setRepassword(dto.getRepassword());
 
+        redirectAttributes.addFlashAttribute("msg", "Email verificado com sucesso!");
         return "redirect:/cadastrar-se?passo=4";
     }
 
@@ -702,7 +722,7 @@ public class UserRegisterController {
             IndividualDTO userSessionDTO = (IndividualDTO) userWizardUtil.getWizardState(httpSession, IndividualDTO.class, UserWizardUtil.KEY_WIZARD_INDIVIDUAL);
 
             validator.validate(userSessionDTO, errors, new Class[]{
-                    IndividualDTO.RequestUserEmailInfoGroupValidation.class,
+//                    IndividualDTO.RequestUserEmailInfoGroupValidation.class,
                     IndividualDTO.RequestUserPasswordInfoGroupValidation.class,
                     IndividualDTO.RequestUserPhoneInfoGroupValidation.class,
                     IndividualDTO.RequestUserNameAndCPFInfoGroupValidation.class,
@@ -715,6 +735,7 @@ public class UserRegisterController {
 
             Individual individual = individualMapper.toEntity(userSessionDTO);
             email = individual.getEmail();
+            individual.setConfirmed(false);
             userService.save(individual);
         }
 
@@ -736,6 +757,15 @@ public class UserRegisterController {
                 ProfessionalExpertise professionalExpertise = new ProfessionalExpertise(oUser.get(), e.get());
                 professionalExpertiseService.save(professionalExpertise);
             }
+        }
+
+        UserTokenDTO userTokenDTO = (UserTokenDTO) userWizardUtil.getWizardState(httpSession, UserTokenDTO.class, UserWizardUtil.KEY_WIZARD_COMPANY_ID);
+        UserToken userTokenDTO1 = userTokenMapper.toEntity(userTokenDTO);
+        Optional<User> userToken = userService.findById(userTokenDTO1.getUser().getId());
+
+        if(userToken.isPresent()){
+            String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/confirmar?code=" + userTokenDTO1.getToken();
+            quartzService.sendEmailWithConfirmationUser(userTokenDTO1.getEmail(), userToken.get().getName(), tokenLink);
         }
 
         redirectAttributes.addFlashAttribute("msg", "Usuário cadastrado com sucesso! Realize o login no Servicebook!");

@@ -28,7 +28,7 @@
                         <div class="modal-content">
                             <form action="" method="post">
 
-                                <input type="hidden" name="_method" value="DELETE"/>
+                                    <input type="hidden" name="_method" value="DELETE"/>
 
                                 <div class="modal-content">
                                     <h4>Você tem certeza que deseja remover <strong id="strong-name"></strong> das suas especialidades?</h4>
@@ -138,12 +138,11 @@
 </t:template>
 
 <script>
-
     $(function(){
         $("#txtBusca").keyup(function(){
             var texto = $(this).val();
 
-            //$("#search-expertises li").css("display", "block");
+            // $("#search-expertises li").css("display", "block");
             $("#search-expertises li").css("display", "none");
             $("#search-expertises li").each(function(){
                 if($(this).text().toUpperCase().indexOf(texto.toUpperCase()) < 0)

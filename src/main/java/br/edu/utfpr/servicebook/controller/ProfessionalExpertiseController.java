@@ -27,6 +27,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequestMapping("/minha-conta/profissional/especialidades")
@@ -112,9 +113,10 @@ public class ProfessionalExpertiseController {
 
     @PostMapping()
     @RolesAllowed({RoleType.USER})
-    public ModelAndView saveExpertises(@Valid List<Integer> ids, BindingResult errors, RedirectAttributes redirectAttributes) throws Exception {
+    public ModelAndView saveExpertises(@Valid ProfessionalExpertiseDTO dto, BindingResult errors, RedirectAttributes redirectAttributes) throws Exception {
 
         ModelAndView mv = new ModelAndView("redirect:especialidades");
+        Set<Integer> ids = dto.getIds();
 
         if (ids == null) {
             return mv;
