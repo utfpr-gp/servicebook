@@ -6,11 +6,8 @@ import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.model.entity.UserToken;
 import br.edu.utfpr.servicebook.model.mapper.UserTokenMapper;
 import br.edu.utfpr.servicebook.security.IAuthentication;
-import br.edu.utfpr.servicebook.service.CityService;
-import br.edu.utfpr.servicebook.service.CompanyProfessionalService;
-import br.edu.utfpr.servicebook.service.UserService;
+import br.edu.utfpr.servicebook.service.*;
 
-import br.edu.utfpr.servicebook.service.UserTokenService;
 import br.edu.utfpr.servicebook.util.TemplateUtil;
 import br.edu.utfpr.servicebook.util.UserTemplateInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +31,18 @@ public class IndexController {
 
     @Autowired
     private CityService cityService;
+
+    @Autowired
+    private CompanyService companyService;
+
+    @Autowired
+    private JobRequestService jobRequestService;
+
+    @Autowired
+    private ExpertiseService expertiseService;
+
+    @Autowired
+    private JobContractedService jobContractedService;
 
     @Autowired
     private UserService userService;
@@ -66,6 +75,14 @@ public class IndexController {
 
         List<City> cities = cityService.findAll();
         mv.addObject("cities", cities);
+
+
+        mv.addObject("totalCompanies", companyService.countAll());
+        mv.addObject("totalJobRequests", jobRequestService.countAll());
+        mv.addObject("totalExpertises", expertiseService.countAll());
+        mv.addObject("totalJobContracted", jobContractedService.countAll());
+        mv.addObject("totalProfessionals", userService.countProfessionals());
+        mv.addObject("totalClients", userService.countUsersWithoutExpertise());
 
         return mv;
     }

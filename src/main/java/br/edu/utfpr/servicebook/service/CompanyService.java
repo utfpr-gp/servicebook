@@ -33,4 +33,8 @@ public class CompanyService {
     public Optional<Company> findByCnpj(String cnpj) {
         return this.companyRepository.findByCnpj(cnpj);
     }
+
+    public Long countAll(){
+        return this.companyRepository.countAll();
+    }
 }

@@ -57,4 +57,12 @@ public class UserService {
         return this.userRepository.findProfessionalsNames();
     }
 
+
+    public Long countProfessionals(){
+        return this.userRepository.countProfessionals();
+    }
+
+    public Long countUsersWithoutExpertise(){
+        return this.userRepository.countUsersWithoutExpertise();
+    }
 }
