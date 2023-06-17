@@ -186,11 +186,13 @@ public class CompanyController {
                 .collect(Collectors.toList());
 
         mv.addObject("eventsse", eventSSEDTOs);
-        mv.addObject("expertises", professionDTOs);
+//        mv.addObject("expertises", professionDTOs);
         mv.addObject("individualInfo", individualInfo);
         mv.addObject("professionalDTO1", professionalDTO1);
         mv.addObject("cities", users);
         mv.addObject("company", true);
+        mv.addObject("expertises", expertiseDTOs);
+
         return mv;
     }
 

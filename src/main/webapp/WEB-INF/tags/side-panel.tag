@@ -241,7 +241,7 @@
                 </div>
             </div>
             <!-- Fim Especialidades -->
-
+            <c:if test="${fn:contains(currenturl, '/minha-conta/empresa')}">
             <!-- Tabela de Preços Profissional/empresa -->
             <div class="row no-margin center">
                 <div class="col s12 no-margin no-padding input-field area-profission-select">
@@ -255,6 +255,7 @@
                     </div>
                 </div>
             </div>
+            </c:if>
             <!-- Fim Tabela de preços -->
 
             <!-- Estatísticas -->

@@ -29,7 +29,7 @@
                                 </button>
                             </div>
 
-                            <c:forEach var="professional" items="${professionalExpertises}">
+                            <c:forEach var="professional" items="${professionalCompanies}">
                             <div class="col s12">
                                     <div class="card">
                                         <div class="col s3">
@@ -132,9 +132,6 @@
     </jsp:body>
 </t:template>
 
-<style>
-    select{ display: block !important; } input.select-dropdown.dropdown-trigger{ display: none; !important; }
-</style>
 <script>
     $('.modal-delete-professional').modal({
         onOpenEnd: function (modal, trigger) {

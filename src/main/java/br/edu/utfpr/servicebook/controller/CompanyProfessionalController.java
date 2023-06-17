@@ -7,8 +7,13 @@ import br.edu.utfpr.servicebook.model.repository.UserRepository;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
+import br.edu.utfpr.servicebook.sse.EventSSE;
+import br.edu.utfpr.servicebook.sse.EventSSEDTO;
+import br.edu.utfpr.servicebook.sse.EventSseMapper;
+import br.edu.utfpr.servicebook.sse.SSEService;
 import br.edu.utfpr.servicebook.util.TemplateUtil;
 import br.edu.utfpr.servicebook.util.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.UserTemplateStatisticInfo;
 import com.cloudinary.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +76,22 @@ public class CompanyProfessionalController {
     @Autowired
     private UserTokenService userTokenService;
 
+    @Autowired
+    private StateService stateService;
+
+    @Autowired
+    private SSEService sseService;
+
+    @Autowired
+    private EventSseMapper eventSseMapper;
+    @Autowired
+    private ProfessionalExpertiseService professionalExpertiseService;
+    @Autowired
+    private ExpertiseService expertiseService;
+
+    @Autowired
+    private ExpertiseMapper expertiseMapper;
+
     /**
      * Apresenta a tela para a empresa adicionar profissionais.
      * @param id
@@ -79,7 +100,7 @@ public class CompanyProfessionalController {
      */
     @GetMapping()
     @RolesAllowed({RoleType.COMPANY})
-    public ModelAndView showProfessionals(@RequestParam(required = false, defaultValue = "0") Optional<Long> id)  throws Exception {
+    public ModelAndView showProfessionals(@RequestParam(required = false, defaultValue = "0") Optional<Long> expertiseId)  throws Exception {
 
         User company = this.getCompany();
         UserDTO professionalMinDTO = userMapper.toDto(company);
@@ -87,12 +108,12 @@ public class CompanyProfessionalController {
         ModelAndView mv = new ModelAndView("company/new-professional");
 
         UserTemplateInfo userTemplateInfo = templateUtil.getUserInfo(professionalMinDTO);
-//        SidePanelCompanyDTO sidePanelStatisticDTO = templateUtil.getCompanyStatisticInfo(company, id.get());
+        UserTemplateStatisticInfo sidePanelStatisticDTO = templateUtil.getCompanyStatisticInfo(company, expertiseId.get());
 
 //        mv.addObject("statisticInfo", sidePanelStatisticDTO);
         mv.addObject("individualInfo", userTemplateInfo);
 
-        mv.addObject("id", id.orElse(0L));
+        mv.addObject("id", expertiseId.orElse(0L));
 
         List<User> professionals = userService.findProfessionalsNotExist();
 
@@ -101,12 +122,34 @@ public class CompanyProfessionalController {
         List<CompanyProfessionalDTO2> companyProfessionalDTO2s = companyProfessionals.stream()
                 .map(s -> companyProfessionalMapper.toResponseDTO(s))
                 .collect(Collectors.toList());
-        CompanyProfessionalDTO2 CompanyProfessionalDTO2 = companyProfessionalMapper.toDTO(company);
 
-        mv.addObject("expertises", company);
+        Optional<User> oProfessional = (userService.findByEmail(authentication.getEmail()));
+
+        UserTemplateInfo individualInfo = templateUtil.getUserInfo(professionalMinDTO);
+
+        //envia a notificação ao usuário
+        List<EventSSE> eventSsesList = sseService.findPendingEventsByEmail(authentication.getEmail());
+        List<EventSSEDTO> eventSSEDTOs = eventSsesList.stream()
+                .map(eventSse -> {
+                    return eventSseMapper.toFullDto(eventSse);
+                })
+                .collect(Collectors.toList());
+        List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
+
+        List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
+                .map(professionalExpertise -> professionalExpertise.getExpertise())
+                .map(expertise -> expertiseMapper.toDto(expertise))
+                .collect(Collectors.toList());
+
+
         mv.addObject("professionals", professionals);
-        mv.addObject("professionalExpertises", companyProfessionalDTO2s);
-        mv.addObject("CompanyProfessionalDTO2", CompanyProfessionalDTO2);
+        mv.addObject("professionalCompanies", companyProfessionalDTO2s);
+        mv.addObject("userInfo", individualInfo);
+        mv.addObject("statisticInfo", sidePanelStatisticDTO);
+        mv.addObject("eventsse", eventSSEDTOs);
+        mv.addObject("expertises", expertiseDTOs);
+        mv.addObject("company", true);
+
         return mv;
     }
 

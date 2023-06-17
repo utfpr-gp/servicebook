@@ -101,7 +101,7 @@ public class TemplateUtil {
         );
     }
 
-    public UserTemplateStatisticInfo getCompanyStatisticInfo(Individual oProfessional, Long expertiseId) {
+    public UserTemplateStatisticInfo getCompanyStatisticInfo(User oProfessional, Long expertiseId) {
 
         if (expertiseId == 0L) {
             ProfessionalDTO professional = professionalMapper.toResponseDto(oProfessional);
