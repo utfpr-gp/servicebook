@@ -908,3 +908,19 @@ textarea {
 .remove_active{
   color: #0D47A1 !important;
 }
+
+.error-message {
+  color: red;
+  font-size: 12px;
+}
+
+.icon_invite{
+  color: #607d8b;
+  margin-left: 10px;
+}
+
+.icon_invite_icon{
+  font-size: 1rem !important;
+  color: #607d8b;
+  margin: 5px 0;
+}

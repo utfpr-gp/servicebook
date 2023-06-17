@@ -41,8 +41,8 @@ public interface CompanyProfessionalRepository extends JpaRepository<CompanyProf
     Optional<Integer> selectRatingByProfessionalAndExpertise(@Param("professional_id") Long professional_id, @Param("company_id") Long company_id);
 
 
-    @Query("SELECT pe FROM CompanyProfessional pe WHERE pe.professional.isConfirmed = true")
-    List<CompanyProfessional> findByCompany(User user);
+    @Query("SELECT pe FROM CompanyProfessional pe WHERE pe.company.id = :company_id")
+    List<CompanyProfessional> findByCompany(@Param("company_id") Long company_id);
 
     /**
      * Retorna uma especialidade profissional, dado um profissional e sua especialidade

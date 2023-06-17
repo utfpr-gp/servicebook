@@ -96,15 +96,17 @@ public class CompanyProfessionalController {
 
         List<User> professionals = userService.findProfessionalsNotExist();
 
-        List<CompanyProfessional> companyProfessionals = companyProfessionalService.findByCompany(company);
+        List<CompanyProfessional> companyProfessionals = companyProfessionalService.findByCompany(company.getId());
 
         List<CompanyProfessionalDTO2> companyProfessionalDTO2s = companyProfessionals.stream()
                 .map(s -> companyProfessionalMapper.toResponseDTO(s))
                 .collect(Collectors.toList());
+        CompanyProfessionalDTO2 CompanyProfessionalDTO2 = companyProfessionalMapper.toDTO(company);
 
         mv.addObject("expertises", company);
         mv.addObject("professionals", professionals);
         mv.addObject("professionalExpertises", companyProfessionalDTO2s);
+        mv.addObject("CompanyProfessionalDTO2", CompanyProfessionalDTO2);
         return mv;
     }
 

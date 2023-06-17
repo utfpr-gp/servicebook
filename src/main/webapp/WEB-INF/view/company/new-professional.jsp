@@ -29,13 +29,24 @@
                                 </button>
                             </div>
 
-
                             <c:forEach var="professional" items="${professionalExpertises}">
                             <div class="col s12">
                                     <div class="card">
-                                        <div class="card-infos row">
-                                            <div class="col s2 img-professional-company">
+                                        <div class="col s3">
+                                            <c:if test="${professional.isConfirmed == false}">
+                                                <span class="icon_invite"> Convite Pendente </span>
+                                                <i class="icon_invite_icon material-icons small">content_copy</i>
+                                            </c:if>
+                                        </div>
 
+                                        <div class="col s9 button-remove-professional-company">
+                                            <a href="#modal-delete" id="delete-exerpertise-professional" class="myclass waves-effect waves-teal btn-flat delete-exerpertise-professional modal-trigger"
+                                               data-url="${pageContext.request.contextPath}/minha-conta/empresa/profissionais/${professional.id.professionalId}"
+                                               data-name="${professional.name}"><i class="myclass material-icons">delete</i></a>
+                                        </div>
+
+                                        <div class="card-infos s5 row">
+                                            <div class="col s2 img-professional-company">
                                                 <c:if test="${professional.profilePicture == null}">
                                                     <img src="https://assets.website-files.com/5e51c674258ffe10d286d30a/5e5355ed4600809f5a8dad51_peep-37.svg"
                                                          alt="Profissional - Imagem de perfil."
@@ -56,11 +67,7 @@
                                                 <input value="${professional.name}" id="name-professional" type="hidden">
                                                 <span class="email-professional-company">${professional.email}</span>
                                             </div>
-                                            <div class="col s5 button-remove-professional-company">
-                                                <a href="#modal-delete" id="delete-exerpertise-professional" class="myclass waves-effect waves-teal btn-flat delete-exerpertise-professional modal-trigger"
-                                                   data-url="${pageContext.request.contextPath}/minha-conta/empresa/profissionais/${professional.id.professionalId}"
-                                                   data-name="${professional.name}"><i class="myclass material-icons">delete</i></a>
-                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -101,13 +108,15 @@
                                         </div>
                                         <div class="col s12" style="margin-top: 20px">
                                             <form class="s12" id="form-professionals-company" action="minha-conta/empresa/profissionais" method="post">
-                                                <input name="ids" placeholder="Adicione o email do profissional que deseja incluir"/>
+                                                <input name="ids" id="email" placeholder="Adicione o email do profissional que deseja incluir"/>
+                                                <span id="errorMessage" class="error-message"></span>
 
-                                                <div class="input-field col s8 offset-s1" style="margin-top: 12%">
-                                                    <button id="submit-professional-company" type="submit" class="btn waves-effect waves-light left">Salvar</button>
-                                                </div>
-                                                <div class="input-field col s3" style="margin-top: 12%">
+                                                <div class="input-field" style="margin-top: 12%; float: right">
                                                     <a class="btn waves-effect waves-light modal-close">Fechar</a>
+                                                </div>
+
+                                                <div class="input-field offset-s1" style="margin-top: 12%; float: right; margin-right: 5%">
+                                                    <button type="submit" id="submit-professional-company" class="btn waves-effect waves-light left">Adicionar à empresa</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -146,13 +155,6 @@
         dropdownParent: $('#modal-professionals'),
     });
 
-    $('#getCopyLink').on('click', function() {
-        const link = "http://localhost:8080${pageContext.request.contextPath}/cadastrar-se";
-        navigator.clipboard.writeText(link);
-        $("#getCopyLink").text('Link copiado');
-    })
-
-
         $(".delete-exerpertise-professional").on("click", function() {
             var firstValue = $("#name-professional").val();
             var fomr = $("#delete-exerpertise-professional").data('url');
@@ -160,5 +162,21 @@
             $(".form-delete").attr('action', fomr);
         });
 
+    document.getElementById("form-professionals-company").addEventListener("submit", function(event) {
+        var correoInput = document.getElementById("email");
+        var errorMessage = document.getElementById("errorMessage");
 
+        var correo = correoInput.value;
+
+        if (validarEmail(correo)) {
+            errorMessage.textContent = "";
+        } else {
+            errorMessage.textContent = "Email inválido";
+            event.preventDefault();
+        }
+    })
+        function validarEmail(email) {
+        var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
 </script>

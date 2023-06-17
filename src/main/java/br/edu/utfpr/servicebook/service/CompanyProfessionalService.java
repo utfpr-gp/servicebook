@@ -34,7 +34,7 @@ public class CompanyProfessionalService {
         return this.companyProfessionalRepository.selectRatingByProfessionalAndExpertise(professional_id, expertise_id);
     }
 
-    public List<CompanyProfessional> findByCompany(User user) {return this.companyProfessionalRepository.findByCompany(user);}
+    public List<CompanyProfessional> findByCompany(Long user) {return this.companyProfessionalRepository.findByCompany(user);}
 
     public List<CompanyProfessional> findByProfessional(User individual) {
         return this.companyProfessionalRepository.findByProfessional(individual);
