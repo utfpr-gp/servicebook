@@ -29,4 +29,9 @@ public class ExpertiseDTO implements Serializable {
     private MultipartFile icon;
 
     private String pathIcon;
+
+    private CategoryDTO
+            category;
+    @Valid
+    private Long category_id;
 }

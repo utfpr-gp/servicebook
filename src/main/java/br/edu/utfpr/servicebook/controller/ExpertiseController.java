@@ -1,16 +1,16 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
+import br.edu.utfpr.servicebook.model.dto.CategoryDTO;
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
+import br.edu.utfpr.servicebook.model.entity.Category;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
+import br.edu.utfpr.servicebook.model.mapper.CategoryMapper;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.mapper.ProfessionalMapper;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
-import br.edu.utfpr.servicebook.service.ExpertiseService;
-import br.edu.utfpr.servicebook.service.IndividualService;
-import br.edu.utfpr.servicebook.service.JobContractedService;
-import br.edu.utfpr.servicebook.service.ProfessionalExpertiseService;
+import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import br.edu.utfpr.servicebook.util.TemplateUtil;
@@ -82,6 +82,11 @@ public class ExpertiseController {
     @Autowired
     private PaginationUtil paginationUtil;
 
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private CategoryMapper categoryMapper;
     @GetMapping
     @PermitAll
     public ModelAndView showForm(HttpServletRequest request,
@@ -93,7 +98,7 @@ public class ExpertiseController {
         ModelAndView mv = new ModelAndView("admin/profession-registration");
 
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
-        Page<Expertise> expertisePage = expertiseService.findAll(pageRequest);
+        Page<Expertise> expertisePage = expertiseService.allExpertises(pageRequest);
 
         List<ExpertiseDTO> professionDTOs = expertisePage.stream()
                 .map(s -> expertiseMapper.toDto(s))
@@ -102,6 +107,13 @@ public class ExpertiseController {
 
         PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(expertisePage);
         mv.addObject("pagination", paginationDTO);
+
+            Page<Category> categoryPage = categoryService.findAll(pageRequest);
+        List<CategoryDTO> categoryDTOS = categoryPage.stream()
+                .map(s -> categoryMapper.toDto(s))
+                .collect(Collectors.toList());
+        mv.addObject("categories", categoryDTOS);
+
         return mv;
     }
 
@@ -147,7 +159,13 @@ public class ExpertiseController {
             return errorFowarding(dto, errors);
         }
         dto.setPathIcon(data != null ? (String) data.get("url") : oExpertise.get().getPathIcon());
+
+        Optional<Category> oCategory = categoryService.findById(dto.getCategory_id());
+        CategoryDTO categoryDTO = categoryMapper.toDto(oCategory.get());
+        dto.setCategory(categoryDTO);
+        dto.setCategory_id(dto.getId());
         Expertise expertise = expertiseMapper.toEntity(dto);
+
         expertiseService.save(expertise);
 
         redirectAttributes.addFlashAttribute("msg", "Profissão salva com sucesso!");
@@ -205,6 +223,12 @@ public class ExpertiseController {
 
         PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(professionPage, "/especialidades/" + id);
         mv.addObject("pagination", paginationDTO);
+
+        Page<Category> categoryPage = categoryService.findAll(pageRequest);
+        List<CategoryDTO> categoryDTOS = categoryPage.stream()
+                .map(s -> categoryMapper.toDto(s))
+                .collect(Collectors.toList());
+        mv.addObject("categories", categoryDTOS);
         return mv;
     }
 
@@ -231,6 +255,12 @@ public class ExpertiseController {
 
     private ModelAndView errorFowarding(ExpertiseDTO dto, BindingResult errors) {
         ModelAndView mv = new ModelAndView("admin/profession-registration");
+
+        List<Category> categoryPage = categoryService.findAll();
+        List<CategoryDTO> categoryDTOS = categoryPage.stream()
+                .map(s -> categoryMapper.toDto(s))
+                .collect(Collectors.toList());
+        mv.addObject("categories", categoryDTOS);
         mv.addObject("dto", dto);
         mv.addObject("errors", errors.getAllErrors());
 

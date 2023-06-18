@@ -43,4 +43,6 @@ public class ExpertiseService {
         return this.expertiseRepository.countAll();
     }
 
+    public Page<Expertise> allExpertises(PageRequest pageRequest) { return this.expertiseRepository.allExpertises(pageRequest); }
+
 }

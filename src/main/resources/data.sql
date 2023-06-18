@@ -65,12 +65,17 @@ VALUES ('982.988.640-93', 'MASCULINE', '2003-01-01', '1'),
        ('814.541.391-53', 'MASCULINE', '2001-01-01', '5'),
        ('567.690.630-85', 'MASCULINE', '2001-01-01', '6');
 
+INSERT INTO categories (name)
+VALUES ('Reformas e Reparos'),
+       ('Instalação'),
+       ('Auto Elétrica');
 
-INSERT INTO expertises (name, description, path_icon)
-VALUES ('Encanador', 'Realiza serviço como encanador', 'https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg'),
-       ('Eletricista', 'Realiza serviço como eletricista', 'https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg'),
-       ('Pintor', 'Realiza serviço como pintor', 'https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg'),
-       ('Mecânico', 'Realiza serviço como mecânico', 'https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg');
+
+INSERT INTO expertises (name, description, path_icon, category_id)
+VALUES ('Encanador', 'Realiza serviço como encanador', 'https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg', 1),
+       ('Eletricista', 'Realiza serviço como eletricista', 'https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg', 1),
+       ('Pintor', 'Realiza serviço como pintor', 'https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg', 1),
+       ('Mecânico', 'Realiza serviço como mecânico', 'https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg', 3);
 
 INSERT INTO professional_expertises (expertise_id, professional_id, rating)
 VALUES (1, 1, 1),

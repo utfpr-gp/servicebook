@@ -3,6 +3,9 @@ package br.edu.utfpr.servicebook.model.repository;
 import br.edu.utfpr.servicebook.model.entity.Company;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.Individual;
+import br.edu.utfpr.servicebook.model.entity.JobRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -38,4 +41,7 @@ public interface ExpertiseRepository extends JpaRepository<Expertise, Long> {
 
     @Query("SELECT COUNT(*) FROM Expertise")
     Long countAll();
-} 
+
+    @Query("SELECT e FROM Expertise e LEFT JOIN Category c on e.category.id=c.id")
+    Page<Expertise> allExpertises(Pageable pageRequest);
+}

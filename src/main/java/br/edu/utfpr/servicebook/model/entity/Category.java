@@ -6,6 +6,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Table(name = "categories")
@@ -24,4 +26,11 @@ public class Category {
     public Category(String name){
         this.name = name;
     }
+
+//    //  1 categoria x n especialidades
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
+    private Set<Expertise> expertise
+            = new HashSet<>();
+
 }
