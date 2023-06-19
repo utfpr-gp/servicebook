@@ -30,6 +30,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -420,31 +423,23 @@ public class JobRequestController {
     public boolean nsfwFilter(String imageUrl) {
         RestTemplate restTemplate = new RestTemplate();
 
-        // Define o URL da API que será chamada
         String apiUrl = "https://nsfw-image-classification1.p.rapidapi.com/img/nsfw";
 
-        // Define o cabeçalho da requisição
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("X-Rapidapi-Key", rapidapiKey);
         headers.set("X-Rapidapi-Host", rapidapiHots);
 
-        // Define o corpo da requisição
         String requestBody = "{\"url\": \"" + imageUrl + "\"}";
 
-        // Cria a requisição POST com os parâmetros do cabeçalho e corpo
         HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
 
         try {
-
-            // Faz a requisição POST para a API
             ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, String.class);
 
-            // Verifica o código de status da resposta
             if (response.getStatusCode().is2xxSuccessful()) {
                 String responseBody = response.getBody();
                 String subtexto = responseBody.substring(14, 18);
-                // Processa a resposta da API conforme necessário
                 float numeroFloat = Float.parseFloat(subtexto);
 
                 System.out.println("Resposta da API: " + subtexto);
@@ -453,14 +448,20 @@ public class JobRequestController {
                 } else {
                     return false;
                 }
-
             } else {
                 System.out.println("A requisição falhou com o código de status: " + response.getStatusCode());
             }
+        } catch (HttpClientErrorException e) {
+            // Captura uma exceção caso ocorra um erro 400 na api
+            System.out.println("Erro de cliente: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+        } catch (HttpServerErrorException e) {
+            // Captura uma exceção caso ocorra um erro 500 na api
+            System.out.println("Erro de servidor: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+        } catch (Exception e) {
+            System.out.println("A requisição falhou: " + e.getMessage());
         }
-        catch (Exception e){
-            System.out.println("A requisição falhou.");
-        }
-        return true;
+
+        // Retorna false caso ocorra algum erro na requisição
+        return false;
     }
 }
