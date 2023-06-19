@@ -13,6 +13,9 @@
 
                         <select id="select-city" class="white-text select-city">
                             <c:forEach var="city" items="${cities}">
+<%--                                <c:if test="${city.image}">--%>
+<%--                                </c:if>--%>
+<%--                                <option class="cityOption" selected=savedCity(${city.image}) value="${city.image}">${city.name} - ${city.state.uf}</option>--%>
                                 <option class="cityOption" value="${city.image}">${city.name} - ${city.state.uf}</option>
                             </c:forEach>
                         </select>

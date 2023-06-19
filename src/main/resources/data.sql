@@ -30,7 +30,7 @@ VALUES ('Acre', 'AC'),
 
 
 INSERT INTO cities (image, name, state_id)
-VALUES ('https://i.imgur.com/qMKc4rf.png', 'Guarapuava', '16'), ('https://i.imgur.com/qMKc4rf.png', 'Pitanga', '16');
+VALUES ('https://i.imgur.com/qMKc4rf.png', 'Guarapuava', '16'), ('https://www.viajeparana.com/sites/viaje-parana/arquivos_restritos/files/imagem/2019-04/igreja_nossa_senhora_da_gloria_ca.jpg', 'Pitanga', '16');
 
 
 
