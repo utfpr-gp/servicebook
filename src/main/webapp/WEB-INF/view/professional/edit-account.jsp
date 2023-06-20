@@ -7,7 +7,7 @@
     <jsp:body>
         <main class="container">
             <div class="row primary-background-color">
-               <div class="row">
+                <div class="row">
                     <div class="col s12 m4 center">
                         <c:if test="${professional.profilePicture == null}">
                             <svg class="icon-person" viewBox="0 0 24 24">
@@ -19,15 +19,16 @@
                                 <img src="${professional.profilePicture}" alt="Profissional - Imagem de perfil." style="width:200px;height:200px"/>
                             </div>
                         </c:if>
-                       <h5 class="center edit-link tertiary-color-text"><a class="tertiary-color-text" href="${pageContext.request.contextPath}/minha-conta/editar">Editar foto</a></h5>
+                        <h5 class="center edit-link tertiary-color-text"><a class="tertiary-color-text" href="">Editar foto</a></h5>
+                        <input type="file" name="fileUpload" id="fileUpload" style="display: none;">
                     </div>
                     <div class="col s12 m8 center">
                         <h3 class="center secondary-color-text"><strong>${professional.name}</strong></h3>
                         <h5 class="center secondary-color-text"><i class="small material-icons">email</i> ${professional.email}</h5>
                         <h5 class="center secondary-color-text"><i class="small material-icons">local_phone</i> ${professional.phoneNumber}</h5>
                         <h5 class="center secondary-color-text"><i class="small material-icons">location_on</i> ${professional.address.neighborhood}, ${city.name} - ${city.state.uf}</h5>
-                   </div>
-               </div>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="row">
@@ -83,5 +84,23 @@
             </div>
         </main>
 
+        <form id="imageUploadForm" style="display: none;">
+            <!-- fazer logica de troca de imagens no banco de dados -->
+        </form>
+
+        <script>
+            let editLink = document.getElementById('editLink');
+            let imageUploadForm = document.getElementById('imageUploadForm');
+            let fileUpload = document.getElementById('fileUpload');
+
+            editLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                fileUpload.click();
+            });
+
+            fileUpload.addEventListener('change', () => {
+                imageUploadForm.style.display = 'block';
+            });
+        </script>
     </jsp:body>
 </t:template>
