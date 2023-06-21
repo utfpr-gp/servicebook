@@ -46,4 +46,8 @@ public class Expertise implements Serializable {
 	@JoinColumn(name = "category_id")
 	private Category category;
 
+	@OneToMany(mappedBy = "expertise", cascade = CascadeType.REMOVE)
+	private Set<Service> services
+			= new HashSet<>();
+
 }
