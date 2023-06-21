@@ -1,10 +1,7 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.dto.*;
-import br.edu.utfpr.servicebook.model.entity.City;
-import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.model.entity.User;
-import br.edu.utfpr.servicebook.model.entity.UserCode;
+import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
@@ -209,13 +206,51 @@ public class MyAccountController {
 
         CityMidDTO testeNovo = userDTO.getAddress().getCity();
         System.out.println(testeNovo);
-        CityDTO testeCity = new CityDTO();
-//        System.out.println(userDTO.getAddress().getCity());
+        Optional<City> cities = this.cityService.findById(testeNovo.getId());
+        City cityUser = cities.get();
         mv.addObject("professional", userDTO);
-        mv.addObject("city", testeNovo);
+        mv.addObject("city", cityUser);
 
         return mv;
     }
+
+
+    /**
+     * @param id
+     * @param request
+     * @param redirectAttributes
+     * @return
+     * @throws IOException
+     */
+    @PostMapping("/salvar-endereco/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public String saveAddress(
+            @PathVariable Long id,
+            HttpServletRequest request,
+            RedirectAttributes redirectAttributes)
+            throws IOException {
+        System.out.println("realmente um teste aqui");
+        Optional<User> oUser = this.userService.findById(id);
+        User user = oUser.get();
+        Optional<City> cities = this.cityService.findById(user.getAddress().getCity().getId());
+        City cityUser = cities.get();
+//        CityMidDTO cityUser = cityMapper.toMidDto(cities.get());
+
+        Address addressEdit = new Address();
+        AddressFullDTO addressEditFullDTO = new AddressFullDTO();
+        addressEdit.setNeighborhood(request.getParameter("neighborhood"));
+        addressEdit.setStreet(request.getParameter("number"));
+        addressEdit.setNumber(request.getParameter("street"));
+        addressEdit.setPostalCode(request.getParameter("postalCode"));
+        addressEdit.setCity(cityUser);
+        this.userService.save(user);
+
+        redirectAttributes.addFlashAttribute("msg", "Email salvo com sucesso!");
+
+        //return "redirect:/logout";
+        return "redirect:/minha-conta/meu-endereco/{id}";
+    }
+
 //    tente rota endereço
 
     /**

@@ -24,7 +24,7 @@
                             Será útil para filtrar serviços por região e de acordo com a distância
                             para o local de realização do serviço.
                         </h5>
-                        <form method="post" action="cadastrar-se/passo-7">
+                        <form method="post" action="minha-conta/salvar-endereco/${professional.id}">
                             <div class="row spacing-buttons">
                                 <div class="row">
                                     <div class="center">
@@ -61,13 +61,13 @@
                                 </div>
                                 <div class="row">
                                     <div class="input-field col s8 offset-s2">
-                                        <input id="city" name="city" type="text" placeholder="Cidade" class="validate">
+                                        <input id="city" name="city" value="${city.name}" type="text" placeholder="Cidade" class="validate">
                                         <label for="city">Cidade</label>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="input-field col s8 offset-s2">
-                                        <input id="state" name="state" type="text" placeholder="Estado"
+                                        <input id="state" name="state" value="${city.state.name}" type="text" placeholder="Estado"
                                                class="validate">
                                         <label for="state">Estado</label>
                                     </div>
