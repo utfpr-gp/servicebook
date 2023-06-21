@@ -225,7 +225,6 @@ blockquote{
 
 .dropdown-content {
   background-color: #fff;
-  top: 0px !important;
   margin-top: 43px !important;
 }
 
@@ -856,3 +855,10 @@ textarea {
   margin-top: 40px;
 }
 
+.expertise-select-card{
+  cursor: pointer;
+}
+
+.expertise-select-card:hover{
+  background-color: #4962B3;
+}
