@@ -1,4 +1,4 @@
-package br.edu.utfpr.servicebook.controller;
+package br.edu.utfpr.servicebook.controller.admin;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
@@ -31,7 +31,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +44,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RequestMapping("/especialidades")
+@RequestMapping("/a/especialidades")
 @Controller
 public class ExpertiseController {
 
@@ -83,7 +82,7 @@ public class ExpertiseController {
     private PaginationUtil paginationUtil;
 
     @GetMapping
-    @PermitAll
+    @RolesAllowed({RoleType.ADMIN})
     public ModelAndView showForm(HttpServletRequest request,
                                  @RequestParam(value = "pag", defaultValue = "1") int page,
                                  @RequestParam(value = "siz", defaultValue = "5") int size,

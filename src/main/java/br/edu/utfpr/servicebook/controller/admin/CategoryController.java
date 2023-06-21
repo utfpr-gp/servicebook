@@ -1,18 +1,13 @@
-package br.edu.utfpr.servicebook.controller;
+package br.edu.utfpr.servicebook.controller.admin;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.CategoryDTO;
-import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
 import br.edu.utfpr.servicebook.model.entity.Category;
-import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.mapper.CategoryMapper;
-import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.CategoryService;
-import br.edu.utfpr.servicebook.service.ExpertiseService;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
-import com.cloudinary.utils.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,18 +21,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RequestMapping("/categorias")
+@RequestMapping("/a/categorias")
 @Controller
 public class CategoryController {
     public static final Logger log =
@@ -53,7 +46,7 @@ public class CategoryController {
     private CategoryMapper categoryMapper;
 
     @GetMapping
-    @PermitAll
+    @RolesAllowed({RoleType.ADMIN})
     public ModelAndView showForm(HttpServletRequest request,
                                  @RequestParam(value = "pag", defaultValue = "1") int page,
                                  @RequestParam(value = "siz", defaultValue = "5") int size,
@@ -82,6 +75,7 @@ public class CategoryController {
      * @return
      */
     @PostMapping
+    @RolesAllowed({RoleType.ADMIN})
     public ModelAndView save(@Valid CategoryDTO dto, BindingResult errors, RedirectAttributes redirectAttributes){
 
         for(FieldError e: errors.getFieldErrors()){
@@ -103,7 +97,7 @@ public class CategoryController {
 
         redirectAttributes.addFlashAttribute("msg", "Categoria salva com sucesso!");
 
-        return new ModelAndView("redirect:categorias");
+        return new ModelAndView("redirect:/a/categorias");
     }
 
     /**
@@ -117,6 +111,7 @@ public class CategoryController {
      * @return
      */
     @GetMapping("/{id}")
+    @RolesAllowed({RoleType.ADMIN})
     public ModelAndView showFormForUpdate(@PathVariable("id") Long id, HttpServletRequest request,
                                           @RequestParam(value = "pag", defaultValue = "1") int page,
                                           @RequestParam(value = "siz", defaultValue = "4") int size,
@@ -147,7 +142,7 @@ public class CategoryController {
                 .collect(Collectors.toList());
         mv.addObject("categories", categoryDTOS);
 
-        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(categoryPage, "/categorias/" + id);
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(categoryPage, "/a/categorias/" + id);
         mv.addObject("pagination", paginationDTO);
         return mv;
     }
@@ -166,10 +161,10 @@ public class CategoryController {
         try{
             this.categoryService.delete(id);
             redirectAttributes.addFlashAttribute("msg", "Categoria removida com sucesso!");
-            return "redirect:/categorias";
+            return "redirect:/a/categorias";
         }catch (Exception exception) {
             redirectAttributes.addFlashAttribute("msgError", "Categoria não pode ser removida pois já esta sendo utilizada por uma especialidade!");
-            return "redirect:/categorias";
+            return "redirect:/a/categorias";
         }
     }
 
