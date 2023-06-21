@@ -3,6 +3,7 @@ package br.edu.utfpr.servicebook.controller.admin;
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.CategoryDTO;
 import br.edu.utfpr.servicebook.model.entity.Category;
+import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.mapper.CategoryMapper;
 import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.CategoryService;
@@ -86,10 +87,31 @@ public class CategoryController {
             return errorFowarding(dto, errors);
         }
 
-        Optional<Category> oCategory = categoryService.findByName(dto.getName());
-        if (oCategory.isPresent()) {
-            errors.rejectValue("name", "error.dto", "A Categoria já está cadastrada!");
-            return errorFowarding(dto, errors);
+        // Se o id for nulo, é uma inserção
+        if(dto.getId() == null){
+            Optional<Category> oCategory = categoryService.findByName(dto.getName());
+            if (oCategory.isPresent()) {
+                errors.rejectValue("name", "error.dto", "A Categoria já está cadastrada!");
+                return errorFowarding(dto, errors);
+            }
+        }
+
+        // Se o id não for nulo, é uma atualização
+        if(dto.getId() != null){
+            Optional<Category> oExistingCategory = categoryService.findById(dto.getId());
+
+            if (!oExistingCategory.isPresent()) {
+                throw new EntityNotFoundException("A categoria não foi encontrada!");
+            }
+
+            Category category = oExistingCategory.get();
+            Optional<Category> oOtherCategory = categoryService.findByName(dto.getName());
+            if (oOtherCategory.isPresent()) {
+                if(category.getId() != oOtherCategory.get().getId()) {
+                    errors.rejectValue("name", "error.dto", "Não é possível atualizar. A categoria já está cadastrada!");
+                    return errorFowarding(dto, errors);
+                }
+            }
         }
 
         Category expertise = categoryMapper.toEntity(dto);
@@ -172,6 +194,17 @@ public class CategoryController {
         ModelAndView mv = new ModelAndView("admin/category");
         mv.addObject("dto", dto);
         mv.addObject("errors", errors.getAllErrors());
+
+        PageRequest pageRequest = PageRequest.of(0, 5);
+        Page<Category> categoryPage = categoryService.findAll(pageRequest);
+
+        List<CategoryDTO> categoryDTOS = categoryPage.stream()
+                .map(s -> categoryMapper.toDto(s))
+                .collect(Collectors.toList());
+        mv.addObject("categories", categoryDTOS);
+
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(categoryPage);
+        mv.addObject("pagination", paginationDTO);
 
         return mv;
     }

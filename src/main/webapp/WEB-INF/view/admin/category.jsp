@@ -20,7 +20,6 @@
                             <form action="a/categorias" method="post" enctype="multipart/form-data">
                                 <input name="id" type="hidden" value="${dto.id}">
                                 <div class="input-field">
-                                    <i class="material-icons prefix primary-color-text">work</i>
                                     <input placeholder="Reformas e reparos" type="text" id="autocomplete-input" name="name" value="${dto.name}">
                                     <label for="autocomplete-input">Categoria</label>
                                 </div>
@@ -68,7 +67,7 @@
                         </div>
                         <div class="col s12 l6 offset-l3 spacing-buttons">
                             <c:if test="${not empty categories}">
-                                <table class="striped">
+                                <table class="striped centered">
                                     <thead>
                                     <tr>
                                         <th>#</th>
