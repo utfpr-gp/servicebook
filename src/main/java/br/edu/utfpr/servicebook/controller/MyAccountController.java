@@ -186,6 +186,38 @@ public class MyAccountController {
         return mv;
     }
 
+//    teste rota endereço
+    /**
+     * Apresenta a tela de email do usuário.
+     * FIXME Depois de modificado, informar para o usuário fazer o login novamente.
+     * @param id
+     * @return
+     * @throws IOException
+     */
+    @GetMapping("/meu-endereco/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public ModelAndView showMyAddress(@PathVariable Long id) throws IOException {
+        Optional<User> oUser = this.userService.findById(id);
+
+        if (!oUser.isPresent()) {
+            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        UserDTO userDTO = userMapper.toDto(oUser.get());
+
+        ModelAndView mv = new ModelAndView("professional/account/my-address");
+
+        CityMidDTO testeNovo = userDTO.getAddress().getCity();
+        System.out.println(testeNovo);
+        CityDTO testeCity = new CityDTO();
+//        System.out.println(userDTO.getAddress().getCity());
+        mv.addObject("professional", userDTO);
+        mv.addObject("city", testeNovo);
+
+        return mv;
+    }
+//    tente rota endereço
+
     /**
      * FIXME Ao mudar o email, fazer logout para o usuário logar novamente, aí com o novo email
      * @param id
