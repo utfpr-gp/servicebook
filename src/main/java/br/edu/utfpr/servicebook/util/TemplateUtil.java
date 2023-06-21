@@ -1,4 +1,4 @@
-package br.edu.utfpr.servicebook.util.sidePanel;
+package br.edu.utfpr.servicebook.util;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.ProfessionalDTO;
@@ -49,16 +49,18 @@ public class TemplateUtil {
 
     /**
      * Retorna os dados estatísticos a serem apresentados no menu lateral para o perfil do profissional.
+     * Se o id for 0, então retorna para a soma de todas as especialidades do profissional.
+     * Caso contrário, retorna as estatísticas apenas para a especialidade.
      * @param oProfessional
      * @param expertiseId
      * @return
      */
-    public UserTemplateStatisticDTO getProfessionalStatisticInfo(User oProfessional, Long expertiseId) {
+    public UserTemplateStatisticInfo getProfessionalStatisticInfo(User oProfessional, Long expertiseId) {
 
         if (expertiseId == 0L) {
             ProfessionalDTO professional = professionalMapper.toResponseDto(oProfessional);
 
-            return new UserTemplateStatisticDTO(
+            return new UserTemplateStatisticInfo(
                     jobContractedService.countByProfessional(oProfessional).orElse(0L),
                     jobContractedService.countRatingByProfessional(oProfessional).orElse(0L),
                     jobContractedService.countCommentsByProfessional(oProfessional).orElse(0L),
@@ -91,7 +93,7 @@ public class TemplateUtil {
         Long totalCommentsByExpertise = jobContractedService.countCommentsByProfessionalAndJobRequest_Expertise(
                 oProfessional, oExpertise.get()).orElse(0L);
 
-        return new UserTemplateStatisticDTO(
+        return new UserTemplateStatisticInfo(
                 totalJobsByExpertise,
                 totalRatingsByExpertise,
                 totalCommentsByExpertise,
@@ -99,12 +101,12 @@ public class TemplateUtil {
         );
     }
 
-    public SidePanelCompanyDTO getCompanyStatisticInfo(Individual oProfessional, Long expertiseId) {
+    public UserTemplateStatisticInfo getCompanyStatisticInfo(Individual oProfessional, Long expertiseId) {
 
         if (expertiseId == 0L) {
             ProfessionalDTO professional = professionalMapper.toResponseDto(oProfessional);
 
-            return new SidePanelCompanyDTO(
+            return new UserTemplateStatisticInfo(
                     jobContractedService.countByProfessional(oProfessional).orElse(0L),
                     jobContractedService.countRatingByProfessional(oProfessional).orElse(0L),
                     jobContractedService.countCommentsByProfessional(oProfessional).orElse(0L),
@@ -137,7 +139,7 @@ public class TemplateUtil {
         Long totalCommentsByExpertise = jobContractedService.countCommentsByProfessionalAndJobRequest_Expertise(
                 oProfessional, oExpertise.get()).orElse(0L);
 
-        return new SidePanelCompanyDTO(
+        return new UserTemplateStatisticInfo(
                 totalJobsByExpertise,
                 totalRatingsByExpertise,
                 totalCommentsByExpertise,

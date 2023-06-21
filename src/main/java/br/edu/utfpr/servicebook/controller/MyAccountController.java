@@ -9,8 +9,8 @@ import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
-import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
+import br.edu.utfpr.servicebook.util.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,7 +108,7 @@ public class MyAccountController {
         ModelAndView mv = new ModelAndView("professional/edit-account");
         mv.addObject("professional", userDTO);
         mv.addObject("city", cityMinDTO);
-        mv.addObject("individualInfo", templateInfo);
+        mv.addObject("userInfo", templateInfo);
 
         return mv;
     }
@@ -137,7 +137,7 @@ public class MyAccountController {
 
         ModelAndView mv = new ModelAndView("professional/account/my-ad");
         mv.addObject("user", userDTO);
-        mv.addObject("individualInfo", templateInfo);
+        mv.addObject("userInfo", templateInfo);
 
 
         return mv;
@@ -169,19 +169,19 @@ public class MyAccountController {
      * @throws IOException
      */
     @GetMapping("/meu-email/{id}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showMyEmail(@PathVariable Long id) throws IOException {
-        Optional<Individual> oProfessional = this.individualService.findById(id);
+        Optional<User> oUser = this.userService.findById(id);
 
-        if (!oProfessional.isPresent()) {
+        if (!oUser.isPresent()) {
             throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        IndividualDTO individualDTO = individualMapper.toDto(oProfessional.get());
+        UserDTO userDTO = userMapper.toDto(oUser.get());
 
         ModelAndView mv = new ModelAndView("professional/account/my-email");
 
-        mv.addObject("professional", individualDTO);
+        mv.addObject("professional", userDTO);
 
         return mv;
     }
@@ -195,31 +195,32 @@ public class MyAccountController {
      * @throws IOException
      */
     @PostMapping("/salvar-email/{id}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String saveEmail(
             @PathVariable Long id,
             HttpServletRequest request,
             RedirectAttributes redirectAttributes)
             throws IOException {
 
-        Optional<Individual> oProfessional = this.individualService.findByEmail(authentication.getEmail());
+        Optional<User> oUser = this.userService.findByEmail(authentication.getEmail());
 
-        if(!oProfessional.isPresent()) {
+        if(!oUser.isPresent()) {
             throw new EntityNotFoundException("Profissional não encontrado pelas informações fornecidas.");
         }
 
-        String email = request.getParameter("email");
-        Optional<Individual> oUser = individualService.findByEmail(email);
-        Individual professional = oProfessional.get();
+        User user = oUser.get();
 
-        if (oUser.isPresent() && !oUser.get().getEmail().equals(professional.getEmail())) {
+        String email = request.getParameter("email");
+        Optional<User> oOtherUser = userService.findByEmail(email);
+
+        if (oOtherUser.isPresent()){
             redirectAttributes.addFlashAttribute("msgError", "Email já cadastrado! Por favor, insira um email não cadastrado!");
             return "redirect:/minha-conta/meu-email/{id}";
         }
 
-        professional.setEmail(email);
-        professional.setEmailVerified(false);
-        this.individualService.save(professional);
+        user.setEmail(email);
+        user.setEmailVerified(false);
+        this.userService.save(user);
 
         Optional<UserCode> oUserCode = userCodeService.findByEmail(email);
         String actualCode = "";
@@ -246,7 +247,7 @@ public class MyAccountController {
     }
 
     @PostMapping("/validar-email/{id}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String saveUserEmailCode(
             @PathVariable Long id,
             @Validated(UserCodeDTO.RequestUserCodeInfoGroupValidation.class) UserCodeDTO dto,

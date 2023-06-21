@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook;
 
 import br.edu.utfpr.servicebook.filter.JobRequestFilter;
+import br.edu.utfpr.servicebook.filter.TemplateInfoFilter;
 import br.edu.utfpr.servicebook.service.IndexService;
 import br.edu.utfpr.servicebook.service.QuartzService;
 import br.edu.utfpr.servicebook.util.quartz.AutoWiringSpringBeanJobFactory;
@@ -10,7 +11,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.web.servlet.ServletComponentScan;
@@ -76,13 +76,35 @@ public class ServicebookApplication {
         return quartzScheduler;
     }
 
+    /**
+     * Foi desabilitado para não permitir cadastro de jobs de forma anônima.
+     * Será substituído por busca ativa.
+     * Filter para verificar se o usuário tem um job request e então cadastrar quando logar.
+     * @return
+     */
+//    @Bean
+//    public FilterRegistrationBean<JobRequestFilter> jobRequestFilter(){
+//        FilterRegistrationBean<JobRequestFilter> registrationBean
+//                = new FilterRegistrationBean<>();
+//
+//        registrationBean.setFilter(new JobRequestFilter());
+//        registrationBean.addUrlPatterns("/minha-conta/cliente");
+//        registrationBean.setOrder(1);
+//
+//        return registrationBean;
+//    }
+
+    /**
+     * Filtro para enviar os dados para apresentação no template quando usuário está logado.
+     * @return
+     */
     @Bean
-    public FilterRegistrationBean<JobRequestFilter> jobRequestFilter(){
-        FilterRegistrationBean<JobRequestFilter> registrationBean
+    public FilterRegistrationBean<TemplateInfoFilter> templateInfoFilterRegistrationBean(){
+        FilterRegistrationBean<TemplateInfoFilter> registrationBean
                 = new FilterRegistrationBean<>();
 
-        registrationBean.setFilter(new JobRequestFilter());
-        registrationBean.addUrlPatterns("/minha-conta/cliente");
+        registrationBean.setFilter(new TemplateInfoFilter());
+        registrationBean.addUrlPatterns("/*");
         registrationBean.setOrder(1);
 
         return registrationBean;

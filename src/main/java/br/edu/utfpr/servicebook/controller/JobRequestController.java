@@ -14,8 +14,8 @@ import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.DateUtil;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
-import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.TemplateUtil;
+import br.edu.utfpr.servicebook.util.UserTemplateInfo;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -317,12 +317,11 @@ public class JobRequestController {
      * @param dto
      * @param redirectAttributes
      * @param model
-     * @param status
      * @return
      */
     @PostMapping("/passo-7")
     @PermitAll
-    public String saveFormVerification(HttpSession httpSession, JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
+    public String saveFormVerification(HttpSession httpSession, JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model){
 
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         Optional<Expertise> oExpertise = expertiseService.findById(sessionDTO.getExpertiseId());
@@ -351,9 +350,7 @@ public class JobRequestController {
         //jobRequest.setImage(sessionDTO.getImageSession());
         jobRequestService.save(jobRequest);
         redirectAttributes.addFlashAttribute("msg", "Requisição confirmada!");
-        status.setComplete();
-        //remove o sessionDTO
-        wizardSessionUtil.removeWizardState(httpSession, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
+
         return "redirect:/requisicoes/passo-8";
     }
 
@@ -379,6 +376,9 @@ public class JobRequestController {
 
         mv.addObject("professionals", professionalSearchItemDTOS);
         mv.addObject("professionalsAmount", professionalSearchItemDTOS.size());
+
+        //remove o sessionDTO
+        wizardSessionUtil.removeWizardState(httpSession, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
 
         return mv;
     }
