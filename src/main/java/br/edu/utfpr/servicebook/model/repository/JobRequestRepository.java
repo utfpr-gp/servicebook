@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
@@ -155,5 +156,8 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
     List<JobRequest> findByUserOrderByDateCreatedDesc(User client);
 
     Page<JobRequest> findByStatusAndUser(JobRequest.Status status, User client, Pageable pageable);
+
+    @Query("SELECT COUNT(*) FROM JobRequest")
+    Long countAll();
 
 }

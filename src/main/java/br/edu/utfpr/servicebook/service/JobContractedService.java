@@ -107,5 +107,9 @@ public class JobContractedService {
         return this.jobContractedRepository.findAllJobContractedExpired(new Date(), days, JobRequest.Status.TO_HIRED);
     }
 
+    public Long countAll()
+    {
+        return this.jobContractedRepository.countAll();
+    }
 
 }
