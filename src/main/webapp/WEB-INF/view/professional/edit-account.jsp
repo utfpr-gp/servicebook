@@ -19,7 +19,9 @@
                                 <img src="${professional.profilePicture}" alt="Profissional - Imagem de perfil." style="width:200px;height:200px"/>
                             </div>
                         </c:if>
-                        <h5 class="center edit-link tertiary-color-text"><a class="tertiary-color-text" href="">Editar foto</a></h5>
+                        <h5 class="center edit-link tertiary-color-text"><a class="tertiary-color-text" href="#" id="editLink">Editar foto</a></h5>
+
+                        <!-- Campo de upload de arquivo -->
                         <input type="file" name="fileUpload" id="fileUpload" style="display: none;">
                     </div>
                     <div class="col s12 m8 center">
@@ -85,7 +87,6 @@
         </main>
 
         <form id="imageUploadForm" style="display: none;">
-            <!-- fazer logica de troca de imagens no banco de dados -->
         </form>
 
         <script>
