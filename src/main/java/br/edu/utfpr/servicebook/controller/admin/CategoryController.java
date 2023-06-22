@@ -1,18 +1,14 @@
-package br.edu.utfpr.servicebook.controller;
+package br.edu.utfpr.servicebook.controller.admin;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.CategoryDTO;
-import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
 import br.edu.utfpr.servicebook.model.entity.Category;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.mapper.CategoryMapper;
-import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.CategoryService;
-import br.edu.utfpr.servicebook.service.ExpertiseService;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
-import com.cloudinary.utils.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,18 +22,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RequestMapping("/categorias")
+@RequestMapping("/a/categorias")
 @Controller
 public class CategoryController {
     public static final Logger log =
@@ -53,14 +47,14 @@ public class CategoryController {
     private CategoryMapper categoryMapper;
 
     @GetMapping
-    @PermitAll
+    @RolesAllowed({RoleType.ADMIN})
     public ModelAndView showForm(HttpServletRequest request,
                                  @RequestParam(value = "pag", defaultValue = "1") int page,
                                  @RequestParam(value = "siz", defaultValue = "5") int size,
                                  @RequestParam(value = "ord", defaultValue = "name") String order,
                                  @RequestParam(value = "dir", defaultValue = "ASC") String direction){
 
-        ModelAndView mv = new ModelAndView("admin/category");
+        ModelAndView mv = new ModelAndView("admin/category-register");
 
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
         Page<Category> categoryPage = categoryService.findAll(pageRequest);
@@ -82,6 +76,7 @@ public class CategoryController {
      * @return
      */
     @PostMapping
+    @RolesAllowed({RoleType.ADMIN})
     public ModelAndView save(@Valid CategoryDTO dto, BindingResult errors, RedirectAttributes redirectAttributes){
 
         for(FieldError e: errors.getFieldErrors()){
@@ -92,10 +87,31 @@ public class CategoryController {
             return errorFowarding(dto, errors);
         }
 
-        Optional<Category> oCategory = categoryService.findByName(dto.getName());
-        if (oCategory.isPresent()) {
-            errors.rejectValue("name", "error.dto", "A Categoria já está cadastrada!");
-            return errorFowarding(dto, errors);
+        // Se o id for nulo, é uma inserção
+        if(dto.getId() == null){
+            Optional<Category> oCategory = categoryService.findByName(dto.getName());
+            if (oCategory.isPresent()) {
+                errors.rejectValue("name", "error.dto", "A Categoria já está cadastrada!");
+                return errorFowarding(dto, errors);
+            }
+        }
+
+        // Se o id não for nulo, é uma atualização
+        if(dto.getId() != null){
+            Optional<Category> oExistingCategory = categoryService.findById(dto.getId());
+
+            if (!oExistingCategory.isPresent()) {
+                throw new EntityNotFoundException("A categoria não foi encontrada!");
+            }
+
+            Category category = oExistingCategory.get();
+            Optional<Category> oOtherCategory = categoryService.findByName(dto.getName());
+            if (oOtherCategory.isPresent()) {
+                if(category.getId() != oOtherCategory.get().getId()) {
+                    errors.rejectValue("name", "error.dto", "Não é possível atualizar. A categoria já está cadastrada!");
+                    return errorFowarding(dto, errors);
+                }
+            }
         }
 
         Category expertise = categoryMapper.toEntity(dto);
@@ -103,11 +119,11 @@ public class CategoryController {
 
         redirectAttributes.addFlashAttribute("msg", "Categoria salva com sucesso!");
 
-        return new ModelAndView("redirect:categorias");
+        return new ModelAndView("redirect:/a/categorias");
     }
 
     /**
-     * Mostra o formulário para atualizar uma especialidade.
+     * Mostra o formulário para atualizar uma categoria.
      * @param id
      * @param request
      * @param page
@@ -117,13 +133,14 @@ public class CategoryController {
      * @return
      */
     @GetMapping("/{id}")
+    @RolesAllowed({RoleType.ADMIN})
     public ModelAndView showFormForUpdate(@PathVariable("id") Long id, HttpServletRequest request,
                                           @RequestParam(value = "pag", defaultValue = "1") int page,
                                           @RequestParam(value = "siz", defaultValue = "4") int size,
                                           @RequestParam(value = "ord", defaultValue = "name") String order,
                                           @RequestParam(value = "dir", defaultValue = "ASC") String direction){
 
-        ModelAndView mv = new ModelAndView("admin/category");
+        ModelAndView mv = new ModelAndView("admin/category-register");
 
         if(id < 0){
             throw new InvalidParamsException("O identificador não pode ser negativo.");
@@ -132,12 +149,11 @@ public class CategoryController {
         Optional<Category> oCategory = categoryService.findById(id);
 
         if(!oCategory.isPresent()){
-            throw new EntityNotFoundException("A especialidade não foi encontrada!");
+            throw new EntityNotFoundException("A categoria não foi encontrada!");
         }
 
         CategoryDTO categoryDTO = categoryMapper.toDto(oCategory.get());
         mv.addObject("dto", categoryDTO);
-
 
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
         Page<Category> categoryPage = categoryService.findAll(pageRequest);
@@ -147,7 +163,7 @@ public class CategoryController {
                 .collect(Collectors.toList());
         mv.addObject("categories", categoryDTOS);
 
-        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(categoryPage, "/categorias/" + id);
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(categoryPage, "/a/categorias/" + id);
         mv.addObject("pagination", paginationDTO);
         return mv;
     }
@@ -166,17 +182,28 @@ public class CategoryController {
         try{
             this.categoryService.delete(id);
             redirectAttributes.addFlashAttribute("msg", "Categoria removida com sucesso!");
-            return "redirect:/categorias";
+            return "redirect:/a/categorias";
         }catch (Exception exception) {
             redirectAttributes.addFlashAttribute("msgError", "Categoria não pode ser removida pois já esta sendo utilizada por uma especialidade!");
-            return "redirect:/categorias";
+            return "redirect:/a/categorias";
         }
     }
 
     private ModelAndView errorFowarding(CategoryDTO dto, BindingResult errors) {
-        ModelAndView mv = new ModelAndView("admin/category");
+        ModelAndView mv = new ModelAndView("admin/category-register");
         mv.addObject("dto", dto);
         mv.addObject("errors", errors.getAllErrors());
+
+        PageRequest pageRequest = PageRequest.of(0, 5);
+        Page<Category> categoryPage = categoryService.findAll(pageRequest);
+
+        List<CategoryDTO> categoryDTOS = categoryPage.stream()
+                .map(s -> categoryMapper.toDto(s))
+                .collect(Collectors.toList());
+        mv.addObject("categories", categoryDTOS);
+
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(categoryPage);
+        mv.addObject("pagination", paginationDTO);
 
         return mv;
     }

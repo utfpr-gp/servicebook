@@ -26,11 +26,4 @@ public class Category {
     public Category(String name){
         this.name = name;
     }
-
-//    //  1 categoria x n especialidades
-
-    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
-    private Set<Expertise> expertise
-            = new HashSet<>();
-
 }

@@ -1,6 +1,6 @@
 package br.edu.utfpr.servicebook.follower;
 
-import br.edu.utfpr.servicebook.controller.ExpertiseController;
+import br.edu.utfpr.servicebook.controller.admin.ExpertiseController;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.JobCandidateMapper;

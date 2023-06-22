@@ -1,5 +1,6 @@
 package br.edu.utfpr.servicebook.controller;
 
+import br.edu.utfpr.servicebook.controller.admin.ExpertiseController;
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.CategoryDTO;
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
@@ -81,7 +82,7 @@ public class ServiceController {
         PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(servicePage);
         mv.addObject("pagination", paginationDTO);
 
-        Page<Expertise> expertisePage = expertiseService.allExpertises(pageRequest);
+        Page<Expertise> expertisePage = expertiseService.findAll(pageRequest);
 
         List<ExpertiseDTO> professionDTOs = expertisePage.stream()
                 .map(s -> expertiseMapper.toDto(s))
@@ -160,7 +161,7 @@ public class ServiceController {
 
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
         Page<Service> professionPage = servicesService.findAll(pageRequest);
-        Page<Expertise> expertisePage = expertiseService.allExpertises(pageRequest);
+        Page<Expertise> expertisePage = expertiseService.findAll(pageRequest);
 
         List<ExpertiseDTO> professionDTOs = expertisePage.stream()
                 .map(s -> expertiseMapper.toDto(s))

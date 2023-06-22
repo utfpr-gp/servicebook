@@ -1,10 +1,12 @@
-package br.edu.utfpr.servicebook.controller;
+package br.edu.utfpr.servicebook.controller.admin;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.CategoryDTO;
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
 import br.edu.utfpr.servicebook.model.entity.Category;
+import br.edu.utfpr.servicebook.model.entity.City;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
+import br.edu.utfpr.servicebook.model.entity.State;
 import br.edu.utfpr.servicebook.model.mapper.CategoryMapper;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.mapper.ProfessionalMapper;
@@ -31,7 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +46,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RequestMapping("/especialidades")
+@RequestMapping("/a/especialidades")
 @Controller
 public class ExpertiseController {
 
@@ -57,6 +58,9 @@ public class ExpertiseController {
 
     @Autowired
     private ExpertiseMapper expertiseMapper;
+
+    @Autowired
+    private CategoryMapper categoryMapper;
 
     @Autowired
     private ProfessionalExpertiseService professionalExpertiseService;
@@ -85,34 +89,34 @@ public class ExpertiseController {
     @Autowired
     private CategoryService categoryService;
 
-    @Autowired
-    private CategoryMapper categoryMapper;
     @GetMapping
-    @PermitAll
+    @RolesAllowed({RoleType.ADMIN})
     public ModelAndView showForm(HttpServletRequest request,
                                  @RequestParam(value = "pag", defaultValue = "1") int page,
                                  @RequestParam(value = "siz", defaultValue = "5") int size,
                                  @RequestParam(value = "ord", defaultValue = "name") String order,
                                  @RequestParam(value = "dir", defaultValue = "ASC") String direction){
 
-        ModelAndView mv = new ModelAndView("admin/profession-registration");
+        ModelAndView mv = new ModelAndView("admin/expertise-register");
 
+        //lista de categorias
+        List<Category> categories = categoryService.findAll();
+        List<CategoryDTO> categoryDTOs = categories.stream()
+                .map(s -> categoryMapper.toDto(s))
+                .collect(Collectors.toList());
+        mv.addObject("categories", categoryDTOs);
+
+        //lista de especialidades
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
-        Page<Expertise> expertisePage = expertiseService.allExpertises(pageRequest);
+        Page<Expertise> expertisePage = expertiseService.findAll(pageRequest);
 
-        List<ExpertiseDTO> professionDTOs = expertisePage.stream()
+        List<ExpertiseDTO> expertiseDTOs = expertisePage.stream()
                 .map(s -> expertiseMapper.toDto(s))
                 .collect(Collectors.toList());
-        mv.addObject("professions", professionDTOs);
+        mv.addObject("expertises", expertiseDTOs);
 
         PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(expertisePage);
         mv.addObject("pagination", paginationDTO);
-
-            Page<Category> categoryPage = categoryService.findAll(pageRequest);
-        List<CategoryDTO> categoryDTOS = categoryPage.stream()
-                .map(s -> categoryMapper.toDto(s))
-                .collect(Collectors.toList());
-        mv.addObject("categories", categoryDTOS);
 
         return mv;
     }
@@ -137,40 +141,85 @@ public class ExpertiseController {
             return errorFowarding(dto, errors);
         }
 
-        if(!isValidateImage(dto.getIcon())) {
-            errors.rejectValue("icon", "dto.icon", "Por favor, envie um ícone no formato SVG.");
-            return errorFowarding(dto, errors);
+        Optional<Category> oCategory = categoryService.findById(dto.getCategoryId());
+        if(!oCategory.isPresent()){
+            throw new EntityNotFoundException("A categoria não foi encontrada!");
         }
 
-        Optional<Expertise> oExpertise = expertiseService.findByName(dto.getName());
-        if (oExpertise.isPresent()) {
-            errors.rejectValue("name", "error.dto", "A especialidade já está cadastrada!");
-            return errorFowarding(dto, errors);
+        //cadastro
+        if(dto.getId() == null){
+            if(!isValidateImage(dto.getIcon())) {
+                errors.rejectValue("icon", "dto.icon", "Por favor, envie um ícone no formato SVG.");
+                return errorFowarding(dto, errors);
+            }
+
+            //verifica se já existe uma expertise com o mesmo nome e categoria
+            Optional<Expertise> oExpertise = expertiseService.findByNameAndCategory(dto.getName(), oCategory.get());
+            if (oExpertise.isPresent()) {
+                errors.rejectValue("name", "error.dto", "A especialidade já está cadastrada!");
+                return errorFowarding(dto, errors);
+            }
+
+            String url = null;
+            try {
+                url = uploadImage(dto);
+
+            }catch (IOException exception) {
+                errors.rejectValue("name", "error.dto", "Houve um erro ao manipular o ícone.");
+                return errorFowarding(dto, errors);
+            }
+            dto.setPathIcon(url);
         }
 
-        Map data = null;
-        try {
-            File jobImage = Files.createTempFile("temp", dto.getIcon().getOriginalFilename()).toFile();
-            dto.getIcon().transferTo(jobImage);
-            data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "images"));
+        //atualização
+        if(dto.getId() != null){
+            // Lógica para atualização de uma expertise existente
+            Optional<Expertise> oExistingExpertise = expertiseService.findById(dto.getId());
 
-        }catch (IOException exception) {
-            errors.rejectValue("name", "error.dto", "Houve um erro ao manipular o ícone.");
-            return errorFowarding(dto, errors);
+            if (!oExistingExpertise.isPresent()) {
+                throw new EntityNotFoundException("A especialidade não foi encontrada!");
+            }
+
+            // Atualize as propriedades necessárias da expertise existente com base nos dados do DTO
+            Expertise expertise = oExistingExpertise.get();
+
+            //verifica se o usuário mudou o nome para uma especialidade existente
+            Optional<Expertise> otherExpertise = expertiseService.findByNameAndCategory(dto.getName(), oCategory.get());
+            if (otherExpertise.isPresent()) {
+                if(expertise.getId() != otherExpertise.get().getId()) {
+                    errors.rejectValue("name", "error.dto", "A especialidade já está cadastrada!");
+                    return errorFowarding(dto, errors);
+                }
+            }
+
+            //verifica se o usuário mudou o ícone
+            String url = null;
+            if (dto.getIcon() != null && !dto.getIcon().isEmpty()) {
+                //verifica se o ícone é válido (formato .svg)
+                if(!isValidateImage(dto.getIcon())) {
+                    errors.rejectValue("icon", "dto.icon", "Por favor, envie um ícone no formato SVG.");
+                    return errorFowarding(dto, errors);
+                }
+
+                //insere o ícone no cloudinary
+                try {
+                    url = uploadImage(dto);
+
+                }catch (IOException exception) {
+                    errors.rejectValue("name", "error.dto", "Houve um erro ao manipular o ícone.");
+                    return errorFowarding(dto, errors);
+                }
+            }
+            //se o ícone não foi atualizado, coloca a imagem existente
+            dto.setPathIcon(url != null ? url : expertise.getPathIcon());
         }
-        dto.setPathIcon(data != null ? (String) data.get("url") : oExpertise.get().getPathIcon());
 
-        Optional<Category> oCategory = categoryService.findById(dto.getCategory_id());
-        CategoryDTO categoryDTO = categoryMapper.toDto(oCategory.get());
-        dto.setCategory(categoryDTO);
-        dto.setCategory_id(dto.getId());
+        // Salve a expertise atualizada
         Expertise expertise = expertiseMapper.toEntity(dto);
-
+        expertise.setCategory(oCategory.get());
         expertiseService.save(expertise);
-
-        redirectAttributes.addFlashAttribute("msg", "Profissão salva com sucesso!");
-
-        return new ModelAndView("redirect:especialidades");
+        redirectAttributes.addFlashAttribute("msg", "A especialidade foi salva com sucesso!");
+        return new ModelAndView("redirect:/a/especialidades");
     }
 
     /**
@@ -191,7 +240,7 @@ public class ExpertiseController {
                                           @RequestParam(value = "ord", defaultValue = "name") String order,
                                           @RequestParam(value = "dir", defaultValue = "ASC") String direction){
 
-        ModelAndView mv = new ModelAndView("admin/profession-registration");
+        ModelAndView mv = new ModelAndView("admin/expertise-register");
 
         if(id < 0){
             throw new InvalidParamsException("O identificador não pode ser negativo.");
@@ -203,32 +252,26 @@ public class ExpertiseController {
             throw new EntityNotFoundException("A especialidade não foi encontrada!");
         }
 
-        String icon = oExpertise.get().getPathIcon();
         ExpertiseDTO expertiseDTO = expertiseMapper.toDto(oExpertise.get());
         mv.addObject("dto", expertiseDTO);
-        mv.addObject("icon", icon);
-
-        String[] urlExplode = icon.split("/");
-        String idIcon = urlExplode[urlExplode.length-1];
-
-        mv.addObject("idIcon", idIcon);
 
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
         Page<Expertise> professionPage = expertiseService.findAll(pageRequest);
 
-        List<ExpertiseDTO> professionDTOs = professionPage.stream()
+        List<ExpertiseDTO> expertisesDTOs = professionPage.stream()
                 .map(s -> expertiseMapper.toDto(s))
                 .collect(Collectors.toList());
-        mv.addObject("professions", professionDTOs);
+        mv.addObject("expertises", expertisesDTOs);
 
-        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(professionPage, "/especialidades/" + id);
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(professionPage, "/a/especialidades/" + id);
         mv.addObject("pagination", paginationDTO);
 
-        Page<Category> categoryPage = categoryService.findAll(pageRequest);
-        List<CategoryDTO> categoryDTOS = categoryPage.stream()
+        List<Category> categories = categoryService.findAll();
+        List<CategoryDTO> categoryDTOs = categories.stream()
                 .map(s -> categoryMapper.toDto(s))
                 .collect(Collectors.toList());
-        mv.addObject("categories", categoryDTOS);
+        mv.addObject("categories", categoryDTOs);
+
         return mv;
     }
 
@@ -246,23 +289,38 @@ public class ExpertiseController {
         try{
             this.expertiseService.delete(id);
             redirectAttributes.addFlashAttribute("msg", "Profissão removida com sucesso!");
-            return "redirect:/especialidades";
+            return "redirect:/a/especialidades";
         }catch (Exception exception) {
             redirectAttributes.addFlashAttribute("msgError", "Profissão não pode ser removida pois já esta sendo utilizada por profissionais!");
-            return "redirect:/especialidades";
+            return "redirect:/a/especialidades";
         }
     }
 
     private ModelAndView errorFowarding(ExpertiseDTO dto, BindingResult errors) {
-        ModelAndView mv = new ModelAndView("admin/profession-registration");
+        ModelAndView mv = new ModelAndView("admin/expertise-register");
 
-        List<Category> categoryPage = categoryService.findAll();
-        List<CategoryDTO> categoryDTOS = categoryPage.stream()
-                .map(s -> categoryMapper.toDto(s))
-                .collect(Collectors.toList());
-        mv.addObject("categories", categoryDTOS);
         mv.addObject("dto", dto);
         mv.addObject("errors", errors.getAllErrors());
+
+        //carrega as categorias
+        List<Category> categories = categoryService.findAll();
+        List<CategoryDTO> categoryDTOs = categories.stream()
+                .map(s -> categoryMapper.toDto(s))
+                .collect(Collectors.toList());
+        mv.addObject("categories", categoryDTOs);
+
+        //carrega as especialidades
+        PageRequest pageRequest = PageRequest.of(0, 5);
+        Page<Expertise> expertisePage = expertiseService.findAll(pageRequest);
+
+        List<ExpertiseDTO> expertiseDTOs = expertisePage.stream()
+                .map(s -> expertiseMapper.toDto(s))
+                .collect(Collectors.toList());
+        mv.addObject("expertises", expertiseDTOs);
+
+        //carrega a paginação
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(expertisePage);
+        mv.addObject("pagination", paginationDTO);
 
         return mv;
     }
@@ -277,5 +335,19 @@ public class ExpertiseController {
         }
 
         return false;
+    }
+
+    /**
+     * Faz o upload da imagem para o cloudinary
+     * @param dto
+     * @return
+     * @throws IOException
+     */
+    public String uploadImage(ExpertiseDTO dto) throws IOException {
+        File image = Files.createTempFile("temp", dto.getIcon().getOriginalFilename()).toFile();
+        dto.getIcon().transferTo(image);
+        Map data = cloudinary.uploader().upload(image, ObjectUtils.asMap("folder", "images"));
+
+        return (String)data.get("url");
     }
 }

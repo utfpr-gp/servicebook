@@ -15,10 +15,12 @@ public class City {
     private Long id;
 
     @NonNull
+    @Column(nullable = false)
     private String name;
 
     @NonNull
-    private String image;
+    @Column(nullable = false)
+    private String pathImage;
 
     @NonNull
     @ManyToOne

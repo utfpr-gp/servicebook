@@ -41,13 +41,7 @@ public class Expertise implements Serializable {
 	@Column(nullable = false)
 	private String pathIcon;
 
-//  1 categoria x n especialidades
 	@ManyToOne
 	@JoinColumn(name = "category_id")
 	private Category category;
-
-	@OneToMany(mappedBy = "expertise", cascade = CascadeType.REMOVE)
-	private Set<Service> services
-			= new HashSet<>();
-
 }

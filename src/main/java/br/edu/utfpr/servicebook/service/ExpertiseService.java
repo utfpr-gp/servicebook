@@ -1,11 +1,13 @@
 package br.edu.utfpr.servicebook.service;
 
+import br.edu.utfpr.servicebook.model.entity.Category;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.repository.ExpertiseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,6 +45,8 @@ public class ExpertiseService {
         return this.expertiseRepository.countAll();
     }
 
-    public Page<Expertise> allExpertises(PageRequest pageRequest) { return this.expertiseRepository.allExpertises(pageRequest); }
+    public Optional<Expertise> findByNameAndCategory(String name, Category category){
+        return this.expertiseRepository.findByNameAndCategory(name, category);
+    }
 
 }
