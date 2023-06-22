@@ -1,16 +1,18 @@
 package br.edu.utfpr.servicebook.service;
 
+import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.Service;
 import br.edu.utfpr.servicebook.model.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 
 @org.springframework.stereotype.Service
-public class ServicesService {
+public class ServiceService {
     @Autowired
     private ServiceRepository serviceRepository;
 
@@ -32,4 +34,7 @@ public class ServicesService {
         this.serviceRepository.deleteById(id);
     }
 
+    public Optional<Service> findByNameAndExpertise(String name, Expertise expertise){
+        return this.serviceRepository.findByNameAndExpertise(name, expertise);
+    }
 }

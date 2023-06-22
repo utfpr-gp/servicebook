@@ -218,7 +218,9 @@ public class ExpertiseController {
         Expertise expertise = expertiseMapper.toEntity(dto);
         expertise.setCategory(oCategory.get());
         expertiseService.save(expertise);
+
         redirectAttributes.addFlashAttribute("msg", "A especialidade foi salva com sucesso!");
+
         return new ModelAndView("redirect:/a/especialidades");
     }
 

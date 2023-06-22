@@ -18,8 +18,9 @@
 <body>
 <ul id="dropdown1" class="dropdown-content">
     <li><a href="a/cidades">CIDADES</a></li>
-    <li><a href="a/especialidades">ESPECIALIDADES</a></li>
     <li><a href="a/categorias">CATEGORIAS</a></li>
+    <li><a href="a/especialidades">ESPECIALIDADES</a></li>
+    <li><a href="a/servicos">SERVIÇOS</a></li>
 </ul>
 <nav class="nav-main" role="navigation">
     <div class="nav-wrapper container">

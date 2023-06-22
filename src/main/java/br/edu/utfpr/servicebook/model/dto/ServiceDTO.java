@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
@@ -14,7 +15,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @ToString
 public class ServiceDTO implements Serializable {
-    // 1 especialidade x n serviços
+
     private Long id;
 
     @NotBlank(message = "O nome do serviço é obrigatório")
@@ -22,8 +23,12 @@ public class ServiceDTO implements Serializable {
 
     private String description;
 
-    private ExpertiseDTO
-            expertise;
-    @Valid
-    private Long expertise_id;
+    @NotNull(message = "O nome da especialidade é obrigatório")
+    private Long expertiseId;
+
+    /**
+     * Usado para apresentação na listagem
+     */
+    private ExpertiseDTO expertise;
+
 }

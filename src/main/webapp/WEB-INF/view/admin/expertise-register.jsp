@@ -21,7 +21,8 @@
                             <form action="a/especialidades" method="post" enctype="multipart/form-data">
                                 <input name="id" type="hidden" value="${dto.id}">
 
-                                <select id="select-state" name="categoryId" >
+                                <select name="categoryId" >
+                                    <option disabled selected>Selecione uma categoria</option>
                                     <c:if test="${empty dto.categoryId}">
                                         <c:forEach var="category" items="${categories}">
                                             <option value="${category.id}">${category.name}</option>
@@ -139,7 +140,11 @@
                                     </tbody>
                                 </table>
                             </c:if>
-                            <div class="center"><t:pagination pagination="${pagination}" relativePath="/a/especialidades"></t:pagination></div>
+                            <!-- Paginação -->
+                            <div class="center">
+                                <t:pagination pagination="${pagination}" relativePath="/a/especialidades"></t:pagination>
+                            </div>
+                            <!-- Fim Paginação -->
                         </div>
                         <!-- Fim Tabela de especialidades -->
                     </div>

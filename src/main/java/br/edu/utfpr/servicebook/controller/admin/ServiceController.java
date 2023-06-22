@@ -1,20 +1,15 @@
-package br.edu.utfpr.servicebook.controller;
+package br.edu.utfpr.servicebook.controller.admin;
 
-import br.edu.utfpr.servicebook.controller.admin.ExpertiseController;
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
-import br.edu.utfpr.servicebook.model.dto.CategoryDTO;
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
 import br.edu.utfpr.servicebook.model.dto.ServiceDTO;
-import br.edu.utfpr.servicebook.model.entity.Category;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.Service;
-import br.edu.utfpr.servicebook.model.mapper.CategoryMapper;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.mapper.ServiceMapper;
 import br.edu.utfpr.servicebook.security.RoleType;
-import br.edu.utfpr.servicebook.service.CategoryService;
 import br.edu.utfpr.servicebook.service.ExpertiseService;
-import br.edu.utfpr.servicebook.service.ServicesService;
+import br.edu.utfpr.servicebook.service.ServiceService;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import org.slf4j.Logger;
@@ -40,14 +35,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RequestMapping("/servicos")
+@RequestMapping("/a/servicos")
 @Controller
 public class ServiceController {
     public static final Logger log =
             LoggerFactory.getLogger(ExpertiseController.class);
 
     @Autowired
-    private ServicesService servicesService;
+    private ServiceService serviceService;
 
     @Autowired
     private PaginationUtil paginationUtil;
@@ -69,25 +64,26 @@ public class ServiceController {
                                  @RequestParam(value = "ord", defaultValue = "name") String order,
                                  @RequestParam(value = "dir", defaultValue = "ASC") String direction){
 
-        ModelAndView mv = new ModelAndView("admin/service");
+        ModelAndView mv = new ModelAndView("admin/service-register");
 
+        //paginação de serviços
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
-        Page<Service> servicePage = servicesService.findAll(pageRequest);
 
+        List<Expertise> expertises = expertiseService.findAll();
+        List<ExpertiseDTO> expertiseDTOs = expertises.stream()
+                .map(s -> expertiseMapper.toDto(s))
+                .collect(Collectors.toList());
+        mv.addObject("expertises", expertiseDTOs);
+
+        Page<Service> servicePage = serviceService.findAll(pageRequest);
         List<ServiceDTO> serviceDTOS = servicePage.stream()
                 .map(s -> serviceMapper.toDto(s))
                 .collect(Collectors.toList());
-        mv.addObject("categories", serviceDTOS);
+        mv.addObject("services", serviceDTOS);
 
         PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(servicePage);
         mv.addObject("pagination", paginationDTO);
 
-        Page<Expertise> expertisePage = expertiseService.findAll(pageRequest);
-
-        List<ExpertiseDTO> professionDTOs = expertisePage.stream()
-                .map(s -> expertiseMapper.toDto(s))
-                .collect(Collectors.toList());
-        mv.addObject("professions", professionDTOs);
         return mv;
     }
 
@@ -108,22 +104,50 @@ public class ServiceController {
             return errorFowarding(dto, errors);
         }
 
-        Optional<Service> oService = servicesService.findByName(dto.getName());
-        if (oService.isPresent()) {
-            errors.rejectValue("name", "error.dto", "O serviço já está cadastrada!");
-            return errorFowarding(dto, errors);
+        Optional<Expertise> oExpertise = expertiseService.findById(dto.getExpertiseId());
+        if(!oExpertise.isPresent()){
+            throw new EntityNotFoundException("A especialidade não foi encontrada!");
         }
-        Optional<Expertise> oExpertise = expertiseService.findById(dto.getExpertise_id());
-        ExpertiseDTO expertiseDTO = expertiseMapper.toDto(oExpertise.get());
-        dto.setExpertise(expertiseDTO);
-        dto.setExpertise_id(dto.getId());
+
+        //verifica se o id é nulo, se for, é um novo registro
+        if(dto.getId() == null){
+            //verifica se já existe um serviço com o mesmo nome e especialidade
+            Optional<Service> oService = serviceService.findByNameAndExpertise(dto.getName(), oExpertise.get());
+            if (oService.isPresent()) {
+                errors.rejectValue("name", "error.dto", "O serviço já está cadastrado!");
+                return errorFowarding(dto, errors);
+            }
+        }
+
+        //verifica se o id é diferente de nulo, se for, é uma atualização
+        if(dto.getId() != null){
+            // Lógica para atualização de um serviço existente
+            Optional<Service> oExistingService = serviceService.findById(dto.getId());
+
+            if (!oExistingService.isPresent()) {
+                throw new EntityNotFoundException("O serviço não foi encontrado!");
+            }
+
+            // Atualize as propriedades necessárias do serviço existente com base nos dados do DTO
+            Service service = oExistingService.get();
+
+            //verifica se o usuário mudou o nome para um serviço existente
+            Optional<Service> otherService = serviceService.findByNameAndExpertise(dto.getName(), oExpertise.get());
+            if (otherService.isPresent()) {
+                if(service.getId() != otherService.get().getId()) {
+                    errors.rejectValue("name", "error.dto", "O serviço já está cadastrado!");
+                    return errorFowarding(dto, errors);
+                }
+            }
+        }
 
         Service service = serviceMapper.toEntity(dto);
-        servicesService.save(service);
+        service.setExpertise(oExpertise.get());
+        serviceService.save(service);
 
         redirectAttributes.addFlashAttribute("msg", "Serviço salvo com sucesso!");
 
-        return new ModelAndView("redirect:servicos");
+        return new ModelAndView("redirect:/a/servicos");
     }
 
     /**
@@ -144,13 +168,13 @@ public class ServiceController {
                                           @RequestParam(value = "ord", defaultValue = "name") String order,
                                           @RequestParam(value = "dir", defaultValue = "ASC") String direction){
 
-        ModelAndView mv = new ModelAndView("admin/service");
+        ModelAndView mv = new ModelAndView("admin/service-register");
 
         if(id < 0){
             throw new InvalidParamsException("O identificador não pode ser negativo.");
         }
 
-        Optional<Service> oService = servicesService.findById(id);
+        Optional<Service> oService = serviceService.findById(id);
 
         if(!oService.isPresent()){
             throw new EntityNotFoundException("O serviço não foi encontrado!");
@@ -160,23 +184,21 @@ public class ServiceController {
         mv.addObject("dto", serviceDTO);
 
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
-        Page<Service> professionPage = servicesService.findAll(pageRequest);
-        Page<Expertise> expertisePage = expertiseService.findAll(pageRequest);
 
-        List<ExpertiseDTO> professionDTOs = expertisePage.stream()
+        List<Expertise> expertises = expertiseService.findAll();
+        List<ExpertiseDTO> expertiseDTOs = expertises.stream()
                 .map(s -> expertiseMapper.toDto(s))
                 .collect(Collectors.toList());
-        mv.addObject("professions", professionDTOs);
+        mv.addObject("expertises", expertiseDTOs);
 
-        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(professionPage, "/servicos/" + id);
-        mv.addObject("pagination", paginationDTO);
-
-        Page<Service> servicePage = servicesService.findAll(pageRequest);
-
+        Page<Service> servicePage = serviceService.findAll(pageRequest);
         List<ServiceDTO> serviceDTOS = servicePage.stream()
                 .map(s -> serviceMapper.toDto(s))
                 .collect(Collectors.toList());
-        mv.addObject("categories", serviceDTOS);
+        mv.addObject("services", serviceDTOS);
+
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(servicePage, "/servicos/" + id);
+        mv.addObject("pagination", paginationDTO);
 
         return mv;
     }
@@ -185,7 +207,7 @@ public class ServiceController {
     @RolesAllowed({RoleType.ADMIN})
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
         log.debug("Removendo um serviço com id {}", id);
-        Optional <Service> optionalService = this.servicesService.findById(id);
+        Optional <Service> optionalService = this.serviceService.findById(id);
         ServiceDTO serviceDTO = serviceMapper.toDto(optionalService.get());
 
         if(!optionalService.isPresent()){
@@ -193,19 +215,37 @@ public class ServiceController {
         }
 
         try{
-            this.servicesService.delete(id);
+            this.serviceService.delete(id);
             redirectAttributes.addFlashAttribute("msg", "Serviço removido com sucesso!");
-            return "redirect:/servicos";
+            return "redirect:/a/servicos";
         }catch (Exception exception) {
             redirectAttributes.addFlashAttribute("msgError", "Serviço não pode ser removido pois já esta sendo utilizado!");
-            return "redirect:/servicos";
+            return "redirect:/a/servicos";
         }
     }
 
     private ModelAndView errorFowarding(ServiceDTO dto, BindingResult errors) {
-        ModelAndView mv = new ModelAndView("admin/service");
+        ModelAndView mv = new ModelAndView("admin/service-register");
         mv.addObject("dto", dto);
         mv.addObject("errors", errors.getAllErrors());
+
+        List<Expertise> expertises = expertiseService.findAll();
+        List<ExpertiseDTO> expertiseDTOs = expertises.stream()
+                .map(s -> expertiseMapper.toDto(s))
+                .collect(Collectors.toList());
+        mv.addObject("expertises", expertiseDTOs);
+
+        //paginação de serviços
+        PageRequest pageRequest = PageRequest.of(0, 5);
+        Page<Service> servicePage = serviceService.findAll(pageRequest);
+        List<ServiceDTO> serviceDTOS = servicePage.stream()
+                .map(s -> serviceMapper.toDto(s))
+                .collect(Collectors.toList());
+        mv.addObject("services", serviceDTOS);
+
+        //carrega a paginação
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(servicePage);
+        mv.addObject("pagination", paginationDTO);
 
         return mv;
     }
