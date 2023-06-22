@@ -34,7 +34,7 @@
                                         <input id="imageInput" type="file" value="${dto.icon}" name="icon" accept=".svg">
                                     </div>
                                     <div class="file-path-wrapper">
-                                        <input class="file-path validate" placeholder="icon.svg" type="text"">
+                                        <input class="file-path validate" placeholder="icon.svg" type="text">
                                     </div>
                                 </div>
                                 <div class="col s10 offset-s1 spacing-buttons center">

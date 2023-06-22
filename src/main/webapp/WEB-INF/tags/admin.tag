@@ -17,8 +17,9 @@
 </head>
 <body>
 <ul id="dropdown1" class="dropdown-content">
-    <li><a href="cidades">Cidade</a></li>
-    <li><a href="profissoes">Profissão</a></li>
+    <li><a href="a/cidades">CIDADES</a></li>
+    <li><a href="a/especialidades">ESPECIALIDADES</a></li>
+    <li><a href="a/categorias">CATEGORIAS</a></li>
 </ul>
 <nav class="nav-main" role="navigation">
     <div class="nav-wrapper container">
@@ -35,8 +36,9 @@
         </ul>
 
         <ul id="nav-mobile" class="sidenav">
-            <li><a class="menu-itens" href="cidades">CADASTRAR CIDADE</a></li>
-            <li><a class="menu-itens" href="profissoes">CADASTRAR PROFISSÃO</a></li>
+            <li><a class="menu-itens" href="a/cidades">CIDADES</a></li>
+            <li><a class="menu-itens" href="a/especialidades">ESPECIALIDADES</a></li>
+            <li><a class="menu-itens" href="a/categorias">CATEGORIAS</a></li>
             <li><a class="menu-itens" href="#!">MINHA CONTA</a></li>
             <li><a class="menu-itens" href="#!">SAIR</a></li>
 

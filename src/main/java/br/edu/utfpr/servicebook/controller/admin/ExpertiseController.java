@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook.controller.admin;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
+import br.edu.utfpr.servicebook.model.dto.CityDTO;
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
@@ -137,17 +138,15 @@ public class ExpertiseController {
                 return errorFowarding(dto, errors);
             }
 
-            Map data = null;
+            String url = null;
             try {
-                File jobImage = Files.createTempFile("temp", dto.getIcon().getOriginalFilename()).toFile();
-                dto.getIcon().transferTo(jobImage);
-                data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "images"));
+                url = uploadImage(dto);
 
             }catch (IOException exception) {
                 errors.rejectValue("name", "error.dto", "Houve um erro ao manipular o ícone.");
                 return errorFowarding(dto, errors);
             }
-            dto.setPathIcon(data != null ? (String) data.get("url") : oExpertise.get().getPathIcon());
+            dto.setPathIcon(url);
         }
 
         //atualização
@@ -172,7 +171,7 @@ public class ExpertiseController {
             }
 
             //verifica se o usuário mudou o ícone
-            Map data = null;
+            String url = null;
             if (dto.getIcon() != null && !dto.getIcon().isEmpty()) {
                 //verifica se o ícone é válido (formato .svg)
                 if(!isValidateImage(dto.getIcon())) {
@@ -182,9 +181,7 @@ public class ExpertiseController {
 
                 //insere o ícone no cloudinary
                 try {
-                    File jobImage = Files.createTempFile("temp", dto.getIcon().getOriginalFilename()).toFile();
-                    dto.getIcon().transferTo(jobImage);
-                    data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "images"));
+                    url = uploadImage(dto);
 
                 }catch (IOException exception) {
                     errors.rejectValue("name", "error.dto", "Houve um erro ao manipular o ícone.");
@@ -192,7 +189,7 @@ public class ExpertiseController {
                 }
             }
             //se o ícone não foi atualizado, coloca a imagem existente
-            dto.setPathIcon(data != null ? (String) data.get("url") : expertise.getPathIcon());
+            dto.setPathIcon(url != null ? url : expertise.getPathIcon());
         }
 
         // Salve a expertise atualizada
@@ -235,11 +232,11 @@ public class ExpertiseController {
         ExpertiseDTO expertiseDTO = expertiseMapper.toDto(oExpertise.get());
         mv.addObject("dto", expertiseDTO);
 
-        String icon = oExpertise.get().getPathIcon();
-        String[] urlExplode = icon.split("/");
-        String idIcon = urlExplode[urlExplode.length-1];
-
-        mv.addObject("idIcon", idIcon);
+//        String icon = oExpertise.get().getPathIcon();
+//        String[] urlExplode = icon.split("/");
+//        String idIcon = urlExplode[urlExplode.length-1];
+//
+//        mv.addObject("idIcon", idIcon);
 
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
         Page<Expertise> professionPage = expertiseService.findAll(pageRequest);
@@ -304,5 +301,19 @@ public class ExpertiseController {
         }
 
         return false;
+    }
+
+    /**
+     * Faz o upload da imagem para o cloudinary
+     * @param dto
+     * @return
+     * @throws IOException
+     */
+    public String uploadImage(ExpertiseDTO dto) throws IOException {
+        File image = Files.createTempFile("temp", dto.getIcon().getOriginalFilename()).toFile();
+        dto.getIcon().transferTo(image);
+        Map data = cloudinary.uploader().upload(image, ObjectUtils.asMap("folder", "images"));
+
+        return (String)data.get("url");
     }
 }

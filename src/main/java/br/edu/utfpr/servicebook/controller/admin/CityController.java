@@ -4,6 +4,7 @@ import br.edu.utfpr.servicebook.model.dto.CityDTO;
 import br.edu.utfpr.servicebook.model.dto.CityDTO2;
 import br.edu.utfpr.servicebook.model.dto.StateDTO;
 import br.edu.utfpr.servicebook.model.entity.City;
+import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.State;
 import br.edu.utfpr.servicebook.model.mapper.CityMapper;
 import br.edu.utfpr.servicebook.model.mapper.StateMapper;
@@ -109,67 +110,95 @@ public class CityController {
             return errorFowarding(dto, errors);
         }
 
-        Optional<State> state = stateService.findById(dto.getIdState());
+        Optional<State> oState = stateService.findById(dto.getIdState());
+        if(!oState.isPresent()){
+            throw new EntityNotFoundException("O estado não foi encontrado!");
+        }
 
-        if (state.isPresent()) {
-            Optional<City> cityIsExist = cityService.findByNameAndState(dto.getName(), state.get());
+        // Se o id for nulo, significa que é o cadastro de uma nova cidade
+        if(dto.getId() == null){
+            // Lógica para cadastro de uma nova cidade, pode existir cidade com mesmo nome mas em estados diferentes
+            Optional<City> oCity = cityService.findByNameAndState(dto.getName(), oState.get());
 
-            if (!cityIsExist.isPresent()) {
+            if(oCity.isPresent()){
+                errors.rejectValue("name", "error.dto", "A cidade já está cadastrada.");
+                return errorFowarding(dto, errors);
+            }
 
-                if(!dto.getImage().isEmpty()){
+            if(!isValidateImage(dto.getImage())) {
+                errors.rejectValue("image", "dto.image", "Por favor, envie uma imagem válida.");
+                return errorFowarding(dto, errors);
+            }
 
-                    if(isValidateImage(dto.getImage())){
-                        File cityImage = Files.createTempFile("temp", dto.getImage().getOriginalFilename()).toFile();
-                        dto.getImage().transferTo(cityImage);
-                        Map data = cloudinary.uploader().upload(cityImage, ObjectUtils.asMap("folder", "cities"));
+            String url = null;
+            try{
+                url = uploadImage(dto);
+            }
+            catch (IOException e){
+                errors.rejectValue("image", "error.dto", "Houve um erro ao persistir a imagem.");
+                return errorFowarding(dto, errors);
+            }
+            dto.setPathImage(url);
+        }
 
-                        City city = cityMapper.toEntity(dto);
-                        city.setState(state.get());
-                        city.setImage((String)data.get("url"));
-                        cityService.save(city);
+        // Se o id não for nulo, significa que é a atualização de uma cidade existente
+        if(dto.getId() != null){
+            // Lógica para atualização de uma cidade existente
+            Optional<City> oExistingCity = cityService.findById(dto.getId());
 
-                        redirectAttributes.addFlashAttribute("msg", "Cidade cadastrada com sucesso!");
+            if (!oExistingCity.isPresent()) {
+                throw new EntityNotFoundException("A cidade não foi encontrada!");
+            }
 
-                    }else{
-                        errors.rejectValue("image", "error.dto", "O arquivo deve ser uma imagem (.jpg, .jpeg ou .png)");
-                        return errorFowarding(dto, errors);
-                    }
-                }else {
-                    if(dto.getId() != null){
-                        Optional<City> city = cityService.findById(dto.getId());
-                        String urlImage = city.get().getImage();
-
-                        City ct = cityMapper.toEntity(dto);
-                        ct.setState(state.get());
-                        ct.setName(dto.getName());
-                        ct.setImage(urlImage);
-                        cityService.save(ct);
-
-                        redirectAttributes.addFlashAttribute("msg", "Dados da cidade atualizados!");
-                    }else{
-                        errors.rejectValue("image", "error.dto", "Imagem é obrigatório!");
-                        return errorFowarding(dto, errors);
-                    }
-                }
-            } else {
-                if(isValidateImage(dto.getImage())){
-                    deleteImage(cityIsExist);
-                    uploadImage(dto);
-
-                    redirectAttributes.addFlashAttribute("msg", "Imagem atualizada!");
-                }else{
-                    errors.rejectValue("name", "error.dto", "A cidade já está cadastrada.");
+            //verifica se o usuário mudou o nome para uma cidade existente
+            City city = oExistingCity.get();
+            Optional<City> oOtherCity = cityService.findByNameAndState(dto.getName(), oState.get());
+            if (oOtherCity.isPresent()) {
+                if(city.getId() != oOtherCity.get().getId()) {
+                    errors.rejectValue("name", "error.dto", "A cidade já está cadastrada!");
                     return errorFowarding(dto, errors);
                 }
             }
-        } else {
-            errors.rejectValue("idState", "error.dto", "Estado inválido...!");
-            return errorFowarding(dto, errors);
+
+            //verifica se o usuário mudou a imagem
+            String url = city.getPathImage();
+            if (dto.getImage() != null && !dto.getImage().isEmpty()) {
+                //verifica se o ícone é válido
+                if(!isValidateImage(dto.getImage())) {
+                    errors.rejectValue("icon", "dto.image", "Por favor, envie uma imagem no formato PNG or JPG.");
+                    return errorFowarding(dto, errors);
+                }
+
+                //deleta a imagem antiga
+                deleteImage(city.getPathImage());
+
+                //insere a imagem no cloudinary
+                try {
+                    url = uploadImage(dto);
+                }catch (IOException exception) {
+                    errors.rejectValue("name", "error.dto", "Houve um erro ao manipular a imagem.");
+                    return errorFowarding(dto, errors);
+                }
+            }
+            //se a imagem não foi atualizado, coloca a imagem existente
+            dto.setPathImage(url);
         }
 
-        return new ModelAndView("redirect:cidades");
+        City city = cityMapper.toEntity(dto);
+        city.setState(oState.get());
+        cityService.save(city);
+
+        redirectAttributes.addFlashAttribute("msg", "Cidade cadastrada com sucesso!");
+
+        return new ModelAndView("redirect:/a/cidades");
     }
 
+    /**
+     * Apresenta o formulário de atualização de cidade
+     * @param id
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/{id}")
     @RolesAllowed({RoleType.ADMIN})
     public ModelAndView showFormUpdate(@PathVariable("id") Long id) throws Exception {
@@ -177,30 +206,21 @@ public class CityController {
         ModelAndView mv = new ModelAndView("admin/city-register");
 
         if(id < 0){
-            throw new InvalidParameterException("O identificador não pode ser null");
+            throw new InvalidParameterException("O identificador não pode ser negativo.");
         }
 
-        Optional<City> city = cityService.findById(id);
+        Optional<City> oCity = cityService.findById(id);
 
-        if(!city.isPresent()){
-            throw new EntityNotFoundException("A cidade não foi encontrada pelo id informado");
+        if(!oCity.isPresent()){
+            throw new EntityNotFoundException("A cidade não foi encontrada!");
         }
 
-        String urlImage = city.get().getImage();
-        mv.addObject("imageCurrent", urlImage);
-
-        String[] urlExplode = urlImage.split("/");
-
-        String id_image = urlExplode[urlExplode.length-1];
-        mv.addObject("idImage", id_image);
-
-
-        CityDTO cityDTO = cityMapper.toResponseDto(city.get());
+        CityDTO cityDTO = cityMapper.toResponseDto(oCity.get());
         mv.addObject("dto", cityDTO);
 
         mv.addObject("states", listStateDTO());
 
-        PageRequest pageRequest = PageRequest.of(0, 3, Sort.Direction.valueOf("ASC"), "state");
+        PageRequest pageRequest = PageRequest.of(0, 5, Sort.Direction.valueOf("ASC"), "state");
 
         Page<City> cityPage = cityService.findAll(pageRequest);
 
@@ -212,20 +232,26 @@ public class CityController {
         return mv;
     }
 
+    /**
+     * Exclui a cidade
+     * @param id Id da cidade
+     * @throws IOException
+     */
     @DeleteMapping("/{id}")
     @RolesAllowed({RoleType.ADMIN})
     public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
-        Optional<City> city = cityService.findById(id);
 
-        if(city.isPresent()){
-            deleteImage(city);
-            cityService.delete(id);
-            redirectAttributes.addFlashAttribute("msg", "Cidade deletada!");
+        Optional<City> oCity = cityService.findById(id);
 
-            return "redirect:/cidades";
+        if(!oCity.isPresent()){
+            throw new EntityNotFoundException("A cidade não foi encontrada!");
         }
 
-        throw new EntityNotFoundException("A cidade não foi encontrada pelo id informado");
+        deleteImage(oCity.get().getPathImage());
+        cityService.delete(id);
+        redirectAttributes.addFlashAttribute("msg", "A cidade foi removida com sucesso!");
+
+        return "redirect:/a/cidades";
     }
 
     private boolean isValidateImage(MultipartFile image){
@@ -249,23 +275,32 @@ public class CityController {
         return idImage;
     }
 
-    private void deleteImage(Optional<City> city) throws IOException {
-        String urlImage = city.get().getImage();
+    /**
+     * Exclui a imagem da cidade
+     * @throws IOException
+     */
+    private void deleteImage(String urlImage) throws IOException {
         cloudinary.uploader().destroy("cities/"+recoverIdImage(urlImage), ObjectUtils.emptyMap());
     }
 
-    public void uploadImage(CityDTO dto) throws IOException {
-        Optional<City> city = cityService.findById(dto.getId());
+    /**
+     * Faz o upload da imagem da cidade
+     * @param dto
+     * @throws IOException
+     */
+    public String uploadImage(CityDTO dto) throws IOException {
 
         File cityImage = Files.createTempFile("temp", dto.getImage().getOriginalFilename()).toFile();
         dto.getImage().transferTo(cityImage);
         Map data = cloudinary.uploader().upload(cityImage, ObjectUtils.asMap("folder", "cities"));
 
-        City ct = cityMapper.toEntity(dto);
-        ct.setImage((String)data.get("url"));
-        cityService.save(ct);
+        return (String)data.get("url");
     }
 
+    /**
+     * Faz o encaminhamento para mostrar as mensagens de erro.     *
+     * @return
+     */
     private ModelAndView errorFowarding(CityDTO dto,BindingResult errors) {
 
         ModelAndView mv = new ModelAndView("admin/city-register");

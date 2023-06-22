@@ -123,7 +123,7 @@ public class CategoryController {
     }
 
     /**
-     * Mostra o formulário para atualizar uma especialidade.
+     * Mostra o formulário para atualizar uma categoria.
      * @param id
      * @param request
      * @param page
@@ -149,12 +149,11 @@ public class CategoryController {
         Optional<Category> oCategory = categoryService.findById(id);
 
         if(!oCategory.isPresent()){
-            throw new EntityNotFoundException("A especialidade não foi encontrada!");
+            throw new EntityNotFoundException("A categoria não foi encontrada!");
         }
 
         CategoryDTO categoryDTO = categoryMapper.toDto(oCategory.get());
         mv.addObject("dto", categoryDTO);
-
 
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
         Page<Category> categoryPage = categoryService.findAll(pageRequest);
