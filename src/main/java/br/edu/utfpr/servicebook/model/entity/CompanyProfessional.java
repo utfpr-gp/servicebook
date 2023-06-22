@@ -21,6 +21,8 @@ public class CompanyProfessional {
     @EmbeddedId
     private CompanyProfessionalPK id;
     private Integer rating;
+    private boolean isConfirmed;
+    private String email;
 
     @ManyToOne()
     @MapsId("professionalId")
@@ -32,9 +34,23 @@ public class CompanyProfessional {
     @JoinColumn(name = "company_id")
     private User company;
 
+    public CompanyProfessional(User company, User professional, boolean isConfirmed){
+        this.professional = professional;
+        this.company = company;
+        this.isConfirmed = isConfirmed;
+        this.id = new CompanyProfessionalPK(company.getId(), professional.getId());
+    }
+
     public CompanyProfessional(User company, User professional){
         this.professional = professional;
         this.company = company;
+        this.id = new CompanyProfessionalPK(company.getId(), professional.getId());
+    }
+
+    public CompanyProfessional(User company, String email){
+        this.company = company;
+        this.email = email;
+        this.professional = professional;
         this.id = new CompanyProfessionalPK(company.getId(), professional.getId());
     }
 }

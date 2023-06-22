@@ -28,14 +28,12 @@
                                     </a>
                                 </button>
                             </div>
-
                             <c:forEach var="professional" items="${professionalCompanies}">
                             <div class="col s12">
                                     <div class="card">
                                         <div class="col s3">
                                             <c:if test="${professional.isConfirmed == false}">
                                                 <span class="icon_invite"> Convite Pendente </span>
-                                                <i class="icon_invite_icon material-icons small">content_copy</i>
                                             </c:if>
                                         </div>
 

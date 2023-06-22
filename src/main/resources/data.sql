@@ -89,10 +89,10 @@ VALUES ('98.988.640/0001-91', 1),
        ('01.988.640/0001-15', 6),
        ('78.988.640/0001-02', 7);
 
-INSERT INTO company_professionals (company_id, professional_id, rating)
-VALUES (7, 2, 1),
-       (5, 6, 1),
-       (7, 6, 1);
+INSERT INTO company_professionals (company_id, professional_id, rating, is_confirmed)
+VALUES (7, 2, 1, true),
+       (5, 6, 1, true),
+       (7, 6, 1, false);
 
 INSERT INTO job_requests
 (client_confirmation, date_created, date_target, description, professional_confirmation, quantity_candidators_max,

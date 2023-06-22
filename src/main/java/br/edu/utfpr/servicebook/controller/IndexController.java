@@ -109,7 +109,6 @@ public class IndexController {
     ) throws Exception{
         if(token != null){
             UserToken userToken = userTokenService.findByUserToken(token);
-            System.out.println("KKKKKKKKKK" + userToken);
 
             Optional<User> oProfessional = userService.findByEmail(userToken.getEmail());
 
@@ -122,7 +121,12 @@ public class IndexController {
             userService.save(user_professional);
 
             if(user_professional.isConfirmed()){
-                CompanyProfessional p = companyProfessionalService.save(new CompanyProfessional(userToken.getUser(), oProfessional.get()));
+                Optional<CompanyProfessional> companyProfessional = companyProfessionalService.findByCompanyAndProfessional(userToken.getUser(), oProfessional.get());
+
+                CompanyProfessional companyProfessional1 = companyProfessional.get();
+                companyProfessional1.setConfirmed(true);
+                companyProfessionalService.save(companyProfessional1);
+//                CompanyProfessional p = companyProfessionalService.save(new CompanyProfessional(userToken.getUser(), oProfessional.get()));
             }
 
             redirectAttributes.addFlashAttribute("msg", "Você foi incluido na empresa com sucesso!");

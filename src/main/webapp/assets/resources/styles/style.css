@@ -913,8 +913,9 @@ textarea {
 }
 
 .icon_invite{
-  color: #607d8b;
-  margin-left: 10px;
+  color: #299d0f;
+  /*margin-left: 10px;*/
+  padding: 20px 10px;
 }
 
 .icon_invite_icon{

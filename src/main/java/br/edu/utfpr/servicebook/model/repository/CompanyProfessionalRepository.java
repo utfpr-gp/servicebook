@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 public interface CompanyProfessionalRepository extends JpaRepository<CompanyProfessional, CompanyProfessionalPK> {
 
-
     /**
      * Retorna uma especialidade profissional, dado um profissional e sua especialidade
      *
@@ -41,7 +40,7 @@ public interface CompanyProfessionalRepository extends JpaRepository<CompanyProf
     Optional<Integer> selectRatingByProfessionalAndExpertise(@Param("professional_id") Long professional_id, @Param("company_id") Long company_id);
 
 
-    @Query("SELECT pe FROM CompanyProfessional pe WHERE pe.company.id = :company_id")
+    @Query("SELECT pe FROM CompanyProfessional pe left join User u on pe.professional.id = u.id WHERE pe.company.id = :company_id")
     List<CompanyProfessional> findByCompany(@Param("company_id") Long company_id);
 
     /**

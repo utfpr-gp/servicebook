@@ -110,8 +110,7 @@ public class CompanyProfessionalController {
         UserTemplateInfo userTemplateInfo = templateUtil.getUserInfo(professionalMinDTO);
         UserTemplateStatisticInfo sidePanelStatisticDTO = templateUtil.getCompanyStatisticInfo(company, expertiseId.get());
 
-//        mv.addObject("statisticInfo", sidePanelStatisticDTO);
-        mv.addObject("individualInfo", userTemplateInfo);
+        mv.addObject("statisticInfo", sidePanelStatisticDTO);
 
         mv.addObject("id", expertiseId.orElse(0L));
 
@@ -144,7 +143,6 @@ public class CompanyProfessionalController {
 
         mv.addObject("professionals", professionals);
         mv.addObject("professionalCompanies", companyProfessionalDTO2s);
-        mv.addObject("userInfo", individualInfo);
         mv.addObject("statisticInfo", sidePanelStatisticDTO);
         mv.addObject("eventsse", eventSSEDTOs);
         mv.addObject("expertises", expertiseDTOs);
@@ -181,9 +179,23 @@ public class CompanyProfessionalController {
                     + "/cadastrar-se?passo-1&code="+token;
 
             quartzService.sendEmailToRegisterUser(dto.getIds(), company.getName(), tokenLink);
+            Optional<UserToken> optionalUserToken = userTokenService.findByEmail(ids);
+
+//            CompanyProfessional p = companyProfessionalService.save(new CompanyProfessional(company, dto.getIds()));
+//            redirectAttributes.addFlashAttribute("msg", "Convite enviado para usuário, aguardando confirmação!");
+
         } else {
             String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/confirmar?empresa=" + company_name.get().getName() +"&email=" + dto.getIds();
             quartzService.sendEmailWithConfirmationUser(dto.getIds(), company.getName(), tokenLink);
+
+            Optional<CompanyProfessional> optionalCompanyProfessional = companyProfessionalService.findByCompanyAndProfessional(company, oProfessional.get());
+
+            if(!optionalCompanyProfessional.isPresent()){
+                CompanyProfessional p = companyProfessionalService.save(new CompanyProfessional(company, oProfessional.get(), false));
+                redirectAttributes.addFlashAttribute("msg", "Convite enviado para usuário, aguardando confirmação!");
+            } else {
+                redirectAttributes.addFlashAttribute("msg", "Usuário ja está na empresa!");
+            }
         }
         return mv;
     }

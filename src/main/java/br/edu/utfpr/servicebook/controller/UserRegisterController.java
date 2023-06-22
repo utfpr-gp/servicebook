@@ -107,6 +107,10 @@ public class UserRegisterController {
     @Autowired
     private UserTokenMapper userTokenMapper;
 
+    @Autowired
+    private CompanyProfessionalService companyProfessionalService;
+
+
     private String userRegistrationErrorForwarding(String step, UserDTO dto, Model model, BindingResult errors) {
         model.addAttribute("dto", dto);
         model.addAttribute("errors", errors.getAllErrors());
@@ -766,6 +770,8 @@ public class UserRegisterController {
         if(userToken.isPresent()){
             String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/confirmar?code=" + userTokenDTO1.getToken();
             quartzService.sendEmailWithConfirmationUser(userTokenDTO1.getEmail(), userToken.get().getName(), tokenLink);
+            UserToken userToken1 = userTokenService.findByUserToken(userTokenDTO1.getToken());
+            CompanyProfessional p = companyProfessionalService.save(new CompanyProfessional(userToken1.getUser(), oUser.get(), false));
         }
 
         redirectAttributes.addFlashAttribute("msg", "Usuário cadastrado com sucesso! Realize o login no Servicebook!");

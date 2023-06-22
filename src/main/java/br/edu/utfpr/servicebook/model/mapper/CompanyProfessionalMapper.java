@@ -23,7 +23,8 @@ public class CompanyProfessionalMapper {
         dto.setName(entity.getProfessional().getName());
         dto.setEmail(entity.getProfessional().getEmail());
         dto.setProfilePicture(entity.getProfessional().getProfilePicture());
-        dto.setIsConfirmed(String.valueOf(entity.getProfessional().isConfirmed()));
+//        dto.setConfirmed(entity.getProfessional().isConfirmed()));
+        dto.setIsConfirmed(String.valueOf(entity.isConfirmed()));
         return dto;
     }
 
