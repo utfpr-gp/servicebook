@@ -20,9 +20,28 @@
                             </div>
                         </c:if>
                         <h5 class="center edit-link tertiary-color-text"><a class="tertiary-color-text" href="#" id="editLink">Editar foto</a></h5>
+                        <form id="imageUploadForm" action="${pageContext.request.contextPath}/minha-conta/enviar-foto" method="POST" enctype="multipart/form-data">
+                            <input type="file" name="fileUpload" id="fileUpload" style="display: none;">
+                            <button type="submit" id="submitButton" style="display: none;"></button>
+                        </form>
 
-                        <!-- Campo de upload de arquivo -->
-                        <input type="file" name="fileUpload" id="fileUpload" style="display: none;">
+                        <script>
+                            let editLink = document.getElementById('editLink');
+                            let imageUploadForm = document.getElementById('imageUploadForm');
+                            let fileUpload = document.getElementById('fileUpload');
+                            let submitButton = document.getElementById('submitButton');
+
+                            editLink.addEventListener('click', (event) => {
+                                event.preventDefault();
+                                fileUpload.click();
+                            });
+
+                            fileUpload.addEventListener('change', () => {
+                                if (fileUpload.files.length > 0) {
+                                    submitButton.click();
+                                }
+                            });
+                        </script>
                     </div>
                     <div class="col s12 m8 center">
                         <h3 class="center secondary-color-text"><strong>${professional.name}</strong></h3>
@@ -85,23 +104,5 @@
                 </div>
             </div>
         </main>
-
-        <form id="imageUploadForm" style="display: none;">
-        </form>
-
-        <script>
-            let editLink = document.getElementById('editLink');
-            let imageUploadForm = document.getElementById('imageUploadForm');
-            let fileUpload = document.getElementById('fileUpload');
-
-            editLink.addEventListener('click', (event) => {
-                event.preventDefault();
-                fileUpload.click();
-            });
-
-            fileUpload.addEventListener('change', () => {
-                imageUploadForm.style.display = 'block';
-            });
-        </script>
     </jsp:body>
 </t:template>

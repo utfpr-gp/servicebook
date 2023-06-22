@@ -308,42 +308,39 @@ public class MyAccountController {
         return "redirect:/minha-conta/meu-email/{id}";
     }
 
-
-    @PostMapping("/atualizar-foto/{id}")
+    @PostMapping("/enviar-foto")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
-    public String updateProfilePicture(
-            @PathVariable Long id,
-            @RequestParam("profilePicture") MultipartFile profilePictureFile,
-            RedirectAttributes redirectAttributes) throws IOException {
+    public String uploadPhoto(
+            @RequestParam("fileUpload") MultipartFile file,
+            RedirectAttributes redirectAttributes
+    ) {
+        if (file.isEmpty()) {
+            redirectAttributes.addFlashAttribute("msgError", "Nenhuma foto foi selecionada!");
+            return "redirect:/minha-conta/perfil";
+        }
 
-        // ...
+        try {
+            Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
 
-        if (!profilePictureFile.isEmpty()) {
-            // Enviar a imagem para o Cloudinary
-            Map uploadResult = cloudinary.uploader().upload(profilePictureFile.getBytes(), ObjectUtils.emptyMap());
 
-            // Obter a URL da imagem enviada para o Cloudinary
-            String profilePictureUrl = (String) uploadResult.get("secure_url");
+            String imageUrl = (String) uploadResult.get("url");
 
-            // Verificar se o ID do usuário é válido
-            Optional<User> oUser = userService.findById(id);
-            if (oUser.isEmpty()) {
-                // Usuário não encontrado, lidar com o erro apropriadamente
-                redirectAttributes.addFlashAttribute("error", "Usuário não encontrado.");
-                return "redirect:/";
+            Optional<User> oUser = userService.findByEmail(authentication.getEmail());
+            if (!oUser.isPresent()) {
+                throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
             }
 
             User user = oUser.get();
-
-            // Atualizar o caminho da foto de perfil do usuário
-            user.setProfilePicture(profilePictureUrl);
+            user.setProfilePicture(imageUrl);
             userService.save(user);
+
+            redirectAttributes.addFlashAttribute("msg", "Foto enviada com sucesso!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("msgError", "Ocorreu um erro ao enviar a foto.");
         }
 
-        return "!";
+        return "redirect:/minha-conta/perfil";
     }
-
-    // ...
 }
 
 
