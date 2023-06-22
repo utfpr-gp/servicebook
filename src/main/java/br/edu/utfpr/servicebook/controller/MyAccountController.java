@@ -206,10 +206,9 @@ public class MyAccountController {
         UserDTO userDTO = userMapper.toDto(oUser.get());
 
         ModelAndView mv = new ModelAndView("professional/account/my-address");
-
-        CityMidDTO testeNovo = userDTO.getAddress().getCity();
-        System.out.println(testeNovo);
-        Optional<City> cities = this.cityService.findById(testeNovo.getId());
+        CityMidDTO cityMidDTO = userDTO.getAddress().getCity();
+        System.out.println(cityMidDTO);
+        Optional<City> cities = this.cityService.findById(cityMidDTO.getId());
         City cityUser = cities.get();
         mv.addObject("professional", userDTO);
         mv.addObject("city", cityUser);
