@@ -24,7 +24,7 @@
                             Será útil para filtrar serviços por região e de acordo com a distância
                             para o local de realização do serviço.
                         </h5>
-                        <form method="post" action="minha-conta/salvar-endereco/${professional.id}">
+                        <form method="post" action="${pageContext.request.contextPath}/minha-conta/salvar-endereco/${professional.id}">
                             <div class="row spacing-buttons">
                                 <div class="row">
                                     <div class="center">
