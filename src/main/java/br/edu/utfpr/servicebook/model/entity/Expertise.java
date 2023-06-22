@@ -1,5 +1,6 @@
 package br.edu.utfpr.servicebook.model.entity;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,7 +16,8 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Entity
-public class Expertise {
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Expertise implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

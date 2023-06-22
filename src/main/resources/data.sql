@@ -5,8 +5,6 @@ VALUES ('Paraná', 'PR'),
 INSERT INTO cities (path_image, name, state_id)
 VALUES ('https://i.imgur.com/qMKc4rf.png', 'Guarapuava', '1');
 
-
-
 INSERT INTO addresses (neighborhood, number, postal_code, street, city_id)
 VALUES ('Industrial', '800', '85053525', 'Avenida Professora Laura Pacheco Bastos', '1');
 
@@ -84,6 +82,10 @@ VALUES (1, 2, 1),
        (4, 2, 4),
        (2, 5, 4),
        (2, 4, 4);
+
+INSERT INTO services (name, description, expertise_id)
+VALUES ('Balanceamento', 'Balanceamento das rodas', 4),
+       ('Troca de óleo', 'Troca do óleo do motor', 4);
 
 INSERT INTO companies (cnpj, id)
 VALUES ('98.988.640/0001-91', 7);

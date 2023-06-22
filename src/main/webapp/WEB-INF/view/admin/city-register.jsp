@@ -23,6 +23,7 @@
 
                                 <!-- select de estados -->
                                 <select id="select-state" name="idState" >
+                                    <option disabled selected>Selecione um estado</option>
                                     <c:if test="${empty dto.idState}">
                                         <c:forEach var="state" items="${states}">
                                             <option value="${state.id}">${state.name}-${state.uf}</option>

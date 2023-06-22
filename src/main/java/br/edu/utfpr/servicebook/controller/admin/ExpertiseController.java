@@ -2,10 +2,11 @@ package br.edu.utfpr.servicebook.controller.admin;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.CategoryDTO;
-import br.edu.utfpr.servicebook.model.dto.CityDTO;
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
 import br.edu.utfpr.servicebook.model.entity.Category;
+import br.edu.utfpr.servicebook.model.entity.City;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
+import br.edu.utfpr.servicebook.model.entity.State;
 import br.edu.utfpr.servicebook.model.mapper.CategoryMapper;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.mapper.ProfessionalMapper;
@@ -98,6 +99,14 @@ public class ExpertiseController {
 
         ModelAndView mv = new ModelAndView("admin/expertise-register");
 
+        //lista de categorias
+        List<Category> categories = categoryService.findAll();
+        List<CategoryDTO> categoryDTOs = categories.stream()
+                .map(s -> categoryMapper.toDto(s))
+                .collect(Collectors.toList());
+        mv.addObject("categories", categoryDTOs);
+
+        //lista de especialidades
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
         Page<Expertise> expertisePage = expertiseService.findAll(pageRequest);
 
@@ -106,13 +115,9 @@ public class ExpertiseController {
                 .collect(Collectors.toList());
         mv.addObject("expertises", expertiseDTOs);
 
-        List<Category> categories = categoryService.findAll();
-        List<CategoryDTO> categoryDTOs = categories.stream()
-                .map(s -> categoryMapper.toDto(s))
-                .collect(Collectors.toList());
-
         PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(expertisePage);
         mv.addObject("pagination", paginationDTO);
+
         return mv;
     }
 
@@ -136,6 +141,11 @@ public class ExpertiseController {
             return errorFowarding(dto, errors);
         }
 
+        Optional<Category> oCategory = categoryService.findById(dto.getCategoryId());
+        if(!oCategory.isPresent()){
+            throw new EntityNotFoundException("A categoria não foi encontrada!");
+        }
+
         //cadastro
         if(dto.getId() == null){
             if(!isValidateImage(dto.getIcon())) {
@@ -143,7 +153,8 @@ public class ExpertiseController {
                 return errorFowarding(dto, errors);
             }
 
-            Optional<Expertise> oExpertise = expertiseService.findByName(dto.getName());
+            //verifica se já existe uma expertise com o mesmo nome e categoria
+            Optional<Expertise> oExpertise = expertiseService.findByNameAndCategory(dto.getName(), oCategory.get());
             if (oExpertise.isPresent()) {
                 errors.rejectValue("name", "error.dto", "A especialidade já está cadastrada!");
                 return errorFowarding(dto, errors);
@@ -173,7 +184,7 @@ public class ExpertiseController {
             Expertise expertise = oExistingExpertise.get();
 
             //verifica se o usuário mudou o nome para uma especialidade existente
-            Optional<Expertise> otherExpertise = expertiseService.findByName(dto.getName());
+            Optional<Expertise> otherExpertise = expertiseService.findByNameAndCategory(dto.getName(), oCategory.get());
             if (otherExpertise.isPresent()) {
                 if(expertise.getId() != otherExpertise.get().getId()) {
                     errors.rejectValue("name", "error.dto", "A especialidade já está cadastrada!");
@@ -205,8 +216,11 @@ public class ExpertiseController {
 
         // Salve a expertise atualizada
         Expertise expertise = expertiseMapper.toEntity(dto);
+        expertise.setCategory(oCategory.get());
         expertiseService.save(expertise);
+
         redirectAttributes.addFlashAttribute("msg", "A especialidade foi salva com sucesso!");
+
         return new ModelAndView("redirect:/a/especialidades");
     }
 
@@ -243,12 +257,6 @@ public class ExpertiseController {
         ExpertiseDTO expertiseDTO = expertiseMapper.toDto(oExpertise.get());
         mv.addObject("dto", expertiseDTO);
 
-//        String icon = oExpertise.get().getPathIcon();
-//        String[] urlExplode = icon.split("/");
-//        String idIcon = urlExplode[urlExplode.length-1];
-//
-//        mv.addObject("idIcon", idIcon);
-
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
         Page<Expertise> professionPage = expertiseService.findAll(pageRequest);
 
@@ -259,6 +267,13 @@ public class ExpertiseController {
 
         PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(professionPage, "/a/especialidades/" + id);
         mv.addObject("pagination", paginationDTO);
+
+        List<Category> categories = categoryService.findAll();
+        List<CategoryDTO> categoryDTOs = categories.stream()
+                .map(s -> categoryMapper.toDto(s))
+                .collect(Collectors.toList());
+        mv.addObject("categories", categoryDTOs);
+
         return mv;
     }
 
@@ -285,9 +300,18 @@ public class ExpertiseController {
 
     private ModelAndView errorFowarding(ExpertiseDTO dto, BindingResult errors) {
         ModelAndView mv = new ModelAndView("admin/expertise-register");
+
         mv.addObject("dto", dto);
         mv.addObject("errors", errors.getAllErrors());
 
+        //carrega as categorias
+        List<Category> categories = categoryService.findAll();
+        List<CategoryDTO> categoryDTOs = categories.stream()
+                .map(s -> categoryMapper.toDto(s))
+                .collect(Collectors.toList());
+        mv.addObject("categories", categoryDTOs);
+
+        //carrega as especialidades
         PageRequest pageRequest = PageRequest.of(0, 5);
         Page<Expertise> expertisePage = expertiseService.findAll(pageRequest);
 
@@ -296,6 +320,7 @@ public class ExpertiseController {
                 .collect(Collectors.toList());
         mv.addObject("expertises", expertiseDTOs);
 
+        //carrega a paginação
         PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(expertisePage);
         mv.addObject("pagination", paginationDTO);
 

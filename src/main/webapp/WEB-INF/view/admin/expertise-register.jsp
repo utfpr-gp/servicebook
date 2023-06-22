@@ -21,14 +21,37 @@
                             <form action="a/especialidades" method="post" enctype="multipart/form-data">
                                 <input name="id" type="hidden" value="${dto.id}">
 
+                                <select name="categoryId" >
+                                    <option disabled selected>Selecione uma categoria</option>
+                                    <c:if test="${empty dto.categoryId}">
+                                        <c:forEach var="category" items="${categories}">
+                                            <option value="${category.id}">${category.name}</option>
+                                        </c:forEach>
+                                    </c:if>
+
+                                    <c:if test="${not empty dto.categoryId}">
+                                        <c:forEach var="category" items="${categories}">
+                                            <c:if test="${dto.categoryId == category.id}">
+                                                <option value="${category.id}" selected>${category.name}</option>
+                                            </c:if>
+
+                                            <c:if test="${dto.categoryId != category.id}">
+                                                <option value="${category.id}">${category.name}</option>
+                                            </c:if>
+                                        </c:forEach>
+                                    </c:if>
+                                </select>
+
                                 <div class="input-field">
                                     <input placeholder="Pedreiro" type="text" id="autocomplete-input" name="name" value="${dto.name}">
                                     <label for="autocomplete-input">Especialidade</label>
                                 </div>
-                                <div class="input-field">
+
+                                <div class="input-field input-name-expertise">
                                     <textarea id="description" class="materialize-textarea" name="description" value="${dto.description}" placeholder="Realiza serviços de consertos em geral">${dto.description}</textarea>
                                     <label for="description">Descrição</label>
                                 </div>
+
                                 <div class="file-field input-field">
                                     <div class="btn">
                                         <span>Ícone</span>
@@ -95,29 +118,33 @@
                                 <table class="striped centered">
                                     <thead>
                                         <tr>
-                                            <th>#</th>
                                             <th>NOME</th>
-                                            <th>ICONE</th>
+                                            <th>CATEGORIA</th>
+                                            <th>ÍCONE</th>
                                             <th>EDITAR</th>
                                             <th>EXCLUIR</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    <c:forEach var="p" items="${expertises}">
-                                        <tr>
-                                            <td>${p.id}</td>
-                                            <td>${p.name}</td>
-                                            <td>
-                                                <img class="circle" src="${p.pathIcon}" height="24" width="24">
-                                            </td>
-                                            <td><a href="a/especialidades/${p.id}" class="btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">edit</i></a></td>
-                                            <td><a href="#modal-delete" class="btn-floating btn-small waves-effect waves-light red modal-trigger" data-url="${pageContext.request.contextPath}/a/especialidades/${p.id}" data-name="${p.name}"><i class="material-icons">delete_forever</i></a></td>
-                                        </tr>
-                                    </c:forEach>
+                                        <c:forEach var="p" items="${expertises}">
+                                            <tr>
+                                                <td>${p.name}</td>
+                                                <td>${p.categoryName}</td>
+                                                <td>
+                                                    <img class="circle" src="${p.pathIcon}" height="24" width="24">
+                                                </td>
+                                                <td><a href="a/especialidades/${p.id}" class="btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">edit</i></a></td>
+                                                <td><a href="#modal-delete" class="btn-floating btn-small waves-effect waves-light red modal-trigger" data-url="${pageContext.request.contextPath}/a/especialidades/${p.id}" data-name="${p.name}"><i class="material-icons">delete_forever</i></a></td>
+                                            </tr>
+                                        </c:forEach>
                                     </tbody>
                                 </table>
                             </c:if>
-                            <div class="center"><t:pagination pagination="${pagination}" relativePath="/a/especialidades"></t:pagination></div>
+                            <!-- Paginação -->
+                            <div class="center">
+                                <t:pagination pagination="${pagination}" relativePath="/a/especialidades"></t:pagination>
+                            </div>
+                            <!-- Fim Paginação -->
                         </div>
                         <!-- Fim Tabela de especialidades -->
                     </div>
