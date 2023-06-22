@@ -189,7 +189,6 @@ public class MyAccountController {
 //    teste rota endereço
     /**
      * Apresenta a tela de email do usuário.
-     * FIXME Depois de modificado, informar para o usuário fazer o login novamente.
      * @param id
      * @return
      * @throws IOException
