@@ -30,23 +30,26 @@ public class AddressService {
     }
 
     public void editAddress(Long id, HttpServletRequest request) {
-        Optional<User> oUser = this.userService.findById(id);
-        User user = oUser.get();
-        Optional<City> cities = this.cityService.findById(user.getAddress().getCity().getId());
-        City cityUser = cities.get();
-//        CityMidDTO cityUser = cityMapper.toMidDto(cities.get());
+        try {
+            Optional<User> oUser = this.userService.findById(id);
+            User user = oUser.get();
+            Optional<City> cities = this.cityService.findById(user.getAddress().getCity().getId());
+            City cityUser = cities.get();
+            Address addressEdit = new Address();
+            addressEdit.setNeighborhood(request.getParameter("neighborhood"));
+            addressEdit.setStreet(request.getParameter("street"));
+            addressEdit.setNumber(request.getParameter("number"));
+            addressEdit.setPostalCode(request.getParameter("postalCode").replaceAll("-", ""));
+            addressEdit.setCity(cityUser);
 
-        Address addressEdit = new Address();
-        addressEdit.setNeighborhood(request.getParameter("neighborhood"));
-        addressEdit.setStreet(request.getParameter("street"));
-        addressEdit.setNumber(request.getParameter("number"));
-        addressEdit.setPostalCode(request.getParameter("postalCode").replaceAll("-", ""));
-        addressEdit.setCity(cityUser);
-
-        if (!compareAddres(addressEdit, user.getAddress())) {
-            user.setAddress(addressEdit);
-            this.userService.save(user);
+            if (!compareAddres(addressEdit, user.getAddress())) {
+                user.setAddress(addressEdit);
+                this.userService.save(user);
+            }
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
         }
+
     }
 
 }

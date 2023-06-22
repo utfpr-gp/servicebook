@@ -7,6 +7,16 @@
 
         <main>
             <div class="container">
+                <c:if test="${not empty msg}">
+                    <div class="container">
+                        <div class="col s6">
+                            <div class="card-panel green lighten-1 msg-view center-align">
+                                <span class="white-text">${msg}</span>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
+
                 <c:if test="${not empty errors}">
                     <div class="card-panel red">
                         <c:forEach var="e" items="${errors}">

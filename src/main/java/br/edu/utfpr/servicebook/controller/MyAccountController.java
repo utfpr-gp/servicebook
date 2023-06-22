@@ -232,27 +232,10 @@ public class MyAccountController {
             HttpServletRequest request,
             RedirectAttributes redirectAttributes)
             throws IOException {
-//        System.out.println("realmente um teste aqui");
-        Optional<User> oUser = this.userService.findById(id);
-//        User user = oUser.get();
-//        Optional<City> cities = this.cityService.findById(user.getAddress().getCity().getId());
-//        City cityUser = cities.get();
-////        CityMidDTO cityUser = cityMapper.toMidDto(cities.get());
-//
-//        Address addressEdit = new Address();
-//        AddressFullDTO addressEditFullDTO = new AddressFullDTO();
-//        addressEdit.setNeighborhood(request.getParameter("neighborhood"));
-//        addressEdit.setStreet(request.getParameter("street"));
-//        addressEdit.setNumber(request.getParameter("number"));
-//        addressEdit.setPostalCode(request.getParameter("postalCode"));
-//        addressEdit.setCity(cityUser);
-//        user.setAddress(addressEdit);
-//        this.userService.save(user);
         this.addressService.editAddress(id, request);
 
-        redirectAttributes.addFlashAttribute("msg", "Email salvo com sucesso!");
+        redirectAttributes.addFlashAttribute("msg", "Endereço editado com sucesso");
 
-        //return "redirect:/logout";
         return "redirect:/minha-conta/meu-endereco/{id}";
     }
 
