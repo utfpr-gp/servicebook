@@ -54,7 +54,7 @@ public class CategoryController {
                                  @RequestParam(value = "ord", defaultValue = "name") String order,
                                  @RequestParam(value = "dir", defaultValue = "ASC") String direction){
 
-        ModelAndView mv = new ModelAndView("admin/category");
+        ModelAndView mv = new ModelAndView("admin/category-register");
 
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
         Page<Category> categoryPage = categoryService.findAll(pageRequest);
@@ -140,7 +140,7 @@ public class CategoryController {
                                           @RequestParam(value = "ord", defaultValue = "name") String order,
                                           @RequestParam(value = "dir", defaultValue = "ASC") String direction){
 
-        ModelAndView mv = new ModelAndView("admin/category");
+        ModelAndView mv = new ModelAndView("admin/category-register");
 
         if(id < 0){
             throw new InvalidParamsException("O identificador não pode ser negativo.");
@@ -190,7 +190,7 @@ public class CategoryController {
     }
 
     private ModelAndView errorFowarding(CategoryDTO dto, BindingResult errors) {
-        ModelAndView mv = new ModelAndView("admin/category");
+        ModelAndView mv = new ModelAndView("admin/category-register");
         mv.addObject("dto", dto);
         mv.addObject("errors", errors.getAllErrors());
 

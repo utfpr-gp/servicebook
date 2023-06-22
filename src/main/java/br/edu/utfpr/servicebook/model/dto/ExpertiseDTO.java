@@ -29,4 +29,7 @@ public class ExpertiseDTO implements Serializable {
     private MultipartFile icon;
 
     private String pathIcon;
+
+//    @NotNull(message = "O nome da categoria é obrigatório")
+//    private Long cagtegoryId;
 }

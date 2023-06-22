@@ -19,10 +19,12 @@
                         <div class="col s12 l6 offset-l3 spacing-buttons">
                             <form action="a/categorias" method="post" enctype="multipart/form-data">
                                 <input name="id" type="hidden" value="${dto.id}">
+
                                 <div class="input-field">
                                     <input placeholder="Reformas e reparos" type="text" id="autocomplete-input" name="name" value="${dto.name}">
                                     <label for="autocomplete-input">Categoria</label>
                                 </div>
+
                                 <div class="right">
                                     <button class="waves-effect waves-light btn" type="submit">Salvar</button>
                                 </div>
@@ -87,7 +89,7 @@
                                     </tbody>
                                 </table>
                             </c:if>
-                            <div class="center"><t:pagination pagination="${pagination}" relativePath="a/categorias"></t:pagination></div>
+                            <div class="center"><t:pagination pagination="${pagination}" relativePath="/a/categorias"></t:pagination></div>
                         </div>
                     </div>
                 </div>

@@ -20,6 +20,7 @@
                         <div class="col s12 l6 offset-l3 spacing-buttons">
                             <form action="a/especialidades" method="post" enctype="multipart/form-data">
                                 <input name="id" type="hidden" value="${dto.id}">
+
                                 <div class="input-field">
                                     <input placeholder="Pedreiro" type="text" id="autocomplete-input" name="name" value="${dto.name}">
                                     <label for="autocomplete-input">Especialidade</label>

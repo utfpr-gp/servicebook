@@ -1,17 +1,17 @@
 package br.edu.utfpr.servicebook.controller.admin;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
+import br.edu.utfpr.servicebook.model.dto.CategoryDTO;
 import br.edu.utfpr.servicebook.model.dto.CityDTO;
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
+import br.edu.utfpr.servicebook.model.entity.Category;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
+import br.edu.utfpr.servicebook.model.mapper.CategoryMapper;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.mapper.ProfessionalMapper;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
-import br.edu.utfpr.servicebook.service.ExpertiseService;
-import br.edu.utfpr.servicebook.service.IndividualService;
-import br.edu.utfpr.servicebook.service.JobContractedService;
-import br.edu.utfpr.servicebook.service.ProfessionalExpertiseService;
+import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import br.edu.utfpr.servicebook.util.TemplateUtil;
@@ -59,6 +59,9 @@ public class ExpertiseController {
     private ExpertiseMapper expertiseMapper;
 
     @Autowired
+    private CategoryMapper categoryMapper;
+
+    @Autowired
     private ProfessionalExpertiseService professionalExpertiseService;
 
     @Autowired
@@ -82,6 +85,9 @@ public class ExpertiseController {
     @Autowired
     private PaginationUtil paginationUtil;
 
+    @Autowired
+    private CategoryService categoryService;
+
     @GetMapping
     @RolesAllowed({RoleType.ADMIN})
     public ModelAndView showForm(HttpServletRequest request,
@@ -99,6 +105,11 @@ public class ExpertiseController {
                 .map(s -> expertiseMapper.toDto(s))
                 .collect(Collectors.toList());
         mv.addObject("expertises", expertiseDTOs);
+
+        List<Category> categories = categoryService.findAll();
+        List<CategoryDTO> categoryDTOs = categories.stream()
+                .map(s -> categoryMapper.toDto(s))
+                .collect(Collectors.toList());
 
         PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(expertisePage);
         mv.addObject("pagination", paginationDTO);
