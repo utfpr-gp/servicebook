@@ -22,6 +22,7 @@ public class WebSecurityConfig {
 
     private static final String[] PUBLIC_URLS = {
             "/",
+            "/**",
             "/assets/**",
             "/images/**",
             "/login"
