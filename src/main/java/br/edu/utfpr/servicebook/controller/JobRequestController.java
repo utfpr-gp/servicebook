@@ -90,11 +90,8 @@ public class JobRequestController {
     @Autowired
     private IAuthentication authentication;
 
-    @Value("${X_RAPIDAPI_KEY}")
-    private String rapidapiKey;
-
-    @Value("${X_RAPIDAPI_HOST}")
-    private String rapidapiHots;
+    @Autowired
+    private ModerateService moderateService;
 
     public enum RequestDateSelect{
         today(0), tomorrow(1) , thisweek(2), nextweek(3), thismonth(4), nextmonth(5);
@@ -275,7 +272,7 @@ public class JobRequestController {
             Map data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "jobs"));
 
             //realiza a moderação da imagem
-            if(nsfwFilter((String)data.get("url"))){
+            if(moderateService.nsfwFilter((String)data.get("url"))){
                 String publicId = (String) data.get("public_id");
                 cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
                 redirectAttributes.addFlashAttribute("msg", "A imagem enviada contém conteúdo impróprio. Por favor, envie outra foto.");
@@ -415,53 +412,6 @@ public class JobRequestController {
         return "redirect:/minha-conta/profissional#disponiveis";
     }
 
-    /**
-     * Verifica se a imagem que acessível via URL apresenta conteúdo NSFW (Not Safe For Work).
-     * @param imageUrl
-     * @return
-     */
-    public boolean nsfwFilter(String imageUrl) {
-        RestTemplate restTemplate = new RestTemplate();
 
-        String apiUrl = "https://nsfw-image-classification1.p.rapidapi.com/img/nsfw";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("X-Rapidapi-Key", rapidapiKey);
-        headers.set("X-Rapidapi-Host", rapidapiHots);
-
-        String requestBody = "{\"url\": \"" + imageUrl + "\"}";
-
-        HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
-
-        try {
-            ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.POST, requestEntity, String.class);
-
-            if (response.getStatusCode().is2xxSuccessful()) {
-                String responseBody = response.getBody();
-                String subtexto = responseBody.substring(14, 18);
-                float numeroFloat = Float.parseFloat(subtexto);
-
-                System.out.println("Resposta da API: " + subtexto);
-                if (numeroFloat > 0.5) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                System.out.println("A requisição falhou com o código de status: " + response.getStatusCode());
-            }
-        } catch (HttpClientErrorException e) {
-            // Captura uma exceção caso ocorra um erro 400 na api
-            System.out.println("Erro de cliente: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
-        } catch (HttpServerErrorException e) {
-            // Captura uma exceção caso ocorra um erro 500 na api
-            System.out.println("Erro de servidor: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
-        } catch (Exception e) {
-            System.out.println("A requisição falhou: " + e.getMessage());
-        }
-
-        // Retorna false caso ocorra algum erro na requisição
-        return false;
-    }
 }
