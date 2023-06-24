@@ -9,13 +9,19 @@ import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
+import br.edu.utfpr.servicebook.util.PhoneNumberVerificationService;
 import br.edu.utfpr.servicebook.util.UserTemplateInfo;
 import br.edu.utfpr.servicebook.util.TemplateUtil;
+import br.edu.utfpr.servicebook.util.UserWizardUtil;
+import com.twilio.Twilio;
+import com.twilio.rest.verify.v2.service.VerificationCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +32,12 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
+
+import static com.twilio.example.ValidationExample.ACCOUNT_SID;
+import static com.twilio.example.ValidationExample.AUTH_TOKEN;
 
 @RequestMapping("/minha-conta")
 @Controller
@@ -35,6 +45,9 @@ public class MyAccountController {
 
     public static final Logger log =
             LoggerFactory.getLogger(MyAccountController.class);
+
+    @Autowired
+    private UserWizardUtil userWizardUtil;
 
     @Autowired
     private IndividualService individualService;
@@ -72,6 +85,21 @@ public class MyAccountController {
     @Autowired
     private TemplateUtil templateUtil;
 
+    @Value("${twilio.account.sid}")
+    private String twilioAccountSid;
+
+    @Value("${twilio.auth.token}")
+    private String twilioAuthToken;
+
+    @Value("${twilio.verify.service.sid}")
+    private String twilioVerifyServiceSid;
+
+    private String userSmsErrorForwarding(String step, UserSmsDTO dto, Model model, BindingResult errors) {
+        model.addAttribute("dto", dto);
+        model.addAttribute("errors", errors.getAllErrors());
+
+       return "redirect:/minha-conta/meu-contato/{id}";
+    }
     @GetMapping
     public String home(HttpServletRequest request) {
         return "redirect:/minha-conta/cliente";
@@ -186,6 +214,25 @@ public class MyAccountController {
         return mv;
     }
 
+    @GetMapping("/meu-contato/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public ModelAndView showMyContactPhone(@PathVariable Long id) throws IOException {
+        Optional<User> oUser = this.userService.findById(id);
+
+        if (!oUser.isPresent()) {
+            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        UserDTO userDTO = userMapper.toDto(oUser.get());
+
+        ModelAndView mv = new ModelAndView("professional/account/my-contact-phone");
+
+        mv.addObject("professional", userDTO);
+
+        return mv;
+    }
+
+
     /**
      * FIXME Ao mudar o email, fazer logout para o usuário logar novamente, aí com o novo email
      * @param id
@@ -246,6 +293,44 @@ public class MyAccountController {
         return "redirect:/minha-conta/meu-email/{id}";
     }
 
+    @PostMapping("/salvar-contato/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public String saveContactNumber(
+            @PathVariable Long id,
+            HttpServletRequest request,
+            RedirectAttributes redirectAttributes)
+            throws IOException {
+
+        Optional<User> oUser = this.userService.findByEmail(authentication.getEmail());
+
+        if(!oUser.isPresent()) {
+            throw new EntityNotFoundException("Profissional não encontrado pelas informações fornecidas.");
+        }
+
+        User user = oUser.get();
+
+        String phoneNumber = request.getParameter("phoneNumber");
+        Optional<User> oOtherUser = userService.findByPhoneNumber(phoneNumber);
+
+        if (oOtherUser.isPresent()){
+            redirectAttributes.addFlashAttribute("msgError", "Telefone já cadastrado! Por favor, insira um telefone não cadastrado!");
+            return "redirect:/minha-conta/meu-contato/{id}";
+        }
+
+        user.setPhoneNumber(phoneNumber);
+        user.setPhoneVerified(false);
+        this.userService.save(user);
+
+        PhoneNumberVerificationService phoneNumberVerificationService = new PhoneNumberVerificationService(twilioAccountSid, twilioAuthToken, twilioVerifyServiceSid, phoneNumber);
+        phoneNumberVerificationService.sendSMSToVerification();
+
+
+        redirectAttributes.addFlashAttribute("msg", "Telefone salvo com sucesso!");
+
+        //return "redirect:/logout";
+        return "redirect:/minha-conta/meu-contato/{id}";
+    }
+
     @PostMapping("/validar-email/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String saveUserEmailCode(
@@ -286,5 +371,48 @@ public class MyAccountController {
 
         return "redirect:/minha-conta/meu-email/{id}";
     }
+
+    @PostMapping("/validar-telefone/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public String saveUserPhoneCode(
+            @PathVariable Long id,
+            @Validated(UserCodeDTO.RequestUserCodeInfoGroupValidation.class) UserCodeDTO dto,
+            BindingResult errors,
+            RedirectAttributes redirectAttributes
+    )  {
+
+        Optional<Individual> oProfessional = this.individualService.findById(id);
+
+        if(!oProfessional.isPresent()) {
+            throw new EntityNotFoundException("Profissional não encontrado pelas informações fornecidas.");
+        }
+
+        Individual professional = oProfessional.get();
+
+        String phoneNumber = professional.getPhoneNumber();
+
+        PhoneNumberVerificationService phoneNumberVerificationService = new PhoneNumberVerificationService(twilioAccountSid, twilioAuthToken, twilioVerifyServiceSid, phoneNumber);
+
+        try {
+            phoneNumberVerificationService.verify(dto.getCode());
+        } catch (Exception e) {
+            errors.rejectValue("code", "error.dto", "Não foi possível verificar seu telefone no momento. Continue com o seu cadastro e tente novamente mais tarde.");
+        }
+
+        professional.setPhoneVerified(true);
+
+        Optional<User> oUser = userService.findByPhoneNumber(phoneNumber);
+
+        if(oUser.isPresent()) {
+            User user = oUser.get();
+            user.setPhoneVerified(false);
+            userService.save(user);
+        }
+
+        redirectAttributes.addFlashAttribute("msg", "Telefone verificado com sucesso!");
+
+        return "redirect:/minha-conta/meu-contato/{id}";
+    }
+
 }
 
