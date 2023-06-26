@@ -286,5 +286,56 @@ public class MyAccountController {
 
         return "redirect:/minha-conta/meu-email/{id}";
     }
+
+    @GetMapping("/minha-senha/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public ModelAndView showMyPassword(@PathVariable Long id) throws IOException {
+        Optional<User> oUser = this.userService.findById(id);
+
+        if (!oUser.isPresent()) {
+            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        UserDTO userDTO = userMapper.toDto(oUser.get());
+
+        ModelAndView mv = new ModelAndView("professional/account/my-password");
+
+        mv.addObject("professional", userDTO);
+
+        return mv;
+    }
+
+    @PostMapping("/salvar-senha/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public String savePassword(
+            @PathVariable Long id,
+            HttpServletRequest request,
+            RedirectAttributes redirectAttributes)
+            throws IOException {
+
+        Optional<User> oUser = this.userService.findByEmail(authentication.getEmail());
+
+        if(!oUser.isPresent()) {
+            throw new EntityNotFoundException("Profissional não encontrado pelas informações fornecidas.");
+        }
+
+        User user = oUser.get();
+
+        String newPassword = request.getParameter("new-password");
+        String repeatPassword = request.getParameter("repeat-password");
+
+        if(!newPassword.equals(repeatPassword)){
+            redirectAttributes.addFlashAttribute("msgError", "As senhas não correspondem. Por favor, tente novamente.");
+            return "redirect:/minha-conta/minha-senha/{id}";
+        }
+
+        user.setPassword(newPassword);
+        this.userService.save(user);
+
+        redirectAttributes.addFlashAttribute("msg", "Senha salva com sucesso!");
+
+        //return "redirect:/logout";
+        return "redirect:/minha-conta/minha-senha/{id}";
+    }
 }
 
