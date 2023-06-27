@@ -1,10 +1,7 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.dto.*;
-import br.edu.utfpr.servicebook.model.entity.City;
-import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.model.entity.User;
-import br.edu.utfpr.servicebook.model.entity.UserCode;
+import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
@@ -17,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,6 +24,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -77,8 +76,12 @@ public class MyAccountController {
         return "redirect:/minha-conta/cliente";
     }
 
+    @Autowired
+    private CompanyService companyService;
+
     /**
      * Mostra a tela de perfil do usuário.
+     *
      * @return
      * @throws IOException
      */
@@ -116,6 +119,7 @@ public class MyAccountController {
     /**
      * Mostra a tela de edição do anúncio geral do profissional.
      * Esta descrição aparecerá no portfólio público do profissional.
+     *
      * @param id
      * @return
      * @throws IOException
@@ -149,7 +153,7 @@ public class MyAccountController {
 
         Optional<User> oUser = this.userService.findByEmail(authentication.getEmail());
 
-        if(!oUser.isPresent()) {
+        if (!oUser.isPresent()) {
             throw new EntityNotFoundException("Profissional não encontrado pelo id informado.");
         }
 
@@ -164,6 +168,7 @@ public class MyAccountController {
     /**
      * Apresenta a tela de email do usuário.
      * FIXME Depois de modificado, informar para o usuário fazer o login novamente.
+     *
      * @param id
      * @return
      * @throws IOException
@@ -188,6 +193,7 @@ public class MyAccountController {
 
     /**
      * FIXME Ao mudar o email, fazer logout para o usuário logar novamente, aí com o novo email
+     *
      * @param id
      * @param request
      * @param redirectAttributes
@@ -204,7 +210,7 @@ public class MyAccountController {
 
         Optional<User> oUser = this.userService.findByEmail(authentication.getEmail());
 
-        if(!oUser.isPresent()) {
+        if (!oUser.isPresent()) {
             throw new EntityNotFoundException("Profissional não encontrado pelas informações fornecidas.");
         }
 
@@ -213,7 +219,7 @@ public class MyAccountController {
         String email = request.getParameter("email");
         Optional<User> oOtherUser = userService.findByEmail(email);
 
-        if (oOtherUser.isPresent()){
+        if (oOtherUser.isPresent()) {
             redirectAttributes.addFlashAttribute("msgError", "Email já cadastrado! Por favor, insira um email não cadastrado!");
             return "redirect:/minha-conta/meu-email/{id}";
         }
@@ -242,7 +248,6 @@ public class MyAccountController {
 
         redirectAttributes.addFlashAttribute("msg", "Email salvo com sucesso!");
 
-        //return "redirect:/logout";
         return "redirect:/minha-conta/meu-email/{id}";
     }
 
@@ -262,7 +267,7 @@ public class MyAccountController {
 
         Optional<Individual> oProfessional = this.individualService.findById(id);
 
-        if(!oProfessional.isPresent()) {
+        if (!oProfessional.isPresent()) {
             throw new EntityNotFoundException("Profissional não encontrado pelas informações fornecidas.");
         }
 
@@ -285,6 +290,87 @@ public class MyAccountController {
         redirectAttributes.addFlashAttribute("msg", "Email verificado com sucesso!");
 
         return "redirect:/minha-conta/meu-email/{id}";
+    }
+
+    /**
+     * Mostra a tela de edição das informações pessoais do profissional.
+     *
+     * @param id
+     * @return
+     * @throws IOException
+     */
+    @GetMapping("/informacoes-pessoais/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public ModelAndView showMyPersonalData(@PathVariable Long id) throws IOException {
+
+        Optional<User> oUser = this.userService.findByEmail(authentication.getEmail());
+
+        if (oUser.isEmpty()) {
+            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        User user = oUser.get();
+        UserDTO userDTO = userMapper.toDto(user);
+
+        UserTemplateInfo templateInfo = templateUtil.getUserInfo(user);
+
+        ModelAndView mv = new ModelAndView("professional/account/my-personal-data");
+        mv.addObject("userDTO", userDTO);
+        mv.addObject("userInfo", templateInfo);
+
+        return mv;
+    }
+
+    @PatchMapping("/cadastra-informacoes-pessoais/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public ModelAndView updateMyPersonalData(
+            @PathVariable Long id,
+            @Valid UserDTO userDTO,
+            @Valid IndividualDTO individualDTO,
+//            @Validated CompanyDTO companyDTO,
+            Errors errors,
+            HttpServletRequest request,
+            RedirectAttributes redirectAttributes
+    ) throws IOException {
+
+        Optional<User> oUser = this.userService.findByEmail(authentication.getEmail());
+
+        if (oUser.isEmpty()) {
+            throw new EntityNotFoundException("Profissional não encontrado pelo id informado.");
+        }
+
+        Optional<Individual> oInvididual = this.individualService.findById(id);
+
+        if (errors.hasErrors()) {
+            ModelAndView mv = new ModelAndView("professional/account/my-personal-data");
+            mv.addObject("userDTO", userDTO);
+            mv.addObject("errors", errors.getAllErrors());
+
+            return mv;
+        }
+
+        //Optional<Company> oCompany = this.companyService.findById(id);
+
+        //Atualiza user
+        User user = oUser.get();
+        user.setName(userDTO.getName());
+
+        // Atualiza individual
+        Individual individual = oInvididual.get();
+        individual.setCpf(individualDTO.getCpf());
+
+        individual.setBirthDate(individualDTO.getBirthDate());
+
+        // Company company = oCompany.get();
+        //company.setCnpj(companyDTO.getCnpj());
+
+        this.userService.save(user);
+        this.individualService.save(individual);
+        // this.companyService.save(company);
+
+        redirectAttributes.addFlashAttribute("msg", "Informações pessoais atualizadas com sucesso!");
+
+        return new ModelAndView("redirect:/minha-conta/informacoes-pessoais/{id}");
     }
 }
 
