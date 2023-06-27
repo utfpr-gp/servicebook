@@ -21,7 +21,7 @@ public class CityMapper {
 
     public CityDTO toResponseDto(City entity) {
         CityDTO dto = mapper.map(entity, CityDTO.class);
-        dto.setName(entity.getName());
+        dto.setIdState(entity.getState().getId());
         return dto;
     }
 

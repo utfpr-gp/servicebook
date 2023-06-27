@@ -93,13 +93,38 @@
             </ul>
         </sec:authorize>
 
-        <ul id="nav-mobile" class="sidenav">
-            <li><a class="menu-itens" href="passo-1">ANUNCIAR</a></li>
-            <li><a href="minha-conta/profissional">Sou profissional</a></li>
-            <li><a href="minha-conta">Sou empresa</a></li>
-            <li><a class="menu-itens" href="logout">SAIR</a></li>
-        </ul>
-
+        <!-- sidenav -->
+        <!-- usuário logado -->
+        <sec:authorize access="isAuthenticated()">
+            <c:choose>
+                <c:when test="${fn:contains(currenturl, '/minha-conta/cliente')}">
+                    <div id="nav-mobile" class="sidenav">
+                        <t:side-panel userInfo="${userInfo}" followdto="${followdto}" statisticInfo="${statisticInfo}"></t:side-panel>
+                    </div>
+                </c:when>
+                <c:when test="${fn:contains(currenturl, '/minha-conta/profissional')}">
+                    <div id="nav-mobile" class="sidenav">
+                        <t:side-panel userInfo="${userInfo}" followdto="${followdto}" statisticInfo="${statisticInfo}"></t:side-panel>
+                    </div>
+                </c:when>
+                <c:when test="${fn:contains(currenturl, '/minha-conta/empresa')}">
+                    <ul id="nav-mobile" class="sidenav">
+                        <li><a class="menu-itens" href="passo-1">ANUNCIAR</a></li>
+                        <li><a href="minha-conta/profissional">Sou profissional</a></li>
+                        <li><a href="minha-conta">Sou empresa</a></li>
+                        <li><a class="menu-itens" href="logout">SAIR</a></li>
+                    </ul>
+                </c:when>
+                <c:otherwise>
+                    <ul id="nav-mobile" class="sidenav">
+                        <li><a class="menu-itens" href="passo-1">ANUNCIAR</a></li>
+                        <li><a href="minha-conta/profissional">Sou profissional</a></li>
+                        <li><a href="minha-conta">Sou empresa</a></li>
+                        <li><a class="menu-itens" href="logout">SAIR</a></li>
+                    </ul>
+                </c:otherwise>
+            </c:choose>
+        </sec:authorize>
         <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
     </div>
 </nav>
@@ -126,6 +151,14 @@
     function rolar(objID) {
         this.location = "#" + objID;
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        let elems = document.querySelectorAll('.dropdown-trigger');
+        console.log((elems))
+        let t = M.Dropdown.init(elems, {
+            coverTrigger:false,
+        });
+    });
 </script>
 
 </body>

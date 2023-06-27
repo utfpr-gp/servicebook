@@ -13,7 +13,7 @@
 
                         <select id="select-city" class="white-text select-city">
                             <c:forEach var="city" items="${cities}">
-                                <option value="${city.image}">${city.name} - ${city.state.uf}</option>
+                                <option value="${city.pathImage}">${city.name} - ${city.state.uf}</option>
                             </c:forEach>
                         </select>
                     </div>
@@ -25,7 +25,7 @@
     </div>
     <div class="parallax">
         <c:if test="${not empty cities}">
-            <img id="img-city" src="${cities[0].image}" alt="Imagem das cidades">
+            <img id="img-city" src="${cities[0].pathImage}" alt="Imagem das cidades">
         </c:if>
         <c:if test="${empty cities}">
             <img id="img-city" src="assets/resources/images/default.jpeg" alt="Imagem das cidades">
