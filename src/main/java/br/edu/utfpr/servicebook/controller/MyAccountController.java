@@ -84,6 +84,9 @@ public class MyAccountController {
     @Autowired
     private Cloudinary cloudinary;
 
+    @Autowired
+    private ModerateService moderateService;
+
     @GetMapping
     public String home(HttpServletRequest request) {
         return "redirect:/minha-conta/cliente";
@@ -324,6 +327,13 @@ public class MyAccountController {
 
 
             String imageUrl = (String) uploadResult.get("url");
+
+            if(moderateService.nsfwFilter(imageUrl)){
+                String publicId = (String) uploadResult.get("public_id");
+                cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+                redirectAttributes.addFlashAttribute("msgError", "A imagem enviada contém conteúdo impróprio. Por favor, envie outra foto.");
+                return "redirect:/minha-conta/perfil";
+            }
 
             Optional<User> oUser = userService.findByEmail(authentication.getEmail());
             if (!oUser.isPresent()) {

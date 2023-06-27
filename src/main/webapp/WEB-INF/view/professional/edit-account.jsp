@@ -6,6 +6,24 @@
 <t:template title="Editar perfil">
     <jsp:body>
         <main class="container">
+            <c:if test="${not empty msgError}">
+                <div class="row">
+                    <div class="col s12">
+                        <div class="card-panel red lighten-1 msg-view center-align">
+                            <span class="white-text">${msgError}</span>
+                        </div>
+                    </div>
+                </div>
+            </c:if>
+            <c:if test="${not empty msg}">
+                <div class="row">
+                    <div class="col s12">
+                        <div class="card-panel green lighten-1 msg-view center-align">
+                            <span class="white-text">${msg}</span>
+                        </div>
+                    </div>
+                </div>
+            </c:if>
             <div class="row primary-background-color">
                 <div class="row">
                     <div class="col s12 m4 center">
