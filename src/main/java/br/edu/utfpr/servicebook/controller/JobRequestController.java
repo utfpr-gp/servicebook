@@ -2,7 +2,6 @@ package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
-import br.edu.utfpr.servicebook.model.dto.IndividualDTO;
 import br.edu.utfpr.servicebook.model.dto.JobRequestDTO;
 import br.edu.utfpr.servicebook.model.dto.ProfessionalSearchItemDTO;
 import br.edu.utfpr.servicebook.model.entity.*;
@@ -14,12 +13,11 @@ import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.DateUtil;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
-import br.edu.utfpr.servicebook.util.TemplateUtil;
-import br.edu.utfpr.servicebook.util.UserTemplateInfo;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,6 +28,11 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -88,8 +91,7 @@ public class JobRequestController {
     private IAuthentication authentication;
 
     @Autowired
-    private TemplateUtil templateUtil;
-
+    private ModerateService moderateService;
 
     public enum RequestDateSelect{
         today(0), tomorrow(1) , thisweek(2), nextweek(3), thismonth(4), nextmonth(5);
@@ -110,14 +112,13 @@ public class JobRequestController {
     @PermitAll
     public String showWizard(@RequestParam(value = "passo", required = false, defaultValue = "1") Long step,
                              HttpSession httpSession,
-                             Model model) throws Exception {
+                             Model model) {
         log.debug("Mostrando o passo {}", step);
         if(step < 1 || step > 8){
             step = 1L;
         }
         JobRequestDTO dto = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         model.addAttribute("dto", dto);
-        model.addAttribute("individualInfo", this.getSidePanelUser());
 
         if(step == 1L){
             List<Expertise> expertise = expertiseService.findAll();
@@ -132,7 +133,7 @@ public class JobRequestController {
 
     @PostMapping("/passo-1")
     @PermitAll
-    public String saveFormRequestedJob(HttpSession httpSession, @Validated(JobRequestDTO.RequestExpertiseGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model) throws Exception {
+    public String saveFormRequestedJob(HttpSession httpSession, @Validated(JobRequestDTO.RequestExpertiseGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model){
         Optional<Expertise> oExpertise = null;
 
         if(dto.getExpertiseId() != null) {
@@ -145,7 +146,6 @@ public class JobRequestController {
         if(errors.hasErrors()){
             model.addAttribute("dto", dto);
             model.addAttribute("errors", errors.getAllErrors());
-            model.addAttribute("individualInfo", this.getSidePanelUser());
 
             List<Expertise> expertises = expertiseService.findAll();
             List<ExpertiseDTO> expertiseDTOs = expertises.stream()
@@ -167,20 +167,20 @@ public class JobRequestController {
 
     @PostMapping("/passo-2")
     @PermitAll
-    public String saveFormDateJob(HttpSession httpSession, @Validated(JobRequestDTO.RequestExpirationGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model) throws Exception {
+    public String saveFormDateJob(HttpSession httpSession, @Validated(JobRequestDTO.RequestExpirationGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model){
 
 
         if(errors.hasErrors()){
             model.addAttribute("dto", dto);
             model.addAttribute("errors", errors.getAllErrors());
-            model.addAttribute("individualInfo", this.getSidePanelUser());
             log.debug("Passo 2 {}", dto);
             log.debug("Errors 2 {}", errors);
             return "client/job-request/wizard-step-02";
 
         }
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
-        System.out.println("dto.getDateProximity()" + dto.getDateProximity());
+
+
         if(dto.getDateProximity() == RequestDateSelect.today.value){
             //Hoje
             log.debug("HOJE: {}", sessionDTO);
@@ -211,18 +211,17 @@ public class JobRequestController {
             log.debug("Proximo Mês: {}", sessionDTO);
             sessionDTO.setDateTarget(DateUtil.getNextMonth());
         }
-        sessionDTO.setDateTarget(DateUtil.getToday());
+        sessionDTO.setDateCreated(DateUtil.getToday());
         log.debug("Passo 2 {}", sessionDTO);
         return "redirect:/requisicoes?passo=3";
 
     }
     @PostMapping("/passo-3")
     @PermitAll
-    public String saveFormMaxCandidates(HttpSession httpSession, @Validated(JobRequestDTO.RequestMaxCandidatesGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model) throws Exception {
+    public String saveFormMaxCandidates(HttpSession httpSession, @Validated(JobRequestDTO.RequestMaxCandidatesGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model){
         if(errors.hasErrors()){
             model.addAttribute("dto", dto);
             model.addAttribute("errors", errors.getAllErrors());
-            model.addAttribute("individualInfo", this.getSidePanelUser());
             log.debug("Passo 3 {}", dto);
             log.debug("Errors 3 {}", errors);
             return "client/job-request/wizard-step-03";
@@ -239,12 +238,11 @@ public class JobRequestController {
 
     @PostMapping("/passo-4")
     @PermitAll
-    public String saveFormDescription(HttpSession httpSession, @Validated(JobRequestDTO.RequestDescriptionGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model) throws Exception {
+    public String saveFormDescription(HttpSession httpSession, @Validated(JobRequestDTO.RequestDescriptionGroupValidation.class) JobRequestDTO dto, BindingResult errors, RedirectAttributes redirectAttributes, Model model){
 
         if(errors.hasErrors()){
             model.addAttribute("dto", dto);
             model.addAttribute("errors", errors.getAllErrors());
-            model.addAttribute("individualInfo", this.getSidePanelUser());
             log.debug("Passo 4 {}", dto);
             log.debug("Errors 4 {}", errors);
             return "client/job-request/wizard-step-04";
@@ -260,16 +258,6 @@ public class JobRequestController {
 
     }
 
-    /**
-     * Cadastra várias imagens, mas um POST para cada imagem.
-     * Para cadastrar várias imagens, é necessário fazer um POST para cada imagem.
-     * @param httpSession
-     * @param redirectAttributes
-     * @param dto
-     * @param model
-     * @return
-     * @throws IOException
-     */
     @PostMapping("/passo-5")
     @PermitAll
     public String saveFormImagePath(HttpSession httpSession, RedirectAttributes redirectAttributes, JobRequestDTO dto, Model model) throws IOException {
@@ -278,91 +266,33 @@ public class JobRequestController {
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         sessionDTO.setImageFile(dto.getImageFile());
 
-        System.out.println(sessionDTO.getExpertiseId());
-
         if(isValidateImage(dto.getImageFile())){
             File jobImage = Files.createTempFile("temp", dto.getImageFile().getOriginalFilename()).toFile();
             dto.getImageFile().transferTo(jobImage);
             Map data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "jobs"));
 
+            //realiza a moderação da imagem
+            if(moderateService.nsfwFilter((String)data.get("url"))){
+                String publicId = (String) data.get("public_id");
+                cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+                redirectAttributes.addFlashAttribute("msg", "A imagem enviada contém conteúdo impróprio. Por favor, envie outra foto.");
+                return "redirect:/requisicoes?passo=5";
+            }
 
             sessionDTO.setImageSession((String)data.get("url"));
+
             log.debug("Passo 5 {}", sessionDTO);
 
-            return "redirect:/requisicoes/passo=5";
+            return "redirect:/requisicoes/passo=6";
         } else {
-            return "redirect:/requisicoes/passo=5";
+            return "redirect:/requisicoes/passo=6";
         }
     }
 
-    /**
-     * Mostra os dados do anuncio para confirmação
-     * @param httpSession
-     * @param errors
-     * @param dto
-     * @param redirectAttributes
-     * @param model
-     * @param status
-     * @return
-     */
-//    @GetMapping("/passo-6")
-//    @PermitAll
-//    public String formConfirmation(HttpSession httpSession, BindingResult errors,JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
-//        return "redirect:/requisicoes/passo=6";
-//    }
-
-    /**
-     * Salva a requisição
-     * @param httpSession
-     * @param dto
-     * @param redirectAttributes
-     * @param model
-     * @return
-     */
-    @PostMapping("/passo-7")
-    @PermitAll
-    public String saveFormVerification(HttpSession httpSession, JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model){
-
-        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
-        Optional<Expertise> oExpertise = expertiseService.findById(sessionDTO.getExpertiseId());
-
-        if(!oExpertise.isPresent()){
-            throw new InvalidParamsException("A especilidade informada não foi encontrada!");
-        }
-
-        /* Verifica se o usuário está logado, pois pode submeter um anuncio sem estar logado.  */
-        User user = null;
-        Optional<User> oUser = userService.findByEmail(authentication.getEmail());
-        if(oUser.isPresent()){
-           user = oUser.get();
-        }
-
-        Expertise exp = oExpertise.get();
-        sessionDTO.setClientConfirmation(true);
-        sessionDTO.setDateCreated(DateUtil.getToday());
-        sessionDTO.setStatus(JobRequest.Status.AVAILABLE.toString());
-
-        log.debug("Passo 7 {}", sessionDTO);
-        JobRequest jobRequest = jobRequestMapper.toEntity(sessionDTO);
-        jobRequest.setExpertise(exp);
-        jobRequest.setUser(user);
-
-        //jobRequest.setImage(sessionDTO.getImageSession());
-        jobRequestService.save(jobRequest);
-        redirectAttributes.addFlashAttribute("msg", "Requisição confirmada!");
-
-        return "redirect:/requisicoes/passo-8";
-    }
-
-    /**
-     * Mostra os profissionais resultado da busca
-     * @param httpSession
-     * @return
-     */
-    @GetMapping("/passo-8")
+    @GetMapping("passo=6")
     @PermitAll
     protected ModelAndView showProfessionals(HttpSession httpSession) {
-        ModelAndView mv = new ModelAndView("client/job-request/wizard-step-08");
+        ModelAndView mv = new ModelAndView("client/job-request/wizard-step-06");
 
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
 
@@ -377,10 +307,43 @@ public class JobRequestController {
         mv.addObject("professionals", professionalSearchItemDTOS);
         mv.addObject("professionalsAmount", professionalSearchItemDTOS.size());
 
-        //remove o sessionDTO
-        wizardSessionUtil.removeWizardState(httpSession, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
-
         return mv;
+    }
+
+
+
+    @PostMapping("/passo-7")
+    @PermitAll
+    public String saveFormVerification(HttpSession httpSession, JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
+
+        JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
+
+        Optional<Expertise> oExpertise = expertiseService.findById(sessionDTO.getExpertiseId());
+
+        if(!oExpertise.isPresent()){
+            throw new InvalidParamsException("A especilidade informada não foi encontrada!");
+        }
+
+        Expertise exp = oExpertise.get();
+        sessionDTO.setClientConfirmation(true);
+        sessionDTO.setDateCreated(DateUtil.getToday());
+        sessionDTO.setStatus("Requerido");
+
+        log.debug("Passo 7 {}", sessionDTO);
+        JobRequest jobRequest = jobRequestMapper.toEntity(sessionDTO);
+        jobRequest.setExpertise(exp);
+
+        //jobRequest.setImage(sessionDTO.getImageSession());
+        jobRequestService.save(jobRequest);
+        redirectAttributes.addFlashAttribute("msg", "Requisição confirmada!");
+        status.setComplete();
+        return "redirect:/requisicoes?passo=8";
+    }
+
+    @PostMapping("/passo-8")
+    @PermitAll
+    public String formConfirmation(HttpSession httpSession, BindingResult errors,JobRequestDTO dto, RedirectAttributes redirectAttributes, Model model,SessionStatus status){
+        return "redirect:/requisicoes";
     }
 
     /**
@@ -392,22 +355,21 @@ public class JobRequestController {
      * @param httpSession
      * @return
      */
-//    @GetMapping("pedido-recebido")
-//    @RolesAllowed({RoleType.USER})
-//    protected ModelAndView showMessageSuccessful(@RequestParam(value = "erro", required = false, defaultValue = "false") boolean isError, HttpSession httpSession) throws Exception {
-//        System.out.println("Parâmetro erro: " + isError);
-//        ModelAndView mv = new ModelAndView("client/job-requested");
-//
-//        Optional<Individual> individual = individualService.findByEmail(authentication.getEmail());
-//
-//        mv.addObject("client", individual.get().getName());
-//        mv.addObject("individualInfo", this.getSidePanelUser());
-//
-//        //apaga a sessão
-//        httpSession.invalidate();
-//
-//        return mv;
-//    }
+    @GetMapping("pedido-recebido")
+    @RolesAllowed({RoleType.USER})
+    protected ModelAndView showMessageSuccessful(@RequestParam(value = "erro", required = false, defaultValue = "false") boolean isError, HttpSession httpSession) {
+        System.out.println("Parâmetro erro: " + isError);
+        ModelAndView mv = new ModelAndView("client/job-requested");
+
+        Optional<Individual> individual = individualService.findByEmail(authentication.getEmail());
+
+        mv.addObject("client", individual.get().getName());
+
+        //apaga a sessão
+        httpSession.invalidate();
+
+        return mv;
+    }
 
     public boolean isValidateImage(MultipartFile image){
         List<String> contentTypes = Arrays.asList("image/png", "image/jpg", "image/jpeg");
@@ -450,14 +412,6 @@ public class JobRequestController {
         return "redirect:/minha-conta/profissional#disponiveis";
     }
 
-    private UserTemplateInfo getSidePanelUser() throws Exception {
-        Optional<Individual> client = (individualService.findByEmail(authentication.getEmail()));
 
-        if (!client.isPresent()) {
-            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
-        }
-        IndividualDTO individualDTO = individualMapper.toDto(client.get());
 
-        return templateUtil.getUserInfo(individualDTO);
-    }
 }
