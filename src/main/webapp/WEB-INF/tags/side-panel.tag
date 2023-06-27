@@ -7,27 +7,21 @@
 <%@ attribute name="followdto" type="br.edu.utfpr.servicebook.follower.FollowsDTO" %>
 <c:set var="currenturl" value="${requestScope['javax.servlet.forward.request_uri']}"/>
 
-<div class="col m2 l3 hide-on-med-and-down" style="padding-left: 0" id="area-perfil">
-    <div class="row primary-background-color area-perfil no-margin">
-        <div class="col s12 icons-area-request">
-            <div class="row center">
-                <div class="col s12 dark-color-text">
-                    <div class="row tooltipped" data-position="bottom"
-                         data-tooltip="${userInfo.rating} estrela (s).">
+<div class="col s12" style="padding-left: 0" id="area-perfil">
+    <div class="row center primary-background-color area-perfil no-margin" >
+        <div class="dark-color-text tooltipped col offset-s1 center-align" data-position="bottom"
+             data-tooltip="${userInfo.rating} estrela (s)." style="cursor: pointer">
 
-                        <c:forEach var="star" begin="1" end="5">
-                            <c:if test="${star <= userInfo.rating}">
-                                <i class="material-icons yellow-text small">star</i>
-                            </c:if>
-                            <c:if test="${star > userInfo.rating}">
-                                <i class="material-icons yellow-text small">star_border</i>
-                            </c:if>
-                        </c:forEach>
-
-                    </div>
-                </div>
-            </div>
+            <c:forEach var="star" begin="1" end="5">
+                <c:if test="${star <= userInfo.rating}">
+                    <i class="material-icons yellow-text small col s2">star</i>
+                </c:if>
+                <c:if test="${star > userInfo.rating}">
+                    <i class="material-icons yellow-text small col s2">star_border</i>
+                </c:if>
+            </c:forEach>
         </div>
+
         <!-- Foto do perfil -->
         <div class="col s12 center">
             <c:if test="${userInfo.profilePicture == null}">
@@ -40,7 +34,7 @@
             <c:if test="${userInfo.profilePicture != null}">
                 <div class="row">
                     <img src="${userInfo.profilePicture}" alt="Profissional - Imagem de perfil."
-                         style="width:250px;height:250px">
+                         class="col s10 offset-s1 responsive-img">
                 </div>
             </c:if>
 
@@ -248,16 +242,16 @@
                     <p class="header-verification tertiary-color-text center">ESTRELAS</p>
                     <div class="row secondary-background-color no-margin">
                         <div class="col s12 white-text center">
-                            <div class="row tooltipped" data-position="bottom"
+                            <div class="row tooltipped offset-s1 center" data-position="bottom"
                                  data-tooltip="${statisticInfo.ratingScore != 0 ? statisticInfo.ratingScore : individual.rating} estrela (s).">
 
                                 <c:if test="${statisticInfo.ratingScore == 0}">
                                     <c:forEach var="star" begin="1" end="5">
                                         <c:if test="${star <= userInfo.rating}">
-                                            <i class="expertise-rating-star material-icons yellow-text small">star</i>
+                                            <i class="expertise-rating-star material-icons yellow-text small col s2">star</i>
                                         </c:if>
                                         <c:if test="${star > userInfo.rating}">
-                                            <i class="expertise-rating-star material-icons yellow-text small">star_border</i>
+                                            <i class="expertise-rating-star material-icons yellow-text small col s2">star_border</i>
                                         </c:if>
                                     </c:forEach>
                                 </c:if>
@@ -265,10 +259,10 @@
                                 <c:if test="${statisticInfo.ratingScore != 0}">
                                     <c:forEach var="star" begin="1" end="5">
                                         <c:if test="${star <= statisticInfo.ratingScore}">
-                                            <i class="expertise-rating-star material-icons yellow-text small">star</i>
+                                            <i class="expertise-rating-star material-icons yellow-text small col s2">star</i>
                                         </c:if>
                                         <c:if test="${star > statisticInfo.ratingScore}">
-                                            <i class="expertise-rating-star material-icons yellow-text small">star_border</i>
+                                            <i class="expertise-rating-star material-icons yellow-text small col s2">star_border</i>
                                         </c:if>
                                     </c:forEach>
                                 </c:if>

@@ -30,8 +30,12 @@ public class IndexService {
     CompanyRepository companyRepository;
     @Autowired
     IndividualRepository clientRepository;
-
+    @Autowired
+    CategoryRepository categoryRepository;
     public void initialize(){
+        Category category = new Category("Reformas e Reparos");
+        categoryRepository.save(category);
+
         Expertise expertise1 = new Expertise("Encanador", "realiza serviço como encanador", "https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg");
         Expertise expertise2 = new Expertise("Eletricista", "realiza serviço como eletricista", "https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg");
         Expertise expertise3 = new Expertise("Pintor", "realiza serviço como pintor", "https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg");
