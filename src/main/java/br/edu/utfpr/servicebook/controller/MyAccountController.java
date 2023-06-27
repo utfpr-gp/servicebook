@@ -8,6 +8,7 @@ import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.UserTemplateInfo;
 import br.edu.utfpr.servicebook.util.TemplateUtil;
+import br.edu.utfpr.servicebook.util.UserWizardUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -71,6 +73,9 @@ public class MyAccountController {
 
     @Autowired
     private AddressService addressService;
+
+    @Autowired
+    private UserWizardUtil userWizardUtil;
 
     @GetMapping
     public String home(HttpServletRequest request) {
@@ -227,20 +232,21 @@ public class MyAccountController {
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String saveAddress(
             @PathVariable Long id,
+            HttpSession httpSession,
             HttpServletRequest request,
-            RedirectAttributes redirectAttributes)
+            RedirectAttributes redirectAttributes,
+            @Validated(AddressDTO.RequestUserAddressInfoGroupValidation.class) AddressDTO dto,
+            BindingResult errors)
             throws IOException {
-        this.addressService.editAddress(id, request);
+
+        this.addressService.editAddress(id, dto, errors, httpSession);
 
         redirectAttributes.addFlashAttribute("msg", "Endereço editado com sucesso");
 
         return "redirect:/minha-conta/meu-endereco/{id}";
     }
 
-//    tente rota endereço
-
     /**
-     * FIXME Ao mudar o email, fazer logout para o usuário logar novamente, aí com o novo email
      * @param id
      * @param request
      * @param redirectAttributes

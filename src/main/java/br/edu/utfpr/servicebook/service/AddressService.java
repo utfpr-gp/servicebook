@@ -1,11 +1,17 @@
 package br.edu.utfpr.servicebook.service;
 
 
+import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
+import br.edu.utfpr.servicebook.model.mapper.CityMapper;
+import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
+import br.edu.utfpr.servicebook.model.mapper.UserMapper;
+import br.edu.utfpr.servicebook.util.UserWizardUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 @Service
@@ -29,23 +35,26 @@ public class AddressService {
         }
     }
 
-    public void editAddress(Long id, HttpServletRequest request) {
+    public void editAddress(Long id, AddressDTO dto, BindingResult errors, HttpSession httpSession) {
         try {
+            Optional<City> oCity = cityService.findByName(dto.getCity());
+
+            if (!oCity.isPresent()) {
+                errors.rejectValue("city", "error.dto", "Cidade não cadastrada! Por favor, insira uma cidade cadastrada.");
+            }
+
+            City cityMidDTO = oCity.get();
+
+            Address addressFullDTO = new Address();
             Optional<User> oUser = this.userService.findById(id);
             User user = oUser.get();
-            Optional<City> cities = this.cityService.findById(user.getAddress().getCity().getId());
-            City cityUser = cities.get();
-            Address addressEdit = new Address();
-            addressEdit.setNeighborhood(request.getParameter("neighborhood"));
-            addressEdit.setStreet(request.getParameter("street"));
-            addressEdit.setNumber(request.getParameter("number"));
-            addressEdit.setPostalCode(request.getParameter("postalCode").replaceAll("-", ""));
-            addressEdit.setCity(cityUser);
+            user.getAddress().setStreet(dto.getStreet().trim());
+            user.getAddress().setNumber(dto.getNumber().trim());
+            user.getAddress().setPostalCode(dto.getPostalCode().trim());
+            user.getAddress().setNeighborhood(dto.getNeighborhood().trim());
+            user.getAddress().setCity(cityMidDTO);
+            this.userService.save(user);
 
-            if (!compareAddres(addressEdit, user.getAddress())) {
-                user.setAddress(addressEdit);
-                this.userService.save(user);
-            }
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }
