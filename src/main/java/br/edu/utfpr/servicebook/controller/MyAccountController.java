@@ -317,6 +317,11 @@ public class MyAccountController {
             @RequestParam("fileUpload") MultipartFile file,
             RedirectAttributes redirectAttributes
     ) {
+        Optional<User> oUser = userService.findByEmail(authentication.getEmail());
+        if (!oUser.isPresent()) {
+            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
         if (file.isEmpty()) {
             redirectAttributes.addFlashAttribute("msgError", "Nenhuma foto foi selecionada!");
             return "redirect:/minha-conta/perfil";
@@ -335,10 +340,7 @@ public class MyAccountController {
                 return "redirect:/minha-conta/perfil";
             }
 
-            Optional<User> oUser = userService.findByEmail(authentication.getEmail());
-            if (!oUser.isPresent()) {
-                throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
-            }
+
 
             User user = oUser.get();
             user.setProfilePicture(imageUrl);
