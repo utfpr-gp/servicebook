@@ -14,6 +14,7 @@ import br.edu.utfpr.servicebook.util.UserTemplateInfo;
 import br.edu.utfpr.servicebook.util.TemplateUtil;
 import br.edu.utfpr.servicebook.util.UserWizardUtil;
 import com.twilio.Twilio;
+import com.twilio.rest.verify.v2.service.Verification;
 import com.twilio.rest.verify.v2.service.VerificationCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,9 +46,6 @@ public class MyAccountController {
 
     public static final Logger log =
             LoggerFactory.getLogger(MyAccountController.class);
-
-    @Autowired
-    private UserWizardUtil userWizardUtil;
 
     @Autowired
     private IndividualService individualService;
@@ -217,13 +215,17 @@ public class MyAccountController {
     @GetMapping("/meu-contato/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showMyContactPhone(@PathVariable Long id) throws IOException {
-        Optional<User> oUser = this.userService.findById(id);
+        Optional<User> oUser = this.userService.findByEmail(authentication.getEmail());
 
         if (!oUser.isPresent()) {
-            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+            throw new EntityNotFoundException("Usuário não encontrado.");
         }
 
         UserDTO userDTO = userMapper.toDto(oUser.get());
+
+        if (id != oUser.get().getId()) {
+            throw new AuthenticationCredentialsNotFoundException("Você não ter permissão para atualizar esse telefone.");
+        }
 
         ModelAndView mv = new ModelAndView("professional/account/my-contact-phone");
 
@@ -254,6 +256,7 @@ public class MyAccountController {
         if(!oUser.isPresent()) {
             throw new EntityNotFoundException("Profissional não encontrado pelas informações fornecidas.");
         }
+
 
         User user = oUser.get();
 
@@ -295,7 +298,7 @@ public class MyAccountController {
 
     @PostMapping("/salvar-contato/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
-    public String saveContactNumber(
+    public String savePhoneNumber(
             @PathVariable Long id,
             HttpServletRequest request,
             RedirectAttributes redirectAttributes)
@@ -303,19 +306,26 @@ public class MyAccountController {
 
         Optional<User> oUser = this.userService.findByEmail(authentication.getEmail());
 
+
         if(!oUser.isPresent()) {
             throw new EntityNotFoundException("Profissional não encontrado pelas informações fornecidas.");
         }
 
+        if (id != oUser.get().getId()) {
+            throw new AuthenticationCredentialsNotFoundException("Você não ter permissão para atualizar esse telefone.");
+        }
+
         User user = oUser.get();
+
+        UserDTO userDTO = userMapper.toDto(oUser.get());
 
         String phoneNumber = request.getParameter("phoneNumber");
         Optional<User> oOtherUser = userService.findByPhoneNumber(phoneNumber);
 
-        if (oOtherUser.isPresent()){
+       /* if (oOtherUser.isPresent()){
             redirectAttributes.addFlashAttribute("msgError", "Telefone já cadastrado! Por favor, insira um telefone não cadastrado!");
             return "redirect:/minha-conta/meu-contato/{id}";
-        }
+        } */
 
         user.setPhoneNumber(phoneNumber);
         user.setPhoneVerified(false);
@@ -377,17 +387,22 @@ public class MyAccountController {
     public String saveUserPhoneCode(
             @PathVariable Long id,
             @Validated(UserCodeDTO.RequestUserCodeInfoGroupValidation.class) UserCodeDTO dto,
+            HttpServletRequest request,
             BindingResult errors,
             RedirectAttributes redirectAttributes
-    )  {
+    ) {
 
-        Optional<Individual> oProfessional = this.individualService.findById(id);
+        Optional<User> oUser = this.userService.findByEmail(authentication.getEmail());
 
-        if(!oProfessional.isPresent()) {
+        if (id != oUser.get().getId()) {
+            throw new AuthenticationCredentialsNotFoundException("Você não ter permissão para atualizar esse telefone.");
+        }
+
+        if (!oUser.isPresent()) {
             throw new EntityNotFoundException("Profissional não encontrado pelas informações fornecidas.");
         }
 
-        Individual professional = oProfessional.get();
+        User professional = oUser.get();
 
         String phoneNumber = professional.getPhoneNumber();
 
@@ -395,24 +410,25 @@ public class MyAccountController {
 
         try {
             phoneNumberVerificationService.verify(dto.getCode());
+
+            if (phoneNumberVerificationService.isVerified()) {
+                professional.setPhoneVerified(true);
+                userService.save(professional);
+                redirectAttributes.addFlashAttribute("msg", "Telefone verificado com sucesso!");
+            } else {
+                professional.setPhoneVerified(false);
+                throw new AuthenticationCredentialsNotFoundException("Você não ter permissão para atualizar esse telefone.");
+            }
         } catch (Exception e) {
-            errors.rejectValue("code", "error.dto", "Não foi possível verificar seu telefone no momento. Continue com o seu cadastro e tente novamente mais tarde.");
+            professional.setPhoneVerified(false);
+            errors.rejectValue(null, "not-found", "Não foi possível verificar seu telefone no momento. Continue com o seu cadastro e tente novamente mais tarde.");
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+            return "redirect:/minha-conta/meu-contato/{id}";
         }
-
-        professional.setPhoneVerified(true);
-
-        Optional<User> oUser = userService.findByPhoneNumber(phoneNumber);
-
-        if(oUser.isPresent()) {
-            User user = oUser.get();
-            user.setPhoneVerified(false);
-            userService.save(user);
-        }
-
-        redirectAttributes.addFlashAttribute("msg", "Telefone verificado com sucesso!");
-
         return "redirect:/minha-conta/meu-contato/{id}";
     }
+
+
 
 }
 

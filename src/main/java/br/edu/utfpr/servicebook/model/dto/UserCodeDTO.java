@@ -24,4 +24,5 @@ public class UserCodeDTO implements Serializable {
 
     }
 
+
 }

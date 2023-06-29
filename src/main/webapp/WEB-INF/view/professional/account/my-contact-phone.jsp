@@ -17,11 +17,11 @@
                 </div>
             </c:if>
 
-            <c:if test="${not empty msgError}">
+            <c:if test="${not empty erros}">
                 <div class="container">
                     <div class="col s6">
                         <div class="card-panel red lighten-1 msg-view center-align">
-                            <span class="white-text">${msgError}</span>
+                            <span class="white-text">${erros}</span>
                         </div>
                     </div>
                 </div>
@@ -87,7 +87,7 @@
 </t:template>
 <script>
     $('.sendEmail').click(function () {
-        $.post("minha-conta/salvar-email/${professional.id}", {phoneNumber: "${professional.phoneNumber}"}).done(function () {
+        $.post("minha-conta/salvar-contato/${professional.id}", {phoneNumber: "${professional.phoneNumber}"}).done(function () {
             swal({
                 title: "Deu certo!",
                 text: "Foi enviado um sms para ${professional.phoneNumber}.",
@@ -95,5 +95,10 @@
             });
         });
     });
+
+    $(document).ready(function() {
+        $('#phoneNumber').mask('(00) 00000-0000');
+    });
+
 </script>
 

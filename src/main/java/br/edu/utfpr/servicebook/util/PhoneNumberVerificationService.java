@@ -24,7 +24,8 @@ public class PhoneNumberVerificationService {
     }
 
     public void verify(String code) throws Exception {
-        this.status = VerificationCheck.creator(twilioVerifyServiceSid).setTo(this.number).create().getStatus();
+        this.status = VerificationCheck.creator(twilioVerifyServiceSid,code).setTo(this.number).create().getStatus();
+
     }
 
     public boolean isVerified() {
