@@ -28,10 +28,15 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.http.*;
+
+//importações de teste do isToxic (Depois será removido)
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 
 
 import javax.annotation.security.PermitAll;
@@ -248,7 +253,12 @@ public class JobRequestController {
             return "client/job-request/wizard-step-04";
 
         }
-
+        if(isToxic(dto.getDescription())){
+            System.out.println("Esse textp é toxico");
+            redirectAttributes.addFlashAttribute("msg", "Este tipo de texto é inaprópriado para nosso site, por gentileza reescreva a mensagem utilizando outro tipo de linguagem");
+            return "redirect:/requisicoes?passo=4";
+        }
+        System.out.println();
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         sessionDTO.setDescription(dto.getDescription());
 
@@ -412,6 +422,45 @@ public class JobRequestController {
         return "redirect:/minha-conta/profissional#disponiveis";
     }
 
+    public boolean isToxic(String text){
+        String API_ENDPOINT = "https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze";
+        String API_KEY = "AIzaSyApd2uNDxNDqcFGRLcpITliQmSNXEXncC0";
+        try {
+            String requestBody = "{\"comment\": {\"text\": \"" + text + "\"}, \"languages\": [\"en\"], \"requestedAttributes\": {\"TOXICITY\": {}}}";
 
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> responseEntity = restTemplate.exchange(
+                    API_ENDPOINT + "?key=" + API_KEY,
+                    HttpMethod.POST,
+                    requestEntity,
+                    String.class
+            );
+
+            String response = responseEntity.getBody();
+
+            if (response.contains("\"value\":")) {
+                int startIndex = response.indexOf("\"value\":") + "\"value\":".length();
+                int endIndex = response.indexOf(",", startIndex);
+                String scoreString = response.substring(startIndex, endIndex);
+                float score = Float.parseFloat(scoreString);
+                if (score >= 0.8) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            //Se ocorrer algum erro de conexão com o servidor ou algo do tipo
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 }
