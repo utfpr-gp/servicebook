@@ -356,11 +356,6 @@ public class MyAccountController {
                 Individual individual = oInvididual.get();
                 individual.setCpf(userDTO.getCpf());
 
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-
-                // Formata a data para a representação desejada
-                String newBirthDate = sdf.format(userDTO.getBirthDate());
-
                 individual.setBirthDate(userDTO.getBirthDate());
 
                 this.individualService.save(individual);

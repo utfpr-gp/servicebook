@@ -30,7 +30,8 @@
                 <div class="container">
                     <div class="row">
                         <h3>Nos conte sobre suas informações pessoais</h3>
-                        <h6>É importante, que suas informações pessoais como nome, CPF ou CNPJ (caso esteja cadastrado como uma empresa)
+                        <h6>É importante, que suas informações pessoais como nome, CPF ou CNPJ (caso esteja cadastrado
+                            como uma empresa)
                             e data de nascimento estejam corretas!
                         </h6>
                     </div>
@@ -39,43 +40,49 @@
                         <div class="texto">
                             <a href="#" class="waves-effect waves-light btn exibir">Editar</a>
                             <div class="exibir">
-                                <h7>Data de nascimento:</h7>
-                                <p>${userDTO.description}</p>
+                                <p>Seu nome: ${userDTO.name}</p>
+                                <sec:authorize access="hasRole('USER')">
+                                    <p>Data de nascimento: ${userDTO.birthDate}</p>
+                                    <p>Seu CPF: ${userDTO.cpf}</p>
+                                </sec:authorize>
+                                <sec:authorize access="hasRole('COMPANY')">
+                                    <p>Seu CNPJ: ${userDTO.cnpj}</p>
+                                </sec:authorize>
                             </div>
                         </div>
                         <div class="formulario">
-${userDTO}
                             <form class="col s12"
                                   action="${pageContext.request.contextPath}/minha-conta/cadastra-informacoes-pessoais/${userDTO.id}"
                                   method="post"
                             >
                                 <input type="hidden" name="_method" value="PATCH"/>
                                 <div class="row">
-                                    <div class="input-field col s12">
+                                    <div class="form-group col s12">
+                                        <label for="name" class="form-label">Atualize seu Nome:</label>
                                         <input id="name" name="name" value="${userDTO.name}">
-<%--                                        <label for="name" class="form-label">Atualize seu Nome:</label>--%>
                                     </div>
                                 </div>
                                 <sec:authorize access="hasRole('USER')">
                                     <div class="row">
-                                        <div class="input-field col s12">
+                                        <div class="form-group col s12">
+                                            <label for="cpf" class="form-label">Atualize seu CPF:</label>
                                             <input id="cpf" name="cpf" value="${userDTO.cpf}">
-<%--                                            <label for="cpf" class="form-label">Atualize seu CPF:</label>--%>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="input-field col s12">
+                                        <div class="form-group col s12">
+                                            <label for="birthDate" class="form-label">Atualize sua data de
+                                                nascimento:</label>
                                             <input type="date" id="birthDate" name="birthDate">
-                                            <label for="birthDate" class="form-label">Atualize sua data de nascimento:</label>
                                         </div>
                                     </div>
                                 </sec:authorize>
 
                                 <sec:authorize access="hasRole('COMPANY')">
                                     <div class="row">
-                                        <div class="input-field col s12">
+                                        <div class="form-group col s12">
+                                            <label for="cnpj" class="form-label">Atualize seu CNPJ:</label>
                                             <input id="cnpj" name="cnpj" value="${userDTO.cnpj}">
-<%--                                            <label for="cnpj" class="form-label">Atualize seu CNPJ:</label>--%>
                                         </div>
                                     </div>
                                 </sec:authorize>
