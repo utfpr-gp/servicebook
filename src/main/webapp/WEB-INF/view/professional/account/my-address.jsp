@@ -18,10 +18,14 @@
                 </c:if>
 
                 <c:if test="${not empty errors}">
-                    <div class="card-panel red">
-                        <c:forEach var="e" items="${errors}">
-                            <span class="white-text">${e.getDefaultMessage()}</span><br>
-                        </c:forEach>
+                    <div class="container">
+                        <div class="col s6">
+                            <div class="card-panel red">
+                                <c:forEach var="e" items="${errors}">
+                                    <span class="white-text">${e.getDefaultMessage()}</span><br>
+                                </c:forEach>
+                            </div>
+                        </div>
                     </div>
                 </c:if>
 

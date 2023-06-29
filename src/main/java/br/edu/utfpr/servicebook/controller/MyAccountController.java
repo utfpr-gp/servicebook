@@ -72,10 +72,10 @@ public class MyAccountController {
     private TemplateUtil templateUtil;
 
     @Autowired
-    private AddressService addressService;
+    private UserWizardUtil userWizardUtil;
 
     @Autowired
-    private UserWizardUtil userWizardUtil;
+    private AddressMapper addressMapper;
 
     @GetMapping
     public String home(HttpServletRequest request) {
@@ -235,13 +235,46 @@ public class MyAccountController {
             HttpSession httpSession,
             HttpServletRequest request,
             RedirectAttributes redirectAttributes,
-            @Validated(AddressDTO.RequestUserAddressInfoGroupValidation.class) AddressDTO dto,
+            @Validated AddressDTO dto,
             BindingResult errors)
             throws IOException {
 
-        this.addressService.editAddress(id, dto, errors, httpSession);
+        Optional<User> oUser = (userService.findByEmail(authentication.getEmail()));
+        ModelAndView mv = new ModelAndView("professional/account/my-address");
+        try {
+            if (!oUser.isPresent()) {
+                throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+            }
+            if (oUser.get().getId() == id) {
+                Optional<City> oCity = cityService.findByName(dto.getCity());
 
-        redirectAttributes.addFlashAttribute("msg", "Endereço editado com sucesso");
+                if (!oCity.isPresent()) {
+                    errors.rejectValue("city", "error.dto", "Cidade não cadastrada! Por favor, insira uma cidade cadastrada.");
+                    redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+                    return "redirect:/minha-conta/meu-endereco/{id}";
+                }
+
+                City cityMidDTO = oCity.get();
+                User user = oUser.get();
+//                user.setAddress(addressMapper.toUpdate(dto, user.getAddress().getId(), cityMidDTO));
+                // TENTEI FAZER USANDO O MAPPER DO ADDRESS QUE CRIEI MAS NÃO FUNCIONA POIS
+                // O ID ACABA FICANDO NULL TANTO DA CIDADE QUANTO O DO PROPRIO ADDRES AI TENTEI FAZER UM AJUSTE MAS MESMO ASSIM ACABO COM UM ERRO DE
+                //detached entity passed to persist entao deixei da forma abaixo que estava funcionando
+                user.getAddress().setCity(cityMidDTO);
+                user.getAddress().setStreet(dto.getStreet().trim());
+                user.getAddress().setNumber(dto.getNumber().trim());
+                user.getAddress().setPostalCode(dto.getPostalCode().trim());
+                user.getAddress().setNeighborhood(dto.getNeighborhood().trim());
+                this.userService.save(user);
+                redirectAttributes.addFlashAttribute("msg", "Endereço editado com sucesso");
+            } else {
+                throw new AuthenticationCredentialsNotFoundException("Usuario não corresponde com o id");
+            }
+        } catch (Exception exception) {
+            errors.rejectValue(null, "not-found", "Erro ao editar endereço: " + exception.getMessage());
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+            return "redirect:/minha-conta/meu-endereco/{id}";
+        }
 
         return "redirect:/minha-conta/meu-endereco/{id}";
     }
