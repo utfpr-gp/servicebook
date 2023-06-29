@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
@@ -46,6 +47,8 @@ public class UserDTO implements IWizardDTO, Serializable {
     protected String gender;
     protected String profilePicture;
     protected ProfileEnum profile;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     protected Date birthDate;
 
     @Pattern(regexp = "^\\(?\\d{2}\\)?\\s?(\\d{4,5})-?(\\d{4})$", message = "Telefone inválido! Por favor, insira um número de telefone válido.", groups = UserDTO.RequestUserPhoneInfoGroupValidation.class)

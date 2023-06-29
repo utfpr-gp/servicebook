@@ -40,25 +40,22 @@
                             <a href="#" class="waves-effect waves-light btn exibir">Editar</a>
                             <div class="exibir">
                                 <h7>Data de nascimento:</h7>
-                                <p>${user.description}</p>
+                                <p>${userDTO.description}</p>
                             </div>
                         </div>
                         <div class="formulario">
-
+${userDTO}
                             <form class="col s12"
                                   action="${pageContext.request.contextPath}/minha-conta/cadastra-informacoes-pessoais/${userDTO.id}"
                                   method="post"
                             >
-
                                 <input type="hidden" name="_method" value="PATCH"/>
-
                                 <div class="row">
                                     <div class="input-field col s12">
                                         <input id="name" name="name" value="${userDTO.name}">
 <%--                                        <label for="name" class="form-label">Atualize seu Nome:</label>--%>
                                     </div>
                                 </div>
-
                                 <sec:authorize access="hasRole('USER')">
                                     <div class="row">
                                         <div class="input-field col s12">
@@ -66,11 +63,10 @@
 <%--                                            <label for="cpf" class="form-label">Atualize seu CPF:</label>--%>
                                         </div>
                                     </div>
-
                                     <div class="row">
                                         <div class="input-field col s12">
-                                            <input type="date" id="datepicker" name="birthdate">
-                                            <label for="datepicker" class="form-label">Atualize sua data de nascimento:</label>
+                                            <input type="date" id="birthDate" name="birthDate">
+                                            <label for="birthDate" class="form-label">Atualize sua data de nascimento:</label>
                                         </div>
                                     </div>
                                 </sec:authorize>

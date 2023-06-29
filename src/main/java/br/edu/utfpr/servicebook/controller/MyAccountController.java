@@ -26,6 +26,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Optional;
 
 @RequestMapping("/minha-conta")
@@ -326,10 +327,7 @@ public class MyAccountController {
     public ModelAndView updateMyPersonalData(
             @PathVariable Long id,
             @Valid UserDTO userDTO,
-            @Valid IndividualDTO individualDTO,
-//            @Validated CompanyDTO companyDTO,
-            Errors errors,
-            HttpServletRequest request,
+            BindingResult errors,
             RedirectAttributes redirectAttributes
     ) throws IOException {
 
@@ -339,8 +337,6 @@ public class MyAccountController {
             throw new EntityNotFoundException("Profissional não encontrado pelo id informado.");
         }
 
-        Optional<Individual> oInvididual = this.individualService.findById(id);
-
         if (errors.hasErrors()) {
             ModelAndView mv = new ModelAndView("professional/account/my-personal-data");
             mv.addObject("userDTO", userDTO);
@@ -349,28 +345,39 @@ public class MyAccountController {
             return mv;
         }
 
-        //Optional<Company> oCompany = this.companyService.findById(id);
+        if (userDTO.getId() != null) {
 
-        //Atualiza user
-        User user = oUser.get();
-        user.setName(userDTO.getName());
+            User user = oUser.get();
+            user.setName(userDTO.getName());
 
-        // Atualiza individual
-        Individual individual = oInvididual.get();
-        individual.setCpf(individualDTO.getCpf());
+            if (userDTO.getCnpj() == null) {
+                Optional<Individual> oInvididual = this.individualService.findById(id);
 
-        individual.setBirthDate(individualDTO.getBirthDate());
+                Individual individual = oInvididual.get();
+                individual.setCpf(userDTO.getCpf());
 
-        // Company company = oCompany.get();
-        //company.setCnpj(companyDTO.getCnpj());
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 
-        this.userService.save(user);
-        this.individualService.save(individual);
-        // this.companyService.save(company);
+                // Formata a data para a representação desejada
+                String newBirthDate = sdf.format(userDTO.getBirthDate());
+
+                individual.setBirthDate(userDTO.getBirthDate());
+
+                this.individualService.save(individual);
+            } else {
+                Optional<Company> oCompany = this.companyService.findById(id);
+
+                Company company = oCompany.get();
+                company.setCnpj(userDTO.getCnpj());
+
+                this.companyService.save(company);
+            }
+
+            this.userService.save(user);
+        }
 
         redirectAttributes.addFlashAttribute("msg", "Informações pessoais atualizadas com sucesso!");
 
         return new ModelAndView("redirect:/minha-conta/informacoes-pessoais/{id}");
     }
 }
-
