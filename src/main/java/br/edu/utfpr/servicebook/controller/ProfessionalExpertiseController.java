@@ -16,6 +16,7 @@ import br.edu.utfpr.servicebook.util.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -165,14 +166,23 @@ public class ProfessionalExpertiseController {
     @GetMapping("/estatistica/{id}")
     @ResponseBody
     @RolesAllowed({RoleType.USER})
-    public UserTemplateStatisticInfo getExpertiseData(@PathVariable("id") Long expertiseId) throws Exception {
-        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
+    public ResponseEntity<?> getExpertiseData(@PathVariable("id") Long expertiseId) {
+        try {
+            Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
+            ResponseDTO response = new ResponseDTO();
 
-        if (!oProfessional.isPresent()) {
-            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+            if (!oProfessional.isPresent()) {
+                response.setMessage("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+                return ResponseEntity.status(401).body(response);
+            }
+
+            response.setData(templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId));
+            return ResponseEntity.ok(response);
+        } catch (Exception e){
+            ResponseDTO response = new ResponseDTO();
+            response.setMessage(e.getMessage());
+            return ResponseEntity.status(400).body(response);
         }
-
-        return templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId);
     }
 
     /**
