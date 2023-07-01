@@ -22,6 +22,9 @@ public class UserCode {
 
     @NonNull
     @Column(unique = true)
+    private String phoneNumber;
+
+    @Column(unique = true)
     private String email;
 
     @NonNull
