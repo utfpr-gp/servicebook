@@ -33,28 +33,36 @@
                 </div>
                 <!-- Fim Mensagens -->
 
-                <!-- Formulário -->
+                <!-- Validação do telefone -->
                 <div class="row">
                     <div class="col s12 l6 offset-l3">
-                        <h3 class="secondary-color-text">Meu contato</h3>
+                        <h3 class="secondary-color-text">Vamos validar o seu telefone?</h3>
+                        <h5 class="secondary-color-text">
+                            Enviamos um código para o seu telefone. Por favor, digite o código para validar esse telefone.
+                        </h5>
                     </div>
-                    <form id="phone-form" class="col s12 l6 offset-l3" action="minha-conta/edita-telefone/${user.id}" method="post">
-                        <input type="hidden" name="_method" value="PATCH"/>
-                        <input type="hidden" name="id" value="${user.id}"/>
 
+                    <!-- Formulário de verificação do telefone -->
+                    <form class="col s12 l6 offset-l3" method="post" action="minha-conta/valida-telefone/${user.id}">
+                        <input type="hidden" name="id" value="${user.id}"/>
                         <div class="input-field">
-                            <input id="phoneNumber" name="phoneNumber" type="text" value="${user.phoneNumber}"
-                                   class="validate" required disabled>
-                            <label for="phoneNumber">Telefone</label>
+                            <input id="code" name="code" type="text" class="validate" required>
+                            <label for="code">Código</label>
+                        </div>
+
+                        <div class="input-field center">
+                            <button id="code-button" class="btn-flat" type="button">
+                                Reenviar o código!
+                            </button>
                         </div>
 
                         <div class="right">
-                            <button id="edit-button" class="waves-effect waves-light btn" type="button">Editar</button>
-                            <button id="save-button" class="waves-effect waves-light btn" type="submit" style="display: none">Salvar</button>
+                            <button class="waves-effect waves-light btn" type="submit">Salvar</button>
                         </div>
                     </form>
+                    <!-- Fim do formulário de verificação do telefone -->
                 </div>
-                <!-- Fim Formulário -->
+                <!-- Fim da validação do telefone -->
             </div>
             <!-- Fim Container -->
         </main>
@@ -62,13 +70,15 @@
     </jsp:body>
 </t:template>
 <script>
-    $(document).ready(function() {
-        $('#phoneNumber').mask('(00) 00000-0000');
-        $('#edit-button').click(function(){
-            console.log($(this))
-            $('#phone-form input').prop('disabled', false);
-            $(this).hide();
-            $('#save-button').show();
+    $('#code-button').click(function () {
+
+        //solicita o envio do código de verificação
+        $.get("minha-conta/reenvia-codigo-verificacao/${user.id}").done(function () {
+            swal({
+                title: "Sucesso!",
+                text: "Foi enviado um SMS para ${user.phoneNumber}.",
+                icon: "success",
+            });
         });
     });
 </script>

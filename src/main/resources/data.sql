@@ -44,7 +44,7 @@ INSERT INTO users
  address_id, rating, profile, password, description)
 VALUES ('profissional1@gmail.com', 'true', 'Nome do Primeiro Profissional', '(42) 99999-9991', 'true',
         'https://i.imgur.com/owhNAKK.png', 'true', '1', 2, 'ROLE_ADMIN','$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição profissional 1'),
-       ('profissional2@gmail.com', 'true', 'Nome do Segundo Profissional', '(42) 99999-9992', 'true',
+       ('ronifabio@gmail.com', 'true', 'Nome do Segundo Profissional', '(42) 99999-9992', 'true',
         'https://i.imgur.com/sHAg9pz.png', 'true', '1', 4,'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição profissional 1'),
        ('cliente1@gmail.com', 'true', 'Nome do Primeiro Cliente', '(42) 99999-9993', 'true',
         'https://i.imgur.com/y9dH2bJ.jpeg', 'true', '1', 5, 'ROLE_USER', '$2a$10$ZqgnFnwi6/8qjELs5.Y7rOXacIu/vbudYDl4vA55KDvDuGcpaEFzS',  'Descrição profissional 1'),
