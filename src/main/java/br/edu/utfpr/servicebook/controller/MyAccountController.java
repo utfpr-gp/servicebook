@@ -303,27 +303,30 @@ public class MyAccountController {
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showMyPersonalData(@PathVariable Long id) throws IOException {
 
-        Optional<User> oUser = this.userService.findByEmail(authentication.getEmail());
+        Optional<User> oUser = this.userService.findById(id);
 
-        if (oUser.isEmpty()) {
-            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        if (!oUser.isPresent()) {
+            throw new EntityNotFoundException("O usuário não foi encontrado.");
         }
 
-        User user = oUser.get();
-        UserDTO userDTO = userMapper.toDto(user);
+        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
+        User userAuthenticated = oUserAuthenticated.get();
 
-        UserTemplateInfo templateInfo = templateUtil.getUserInfo(user);
+        if (id != userAuthenticated.getId()) {
+            throw new AuthenticationCredentialsNotFoundException("Você não tem permissão para atualizar essas informações pessoais.");
+        }
 
-        ModelAndView mv = new ModelAndView("professional/account/my-personal-data");
+        UserDTO userDTO = userMapper.toDto(userAuthenticated);
+
+        ModelAndView mv = new ModelAndView("professional/account/my-personal-info");
         mv.addObject("userDTO", userDTO);
-        mv.addObject("userInfo", templateInfo);
 
         return mv;
     }
 
     @PatchMapping("/cadastra-informacoes-pessoais/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
-    public ModelAndView updateMyPersonalData(
+    public String updateMyPersonalData(
             @PathVariable Long id,
             @Valid UserDTO userDTO,
             BindingResult errors,
@@ -341,11 +344,9 @@ public class MyAccountController {
         }
 
         if (errors.hasErrors()) {
-            ModelAndView mv = new ModelAndView("professional/account/my-personal-data");
-            mv.addObject("userDTO", userDTO);
-            mv.addObject("errors", errors.getAllErrors());
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
 
-            return mv;
+            return "redirect:/minha-conta/informacoes-pessoais/" + id;
         }
 
         if (userDTO.getId() != null) {
@@ -356,6 +357,20 @@ public class MyAccountController {
             if (userDTO.getCnpj() == null) {
                 Optional<Individual> oInvididual = this.individualService.findById(id);
 
+                //verifica se o CPF já está cadastrado para outro usuário
+                Optional<Individual> oOtherUser = individualService.findByCpf(userDTO.getCpf());
+
+                if(oOtherUser.isPresent() && oOtherUser.get().getId() != user.getId()) {
+                    errors.rejectValue(
+                            "cpf",
+                            "error.dto.cpf.duplicate",
+                            "Este CPF já está cadastrado para outro usuário."
+                    );
+                    redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+
+                    return "redirect:/minha-conta/informacoes-pessoais/" + id;
+                }
+
                 Individual individual = oInvididual.get();
                 individual.setCpf(userDTO.getCpf());
 
@@ -364,6 +379,20 @@ public class MyAccountController {
                 this.individualService.save(individual);
             } else {
                 Optional<Company> oCompany = this.companyService.findById(id);
+
+                //verifica se o CNPJ já está cadastrado para outro usuário
+                Optional<Company> oOtherCompany = this.companyService.findByCnpj(userDTO.getCnpj());
+
+                if(oOtherCompany.isPresent() && oOtherCompany.get().getId() != user.getId()) {
+                    errors.rejectValue(
+                            "cnpj",
+                            "error.dto.cnpj.duplicate",
+                            "Este CNPJ já está cadastrado para outro usuário."
+                    );
+                    redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+
+                    return "redirect:/minha-conta/informacoes-pessoais/" + id;
+                }
 
                 Company company = oCompany.get();
                 company.setCnpj(userDTO.getCnpj());
@@ -376,6 +405,6 @@ public class MyAccountController {
 
         redirectAttributes.addFlashAttribute("msg", "Informações pessoais atualizadas com sucesso!");
 
-        return new ModelAndView("redirect:/minha-conta/informacoes-pessoais/{id}");
+        return "redirect:/minha-conta/informacoes-pessoais/" + id;
     }
 }
