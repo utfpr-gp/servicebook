@@ -45,26 +45,34 @@
                             method="post"
                     >
                         <input type="hidden" name="_method" value="PATCH"/>
-                        <div class="input-field">
-                            <input id="name" name="name" value="${userDTO.name}" required disabled>
-                            <label for="name" class="form-label">Atualize seu Nome:</label>
+                        <div class="row">
+                            <div class="input-field">
+                                <input id="name" name="name" value="${userDTO.name}" class="validate" required disabled>
+                                <label for="name" class="active">Atualize seu Nome:</label>
+                            </div>
                         </div>
 
                         <sec:authorize access="hasRole('USER')">
-                            <div class=input-field">
-                                <input id="cpf" name="cpf" value="${userDTO.cpf}" required disabled>
-                                <label for="cpf" class="form-label">Atualize seu CPF:</label>
+                            <div class="row">
+                                <div class="input-field">
+                                    <input id="cpf" name="cpf" value="${userDTO.cpf}" class="validate" required disabled type="text">
+                                    <label for="cpf">Atualize seu CPF:</label>
+                                </div>
                             </div>
-                            <div class="input-field">
-                                <input type="date" id="birthDate" name="birthDate" disabled>
-                                <label for="birthDate" class="form-label">Atualize sua data de nascimento:</label>
+                            <div class="row">
+                                <div class="input-field">
+                                    <input type="date" id="birthDate" name="birthDate" disabled class="validate">
+                                    <label for="birthDate" class="active">Atualize sua data de nascimento:</label>
+                                </div>
                             </div>
                         </sec:authorize>
 
                         <sec:authorize access="hasRole('COMPANY')">
-                            <div class="input-field">
-                                <input id="cnpj" name="cnpj" value="${userDTO.cnpj}" required disabled>
-                                <label for="cnpj" class="form-label">Atualize seu CNPJ:</label>
+                            <div class="row">
+                                <div class="input-field">
+                                    <input id="cnpj" name="cnpj" value="${userDTO.cnpj}" class="validate" required disabled type="text">
+                                    <label for="cnpj">Atualize seu CPF:</label>
+                                </div>
                             </div>
                         </sec:authorize>
 
