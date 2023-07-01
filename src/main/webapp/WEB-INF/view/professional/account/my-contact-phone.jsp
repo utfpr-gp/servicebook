@@ -17,11 +17,11 @@
                 </div>
             </c:if>
 
-            <c:if test="${not empty erros}">
+            <c:if test="${not empty errors}">
                 <div class="container">
                     <div class="col s6">
                         <div class="card-panel red lighten-1 msg-view center-align">
-                            <span class="white-text">${erros}</span>
+                            <span class="white-text">${errors}</span>
                         </div>
                     </div>
                 </div>

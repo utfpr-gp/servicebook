@@ -319,13 +319,13 @@ public class MyAccountController {
 
         UserDTO userDTO = userMapper.toDto(oUser.get());
 
-        String phoneNumber = request.getParameter("phoneNumber");
+        String phoneNumber = userDTO.getPhoneNumber();
         Optional<User> oOtherUser = userService.findByPhoneNumber(phoneNumber);
 
-       /* if (oOtherUser.isPresent()){
+        if (oOtherUser.isPresent()){
             redirectAttributes.addFlashAttribute("msgError", "Telefone já cadastrado! Por favor, insira um telefone não cadastrado!");
             return "redirect:/minha-conta/meu-contato/{id}";
-        } */
+        }
 
         user.setPhoneNumber(phoneNumber);
         user.setPhoneVerified(false);
@@ -417,13 +417,12 @@ public class MyAccountController {
                 redirectAttributes.addFlashAttribute("msg", "Telefone verificado com sucesso!");
             } else {
                 professional.setPhoneVerified(false);
-                throw new AuthenticationCredentialsNotFoundException("Você não ter permissão para atualizar esse telefone.");
+                redirectAttributes.addFlashAttribute("errors", "3Não foi possível verificar seu telefone no momento. Continue com o seu cadastro e tente novamente mais tarde.");
             }
         } catch (Exception e) {
             professional.setPhoneVerified(false);
             errors.rejectValue(null, "not-found", "Não foi possível verificar seu telefone no momento. Continue com o seu cadastro e tente novamente mais tarde.");
-            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
-            return "redirect:/minha-conta/meu-contato/{id}";
+            redirectAttributes.addFlashAttribute("msg", errors.getAllErrors());
         }
         return "redirect:/minha-conta/meu-contato/{id}";
     }
