@@ -25,12 +25,12 @@ public class UserDTO implements IWizardDTO, Serializable {
 
     protected Long id;
 
-    @Pattern(regexp = "^(\\s?[A-ZÀ-Ú][a-zà-ú]*)+(\\s[a-zà-ú]*)?(\\s[A-ZÀ-Ú][a-zà-ú]*)+$", message = "Nome inválido! Por favor, insira o nome completo.", groups = {UserDTO.RequestUserNameAndCPFInfoGroupValidation.class, UserDTO.RequestUserNameAndCNPJInfoGroupValidation.class})
+    @Pattern(regexp = "^(\\s?[A-ZÀ-Ú][a-zà-ú]*)+(\\s[a-zà-ú]*)?(\\s[A-ZÀ-Ú][a-zà-ú]*)+$", message = "Nome inválido! Por favor, insira o nome completo.", groups = {UserDTO.RequestUserNameAndCPFInfoGroupValidation.class, UserDTO.RequestUserNameAndCNPJInfoGroupValidation.class, UserDTO.RequestUpdatePersonalInfo.class})
     protected String name;
 
-    @CPF(message = "CPF inválido! Por favor, insira um CPF válido.", groups = UserDTO.RequestUserNameAndCPFInfoGroupValidation.class)
+    @CPF(message = "CPF inválido! Por favor, insira um CPF válido.", groups = {UserDTO.RequestUserNameAndCPFInfoGroupValidation.class, UserDTO.RequestUpdatePersonalInfo.class})
     protected String cpf;
-    @CNPJ(message = "CNPJ inválido! Por favor, insira um CNPJ válido.", groups = UserDTO.RequestUserNameAndCNPJInfoGroupValidation.class)
+    @CNPJ(message = "CNPJ inválido! Por favor, insira um CNPJ válido.", groups = {UserDTO.RequestUserNameAndCNPJInfoGroupValidation.class, UserDTO.RequestUpdatePersonalInfo.class})
     protected String cnpj;
 
 
@@ -89,6 +89,10 @@ public class UserDTO implements IWizardDTO, Serializable {
     }
 
     public interface RequestUserPhoneInfoGroupValidation {
+
+    }
+
+    public interface RequestUpdatePersonalInfo {
 
     }
 }

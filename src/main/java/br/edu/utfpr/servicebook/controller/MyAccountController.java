@@ -328,7 +328,7 @@ public class MyAccountController {
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String updateMyPersonalData(
             @PathVariable Long id,
-            @Valid UserDTO userDTO,
+            @Validated(UserDTO.RequestUpdatePersonalInfo.class) UserDTO userDTO,
             BindingResult errors,
             RedirectAttributes redirectAttributes
     ) throws IOException {

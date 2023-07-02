@@ -56,7 +56,7 @@
                             <div class="row">
                                 <div class="input-field">
                                     <input id="cpf" name="cpf" value="${userDTO.cpf}" class="validate" required disabled type="text">
-                                    <label for="cpf">Atualize seu CPF:</label>
+                                    <label for="cpf" class="active">Atualize seu CPF:</label>
                                 </div>
                             </div>
                             <div class="row">
@@ -71,7 +71,7 @@
                             <div class="row">
                                 <div class="input-field">
                                     <input id="cnpj" name="cnpj" value="${userDTO.cnpj}" class="validate" required disabled type="text">
-                                    <label for="cnpj">Atualize seu CPF:</label>
+                                    <label for="cnpj" class="active">Atualize seu CNPJ:</label>
                                 </div>
                             </div>
                         </sec:authorize>
