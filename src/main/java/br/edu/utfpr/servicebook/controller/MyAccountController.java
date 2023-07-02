@@ -287,55 +287,73 @@ public class MyAccountController {
         return "redirect:/minha-conta/meu-email/{id}";
     }
 
-    @GetMapping("/minha-senha/{id}")
+    @GetMapping("/edita-senha/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
-    public ModelAndView showMyPassword(@PathVariable Long id) throws IOException {
+    public ModelAndView showFormEditPassword(@PathVariable Long id) throws IOException {
+
         Optional<User> oUser = this.userService.findById(id);
 
         if (!oUser.isPresent()) {
-            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+            throw new EntityNotFoundException("O usuário não foi encontrado.");
         }
 
-        UserDTO userDTO = userMapper.toDto(oUser.get());
+        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
+        User userAuthenticated = oUserAuthenticated.get();
+
+        if (id != userAuthenticated.getId()) {
+            throw new AuthenticationCredentialsNotFoundException("Você não tem permissão para alterar esta senha.");
+        }
+
+        UserDTO userDTO = userMapper.toDto(userAuthenticated);
 
         ModelAndView mv = new ModelAndView("professional/account/my-password");
-
-        mv.addObject("professional", userDTO);
+        mv.addObject("user", userDTO);
 
         return mv;
     }
 
-    @PostMapping("/salvar-senha/{id}")
+    @PatchMapping("/edita-senha/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String savePassword(
             @PathVariable Long id,
-            HttpServletRequest request,
+            @Validated(UserDTO.RequestUserPasswordInfoGroupValidation.class) UserDTO userDTO,
+            BindingResult errors,
             RedirectAttributes redirectAttributes)
             throws IOException {
 
-        Optional<User> oUser = this.userService.findByEmail(authentication.getEmail());
+        if (errors.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+            return "redirect:/minha-conta/edita-senha/" + id;
+        }
+
+        if(!userDTO.getPassword().equals(userDTO.getRepassword())){
+            errors.rejectValue("password", "error.dto", "As senhas não correspondem. Por favor, tente novamente.");
+        }
+
+        if (errors.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+            return "redirect:/minha-conta/edita-senha/" + id;
+        }
+
+        Optional<User> oUser = this.userService.findById(id);
 
         if(!oUser.isPresent()) {
-            throw new EntityNotFoundException("Profissional não encontrado pelas informações fornecidas.");
+            throw new EntityNotFoundException("O usuário não foi encontrado.");
         }
 
-        User user = oUser.get();
+        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
+        User userAuthenticated = oUserAuthenticated.get();
 
-        String newPassword = request.getParameter("new-password");
-        String repeatPassword = request.getParameter("repeat-password");
-
-        if(!newPassword.equals(repeatPassword)){
-            redirectAttributes.addFlashAttribute("msgError", "As senhas não correspondem. Por favor, tente novamente.");
-            return "redirect:/minha-conta/minha-senha/{id}";
+        if (id != userAuthenticated.getId()) {
+            throw new AuthenticationCredentialsNotFoundException("Você não tem permissão para alterar esta senha.");
         }
 
-        user.setPassword(newPassword);
-        this.userService.save(user);
+        userAuthenticated.setPassword(userDTO.getPassword());
+        this.userService.save(userAuthenticated);
 
-        redirectAttributes.addFlashAttribute("msg", "Senha salva com sucesso!");
+        redirectAttributes.addFlashAttribute("msg", "Senha salva com sucesso.");
 
-        //return "redirect:/logout";
-        return "redirect:/minha-conta/minha-senha/{id}";
+        return "redirect:/minha-conta/edita-senha/" + id;
     }
 }
 
