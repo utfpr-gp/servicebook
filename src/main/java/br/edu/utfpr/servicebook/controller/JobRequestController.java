@@ -37,6 +37,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.client.RestTemplate;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 
 import javax.annotation.security.PermitAll;
@@ -97,6 +101,9 @@ public class JobRequestController {
 
     @Autowired
     private ModerateService moderateService;
+
+    @Value("${api.key}")
+    private String API_KEY;
 
     public enum RequestDateSelect{
         today(0), tomorrow(1) , thisweek(2), nextweek(3), thismonth(4), nextmonth(5);
@@ -422,9 +429,11 @@ public class JobRequestController {
         return "redirect:/minha-conta/profissional#disponiveis";
     }
 
+
+
     public boolean isToxic(String text){
         String API_ENDPOINT = "https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze";
-        String API_KEY = "AIzaSyApd2uNDxNDqcFGRLcpITliQmSNXEXncC0";
+
         try {
             String requestBody = "{\"comment\": {\"text\": \"" + text + "\"}, \"languages\": [\"en\"], \"requestedAttributes\": {\"TOXICITY\": {}}}";
 
@@ -443,21 +452,20 @@ public class JobRequestController {
 
             String response = responseEntity.getBody();
 
-            if (response.contains("\"value\":")) {
-                int startIndex = response.indexOf("\"value\":") + "\"value\":".length();
-                int endIndex = response.indexOf(",", startIndex);
-                String scoreString = response.substring(startIndex, endIndex);
-                float score = Float.parseFloat(scoreString);
-                if (score >= 0.8) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
+            // Usar Jackson para desserializar o JSON
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(response);
+
+            JsonNode attributeScores = jsonNode.path("attributeScores");
+            if (attributeScores.has("TOXICITY")) {
+                JsonNode toxicity = attributeScores.path("TOXICITY");
+                JsonNode summaryScore = toxicity.path("summaryScore");
+                float score = summaryScore.path("value").floatValue();
+                return score >= 0.8;
             }
+
+            return false;
         } catch (Exception e) {
-            //Se ocorrer algum erro de conexão com o servidor ou algo do tipo
             e.printStackTrace();
             return false;
         }
