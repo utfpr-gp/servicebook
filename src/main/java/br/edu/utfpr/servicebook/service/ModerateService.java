@@ -11,11 +11,14 @@ public class ModerateService {
     private final String rapidapiKey;
     private final String rapidapiHost;
 
+
     public ModerateService(
                              @Value("${X_RAPIDAPI_KEY}") String rapidapiKey,
                              @Value("${X_RAPIDAPI_HOST}") String rapidapiHost) {
         this.rapidapiKey = rapidapiKey;
         this.rapidapiHost = rapidapiHost;
+
+
     }
 
 
