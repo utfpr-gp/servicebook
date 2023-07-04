@@ -1,7 +1,7 @@
 function updateStatistics(selectElement) {
     var expertiseId = selectElement.value;
       
-    const apiUrl = `/servicebook/minha-conta/profissional/especialidades/estatistica/${expertiseId}`
+    const apiUrl = `minha-conta/profissional/especialidades/estatistica/${expertiseId}`
   
     $.ajax({
       type: "get",

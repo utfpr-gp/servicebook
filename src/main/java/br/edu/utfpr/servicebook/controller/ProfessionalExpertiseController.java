@@ -164,23 +164,37 @@ public class ProfessionalExpertiseController {
      * @throws Exception
      */
     @GetMapping("/estatistica/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.ADMIN})
     @ResponseBody
-    @RolesAllowed({RoleType.USER})
     public ResponseEntity<?> getExpertiseData(@PathVariable("id") Long expertiseId) {
+        ResponseDTO response = new ResponseDTO();
         try {
-            Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
-            ResponseDTO response = new ResponseDTO();
+            //verifica se o usuário está autenticado
+            Optional<User> oProfessional = (userService.findByEmail(authentication.getEmail()));
 
             if (!oProfessional.isPresent()) {
                 response.setMessage("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
                 return ResponseEntity.status(401).body(response);
             }
 
-            response.setData(templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId));
+            //se for 0, são todas as especialidades
+            if(expertiseId > 0){
+                //verifica se a especialidade pertence ao profissional
+                Optional<Expertise> oExpertise = expertiseService.findById(expertiseId);
+                Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oProfessional.get(), oExpertise.get());
+                if(!oProfessionalExpertise.isPresent()){
+                    response.setMessage("A especialidade não pertence ao profissional.");
+                    return ResponseEntity.status(400).body(response);
+                }
+                response.setData(templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId));
+            }
+            else{
+                response.setData(templateUtil.getProfessionalStatisticInfo(oProfessional.get(), 0L));
+            }
+
             return ResponseEntity.ok(response);
         } catch (Exception e){
-            ResponseDTO response = new ResponseDTO();
-            response.setMessage(e.getMessage());
+            response.setMessage("Erro ao recuperar dados do profissional. Por favor, tente novamente.");
             return ResponseEntity.status(400).body(response);
         }
     }
