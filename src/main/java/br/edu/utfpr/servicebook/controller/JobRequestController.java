@@ -431,7 +431,7 @@ public class JobRequestController {
 
     public boolean isToxic(String text) {
         String API_ENDPOINT = "https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze";
-        String API_KEY = "YOUR_API_KEY"; // Substitua pelo seu API key
+        String API_KEY = "AIzaSyApd2uNDxNDqcFGRLcpITliQmSNXEXncC0";
 
         try {
             String requestBody = "{\"comment\": {\"text\": \"" + text + "\"}, \"languages\": [\"en\"], \"requestedAttributes\": {\"TOXICITY\": {}}}";
