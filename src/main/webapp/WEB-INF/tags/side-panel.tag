@@ -208,7 +208,7 @@
 
                     <form method="get" action="minha-conta/profissional" id="form-expertise">
                         <div class="input-field col s12 no-padding white-text">
-                            <select name="id" id="select-expertise">
+                            <select name="id" id="select-expertise" onchange="updateStatistics(this)">
                                 <option value="0">Todas as Especialidades</option>
 
                                 <c:forEach var="e" items="${professionalExpertises}">
@@ -242,16 +242,16 @@
                     <p class="header-verification tertiary-color-text center">ESTRELAS</p>
                     <div class="row secondary-background-color no-margin">
                         <div class="col s12 white-text center">
-                            <div class="row tooltipped offset-s1 center" data-position="bottom"
+                            <div class="row tooltipped offset-s1 center expertise-rating-stars" data-position="bottom"
                                  data-tooltip="${statisticInfo.ratingScore != 0 ? statisticInfo.ratingScore : individual.rating} estrela (s).">
 
                                 <c:if test="${statisticInfo.ratingScore == 0}">
                                     <c:forEach var="star" begin="1" end="5">
                                         <c:if test="${star <= userInfo.rating}">
-                                            <i class="expertise-rating-star material-icons yellow-text small col s2">star</i>
+                                            <i class="material-icons yellow-text small col s2">star</i>
                                         </c:if>
                                         <c:if test="${star > userInfo.rating}">
-                                            <i class="expertise-rating-star material-icons yellow-text small col s2">star_border</i>
+                                            <i class="material-icons yellow-text small col s2">star_border</i>
                                         </c:if>
                                     </c:forEach>
                                 </c:if>
@@ -259,10 +259,10 @@
                                 <c:if test="${statisticInfo.ratingScore != 0}">
                                     <c:forEach var="star" begin="1" end="5">
                                         <c:if test="${star <= statisticInfo.ratingScore}">
-                                            <i class="expertise-rating-star material-icons yellow-text small col s2">star</i>
+                                            <i class="material-icons yellow-text small col s2">star</i>
                                         </c:if>
                                         <c:if test="${star > statisticInfo.ratingScore}">
-                                            <i class="expertise-rating-star material-icons yellow-text small col s2">star_border</i>
+                                            <i class="material-icons yellow-text small col s2">star_border</i>
                                         </c:if>
                                     </c:forEach>
                                 </c:if>
@@ -275,7 +275,7 @@
                     <p class="header-verification tertiary-color-text center">SERVIÇOS REALIZADOS</p>
                     <div class="row secondary-background-color no-margin">
                         <h5 class="info-headers no-margin center white-text center">
-                            <strong id="expertise-jobs">${statisticInfo.jobs}</strong>
+                            <strong id="expertise-jobs" class="expertise-jobs">${statisticInfo.jobs}</strong>
                         </h5>
                     </div>
                 </div>
@@ -283,7 +283,7 @@
                     <p class="header-verification tertiary-color-text center">AVALIAÇÕES</p>
                     <div class="row secondary-background-color no-margin">
                         <h5 class="info-headers no-margin center white-text center">
-                            <strong id="expertise-ratings">${statisticInfo.ratings}</strong>
+                            <strong id="expertise-ratings" class="expertise-ratings">${statisticInfo.ratings}</strong>
                         </h5>
                     </div>
                 </div>
@@ -291,7 +291,7 @@
                     <p class="header-verification tertiary-color-text center">COMENTÁRIOS</p>
                     <div class="row secondary-background-color no-margin">
                         <h5 class="info-headers no-margin center white-text center">
-                            <strong id="expertise-comments">${statisticInfo.comments}</strong>
+                            <strong id="expertise-comments" class="expertise-comments">${statisticInfo.comments}</strong>
                         </h5>
                     </div>
                 </div>
@@ -307,3 +307,5 @@
         </c:when>
     </c:choose>
 </div>
+
+<script src="assets/resources/scripts/professional-statistics.js"></script>
