@@ -8,6 +8,7 @@ import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.PhoneNumberVerificationService;
+import br.edu.utfpr.servicebook.util.PasswordUtil;
 import br.edu.utfpr.servicebook.util.UserTemplateInfo;
 import br.edu.utfpr.servicebook.util.TemplateUtil;
 import org.slf4j.Logger;
@@ -654,5 +655,87 @@ public class MyAccountController {
         redirectAttributes.addFlashAttribute("msg", "O telefone foi verificado com sucesso!");
 
         return "redirect:/minha-conta/edita-telefone/" + id;
+    }
+
+    //edita senha
+
+    /**
+     * Apresenta a tela de editar senha do usuário.
+     * @param id
+     * @return
+     * @throws IOException
+     */
+    @GetMapping("/edita-senha/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public ModelAndView showFormEditPassword(@PathVariable Long id) throws IOException {
+
+        Optional<User> oUser = this.userService.findById(id);
+
+        if (!oUser.isPresent()) {
+            throw new EntityNotFoundException("O usuário não foi encontrado.");
+        }
+
+        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
+        User userAuthenticated = oUserAuthenticated.get();
+
+        if (id != userAuthenticated.getId()) {
+            throw new AuthenticationCredentialsNotFoundException("Você não tem permissão para alterar esta senha.");
+        }
+
+        UserDTO userDTO = userMapper.toDto(userAuthenticated);
+
+        ModelAndView mv = new ModelAndView("professional/account/my-password");
+        mv.addObject("user", userDTO);
+
+        return mv;
+    }
+
+    @PatchMapping("/edita-senha/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public String savePassword(
+            @PathVariable Long id,
+            @Validated(UserDTO.RequestUserPasswordInfoGroupValidation.class) UserDTO userDTO,
+            BindingResult errors,
+            RedirectAttributes redirectAttributes)
+            throws IOException {
+
+        if (errors.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+            return "redirect:/minha-conta/edita-senha/" + id;
+        }
+
+        //verifica se a senha e contrasenha são iguais
+        if(!userDTO.getPassword().equals(userDTO.getRepassword())){
+            errors.rejectValue("password", "error.dto", "As senhas não correspondem. Por favor, tente novamente.");
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+            return "redirect:/minha-conta/edita-senha/" + id;
+        }
+
+        Optional<User> oUser = this.userService.findById(id);
+
+        if(!oUser.isPresent()) {
+            throw new EntityNotFoundException("O usuário não foi encontrado.");
+        }
+
+        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
+        User userAuthenticated = oUserAuthenticated.get();
+
+        if (id != userAuthenticated.getId()) {
+            throw new AuthenticationCredentialsNotFoundException("Você não tem permissão para alterar esta senha.");
+        }
+
+        //verifica se realmente está alterando a senha
+        if(PasswordUtil.isSamePassword(userDTO.getPassword(), userAuthenticated.getPassword())){
+            errors.rejectValue("password", "error.dto", "A senha informada é igual a senha atual. Por favor, tente novamente.");
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+            return "redirect:/minha-conta/edita-senha/" + id;
+        }
+
+        userAuthenticated.setPassword(userDTO.getPassword());
+        this.userService.save(userAuthenticated);
+
+        redirectAttributes.addFlashAttribute("msg", "Senha salva com sucesso.");
+
+        return "redirect:/minha-conta/edita-senha/" + id;
     }
 }
