@@ -604,7 +604,7 @@ public class UserRegisterController {
     @PermitAll
     public String saveUserAddress(
             HttpSession httpSession,
-            @Validated(AddressDTO.RequestUserAddressInfoGroupValidation.class) AddressDTO dto,
+            @Validated AddressDTO dto,
             BindingResult errors,
             RedirectAttributes redirectAttributes,
             Model model
@@ -686,8 +686,7 @@ public class UserRegisterController {
                     IndividualDTO.RequestUserEmailInfoGroupValidation.class,
                     IndividualDTO.RequestUserPasswordInfoGroupValidation.class,
                     IndividualDTO.RequestUserPhoneInfoGroupValidation.class,
-                    IndividualDTO.RequestUserNameAndCNPJInfoGroupValidation.class,
-                    AddressDTO.RequestUserAddressInfoGroupValidation.class
+                    IndividualDTO.RequestUserNameAndCNPJInfoGroupValidation.class
             });
 
             if (errors.hasErrors()) {
@@ -705,8 +704,7 @@ public class UserRegisterController {
                     IndividualDTO.RequestUserEmailInfoGroupValidation.class,
                     IndividualDTO.RequestUserPasswordInfoGroupValidation.class,
                     IndividualDTO.RequestUserPhoneInfoGroupValidation.class,
-                    IndividualDTO.RequestUserNameAndCPFInfoGroupValidation.class,
-                    AddressDTO.RequestUserAddressInfoGroupValidation.class
+                    IndividualDTO.RequestUserNameAndCPFInfoGroupValidation.class
             });
 
             if (errors.hasErrors()) {

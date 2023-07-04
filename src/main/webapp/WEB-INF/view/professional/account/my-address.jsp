@@ -34,18 +34,14 @@
                         <h3 class="row center secondary-color-text">
                             Qual o seu endereço?
                         </h3>
-                        <h5 class="row center secondary-color-text">
+                        <h5 class="row secondary-color-text">
                             Será útil para filtrar serviços por região e de acordo com a distância
                             para o local de realização do serviço.
                         </h5>
-                        <form id="addres-form" method="post" action="${pageContext.request.contextPath}/minha-conta/salvar-endereco/${professional.id}">
+                        <form id="addres-form" method="post" action="${pageContext.request.contextPath}/minha-conta/meu-endereco/${professional.id}">
                             <input type="hidden" name="_method" value="PATCH"/>
+                            <input type="hidden" name="id" value="${professional.id}"/>
                             <div class="row spacing-buttons">
-                                <div class="row">
-                                    <div class="center">
-                                        <a id="btn-search-cep" class="waves-effect waves-light btn">Buscar CEP</a>
-                                    </div>
-                                </div>
                                 <div class="row">
                                     <div class="input-field col s8 offset-s2">
                                         <input id="postal-code" value="${professional.address.postalCode}" name="postalCode" type="text" placeholder="CEP"
@@ -54,6 +50,12 @@
                                         <span id="errorPostalCode" class="hide helper-text red-text darken-3"></span>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="center">
+                                        <button id="btn-search-cep" type="button" class="waves-effect waves-light btn-flat" disabled>Buscar CEP</button>
+                                    </div>
+                                </div>
+
                                 <div class="row">
                                     <div class="input-field col s8 offset-s2">
                                         <input id="number" name="number" value="${professional.address.number}" type="text" placeholder="Número"
@@ -77,9 +79,16 @@
                                 <div class="row">
                                     <c:if test="${not empty cities}">
                                         <div class="input-field col s8 offset-s2">
-                                            <select name="city">
+                                            <select id="city" name="city" disabled>
+                                                <option disabled selected>Selecione uma cidade</option>
                                                 <c:forEach var="city" items="${cities}">
-                                                    <option class="validate" id="city" value="${city.name}">${city.name} - ${city.state.uf}</option>
+                                                    <c:if test="${city.id == professional.address.city.id}">
+                                                        <option value="${city.id}" selected>${city.name}-${city.state.uf}</option>
+                                                    </c:if>
+
+                                                    <c:if test="${city.id != professional.address.city.id}">
+                                                        <option value="${city.id}">${city.name}-${city.state.uf}</option>
+                                                    </c:if>
                                                 </c:forEach>
                                             </select>
                                             <label for="city">Cidade</label>
@@ -89,28 +98,26 @@
                                 <div class="row">
                                     <c:if test="${not empty states}">
                                         <div class="input-field col s8 offset-s2 white-text">
-                                            <select name="state">
+                                            <select id="state" name="state" disabled>
+                                                <option disabled selected>Selecione um estado</option>
                                                 <c:forEach var="state" items="${states}">
-                                                    <option id="state" value="${state.name}" >${state.name}</option>
+                                                    <c:if test="${state.id == professional.address.city.state.id}">
+                                                        <option value="${state.id}" selected>${state.name}</option>
+                                                    </c:if>
+
+                                                    <c:if test="${state.id != professional.address.city.state.id}">
+                                                        <option value="${state.id}">${state.name}</option>
+                                                    </c:if>
                                                 </c:forEach>
                                             </select>
-                                            <label for="city">Estado</label>
+                                            <label for="state">Estado</label>
                                         </div>
                                     </c:if>
                                 </div>
                             </div>
-                            <div class="col s6 m3 offset-m3 spacing-buttons">
-                                <div class="center">
-                                    <a href="minha-conta/perfil" class="waves-effect waves-light btn btn-gray">
-                                        Voltar
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col s6 m3 spacing-buttons">
-                                <div class="center">
-                                    <button type="button" id="edit-button" class="waves-effect waves-light btn">Editar</button>
-                                    <button type="submit" id="save-button" class="waves-effect waves-light btn"  style="display: none">Salvar</button>
-                                </div>
+                            <div class="right">
+                                <button type="button" id="edit-button" class="waves-effect waves-light btn">Editar</button>
+                                <button type="submit" id="save-button" class="waves-effect waves-light btn"  style="display: none">Salvar</button>
                             </div>
                         </form>
                     </div>
@@ -129,11 +136,11 @@
         $('#postal-code').mask('00000-000');
         $('#edit-button').click(function () {
             $('#addres-form input').prop('disabled', false);
-            // deixei comentado pois não esta funcionando no select
-            // $('#addres-form select').prop('disabled', false);
-            console.log($('select'))
+            $('#addres-form select').prop('disabled', false);
+            $('#addres-form .btn-flat').prop('disabled', false);
             $(this).hide();
             $('#save-button').show();
+            $('select').formSelect();
         })
     })
 </script>

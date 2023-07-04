@@ -40,6 +40,14 @@ public class CityService {
         return this.cityRepository.findByNameAndState(name, state);
     }
 
+    public Optional<City> findByIdAndState(Long id, State state){
+        return this.cityRepository.findByIdAndState(id, state);
+    }
+
+    public Optional<City> findByIdAndState_Id(Long cityId, Long stateId){
+        return this.cityRepository.findByIdAndState_Id(cityId, stateId);
+    }
+
     public Optional<City> findByName(String name){
         return this.cityRepository.findByName(name);
     }
