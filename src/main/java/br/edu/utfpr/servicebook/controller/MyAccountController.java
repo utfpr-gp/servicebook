@@ -9,6 +9,7 @@ import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
+import br.edu.utfpr.servicebook.util.PasswordUtil;
 import br.edu.utfpr.servicebook.util.UserTemplateInfo;
 import br.edu.utfpr.servicebook.util.TemplateUtil;
 import org.slf4j.Logger;
@@ -287,6 +288,14 @@ public class MyAccountController {
         return "redirect:/minha-conta/meu-email/{id}";
     }
 
+    //edita senha
+
+    /**
+     * Apresenta a tela de editar senha do usuário.
+     * @param id
+     * @return
+     * @throws IOException
+     */
     @GetMapping("/edita-senha/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showFormEditPassword(@PathVariable Long id) throws IOException {
@@ -326,11 +335,9 @@ public class MyAccountController {
             return "redirect:/minha-conta/edita-senha/" + id;
         }
 
+        //verifica se a senha e contrasenha são iguais
         if(!userDTO.getPassword().equals(userDTO.getRepassword())){
             errors.rejectValue("password", "error.dto", "As senhas não correspondem. Por favor, tente novamente.");
-        }
-
-        if (errors.hasErrors()) {
             redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
             return "redirect:/minha-conta/edita-senha/" + id;
         }
@@ -346,6 +353,13 @@ public class MyAccountController {
 
         if (id != userAuthenticated.getId()) {
             throw new AuthenticationCredentialsNotFoundException("Você não tem permissão para alterar esta senha.");
+        }
+
+        //verifica se realmente está alterando a senha
+        if(PasswordUtil.isSamePassword(userDTO.getPassword(), userAuthenticated.getPassword())){
+            errors.rejectValue("password", "error.dto", "A senha informada é igual a senha atual. Por favor, tente novamente.");
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+            return "redirect:/minha-conta/edita-senha/" + id;
         }
 
         userAuthenticated.setPassword(userDTO.getPassword());
