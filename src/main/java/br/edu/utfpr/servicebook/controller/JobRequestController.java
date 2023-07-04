@@ -102,8 +102,7 @@ public class JobRequestController {
     @Autowired
     private ModerateService moderateService;
 
-    @Value("${api.key}")
-    private String API_KEY;
+
 
     public enum RequestDateSelect{
         today(0), tomorrow(1) , thisweek(2), nextweek(3), thismonth(4), nextmonth(5);
@@ -430,9 +429,9 @@ public class JobRequestController {
     }
 
 
-
-    public boolean isToxic(String text){
+    public boolean isToxic(String text) {
         String API_ENDPOINT = "https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze";
+        String API_KEY = "YOUR_API_KEY"; // Substitua pelo seu API key
 
         try {
             String requestBody = "{\"comment\": {\"text\": \"" + text + "\"}, \"languages\": [\"en\"], \"requestedAttributes\": {\"TOXICITY\": {}}}";
@@ -470,5 +469,7 @@ public class JobRequestController {
             return false;
         }
     }
+
+
 
 }
