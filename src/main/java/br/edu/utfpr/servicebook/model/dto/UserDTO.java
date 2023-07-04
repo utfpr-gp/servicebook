@@ -8,10 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Date;
@@ -24,13 +26,19 @@ public class UserDTO implements IWizardDTO, Serializable {
 
     protected Long id;
 
-    @Pattern(regexp = "^(\\s?[A-ZÀ-Ú][a-zà-ú]*)+(\\s[a-zà-ú]*)?(\\s[A-ZÀ-Ú][a-zà-ú]*)+$", message = "Nome inválido! Por favor, insira o nome completo.", groups = {UserDTO.RequestUserNameAndCPFInfoGroupValidation.class, UserDTO.RequestUserNameAndCNPJInfoGroupValidation.class})
+    @Pattern(regexp = "^(\\s?[A-ZÀ-Ú][a-zà-ú]*)+(\\s[a-zà-ú]*)?(\\s[A-ZÀ-Ú][a-zà-ú]*)+$", message = "Nome inválido! Por favor, insira o nome completo.", groups = {UserDTO.RequestUserNameAndCPFInfoGroupValidation.class, UserDTO.RequestUserNameAndCNPJInfoGroupValidation.class, UserDTO.RequestUpdatePersonalInfo.class})
     protected String name;
 
-    @CPF(message = "CPF inválido! Por favor, insira um CPF válido.", groups = UserDTO.RequestUserNameAndCPFInfoGroupValidation.class)
+    @CPF(message = "CPF inválido! Por favor, insira um CPF válido.", groups = {UserDTO.RequestUserNameAndCPFInfoGroupValidation.class, UserDTO.RequestUpdatePersonalInfo.class})
     protected String cpf;
-    @CNPJ(message = "CNPJ inválido! Por favor, insira um CNPJ válido.", groups = UserDTO.RequestUserNameAndCNPJInfoGroupValidation.class)
+
+    @CNPJ(message = "CNPJ inválido! Por favor, insira um CNPJ válido.", groups = {UserDTO.RequestUserNameAndCNPJInfoGroupValidation.class, UserDTO.RequestUpdatePersonalInfo.class})
     protected String cnpj;
+
+    //@Pattern(regexp = "^\\d{4}-(1[012]|0[1-9])-(3[01]|[12]\\d|0[0-9])$", message = "A data deve estar no formato yyyy-MM-dd", groups = UserDTO.RequestUpdatePersonalInfo.class)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Past(message = "Data de nascimento inválida! Por favor, insira uma data de nascimento válida.", groups = UserDTO.RequestUpdatePersonalInfo.class)
+    protected Date birthDate;
 
 
     @NotBlank(message = "Email inválido! Por favor, insira o email.", groups = UserDTO.RequestUserEmailInfoGroupValidation.class)
@@ -44,16 +52,12 @@ public class UserDTO implements IWizardDTO, Serializable {
     protected String repassword;
 
     protected String gender;
+
     protected String profilePicture;
     protected ProfileEnum profile;
-    protected Date birthDate;
 
     @Pattern(regexp = "^\\(?\\d{2}\\)?\\s?(\\d{4,5})-?(\\d{4})$", message = "Telefone inválido! Por favor, insira um número de telefone válido.", groups = UserDTO.RequestUserPhoneInfoGroupValidation.class)
     protected String phoneNumber;
-
-    public String getOnlyNumbersFromPhone() {
-      return getPhoneNumber().replaceAll("[^0-9]", "");
-  }
 
     protected boolean phoneVerified;
     protected boolean emailVerified;
@@ -86,6 +90,10 @@ public class UserDTO implements IWizardDTO, Serializable {
     }
 
     public interface RequestUserPhoneInfoGroupValidation {
+
+    }
+
+    public interface RequestUpdatePersonalInfo {
 
     }
 }
