@@ -1,5 +1,7 @@
 package br.edu.utfpr.servicebook.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -11,12 +13,15 @@ public class ModerateService {
     private final String rapidapiKey;
     private final String rapidapiHost;
 
+    private final String API_KEY;
 
     public ModerateService(
                              @Value("${X_RAPIDAPI_KEY}") String rapidapiKey,
-                             @Value("${X_RAPIDAPI_HOST}") String rapidapiHost) {
+                             @Value("${X_RAPIDAPI_HOST}") String rapidapiHost,
+                             @Value("${api.key}") String API_KEY) {
         this.rapidapiKey = rapidapiKey;
         this.rapidapiHost = rapidapiHost;
+        this.API_KEY = API_KEY;
 
 
     }
@@ -27,7 +32,7 @@ public class ModerateService {
      * @param imageUrl
      * @return
      */
-    public boolean nsfwFilter(String imageUrl) {
+    public boolean isNsfwImage(String imageUrl) {
         RestTemplate restTemplate = new RestTemplate();
 
         String apiUrl = "https://nsfw-image-classification1.p.rapidapi.com/img/nsfw";
@@ -70,5 +75,50 @@ public class ModerateService {
 
         // Retorna false caso ocorra algum erro na requisição
         return false;
+    }
+
+    public boolean isToxic(String text) {
+        String API_ENDPOINT = "https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze";
+
+        try {
+            String requestBody = "{\"comment\": {\"text\": \"" + text + "\"}, \"languages\": [\"en\"], \"requestedAttributes\": {\"TOXICITY\": {}}}";
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
+
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> responseEntity = restTemplate.exchange(
+                    API_ENDPOINT + "?key=" + API_KEY,
+                    HttpMethod.POST,
+                    requestEntity,
+                    String.class
+            );
+
+            String response = responseEntity.getBody();
+
+            // Usar Jackson para desserializar o JSON
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(response);
+
+            JsonNode attributeScores = jsonNode.path("attributeScores");
+            if (attributeScores.has("TOXICITY")) {
+                JsonNode toxicity = attributeScores.path("TOXICITY");
+                JsonNode summaryScore = toxicity.path("summaryScore");
+                float score = summaryScore.path("value").floatValue();
+                if(score >= 0.8){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

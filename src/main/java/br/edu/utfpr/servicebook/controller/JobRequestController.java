@@ -29,20 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-//importações de teste do isToxic (Depois será removido)
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
@@ -259,7 +245,7 @@ public class JobRequestController {
             return "client/job-request/wizard-step-04";
 
         }
-        if(isToxic(dto.getDescription())){
+        if(moderateService.isToxic(dto.getDescription())){
             System.out.println("Esse textp é toxico");
             redirectAttributes.addFlashAttribute("msg", "Este tipo de texto é inaprópriado para nosso site, por gentileza reescreva a mensagem utilizando outro tipo de linguagem");
             return "redirect:/requisicoes?passo=4";
@@ -288,7 +274,7 @@ public class JobRequestController {
             Map data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "jobs"));
 
             //realiza a moderação da imagem
-            if(moderateService.nsfwFilter((String)data.get("url"))){
+            if(moderateService.isNsfwImage((String)data.get("url"))){
                 String publicId = (String) data.get("public_id");
                 cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
                 redirectAttributes.addFlashAttribute("msg", "A imagem enviada contém conteúdo impróprio. Por favor, envie outra foto.");
@@ -429,46 +415,7 @@ public class JobRequestController {
     }
 
 
-    public boolean isToxic(String text) {
-        String API_ENDPOINT = "https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze";
-        String API_KEY = "AIzaSyApd2uNDxNDqcFGRLcpITliQmSNXEXncC0";
 
-        try {
-            String requestBody = "{\"comment\": {\"text\": \"" + text + "\"}, \"languages\": [\"en\"], \"requestedAttributes\": {\"TOXICITY\": {}}}";
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            HttpEntity<String> requestEntity = new HttpEntity<>(requestBody, headers);
-
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<String> responseEntity = restTemplate.exchange(
-                    API_ENDPOINT + "?key=" + API_KEY,
-                    HttpMethod.POST,
-                    requestEntity,
-                    String.class
-            );
-
-            String response = responseEntity.getBody();
-
-            // Usar Jackson para desserializar o JSON
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(response);
-
-            JsonNode attributeScores = jsonNode.path("attributeScores");
-            if (attributeScores.has("TOXICITY")) {
-                JsonNode toxicity = attributeScores.path("TOXICITY");
-                JsonNode summaryScore = toxicity.path("summaryScore");
-                float score = summaryScore.path("value").floatValue();
-                return score >= 0.8;
-            }
-
-            return false;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
 
 
