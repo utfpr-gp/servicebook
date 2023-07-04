@@ -253,7 +253,7 @@ public class ClientController {
 
         List<Follows> follows = followsService.findFollowProfessionalClient(oCandidate.get(), client.get());
         boolean isFollow = !follows.isEmpty();
-
+        System.out.println(jobCandidateDTO.getId());
         mv.addObject("jobCandidate", jobCandidateDTO);
         mv.addObject("isFollow", isFollow);
         mv.addObject("jobClient", individualDTO);

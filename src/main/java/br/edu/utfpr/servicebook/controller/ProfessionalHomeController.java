@@ -105,6 +105,8 @@ public class ProfessionalHomeController {
 
     @Autowired
     private PaginationUtil paginationUtil;
+    @Autowired
+    private UserService userService;
 
     /**
      * Mostra a tela da minha conta no perfil do profissional, mostrando os anúncios disponíveis por default.
@@ -118,6 +120,8 @@ public class ProfessionalHomeController {
         log.debug("ServiceBook: Minha conta.");
    
         Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
+//        Optional<User> oProfessional = (userService.findByEmail(authentication.getEmail()));
+
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
@@ -131,7 +135,6 @@ public class ProfessionalHomeController {
                 .collect(Collectors.toList());
 
         IndividualDTO professionalDTO = individualMapper.toDto(oProfessional.get());
-
         Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(oProfessional.get());
         professionalDTO.setFollowingAmount(oProfessionalFollowingAmount.get());
 

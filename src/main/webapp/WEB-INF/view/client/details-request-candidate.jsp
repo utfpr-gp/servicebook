@@ -33,14 +33,14 @@
                 <div class="col s4">
                   <c:if test="${!isFollow}">
                     <form method="post" id="follow-form">
-                      <input type="hidden" name="professional" value="${jobCandidate.getIndividual().id}"/>
+                      <input type="hidden" name="professional" value="${jobCandidate.getId()}"/>
                       <input type="hidden" name="client" value="${jobClient.id}"/>
                       <button alt="seguir" type="button"
                               class="waves-effect waves-light btn" id="follow-button">Seguir</button>
                     </form>
                   </c:if>
                   <c:if test="${isFollow}">
-                      <button type="button" data-professional="${jobCandidate.getIndividual().id}"
+                      <button type="button" data-professional="${jobCandidate.getId()}"
                               class="waves-effect waves-light btn"
                               id="unfollow-button">Deixar de Seguir</button>
                   </c:if>

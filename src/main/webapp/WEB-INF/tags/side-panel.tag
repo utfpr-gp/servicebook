@@ -121,7 +121,9 @@
             <div class="row secondary-background-color no-margin">
                 <div class="col s12">
                     <h5 class="name-header no-margin center white-text">
-                        <strong><a href="profissionais-favoritos">${userInfo.followingAmount}</a></strong>
+                        <%--apresenta se acessar como cliente--%>
+                        <strong><a href="profissionais-favoritos">${individualInfo.followingAmount}</a></strong>
+                        <%--apresenta se acessar como cliente--%>
                     </h5>
                 </div>
             </div>
