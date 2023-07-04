@@ -6,12 +6,14 @@
     <jsp:body>
         <main class="container">
             <div class="row">
-                <t:side-panel userInfo="${userInfo}" followdto="${followdto}" statisticInfo="${statisticInfo}"></t:side-panel>
-                <div class="col m10 offset-m1 l9">
-                    <a id="show-area-perfil"
-                       class="hide-on-large-only show-area-perfil waves-effect waves-light btn btn-floating grey darken-3 z-depth-A">
-                        <i class="material-icons">compare_arrows</i>
-                    </a>
+
+                <!-- Painel lateral -->
+                <div class="col m4 l3 hide-on-med-and-down">
+                    <t:side-panel userInfo="${userInfo}" followdto="${followdto}" statisticInfo="${statisticInfo}"></t:side-panel>
+                </div>
+
+                <!-- Painel com as solicitações de serviços -->
+                <div class="col s12 l9">
                     <div class="row">
                         <div class="col s12">
                             <h2 class="secondary-color-text">Minhas especialidades</h2>
@@ -82,10 +84,10 @@
                     <div id="modal-expertises" class="modal">
                         <div class="modal-content ui-front">
                             <div class="row">
-                                <div class="col s9">
-                                    <h4>Escolha uma ou mais especialidades!</h4>
+                                <div class="col s9 offset-m1">
+                                    <h4 class="flow-text">Escolha uma ou mais especialidades!</h4>
                                 </div>
-                                <div class="col s3">
+                                <div class="col s3 m2">
                                     <button class="modal-close modal-expertise-close right">
                                         <i class="material-icons">close</i>
                                     </button>
@@ -93,7 +95,7 @@
                             </div>
 
                             <div class="row">
-                                <div class="col s12">
+                                <div class="col s12 m10 offset-m1">
                                     <div class="row">
                                         <div class="input-field col s12">
                                             <i class="material-icons prefix">work</i>
@@ -110,7 +112,7 @@
                                             <li>
                                                 <label class='card-expertise col s12 m10 offset-m1'>
                                                     <input id='ids' name='ids' type='checkbox' class='reset-checkbox' value="${expertise.id}">
-                                                    <span class='center name-expertise'>
+                                                    <span class='center name-expertise expertise-select-card' style="cursor: pointer">
                                                     <i class='material-icons'>work</i>
                                                     ${expertise.name}
                                                 </span>
@@ -118,14 +120,15 @@
                                             </li>
                                         </c:forEach>
                                     </ul>
-
-
-                                    <div class="input-field col s8 offset-s1">
-                                        <button id="submit-expertise" type="submit" class="btn waves-effect waves-light left">Salvar</button>
+                                    <div class="row">
+                                        <div class="col s12 m10 offset-m1">
+                                            <div class="right">
+                                                <button id="submit-expertise" type="submit" class="btn waves-effect waves-light">Salvar</button>
+                                                <a class="btn waves-effect waves-light modal-close">Cancelar</a>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="input-field col s3">
-                                        <a class="btn waves-effect waves-light modal-close">Fechar</a>
-                                    </div>
+
                                 </form>
                             </div>
                         </div>

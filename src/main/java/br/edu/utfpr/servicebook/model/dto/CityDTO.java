@@ -16,6 +16,9 @@ public class CityDTO {
 
     private MultipartFile image;
 
+    private String pathImage;
+
+    @NotNull(message = "O nome do estado é obrigatório")
     private Long idState;
 
 }

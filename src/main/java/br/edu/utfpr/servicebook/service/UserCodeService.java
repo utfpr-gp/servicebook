@@ -27,6 +27,10 @@ public class UserCodeService {
         return this.userCodeRepository.findByEmail(email);
     }
 
+    public Optional<UserCode> findByPhoneNumber(String phoneNumber) {
+        return this.userCodeRepository.findByPhoneNumber(phoneNumber);
+    }
+
     public Optional<UserCode> findByCode(String code) {
         return this.userCodeRepository.findByCode(code);
     }
