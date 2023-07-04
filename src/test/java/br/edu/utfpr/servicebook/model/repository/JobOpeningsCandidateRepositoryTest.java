@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class JobCandidateRepositoryTest {
+class JobOpeningsCandidateRepositoryTest {
 
     @Autowired
     JobRequestRepository jobRequestRepository;
@@ -34,7 +34,7 @@ class JobCandidateRepositoryTest {
     ProfessionalExpertiseRepository professionalExpertiseRepository;
 
     public static final Logger log =
-            LoggerFactory.getLogger(JobCandidateRepositoryTest.class);
+            LoggerFactory.getLogger(JobOpeningsCandidateRepositoryTest.class);
 
     final Date dateOfNow = new Date();
 

@@ -15,9 +15,9 @@ import java.util.Optional;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class JobContractedRepositoryTest {
+class JobOpeningsContractedRepositoryTest {
 
-    public static final Logger log = LoggerFactory.getLogger(JobContractedRepositoryTest.class);
+    public static final Logger log = LoggerFactory.getLogger(JobOpeningsContractedRepositoryTest.class);
 
     @Autowired
     IndividualRepository individualRepository;

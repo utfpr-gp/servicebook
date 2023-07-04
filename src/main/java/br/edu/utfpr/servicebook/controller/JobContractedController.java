@@ -90,6 +90,7 @@ public class JobContractedController {
         String currentUserEmail = authentication.getEmail();
 
         Optional<Individual> oindividual = individualService.findByEmail(currentUserEmail);
+
         if(!oindividual.isPresent()){
             throw new EntityNotFoundException("O usuário não foi encontrado!");
         }
