@@ -1,14 +1,12 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" %>
-<%@ taglib
-        uri="http://www.springframework.org/tags/form" prefix="form" %>
-<%@taglib
-        prefix="t" tagdir="/WEB-INF/tags" %>
-<%@ taglib prefix="c"
-           uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page contentType="text/html" pageEncoding="UTF-8" %> <%@ taglib
+uri="http://www.springframework.org/tags/form" prefix="form" %> <%@taglib
+prefix="t" tagdir="/WEB-INF/tags" %> <%@ taglib prefix="c"
+uri="http://java.sun.com/jsp/jstl/core" %>
 
 <t:template title="Minhas Solicitações" userInfo="${user}">
     <jsp:body>
         <main class="container">
+            <!-- row -->
             <div class="row">
                 <!-- Painel lateral -->
                 <div class="col m4 l3 hide-on-med-and-down">
@@ -46,26 +44,16 @@
                             </a>
                         </li>
                     </ul>
-                    <div id="disponiveis" class="col s12 no-padding">
-
-                    </div>
-                    <div id="paraOrcamento" class="col s12 no-padding">
-
-                    </div>
-                    <div id="paraFazer" class="col s12 no-padding">
-
-                    </div>
+                    <div id="disponiveis" class="col s12 no-padding"></div>
+                    <div id="paraOrcamento" class="col s12 no-padding"></div>
+                    <div id="paraFazer" class="col s12 no-padding"></div>
                     <div id="fazendo" class="col s12 no-padding"></div>
-                    <div id="executados" class="col s12 no-padding">
-                    </div>
+                    <div id="executados" class="col s12 no-padding"></div>
                 </div>
             </div>
+            <!-- fim row -->
 
-
-            </div>
-            </div>
-            </div>
-            </div>
+            <!-- Modal de remoção -->
             <div id="modal-delete" class="modal">
                 <div class="modal-content">
                     <form action="" method="post">
@@ -94,7 +82,9 @@
                     </form>
                 </div>
             </div>
+            <!-- Fim do modal de remoção -->
 
+            <!-- Modal de mensagem -->
             <div id="modal-msg" class="modal">
                 <div class="modal-content">
                     <div class="modal-content">
@@ -110,15 +100,16 @@
                     </div>
                 </div>
             </div>
-        </main>
-    </jsp:body>
+            <!-- Fim do modal de mensagem -->
+    </main>
+  </jsp:body>
 </t:template>
 <script src="assets/resources/scripts/requests.js"></script>
 
 <c:if test="${not empty msg}">
-    <script>
-        $(document).ready(function () {
-            $("#modal-msg").modal("open");
-        });
-    </script>
+  <script>
+    $(document).ready(function () {
+      $("#modal-msg").modal("open");
+    });
+  </script>
 </c:if>
