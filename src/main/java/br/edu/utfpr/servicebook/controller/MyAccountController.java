@@ -292,8 +292,10 @@ public class MyAccountController {
         return "redirect:/minha-conta/meu-email/{id}";
     }
 
+    //edição de informações pessoais do individuo e empresa
+
     /**
-     * Mostra a tela de edição das informações pessoais do profissional.
+     * Mostra a tela de edição das informações do indivíduo e empresa
      *
      * @param id
      * @return
@@ -324,6 +326,15 @@ public class MyAccountController {
         return mv;
     }
 
+    /**
+     * Atualiza as informações pessoais do indivíduo e empresa
+     * @param id
+     * @param userDTO
+     * @param errors
+     * @param redirectAttributes
+     * @return
+     * @throws IOException
+     */
     @PatchMapping("/cadastra-informacoes-pessoais/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String updateMyPersonalData(
@@ -333,74 +344,68 @@ public class MyAccountController {
             RedirectAttributes redirectAttributes
     ) throws IOException {
 
-        Optional<User> oUser = this.userService.findByEmail(authentication.getEmail());
-
-        if (!oUser.isPresent()) {
-            throw new EntityNotFoundException("Profissional não encontrado pelo id informado.");
-        }
-
-        if (!id.equals(oUser.get().getId())) {
-            throw new InvalidParamsException("Acesso não autorizado!");
-        }
-
         if (errors.hasErrors()) {
             redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
-
             return "redirect:/minha-conta/informacoes-pessoais/" + id;
         }
 
-        if (userDTO.getId() != null) {
+        Optional<User> oUser = this.userService.findById(id);
 
-            User user = oUser.get();
-            user.setName(userDTO.getName());
+        if (!oUser.isPresent()) {
+            throw new EntityNotFoundException("O usuário não foi encontrado.");
+        }
 
-            if (userDTO.getCnpj() == null) {
-                Optional<Individual> oInvididual = this.individualService.findById(id);
+        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
+        User userAuthenticated = oUserAuthenticated.get();
 
-                //verifica se o CPF já está cadastrado para outro usuário
-                Optional<Individual> oOtherUser = individualService.findByCpf(userDTO.getCpf());
+        if (id != userAuthenticated.getId()) {
+            throw new AuthenticationCredentialsNotFoundException("Você não tem permissão para atualizar essas informações pessoais.");
+        }
 
-                if(oOtherUser.isPresent() && oOtherUser.get().getId() != user.getId()) {
-                    errors.rejectValue(
-                            "cpf",
-                            "error.dto.cpf.duplicate",
-                            "Este CPF já está cadastrado para outro usuário."
-                    );
-                    redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+        if (userDTO.getCnpj() == null) {
+            Optional<Individual> oInvididual = this.individualService.findById(id);
 
-                    return "redirect:/minha-conta/informacoes-pessoais/" + id;
-                }
+            //verifica se o CPF já está cadastrado para outro usuário
+            Optional<Individual> oOtherUser = individualService.findByCpf(userDTO.getCpf());
 
-                Individual individual = oInvididual.get();
-                individual.setCpf(userDTO.getCpf());
-
-                individual.setBirthDate(userDTO.getBirthDate());
-
-                this.individualService.save(individual);
-            } else {
-                Optional<Company> oCompany = this.companyService.findById(id);
-
-                //verifica se o CNPJ já está cadastrado para outro usuário
-                Optional<Company> oOtherCompany = this.companyService.findByCnpj(userDTO.getCnpj());
-
-                if(oOtherCompany.isPresent() && oOtherCompany.get().getId() != user.getId()) {
-                    errors.rejectValue(
-                            "cnpj",
-                            "error.dto.cnpj.duplicate",
-                            "Este CNPJ já está cadastrado para outro usuário."
-                    );
-                    redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
-
-                    return "redirect:/minha-conta/informacoes-pessoais/" + id;
-                }
-
-                Company company = oCompany.get();
-                company.setCnpj(userDTO.getCnpj());
-
-                this.companyService.save(company);
+            if(oOtherUser.isPresent() && oOtherUser.get().getId() != userAuthenticated.getId()) {
+                errors.rejectValue(
+                        "cpf",
+                        "error.dto.cpf.duplicate",
+                        "Este CPF já está cadastrado para outro usuário."
+                );
+                redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+                return "redirect:/minha-conta/informacoes-pessoais/" + id;
             }
 
-            this.userService.save(user);
+            Individual individual = oInvididual.get();
+            individual.setName(userDTO.getName());
+            individual.setCpf(userDTO.getCpf());
+            individual.setBirthDate(userDTO.getBirthDate());
+
+            this.individualService.save(individual);
+        } else {
+            Optional<Company> oCompany = this.companyService.findById(id);
+
+            //verifica se o CNPJ já está cadastrado para outro usuário
+            Optional<Company> oOtherCompany = this.companyService.findByCnpj(userDTO.getCnpj());
+
+            if(oOtherCompany.isPresent() && oOtherCompany.get().getId() != userAuthenticated.getId()) {
+                errors.rejectValue(
+                        "cnpj",
+                        "error.dto.cnpj.duplicate",
+                        "Este CNPJ já está cadastrado para outro usuário."
+                );
+                redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+
+                return "redirect:/minha-conta/informacoes-pessoais/" + id;
+            }
+
+            Company company = oCompany.get();
+            company.setName(userDTO.getName());
+            company.setCnpj(userDTO.getCnpj());
+
+            this.companyService.save(company);
         }
 
         redirectAttributes.addFlashAttribute("msg", "Informações pessoais atualizadas com sucesso!");

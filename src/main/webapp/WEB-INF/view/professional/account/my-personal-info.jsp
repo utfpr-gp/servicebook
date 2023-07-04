@@ -3,6 +3,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <t:template title="Minhas Informações Pessoais">
     <jsp:body>
@@ -61,7 +62,8 @@
                             </div>
                             <div class="row">
                                 <div class="input-field">
-                                    <input type="date" id="birthDate" name="birthDate" disabled class="validate">
+                                    <fmt:formatDate var="formattedDate" value="${userDTO.birthDate}" pattern="yyyy-MM-dd" />
+                                    <input type="date" id="birthDate" name="birthDate" disabled class="validate" value="${formattedDate}">
                                     <label for="birthDate" class="active">Atualize sua data de nascimento:</label>
                                 </div>
                             </div>
