@@ -12,6 +12,8 @@ import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
+import br.edu.utfpr.servicebook.sse.EventSSE;
+import br.edu.utfpr.servicebook.sse.SSEService;
 import br.edu.utfpr.servicebook.util.DateUtil;
 import br.edu.utfpr.servicebook.util.WizardSessionUtil;
 import br.edu.utfpr.servicebook.util.TemplateUtil;
@@ -50,6 +52,10 @@ import java.util.stream.Collectors;
 @RequestMapping("/requisicoes")
 @SessionAttributes("wizard")
 public class JobRequestController {
+
+
+    @Autowired
+    private SSEService sseService;
 
     @Autowired
     private JobRequestService jobRequestService;
@@ -349,6 +355,10 @@ public class JobRequestController {
 
         //jobRequest.setImage(sessionDTO.getImageSession());
         jobRequestService.save(jobRequest);
+        //envia a notificação SSE
+        EventSSE eventSse = new EventSSE(EventSSE.Status.JOB_CONFIRMED, jobRequest.getDescription().toString(), user.getName(), jobRequest.getUser().getName(), jobRequest.getUser().getEmail());
+        sseService.send(eventSse);
+        System.out.println("Push: " + eventSse.getMessage());
         redirectAttributes.addFlashAttribute("msg", "Requisição confirmada!");
 
         return "redirect:/requisicoes/passo-8";
@@ -373,6 +383,9 @@ public class JobRequestController {
         List<ProfessionalSearchItemDTO> professionalSearchItemDTOS = professionals.stream().limit(3)
                 .map(s -> individualMapper.toSearchItemDto(s, individualService.getExpertises(s)))
                 .collect(Collectors.toList());
+
+
+
 
         mv.addObject("professionals", professionalSearchItemDTOS);
         mv.addObject("professionalsAmount", professionalSearchItemDTOS.size());
