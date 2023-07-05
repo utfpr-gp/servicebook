@@ -2,6 +2,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <t:template title="Servicebook - Início">
     <jsp:body>
@@ -70,7 +71,7 @@
                     </a>
                 </div>
 
-                <c:if test="${logged == false}">
+                <sec:authorize access="!isAuthenticated()">
                     <div class="divider"></div>
 
                     <div class="row center-align">
@@ -96,15 +97,14 @@
 
                         <a class="waves-effect waves-light btn" href="login">Entrar</a>
                     </div>
-                </c:if>
-                <c:if test="${logged == false}">
+
                     <div class="divider"></div>
 
                     <div class="row center-align">
                         <p>VOCÊ AINDA NÃO TEM UMA CONTA?</p>
                         <a class="waves-effect waves-light btn" href="cadastrar-se">Cadastrar-se</a>
                     </div>
-                </c:if>
+                </sec:authorize>
             </div>
         </div>
 
