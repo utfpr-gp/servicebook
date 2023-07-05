@@ -236,8 +236,6 @@ public class JobController {
             throw new EntityNotFoundException("Erro ao remover, registro não encontrado para o id " + id);
         }
 
-        JobDTO jobDTO = jobMapper.toDto(oJob.get());
-
         try{
             this.jobService.delete(id);
             redirectAttributes.addFlashAttribute("msg", "A vaga de emprego foi removida com sucesso!");
