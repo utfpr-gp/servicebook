@@ -38,7 +38,7 @@
                     </c:if>
                     <h5 class="center edit-link tertiary-color-text"><a class="tertiary-color-text" href="#" id="editLink">Editar foto</a></h5>
                     <form id="imageUploadForm" action="${pageContext.request.contextPath}/minha-conta/enviar-foto" method="POST" enctype="multipart/form-data">
-                        <input type="file" name="fileUpload" id="fileUpload" style="display: none;">
+                        <input type="file" name="fileUpload" id="fileUpload" style="display: none;" accept="image/png, image/jpeg, image/jpg">
                         <button type="submit" id="submitButton" style="display: none;"></button>
                     </form>
                 </div>

@@ -36,6 +36,8 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Map;
 
@@ -696,31 +698,50 @@ public class MyAccountController {
             return "redirect:/minha-conta/perfil";
         }
 
-        try {
-            Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+
+        if(isValidateImage(file)){
+            try {
+                Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
 
 
-            String imageUrl = (String) uploadResult.get("url");
+                String imageUrl = (String) uploadResult.get("url");
 
-            if(moderateService.nsfwFilter(imageUrl)){
-                String publicId = (String) uploadResult.get("public_id");
-                cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
-                redirectAttributes.addFlashAttribute("msgError", "A imagem enviada contém conteúdo impróprio. Por favor, envie outra foto.");
-                return "redirect:/minha-conta/perfil";
+                if(moderateService.nsfwFilter(imageUrl)){
+                    String publicId = (String) uploadResult.get("public_id");
+                    cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+                    redirectAttributes.addFlashAttribute("msgError", "A imagem enviada contém conteúdo impróprio. Por favor, envie outra foto.");
+                    return "redirect:/minha-conta/perfil";
+                }
+
+
+
+                User user = oUser.get();
+                user.setProfilePicture(imageUrl);
+                userService.save(user);
+
+                redirectAttributes.addFlashAttribute("msg", "Foto enviada com sucesso!");
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("msgError", "Ocorreu um erro ao enviar a foto.");
             }
-
-
-
-            User user = oUser.get();
-            user.setProfilePicture(imageUrl);
-            userService.save(user);
-
-            redirectAttributes.addFlashAttribute("msg", "Foto enviada com sucesso!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("msgError", "Ocorreu um erro ao enviar a foto.");
+        }
+        else{
+            redirectAttributes.addFlashAttribute("msgError", "Você não enviou uma imagem em formato valido. Por gentileza selecione imagens em png,jpg ou jpeg");
+            return "redirect:/minha-conta/perfil";
         }
 
         return "redirect:/minha-conta/perfil";
+    }
+
+    public boolean isValidateImage(MultipartFile image){
+        List<String> contentTypes = Arrays.asList("image/png", "image/jpg", "image/jpeg");
+
+        for(int i = 0; i < contentTypes.size(); i++){
+            if(image.getContentType().toLowerCase().startsWith(contentTypes.get(i))){
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 
