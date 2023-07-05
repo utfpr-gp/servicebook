@@ -246,11 +246,10 @@ public class JobRequestController {
 
         }
         if(moderateService.isToxic(dto.getDescription())){
-            System.out.println("Esse textp é toxico");
             redirectAttributes.addFlashAttribute("msg", "Este tipo de texto é inaprópriado para nosso site, por gentileza reescreva a mensagem utilizando outro tipo de linguagem");
             return "redirect:/requisicoes?passo=4";
         }
-        System.out.println();
+
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         sessionDTO.setDescription(dto.getDescription());
 

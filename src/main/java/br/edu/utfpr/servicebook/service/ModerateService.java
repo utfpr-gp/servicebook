@@ -12,7 +12,6 @@ import org.springframework.web.client.RestTemplate;
 public class ModerateService {
     private final String rapidapiKey;
     private final String rapidapiHost;
-
     private final String API_KEY;
 
     public ModerateService(
@@ -22,10 +21,7 @@ public class ModerateService {
         this.rapidapiKey = rapidapiKey;
         this.rapidapiHost = rapidapiHost;
         this.API_KEY = API_KEY;
-
-
     }
-
 
     /**
      * Verifica se a imagem que acessível via URL apresenta conteúdo NSFW (Not Safe For Work).
@@ -77,6 +73,11 @@ public class ModerateService {
         return false;
     }
 
+    /**
+     * Verifica se o texto é tóxico.
+     * @param text
+     * @return
+     */
     public boolean isToxic(String text) {
         String API_ENDPOINT = "https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze";
 
