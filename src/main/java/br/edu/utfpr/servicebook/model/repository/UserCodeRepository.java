@@ -11,6 +11,8 @@ public interface UserCodeRepository extends JpaRepository<UserCode, Long> {
 
     Optional<UserCode> findByEmail(String email);
 
+    Optional<UserCode> findByPhoneNumber(String phoneNumber);
+
     Optional<UserCode> findByCode(String code);
 
     Optional<UserCode> findByEmailAndCode(String email, String code);
