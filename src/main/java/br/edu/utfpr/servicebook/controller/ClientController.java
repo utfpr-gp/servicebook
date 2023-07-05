@@ -95,6 +95,10 @@ public class ClientController {
     @Autowired
     private PaginationUtil paginationUtil;
 
+    @Autowired
+    private ProfessionalMapper professionalMapper;
+
+
     @GetMapping
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView show() throws Exception {
@@ -250,7 +254,7 @@ public class ClientController {
 
         Optional<Individual> client = (individualService.findByEmail(authentication.getEmail()));
         IndividualDTO individualDTO = individualMapper.toDto(client.get());
-
+        jobCandidateDTO.setIndividual(professionalMapper.toMinDto(oCandidate.get()));
         List<Follows> follows = followsService.findFollowProfessionalClient(oCandidate.get(), client.get());
         boolean isFollow = !follows.isEmpty();
         System.out.println(jobCandidateDTO.getId());
