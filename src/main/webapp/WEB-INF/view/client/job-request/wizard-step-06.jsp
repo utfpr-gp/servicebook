@@ -1,7 +1,9 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags"%>
+
 <t:template title="Etapa 06">
     <jsp:body>
 
@@ -75,19 +77,21 @@
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <div class="row center-align">
-                            <p> LOGIN PARA EFETIVAR O SEU PEDIDO E RECEBER OS CONTATOS DOS PROFISSIONAIS!</p>
-                            <a class="waves-effect waves-light btn" href="login">Entrar</a>
-                        </div>
+                    <sec:authorize access="!isAuthenticated()">
+                        <div>
+                            <div class="row center-align">
+                                <p> LOGIN PARA EFETIVAR O SEU PEDIDO E RECEBER OS CONTATOS DOS PROFISSIONAIS!</p>
+                                <a class="waves-effect waves-light btn" href="login">Entrar</a>
+                            </div>
 
-                        <div class="divider"></div>
+                            <div class="divider"></div>
 
-                        <div class="row center-align">
-                            <p>VOCÊ AINDA NÃO TEM UMA CONTA?</p>
-                            <a class="waves-effect waves-light btn" href="cadastrar-se">Cadastrar-se</a>
+                            <div class="row center-align">
+                                <p>VOCÊ AINDA NÃO TEM UMA CONTA?</p>
+                                <a class="waves-effect waves-light btn" href="cadastrar-se">Cadastrar-se</a>
+                            </div>
                         </div>
-                    </div>
+                    </sec:authorize>
                 </div>
             </div>
         </main>

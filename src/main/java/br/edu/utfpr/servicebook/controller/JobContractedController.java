@@ -116,6 +116,17 @@ public class JobContractedController {
             jobRequest.setStatus(JobRequest.Status.BUDGET);
             jobRequestService.save(jobRequest);
         }
+//                * @param message
+//                * @param serviceDescription descrição do serviço
+//                * @param fromEmail email do usuário que realizou o evento
+//                * @param fromName nome do usuário que realizou o evento
+//                * @param toEmail email do destinatário do evento
+        EventSSE eventSse = new EventSSE(EventSSE.Status.JOB_CONFIRMED,
+                jobContracted.getJobRequest().getDescription(),
+                currentUserEmail,
+                authentication.getAuthentication().getName(),
+                jobContracted.getJobRequest().getUser().getEmail());
+        sseService.send(eventSse);
 
         redirectAttributes.addFlashAttribute("msg", "A atualização foi salva com sucesso!");
 
