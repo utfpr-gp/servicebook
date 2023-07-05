@@ -9,14 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import javax.transaction.Transactional;
 import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class JobRequestRepositoryTest {
+class JobOpeningsRequestRepositoryTest {
 
     @Autowired
     JobRequestRepository jobRequestRepository;
@@ -37,7 +34,7 @@ class JobRequestRepositoryTest {
     JobContractedRepository jobContractedRepository;
 
     public static final Logger log =
-            LoggerFactory.getLogger(JobRequestRepositoryTest.class);
+            LoggerFactory.getLogger(JobOpeningsRequestRepositoryTest.class);
 
     final Date dateOfNow = new Date();
 
