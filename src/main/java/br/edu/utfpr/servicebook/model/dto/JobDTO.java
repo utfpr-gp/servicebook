@@ -5,17 +5,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
+/**
+ * Classe que representa o objeto de transferência de dados da entidade Job.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class JobOpeningsDTO implements Serializable {
-
+public class JobDTO implements Serializable {
 
     private Long id;
 

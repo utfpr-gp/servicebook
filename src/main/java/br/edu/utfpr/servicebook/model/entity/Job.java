@@ -6,17 +6,14 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
-@Table(name = "jobOpenings")
+@Table(name = "job")
 @NoArgsConstructor(force = true)
 @RequiredArgsConstructor
 @Entity
-public class JobOpenings implements Serializable{
+public class Job implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

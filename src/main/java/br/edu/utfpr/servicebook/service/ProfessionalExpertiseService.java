@@ -18,12 +18,12 @@ public class ProfessionalExpertiseService {
         return this.professionalExpertiseRepository.selectRatingByProfessionalAndExpertise(professional_id, expertise_id);
     }
 
-    public Optional<ProfessionalExpertise> findByProfessionalAndExpertise(User individual, Expertise expertise) {
-        return this.professionalExpertiseRepository.findByProfessionalAndExpertise(individual, expertise);
+    public Optional<ProfessionalExpertise> findByProfessionalAndExpertise(User user, Expertise expertise) {
+        return this.professionalExpertiseRepository.findByProfessionalAndExpertise(user, expertise);
     }
 
-    public List<ProfessionalExpertise> findByProfessional(User individual) {
-        return this.professionalExpertiseRepository.findByProfessional(individual);
+    public List<ProfessionalExpertise> findByProfessional(User user) {
+        return this.professionalExpertiseRepository.findByProfessional(user);
     }
 
     public ProfessionalExpertise save(ProfessionalExpertise professionalExpertise) {
