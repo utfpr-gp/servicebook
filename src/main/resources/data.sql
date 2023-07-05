@@ -142,6 +142,6 @@ VALUES ('1', '1', 'false'),
 
 
 INSERT INTO follows (client_id, professional_id)
-VALUES (4, 1)
+VALUES (4, 2), (2, 4), (2, 3);
 
 

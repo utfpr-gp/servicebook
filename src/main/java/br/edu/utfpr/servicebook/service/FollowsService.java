@@ -1,8 +1,8 @@
-package br.edu.utfpr.servicebook.follower;
+package br.edu.utfpr.servicebook.service;
 
 import br.edu.utfpr.servicebook.model.entity.Follows;
-import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.User;
+import br.edu.utfpr.servicebook.model.repository.FollowsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ public class FollowsService {
     @Autowired
     private FollowsRepository followsRepository;
 
-    public List<Follows> findFollowsByProfessional(Individual professional) {
+    public List<Follows> findFollowsByProfessional(User professional) {
         return followsRepository.findFollowsByProfessional(professional);
     }
 
@@ -29,7 +29,7 @@ public class FollowsService {
         return followsRepository.countByProfessional(professional);
     }
 
-    public Optional<Long> countByClient(Individual client){
+    public Long countByClient(User client){
         return followsRepository.countByClient(client);
     }
 

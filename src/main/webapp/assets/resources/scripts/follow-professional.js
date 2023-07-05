@@ -1,5 +1,5 @@
 (function (){
-    const URL = "profissionais-favoritos";
+    const URL = "minha-conta/cliente/profissionais-favoritos";
 
     //submete a requisição para seguir
     if(document.querySelector("#follow-button")){
@@ -15,15 +15,14 @@
             })
         })
     }
-    debugger
+
     let professionalId = this.dataset
 
     //submete a requisição para deixar de seguir
     if(document.querySelector("#unfollow-button")){
         document.querySelector("#unfollow-button").addEventListener("click", function () {
             let professionalId = this.dataset.professional;
-            console.log(professionalId)
-            debugger
+
             fetch(`${URL}/${professionalId}`, {
                 method: 'delete'
             }).then((response) => {

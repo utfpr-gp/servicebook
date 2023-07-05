@@ -5,7 +5,6 @@
 
 <t:template title="Servicebook - Início">
     <jsp:body>
-
         <div id="" class="blue lighten-1">
             <div class="section no-pad-bot">
                 <div class="container">
@@ -22,6 +21,27 @@
                 </div>
             </div>
         </div>
+
+        <sec:authorize access="isAuthenticated()">
+            <div class="col s12 center">
+                <c:if test="${!isFollow}">
+                    <form method="post" id="follow-form">
+                        <input type="hidden" name="professional" value="${professional.id}"/>
+                        <input type="hidden" name="client" value="${client.id}"/>
+                        <button alt="seguir" type="button"
+                                class="waves-effect waves-light btn" id="follow-button">Seguir
+                        </button>
+                    </form>
+                </c:if>
+                <c:if test="${isFollow}">
+                    <button type="button" data-professional="${professional.id}"
+                            class="waves-effect waves-light btn"
+                            id="unfollow-button">Deixar de Seguir
+                    </button>
+                </c:if>
+            </div>
+        </sec:authorize>
+
         <div class="tertiary-background-color white-text center-align">
             <h5 class="upper-case mb-1 mt-1">${professional.name}</h5>
         </div>
@@ -90,3 +110,4 @@
 
     </jsp:body>
 </t:template>
+<script src="assets/resources/scripts/follow-professional.js"></script>

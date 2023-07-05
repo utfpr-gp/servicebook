@@ -1,15 +1,12 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.dto.*;
-import br.edu.utfpr.servicebook.model.entity.City;
-import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.model.entity.JobContracted;
+import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobContractedMapper;
+import br.edu.utfpr.servicebook.model.mapper.UserMapper;
 import br.edu.utfpr.servicebook.security.IAuthentication;
-import br.edu.utfpr.servicebook.service.CityService;
-import br.edu.utfpr.servicebook.service.IndividualService;
-import br.edu.utfpr.servicebook.service.JobContractedService;
+import br.edu.utfpr.servicebook.service.*;
 
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
@@ -34,7 +31,13 @@ public class ProfessionalController {
     private IndividualService individualService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private CityService cityService;
+
+    @Autowired
+    private FollowsService followsService;
 
     @Autowired
     private JobContractedService jobContractedService;
@@ -44,6 +47,9 @@ public class ProfessionalController {
 
     @Autowired
     private IndividualMapper individualMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Value("${pagination.size}")
     private Integer paginationSize;
@@ -131,26 +137,42 @@ public class ProfessionalController {
         return mv;
     }
 
+    /**
+     * Retorna a página de detalhes do profissional.
+     * Esta página pode ser acessada de forma autenticada ou anônima.
+     * @param id
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/detalhes/{id}")
     @PermitAll
     protected ModelAndView showProfessionalDetailsToVisitors(@PathVariable("id") Long id) throws Exception {
         ModelAndView mv = new ModelAndView("visitor/professional-details");
 
-        Optional<Individual> oProfessional = individualService.findById(id);
+        Optional<User> oProfessional = userService.findById(id);
 
         if(!oProfessional.isPresent()) {
             throw new EntityNotFoundException("Profissional não encontrado.");
         }
 
-        Optional<Individual> individual = (individualService.findByEmail(authentication.getEmail()));
-        mv.addObject("logged", individual.isPresent());
+        Optional<User> oClientAuthenticated = (userService.findByEmail(authentication.getEmail()));
+        mv.addObject("logged", oClientAuthenticated.isPresent());
 
-        List<ExpertiseDTO> expertisesDTO = individualService.getExpertises(oProfessional.get());
+        //se o cliente está logado, mostra se ele segue o profissional
+        if(oClientAuthenticated.isPresent()){
+            List<Follows> follows = followsService.findFollowProfessionalClient(oProfessional.get(), oClientAuthenticated.get());
+            boolean isFollow = !follows.isEmpty();
+            UserDTO clientDTO = userMapper.toDto(oClientAuthenticated.get());
+            mv.addObject("isFollow", isFollow);
+            mv.addObject("client", clientDTO);
+        }
 
-        IndividualDTO professionalDTO = individualMapper.toDto(oProfessional.get());
+        List<ExpertiseDTO> expertiseDTOs = userService.getExpertiseDTOs(oProfessional.get());
+
+        UserDTO professionalDTO = userMapper.toDto(oProfessional.get());
 
         mv.addObject("professional", professionalDTO);
-        mv.addObject("professionalExpertises", expertisesDTO);
+        mv.addObject("professionalExpertises", expertiseDTOs);
         return mv;
     }
 }

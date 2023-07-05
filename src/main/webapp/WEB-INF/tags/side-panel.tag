@@ -4,7 +4,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ attribute name="userInfo" type="br.edu.utfpr.servicebook.util.UserTemplateInfo" %>
 <%@ attribute name="statisticInfo" type="br.edu.utfpr.servicebook.util.UserTemplateStatisticInfo" %>
-<%@ attribute name="followdto" type="br.edu.utfpr.servicebook.follower.FollowsDTO" %>
+<%@ attribute name="followdto" type="br.edu.utfpr.servicebook.model.dto.FollowsDTO" %>
 <c:set var="currenturl" value="${requestScope['javax.servlet.forward.request_uri']}"/>
 
 <div class="col m2 l3 hide-on-med-and-down" style="padding-left: 0" id="area-perfil">
@@ -121,13 +121,12 @@
             <div class="row secondary-background-color no-margin">
                 <div class="col s12">
                     <h5 class="name-header no-margin center white-text">
-                        <%--apresenta se acessar como cliente--%>
-                        <strong><a href="profissionais-favoritos">${individualInfo.followingAmount}</a></strong>
-                        <%--apresenta se acessar como cliente--%>
+                        <strong><a href="minha-conta/cliente/profissionais-favoritos">${userInfo.followingAmount}</a></strong>
                     </h5>
                 </div>
             </div>
             <!-- Fim profissionais favoritos -->
+
             <!-- Acesso como perfil -->
             <sec:authorize access="hasRole('COMPANY')">
                 <div class="row no-margin center">
@@ -149,8 +148,8 @@
                     </div>
                 </div>
             </sec:authorize>
-
             <!-- Fim Acesso como perfil -->
+
         </c:when>
         <c:when test="${fn:contains(currenturl, '/minha-conta/empresa') or fn:contains(currenturl, '/minha-conta/profissional')}">
             <!-- Seguidores -->
@@ -162,7 +161,7 @@
             <div class="row secondary-background-color no-margin">
                 <div class="col s12">
                     <h5 class="name-header no-margin center white-text">
-                        <strong><a href="profissionais-favoritos">${userInfo.followingAmount}</a></strong>
+                        <strong>${userInfo.followingAmount}</strong>
                     </h5>
                 </div>
             </div>
@@ -251,7 +250,7 @@
                     <div class="row secondary-background-color no-margin">
                         <div class="col s12 white-text center">
                             <div class="row tooltipped" data-position="bottom"
-                                 data-tooltip="${statisticInfo.ratingScore != 0 ? statisticInfo.ratingScore : individual.rating} estrela (s).">
+                                 data-tooltip="${statisticInfo.ratingScore != 0 ? statisticInfo.ratingScore : userInfo.rating} estrela (s).">
 
                                 <c:if test="${statisticInfo.ratingScore == 0}">
                                     <c:forEach var="star" begin="1" end="5">

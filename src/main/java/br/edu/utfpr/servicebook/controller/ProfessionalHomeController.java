@@ -1,7 +1,7 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
-import br.edu.utfpr.servicebook.follower.FollowsService;
+import br.edu.utfpr.servicebook.service.FollowsService;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;

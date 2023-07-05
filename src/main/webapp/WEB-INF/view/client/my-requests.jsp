@@ -7,17 +7,13 @@
            uri="http://java.sun.com/jsp/jstl/core" %>
 
 <t:template title="Minhas Solicitações" userInfo="${user}">
-  <jsp:body>
-    <main class="container">
-      <div class="row">
+    <jsp:body>
+        <main class="container">
+            <div class="row">
 
-        <t:side-panel userInfo="${user}"></t:side-panel>
+                <t:side-panel userInfo="${user}"></t:side-panel>
 
                 <div class="col m10 offset-m1 l9">
-                    <a id="show-area-perfil"
-                            class="hide-on-large-only show-area-perfil waves-effect waves-light btn btn-floating grey darken-3 z-depth-A">
-                        <i class="material-icons">compare_arrows</i>
-                    </a>
 
                     <!-- Painel com as solicitações de serviços -->
                     <div class="">
@@ -26,13 +22,6 @@
                                 <h2 class="secondary-color-text">Minhas Solicitações</h2>
                             </div>
 
-                            <div class="center">
-                                <a
-                                        href="minha-conta/cliente"
-                                        class="waves-effect waves-light btn"
-                                ><i class="material-icons right">sync</i>ATUALIZAR</a
-                                >
-                            </div>
                             <ul class="tabs tabs-fixed-width center">
                                 <li class="tab" id="1">
                                     <a id="tab-default" data-url="minha-conta/cliente/meus-pedidos/disponiveis"
@@ -77,9 +66,7 @@
                     </div>
                 </div>
             </div>
-            </div>
-            </div>
-            </div>
+
             <div id="modal-delete" class="modal">
                 <div class="modal-content">
                     <form action="" method="post">
