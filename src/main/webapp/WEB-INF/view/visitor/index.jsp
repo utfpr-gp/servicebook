@@ -5,9 +5,10 @@
 <t:template title="Servicebook - Início">
     <jsp:body>
         <main>
-        <t:banner cities="${cities}"></t:banner>
+            <t:banner cities="${cities}"></t:banner>
 
-        <t:search-bar></t:search-bar>
+            <t:search-bar></t:search-bar>
+
             <section class="container center-align">
                 <div class="row">
                     <h4>QUAL É A QUANTIDADE DE SERVIÇOS OFERECIDOS?</h4>

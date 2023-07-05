@@ -1,6 +1,10 @@
-package br.edu.utfpr.servicebook.follower;
+package br.edu.utfpr.servicebook.controller;
 
-import br.edu.utfpr.servicebook.controller.ExpertiseController;
+import br.edu.utfpr.servicebook.controller.admin.ExpertiseController;
+import br.edu.utfpr.servicebook.model.dto.FollowsDTO;
+import br.edu.utfpr.servicebook.model.mapper.FollowsMapper;
+import br.edu.utfpr.servicebook.model.repository.FollowsRepository;
+import br.edu.utfpr.servicebook.service.FollowsService;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.JobCandidateMapper;
@@ -26,8 +30,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RequestMapping("/profissionais-favoritos")
 @Controller
+@RequestMapping("/minha-conta/cliente/profissionais-favoritos")
 public class FollowingController {
 
     public static final Logger log = LoggerFactory.getLogger(ExpertiseController.class);
@@ -69,22 +73,18 @@ public class FollowingController {
 
         ModelAndView mv = new ModelAndView("client/details-follows");
 
-        Optional<User> oIndividual = userService.findByEmail(authentication.getEmail());
-        UserDTO clientDTO = userMapper.toDto(oIndividual.get());
+        Optional<User> oUser = userService.findByEmail(authentication.getEmail());
 
-        UserTemplateInfo userTemplateInfo = templateUtil.getUserInfo(clientDTO);
-        mv.addObject("userInfo", userTemplateInfo);
+        //lista de profissionais que o cliente segue
+        List<Follows> followingList = followingService.findFollowingByClient(oUser.get());
 
-        //lista de seguidores
-        List<Follows> followingList = followingService.findFollowingByClient(oIndividual.get());
-
-        List<User> oProfessionalList = followingList.stream()
+        List<User> professionals = followingList.stream()
                 .map(follows -> {
                     return follows.getProfessional();
                 })
                 .collect(Collectors.toList());
 
-        mv.addObject("professionals", oProfessionalList);
+        mv.addObject("professionals", professionals);
 
         return mv;
     }
