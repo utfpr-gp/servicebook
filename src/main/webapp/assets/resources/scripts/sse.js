@@ -1,4 +1,4 @@
-const URL = 'sse/subscribe';
+const URL_SSE = 'sse/subscribe';
 const SSE = 'sse-data';
 
 /**

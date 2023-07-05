@@ -2,6 +2,14 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<script>
+  const mpPublicKEy = '<%= System.getenv("MP_PUBLIC_KEY") %>';
+  const mpInstance = new MercadoPago(mpPublicKEy, {
+    locale: "pt-BR",
+  });
+  const bricksBuilder = mpInstance.bricks();
+</script>
 
 <t:template title="Detalhes da Solicitação" userInfo="${userInfo}">
   <jsp:body>
@@ -87,9 +95,17 @@
                       </div>
                     </div>
 
-                    <div class="col s12 m6 right">
-                      <div class="center">
+                    <div class="col s12 m12">
+                      <div class="right-align">
                         <a href="minha-conta/cliente" class="spacing-buttons waves-effect waves-light btn">Voltar para solicitações</a>
+                        <a class="spacing-buttons waves-effect waves-light btn green" onClick="showPayment()">Pagamento</a>
+                      </div>
+                    </div>
+
+                    <div class="col s12 m12 right">
+                      <div class="center">
+                        <div id="paymentBrick_container" class="brick-payment" style="display:none;"></div>
+                        <div id="statusScreenBrick_container" class="brick-status" style="display:none;"></div>
                       </div>
                     </div>
 
@@ -251,6 +267,14 @@
     </main>
   </jsp:body>
 </t:template>
+
+<style>
+  select {
+    display: block !important;
+  }
+</style>
+
+<script src="assets/resources/scripts/mp-payment.js"></script>
 <script>
   $(document).ready(function() {
     $('.modal').modal({
