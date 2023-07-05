@@ -1,4 +1,4 @@
-package br.edu.utfpr.servicebook.follower;
+package br.edu.utfpr.servicebook.model.dto;
 
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import lombok.*;

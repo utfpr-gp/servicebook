@@ -1,4 +1,4 @@
-package br.edu.utfpr.servicebook.follower;
+package br.edu.utfpr.servicebook.model.repository;
 
 import br.edu.utfpr.servicebook.model.entity.Follows;
 import br.edu.utfpr.servicebook.model.entity.Individual;
@@ -18,7 +18,7 @@ public interface FollowsRepository extends JpaRepository<Follows, Long> {
      * @return
      */
     @Query("SELECT f FROM Follows f WHERE f.professional = :professional")
-    List<Follows> findFollowsByProfessional(@Param("professional") Individual professional);
+    List<Follows> findFollowsByProfessional(@Param("professional") User professional);
 
     /**
      * Retorna todos os profissionais favoritos que o cliente segue
@@ -38,7 +38,7 @@ public interface FollowsRepository extends JpaRepository<Follows, Long> {
     List<Follows> isClientFollowProfessional(@Param("professional") User professional, @Param("client") User client);
 
     /**
-     * Retorna a quantidade se seguidores de um profissional.
+     * Retorna a quantidade de seguidores de um profissional.
      * @param professional
      * @return
      */
@@ -49,5 +49,5 @@ public interface FollowsRepository extends JpaRepository<Follows, Long> {
      * @param client
      * @return
      */
-    Optional<Long> countByClient(User client);
+    public Long countByClient(User client);
 }

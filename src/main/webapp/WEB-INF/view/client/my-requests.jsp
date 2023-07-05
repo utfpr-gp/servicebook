@@ -3,14 +3,14 @@ uri="http://www.springframework.org/tags/form" prefix="form" %> <%@taglib
 prefix="t" tagdir="/WEB-INF/tags" %> <%@ taglib prefix="c"
 uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:template title="Minhas Solicitações" userInfo="${user}">
+<t:template title="Minhas Solicitações" userInfo="${userInfo}">
     <jsp:body>
         <main class="container">
             <!-- row -->
             <div class="row">
                 <!-- Painel lateral -->
                 <div class="col m4 l3 hide-on-med-and-down">
-                    <t:side-panel userInfo="${user}"></t:side-panel>
+                    <t:side-panel userInfo="${userInfo}"></t:side-panel>
                 </div>
 
                 <!-- Painel com as solicitações de serviços -->
