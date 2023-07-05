@@ -28,11 +28,6 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.http.*;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
-
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -92,6 +87,8 @@ public class JobRequestController {
 
     @Autowired
     private ModerateService moderateService;
+
+
 
     public enum RequestDateSelect{
         today(0), tomorrow(1) , thisweek(2), nextweek(3), thismonth(4), nextmonth(5);
@@ -248,6 +245,10 @@ public class JobRequestController {
             return "client/job-request/wizard-step-04";
 
         }
+        if(moderateService.isToxic(dto.getDescription())){
+            redirectAttributes.addFlashAttribute("msg", "Este tipo de texto é inaprópriado para nosso site, por gentileza reescreva a mensagem utilizando outro tipo de linguagem");
+            return "redirect:/requisicoes?passo=4";
+        }
 
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         sessionDTO.setDescription(dto.getDescription());
@@ -272,7 +273,7 @@ public class JobRequestController {
             Map data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "jobs"));
 
             //realiza a moderação da imagem
-            if(moderateService.nsfwFilter((String)data.get("url"))){
+            if(moderateService.isNsfwImage((String)data.get("url"))){
                 String publicId = (String) data.get("public_id");
                 cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
                 redirectAttributes.addFlashAttribute("msg", "A imagem enviada contém conteúdo impróprio. Por favor, envie outra foto.");
@@ -411,6 +412,9 @@ public class JobRequestController {
 
         return "redirect:/minha-conta/profissional#disponiveis";
     }
+
+
+
 
 
 
