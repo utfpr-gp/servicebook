@@ -86,4 +86,10 @@ public class IndexController {
         return "visitor/how-works";
     }
 
+    @GetMapping("/nao-autorizado")
+    @PermitAll
+    public String notAuthorized() {
+        return "error/not-authorized";
+    }
+
 }

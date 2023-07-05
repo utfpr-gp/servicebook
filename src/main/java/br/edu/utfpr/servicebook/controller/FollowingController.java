@@ -1,5 +1,6 @@
 package br.edu.utfpr.servicebook.controller;
 
+import br.edu.utfpr.servicebook.controller.admin.ExpertiseController;
 import br.edu.utfpr.servicebook.model.dto.FollowsDTO;
 import br.edu.utfpr.servicebook.model.mapper.FollowsMapper;
 import br.edu.utfpr.servicebook.model.repository.FollowsRepository;

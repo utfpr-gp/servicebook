@@ -56,7 +56,7 @@ public class User implements Serializable {
 	@OneToOne(mappedBy = "user")
 	protected UserToken userToken;
 
-	@OneToOne(cascade = CascadeType.PERSIST)
+	@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
 	protected Address address;
 
 	@OneToMany(mappedBy = "user")

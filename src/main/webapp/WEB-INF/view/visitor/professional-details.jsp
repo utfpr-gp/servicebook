@@ -4,6 +4,19 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<head>
+    <meta property="og:title" content="${professional.description}"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:description" content="SERVICEBOOK - O MELHOR PROFISSIONAL QUE VOCÊ PRECISA ESTÁ AQUI!"/>
+    <meta property="og:image" content="${professional.profilePicture}"/>
+    <meta property="og:site_name" content="Servicebook"/>
+
+    <meta name="twitter:card" content="photo">
+    <meta name="twitter:url" content="$(location).attr('href')">
+    <meta name="twitter:title" content="${professional.description}">
+    <meta name="twitter:description" content="SERVICEBOOK - O MELHOR PROFISSIONAL QUE VOCÊ PRECISA ESTÁ AQUI!">
+    <meta name="twitter:image "content="${professional.profilePicture}">
+</head>
 <t:template title="Servicebook - Início">
     <jsp:body>
         <div id="" class="blue lighten-1">
@@ -110,4 +123,5 @@
 
     </jsp:body>
 </t:template>
+<script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=64931a737674a9001261149d&product=sticky-share-buttons&source=platform" async="async"></script>
 <script src="assets/resources/scripts/follow-professional.js"></script>

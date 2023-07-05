@@ -14,6 +14,16 @@
                         </c:forEach>
                     </div>
                 </c:if>
+                <c:if test="${not empty msg}">
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="card-panel red lighten-1 msg-view center-align">
+                                <span class="white-text">${msg}</span>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
+
                 <div class="section">
 
                     <!--   Icon Section   -->
@@ -23,7 +33,7 @@
                         <div class="row center">
                             <div class="rowspacing-standard">
                                 <form method="post" action="requisicoes/passo-5" enctype="multipart/form-data">
-                                    <div class="col s12">
+                                    <div class="col s12 m6 offset-m3 l4 offset-l4 ">
                                         <div class="file-field input-field">
                                             <div class="btn">
                                                 <span>Choose File</span>
@@ -33,9 +43,6 @@
                                                 <input class="file-path validate" placeholder="image.jpg"  type="text">
                                             </div>
                                         </div>
-                                        <div>
-                                            <button type="submit" class="waves-effect waves-light btn" >Adiciona imagem</button>
-                                        </div>
                                     </div>
                                     <div class="col s6 m6 spacing-buttons">
                                         <div class="center">
@@ -44,7 +51,7 @@
                                     </div>
                                     <div class="col s6 m6 spacing-buttons">
                                         <div class="center">
-                                            <a href="requisicoes?passo=6" class="waves-effect waves-light btn">Próximo</a>
+                                            <button class="waves-effect waves-light btn" >Próximo</button>
                                         </div>
                                     </div>
                                 </form>
@@ -54,6 +61,5 @@
                 </div>
             </div>
         </main>
-
     </jsp:body>
 </t:template>

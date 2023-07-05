@@ -77,15 +77,6 @@ public class UserRegisterController {
     @Autowired
     private SmartValidator validator;
 
-    @Value("${twilio.account.sid}")
-    private String twilioAccountSid;
-
-    @Value("${twilio.auth.token}")
-    private String twilioAuthToken;
-
-    @Value("${twilio.verify.service.sid}")
-    private String twilioVerifyServiceSid;
-
     @Autowired
     private AuthenticationCodeGeneratorService authenticationCodeGeneratorService;
 
@@ -100,6 +91,9 @@ public class UserRegisterController {
 
     @Autowired
     private ProfessionalExpertiseMapper professionalExpertiseMapper;
+
+    @Autowired
+    PhoneNumberVerificationService phoneNumberVerificationService;
 
     private String userRegistrationErrorForwarding(String step, UserDTO dto, Model model, BindingResult errors) {
         model.addAttribute("dto", dto);
@@ -339,7 +333,7 @@ public class UserRegisterController {
     @PermitAll
     public String saveUserEmailCode(
             HttpSession httpSession,
-            @Validated(UserCodeDTO.RequestUserCodeInfoGroupValidation.class) UserCodeDTO dto,
+            @Validated UserCodeDTO dto,
             BindingResult errors,
             RedirectAttributes redirectAttributes,
             Model model
@@ -437,8 +431,7 @@ public class UserRegisterController {
         }
 
         //envio o SMS para validação
-        PhoneNumberVerificationService phoneNumberVerificationService = new PhoneNumberVerificationService(twilioAccountSid, twilioAuthToken, twilioVerifyServiceSid, dto.getPhoneNumber());
-        phoneNumberVerificationService.sendSMSToVerification();
+        phoneNumberVerificationService.sendSMSToVerification(dto.getPhoneNumber());
 
         //salva o telefone na sessão
         UserDTO userSessionDTO = userWizardUtil.getUserDTO(httpSession);
@@ -473,10 +466,9 @@ public class UserRegisterController {
         UserDTO userSessionDTO = userWizardUtil.getUserDTO(httpSession);
         String phoneNumber = userSessionDTO.getPhoneNumber();
 
-        PhoneNumberVerificationService phoneNumberVerificationService = new PhoneNumberVerificationService(twilioAccountSid, twilioAuthToken, twilioVerifyServiceSid, phoneNumber);
-
+        boolean isVerified = false;
         try {
-            phoneNumberVerificationService.verify(dto.getCode());
+            isVerified = phoneNumberVerificationService.verify(dto.getCode(), phoneNumber);
         } catch (Exception e) {
             errors.rejectValue("code", "error.dto", "Não foi possível verificar seu telefone no momento. Continue com o seu cadastro e tente novamente mais tarde.");
         }
@@ -486,7 +478,7 @@ public class UserRegisterController {
         }
 
         //telefone não foi verificado com sucesso
-        if (!phoneNumberVerificationService.isVerified()) {
+        if (!isVerified) {
             errors.rejectValue("code", "error.dto", "Código inválido! Por favor, insira o código de autenticação.");
         }
 

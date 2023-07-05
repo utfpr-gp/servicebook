@@ -363,7 +363,7 @@ public class MyAccountController {
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String saveUserEmailCode(
             @PathVariable Long id,
-            @Validated(UserCodeDTO.RequestUserCodeInfoGroupValidation.class) UserCodeDTO dto,
+            @Validated UserCodeDTO dto,
             BindingResult errors,
             RedirectAttributes redirectAttributes
     ) {

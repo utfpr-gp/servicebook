@@ -7,10 +7,11 @@
     <jsp:body>
         <main class="container">
             <div class="row">
+                <div class="col m4 l3 hide-on-med-and-down">
+                    <t:side-panel userInfo="${userInfo}"></t:side-panel>
+                </div>
 
-                <t:side-panel userInfo="${userInfo}"></t:side-panel>
-
-                <div class="col m10 offset-m1 l9">
+                <div class="col s12 l9">
                     <div class="row">
                         <div class="col s12">
                             <h2 class="secondary-color-text">Meus profissionais favoritos</h2>
