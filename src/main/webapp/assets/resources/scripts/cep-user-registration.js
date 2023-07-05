@@ -1,8 +1,8 @@
 $(document).ready(function () {
-    $('#postalCode').focus();
+    $('#postal-code').focus();
 
     function clearFormAddress() {
-        $('#postalCode').val('');
+        $('#postal-code').val('');
         $('#neighborhood').val('');
         $('#street').val('');
         $('#number').val('');
@@ -11,7 +11,7 @@ $(document).ready(function () {
     }
 
     $('#btn-search-cep').click(function () {
-        let cep = $('#postalCode').val().replace(/\D/g, '');
+        let cep = $('#postal-code').val().replace(/\D/g, '');
 
         if (cep != '') {
             let cepRegex = /^[0-9]{8}$/;
@@ -19,7 +19,7 @@ $(document).ready(function () {
             if (cepRegex.test(cep)) {
                 $.getJSON('https://viacep.com.br/ws/' + cep + '/json/?callback=?', function (data) {
                     if (!('erro' in data)) {
-                        $('#postalCode').removeClass('invalid');
+                        $('#postal-code').removeClass('invalid');
                         $('#error-cep').html('');
 
                         $('#neighborhood').val(data.bairro).focus();
@@ -28,20 +28,21 @@ $(document).ready(function () {
                         $('#state').val(data.uf).focus();
                         $('#number').focus();
                     } else {
-                        $('#postalCode').addClass('invalid');
+                        $('#postal-code').addClass('invalid');
                         $('#errorPostalCode').removeClass('hide');
                         $('#errorPostalCode').html('CEP não encontrado!');
                         clearFormAddress();
                     }
+                    $('select').formSelect();
                 });
             } else {
-                $('#postalCode').addClass('invalid');
+                $('#postal-code').addClass('invalid');
                 $('#errorPostalCode').removeClass('hide');
                 $('#errorPostalCode').html('CEP inválido!');
                 clearFormAddress();
             }
         } else {
-            $('#postalCode').addClass('invalid');
+            $('#postal-code').addClass('invalid');
             $('#errorPostalCode').removeClass('hide');
             $('#errorPostalCode').html('CEP inválido!');
             clearFormAddress();

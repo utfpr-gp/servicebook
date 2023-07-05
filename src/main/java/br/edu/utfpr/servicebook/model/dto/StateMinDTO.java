@@ -11,6 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class StateMinDTO implements Serializable {
 
+    private Long id;
     private String uf;
 
 }

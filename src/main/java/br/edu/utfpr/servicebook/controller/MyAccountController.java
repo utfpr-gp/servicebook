@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -197,99 +198,112 @@ public class MyAccountController {
         return mv;
     }
 
-//    teste rota endereço
+    //edita endereço
+
     /**
-     * Apresenta a tela de email do usuário.
+     * Apresenta a tela de endereço do usuário.
      * @param id
      * @return
      * @throws IOException
      */
     @GetMapping("/meu-endereco/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
-    public ModelAndView showMyAddress(@PathVariable Long id) throws IOException {
+    public String showMyAddress(@PathVariable Long id, Model model) throws IOException {
+
         Optional<User> oUser = this.userService.findById(id);
-        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
-        User userAuthenticated = oUserAuthenticated.get();
-        State userState = userAuthenticated.getAddress().getCity().getState();
-        City userCity = userAuthenticated.getAddress().getCity();
+
         if (!oUser.isPresent()) {
+            throw new EntityNotFoundException("Usuário não encontrado pelo id informado.");
+        }
+
+        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
+        if(!oUserAuthenticated.isPresent()){
             throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
+        User userAuthenticated = oUserAuthenticated.get();
+
+        //verifica se o usuario autenticado é o mesmo que está tentando atualizar as informações
         if (id != userAuthenticated.getId()) {
             throw new AuthenticationCredentialsNotFoundException("Você não tem permissão para atualizar essas informações");
         }
 
+        Address address = userAuthenticated.getAddress();
+        City city = address.getCity();
+        State state = city.getState();
+
         UserDTO userDTO = userMapper.toDto(oUser.get());
 
-        ModelAndView mv = new ModelAndView("professional/account/my-address");
-        CityMidDTO cityMidDTO = userDTO.getAddress().getCity();
         List<City> cities = this.cityService.findAll();
         List<State> states = this.stateService.findAll();
-        //remove o estado e a cidade do usuario e adiciona no inicio para que apareça em primeiro no select
-        states.remove(userState);
-        states.add(0, userState);
-        cities.remove(userCity);
-        cities.add(0, userCity);
 
-        mv.addObject("professional", userDTO);
-        mv.addObject("cities", cities);
-        mv.addObject("states", states);
+        model.addAttribute("professional", userDTO);
+        model.addAttribute("cities", cities);
+        model.addAttribute("states", states);
 
-        return mv;
+        return "professional/account/my-address";
     }
 
 
     /**
      * @param id
-     * @param request
      * @param redirectAttributes
      * @return
      * @throws IOException
      */
-    @PatchMapping("/salvar-endereco/{id}")
+    @PatchMapping("/meu-endereco/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String saveAddress(
             @PathVariable Long id,
-            HttpSession httpSession,
-            HttpServletRequest request,
-            RedirectAttributes redirectAttributes,
-            @Validated AddressDTO dto,
-            BindingResult errors)
+            @Validated AddressUpdateDTO dto,
+            BindingResult errors,
+            RedirectAttributes redirectAttributes)
             throws IOException {
 
-        Optional<User> oUser = (userService.findByEmail(authentication.getEmail()));
-        ModelAndView mv = new ModelAndView("professional/account/my-address");
+        Optional<User> oUser = this.userService.findById(id);
+
+        if (!oUser.isPresent()) {
+            throw new EntityNotFoundException("Usuário não encontrado pelo id informado.");
+        }
+
         Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
+        if(!oUserAuthenticated.isPresent()){
+            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
         User userAuthenticated = oUserAuthenticated.get();
+
+        //verifica se o usuario autenticado é o mesmo que está tentando atualizar as informações
+        if (id != userAuthenticated.getId()) {
+            throw new AuthenticationCredentialsNotFoundException("Você não tem permissão para atualizar essas informações");
+        }
+
+        //verifica se o estado está cadastrado
+        if(!stateService.findById(dto.getState()).isPresent()){
+            errors.rejectValue("state", "error.dto", "Estado não cadastrado! Por favor, insira um estado cadastrado.");
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+            return "redirect:/minha-conta/meu-endereco/{id}";
+        }
+
+        //verifica se a cidade existe para o estado informado
+        if(!cityService.findByIdAndState_Id(dto.getCity(), dto.getState()).isPresent()){
+            errors.rejectValue("city", "error.dto", "Cidade não cadastrada para o estado informado! Por favor, insira uma cidade cadastrada.");
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+            return "redirect:/minha-conta/meu-endereco/{id}";
+        }
+
         try {
-            if (!oUser.isPresent()) {
-                throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
-            }
-            if (id != userAuthenticated.getId()) {
-                throw new AuthenticationCredentialsNotFoundException("Usuario não corresponde com o id");
-            }
+            //atualiza o endereço do usuário
+            Address address = userAuthenticated.getAddress();
+            address.setCity(cityService.findById(dto.getCity()).get());
+            address.setStreet(dto.getStreet().trim());
+            address.setNumber(dto.getNumber().trim());
+            address.setPostalCode(dto.getPostalCode().trim());
+            address.setNeighborhood(dto.getNeighborhood().trim());
 
-            Optional<City> oCity = cityService.findByName(dto.getCity());
+            userAuthenticated.setAddress(address);
 
-            if (!oCity.isPresent()) {
-                errors.rejectValue("city", "error.dto", "Cidade não cadastrada! Por favor, insira uma cidade cadastrada.");
-                redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
-                return "redirect:/minha-conta/meu-endereco/{id}";
-            }
-
-            City cityMidDTO = oCity.get();
-            User user = oUser.get();
-//            user.setAddress(addressMapper.toUpdate(dto, user.getAddress().getId(), cityMidDTO));
-            // TENTEI FAZER USANDO O MAPPER DO ADDRESS QUE CRIEI MAS NÃO FUNCIONA POIS
-            // O ID ACABA FICANDO NULL TANTO DA CIDADE QUANTO O DO PROPRIO ADDRES AI TENTEI FAZER UM AJUSTE MAS MESMO ASSIM ACABO COM UM ERRO DE
-            //detached entity passed to persist entao deixei da forma abaixo que estava funcionando
-            user.getAddress().setCity(cityMidDTO);
-            user.getAddress().setStreet(dto.getStreet().trim());
-            user.getAddress().setNumber(dto.getNumber().trim());
-            user.getAddress().setPostalCode(dto.getPostalCode().trim());
-            user.getAddress().setNeighborhood(dto.getNeighborhood().trim());
-            this.userService.save(user);
+            this.userService.save(userAuthenticated);
             redirectAttributes.addFlashAttribute("msg", "Endereço editado com sucesso");
         } catch (Exception exception) {
             errors.rejectValue(null, "not-found", "Erro ao editar endereço: " + exception.getMessage());
