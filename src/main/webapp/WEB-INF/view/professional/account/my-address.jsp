@@ -29,6 +29,22 @@
                     </div>
                 </c:if>
 
+                <div id="containerError" class="container" style="display: none">
+                    <div class="col s6">
+                        <div class="card-panel red">
+                            <span id="errorCity" class="white-text"></span><br>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="containerSucess" class="container" style="display: none">
+                    <div class="col s6">
+                        <div class="card-panel blue">
+                            <span id="sucessCity" class="white-text"></span><br>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="section">
                     <div class="row">
                         <h3 class="row center secondary-color-text">

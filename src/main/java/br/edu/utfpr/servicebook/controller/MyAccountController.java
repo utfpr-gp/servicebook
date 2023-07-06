@@ -9,9 +9,12 @@ import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.UserTemplateInfo;
 import br.edu.utfpr.servicebook.util.TemplateUtil;
 import br.edu.utfpr.servicebook.util.UserWizardUtil;
+import org.apache.coyote.Response;
+import org.cloudinary.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -312,6 +315,22 @@ public class MyAccountController {
         }
 
         return "redirect:/minha-conta/meu-endereco/{id}";
+    }
+
+    @PostMapping("/meu-endereco/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.ADMIN})
+    @ResponseBody
+    public ResponseEntity<?> getExpertiseData(@PathVariable("id") Long userId, @RequestBody String data,BindingResult errors,
+                                              RedirectAttributes redirectAttributes) {
+        Response response = new Response();
+        Optional<User> oUser = this.userService.findById(userId);
+        JSONObject jsonObject = new JSONObject(data);
+        if(!cityService.findByName(jsonObject.getString("localidade")).isPresent()){
+            response.setMessage("Cidade não cadastrada! Por favor, insira uma cidade cadastrada.");
+            return ResponseEntity.status(401).body(response.getMessage());
+        }
+        response.setMessage("Cidade cadastrada no sistema!!");
+        return ResponseEntity.status(200).body(response.getMessage());
     }
 
     /**
