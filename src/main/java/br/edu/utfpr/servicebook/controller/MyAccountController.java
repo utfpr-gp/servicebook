@@ -348,6 +348,51 @@ public class MyAccountController {
         return "redirect:/logout";
     }
 
+    @GetMapping("/reenvia-codigo-verificacao-email/{id}")
+    @ResponseBody
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public String resendEmailCode(
+            @PathVariable Long id,
+            @RequestParam("email") String email
+            )
+            throws IOException {
+
+        Optional<User> oUser = this.userService.findById(id);
+
+        if (!oUser.isPresent()) {
+            throw new EntityNotFoundException("O usuário não foi encontrado.");
+        }
+
+        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
+        User userAuthenticated = oUserAuthenticated.get();
+
+        if (id != userAuthenticated.getId()) {
+            throw new AuthenticationCredentialsNotFoundException("Você não ter permissão para atualizar esse telefone.");
+        }
+
+        Optional<UserCode> oUserCode = userCodeService.findByEmail(email);
+        String actualCode = "";
+
+        if (!oUserCode.isPresent()) {
+            String code = authenticationCodeGeneratorService.generateAuthenticationCode();
+
+            UserCodeDTO userCodeDTO = new UserCodeDTO(email, code);
+            UserCode userCode = userCodeMapper.toEntity(userCodeDTO);
+
+            userCodeService.save(userCode);
+            actualCode = code;
+        } else {
+            actualCode = oUserCode.get().getCode();
+        }
+
+        String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/codigo/" + actualCode;
+        quartzService.sendEmailToConfirmationCode(email, actualCode, tokenLink);
+
+        System.out.println("sus------------------------------------------------------------------------------");
+
+        return "";
+    }
+
     //Métodos para edição de telefone
 
     /**

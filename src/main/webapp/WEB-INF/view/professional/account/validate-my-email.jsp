@@ -81,10 +81,9 @@
     });
 
     $('.sendEmail').click(function () {
-        $.post("minha-conta/edita-email/${user.id}", {email: email}).done(function () {
-            console.log('foi no evento');
+        $.get("minha-conta/reenvia-codigo-verificacao-email/${user.id}", {email: email}).done(function () {
             swal({
-                title: "Deu certo!",
+                title: "Sucesso!",
                 text: "Foi enviado um email para " + email + ".",
                 icon: "success",
             });
