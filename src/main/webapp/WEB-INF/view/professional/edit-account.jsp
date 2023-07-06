@@ -59,7 +59,7 @@
                     </a>
                 </div>
                 <div class="col s12 l5 spacing-buttons">
-                    <a href="#!" class="dark-color-text">
+                    <a href="${pageContext.request.contextPath}/minha-conta/meu-endereco/${professional.id}" class="dark-color-text">
                         <div class="active-profission no-padding">
                             <h3 class="center"><strong><i class="medium material-icons">location_on</i></strong></h3>
                             <h4 class="center"><strong>Meu endereço</strong></h4>
@@ -67,7 +67,7 @@
                     </a>
                 </div>
                 <div class="col s12 l5 offset-l1 spacing-buttons">
-                    <a href="#!" class="dark-color-text">
+                    <a href="${pageContext.request.contextPath}/minha-conta/informacoes-pessoais/${professional.id}" class="dark-color-text">
                         <div class="active-profission no-padding">
                             <h3 class="center"><strong><i class="medium material-icons">person</i></strong></h3>
                             <h4 class="center"><strong>Meus dados pessoais</strong></h4>
@@ -90,14 +90,23 @@
                         </div>
                     </a>
                 </div>
-                <div class="col s12 l5 spacing-buttons">
-                    <a href="#!" class="dark-color-text">
+                <div class="col s12 l5 offset-l1 spacing-buttons">
+                    <a href="${pageContext.request.contextPath}/minha-conta/meu-contato/${professional.id}" class="dark-color-text">
                         <div class="active-profission no-padding">
                             <h3 class="center"><strong><i class="medium material-icons">local_phone</i></strong></h3>
                             <h4 class="center"><strong>Meu contato</strong></h4>
                         </div>
                     </a>
                 </div>
+                <div class="col s12 l5 offset-l1 spacing-buttons">
+                    <a href="${pageContext.request.contextPath}/minha-conta/edita-senha/${professional.id}" class="dark-color-text">
+                        <div class="active-profission no-padding">
+                            <h3 class="center"><strong><i class="medium material-icons">lock</i></strong></h3>
+                            <h4 class="center"><strong>Minha senha</strong></h4>
+                        </div>
+                    </a>
+                </div>
+
             </div>
         </main>
     </jsp:body>

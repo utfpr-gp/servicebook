@@ -1,7 +1,7 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <t:admin title="Cadastro de Especialidades">
     <jsp:body>
@@ -21,7 +21,7 @@
                             <form action="a/especialidades" method="post" enctype="multipart/form-data">
                                 <input name="id" type="hidden" value="${dto.id}">
 
-                                <select name="categoryId" >
+                                <select name="categoryId">
                                     <option disabled selected>Selecione uma categoria</option>
                                     <c:if test="${empty dto.categoryId}">
                                         <c:forEach var="category" items="${categories}">
@@ -43,19 +43,23 @@
                                 </select>
 
                                 <div class="input-field">
-                                    <input placeholder="Pedreiro" type="text" id="autocomplete-input" name="name" value="${dto.name}">
+                                    <input placeholder="Pedreiro" type="text" id="autocomplete-input" name="name"
+                                           value="${dto.name}">
                                     <label for="autocomplete-input">Especialidade</label>
                                 </div>
 
                                 <div class="input-field input-name-expertise">
-                                    <textarea id="description" class="materialize-textarea" name="description" value="${dto.description}" placeholder="Realiza serviços de consertos em geral">${dto.description}</textarea>
+                                    <textarea id="description" class="materialize-textarea" name="description"
+                                              value="${dto.description}"
+                                              placeholder="Realiza serviços de consertos em geral">${dto.description}</textarea>
                                     <label for="description">Descrição</label>
                                 </div>
 
                                 <div class="file-field input-field">
                                     <div class="btn">
                                         <span>Ícone</span>
-                                        <input id="imageInput" type="file" value="${dto.icon}" name="icon" accept=".svg">
+                                        <input id="imageInput" type="file" value="${dto.icon}" name="icon"
+                                               accept=".svg">
                                     </div>
                                     <div class="file-path-wrapper">
                                         <input class="file-path validate" placeholder="icon.svg" type="text">
@@ -104,8 +108,13 @@
                                         <h4>Você tem certeza que deseja excluir <strong id="strong-name"></strong>?</h4>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
-                                        <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
+                                        <button type="button"
+                                                class="modal-close btn-flat waves-effect waves-light btn btn-gray">
+                                            Cancelar
+                                        </button>
+                                        <button type="submit" class="modal-close btn waves-effect waves-light gray">
+                                            Sim
+                                        </button>
                                     </div>
                                 </form>
                             </div>
@@ -117,32 +126,39 @@
                             <c:if test="${not empty expertises}">
                                 <table class="striped centered">
                                     <thead>
-                                        <tr>
-                                            <th>NOME</th>
-                                            <th>CATEGORIA</th>
-                                            <th>ÍCONE</th>
-                                            <th>EDITAR</th>
-                                            <th>EXCLUIR</th>
-                                        </tr>
+                                    <tr>
+                                        <th>NOME</th>
+                                        <th>CATEGORIA</th>
+                                        <th>ÍCONE</th>
+                                        <th>EDITAR</th>
+                                        <th>EXCLUIR</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
-                                        <c:forEach var="p" items="${expertises}">
-                                            <tr>
-                                                <td>${p.name}</td>
-                                                <td>${p.categoryName}</td>
-                                                <td>
-                                                    <img class="circle" src="${p.pathIcon}" height="24" width="24">
-                                                </td>
-                                                <td><a href="a/especialidades/${p.id}" class="btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">edit</i></a></td>
-                                                <td><a href="#modal-delete" class="btn-floating btn-small waves-effect waves-light red modal-trigger" data-url="${pageContext.request.contextPath}/a/especialidades/${p.id}" data-name="${p.name}"><i class="material-icons">delete_forever</i></a></td>
-                                            </tr>
-                                        </c:forEach>
+                                    <c:forEach var="p" items="${expertises}">
+                                        <tr>
+                                            <td>${p.name}</td>
+                                            <td>${p.categoryName}</td>
+                                            <td>
+                                                <img class="circle" src="${p.pathIcon}" height="24" width="24">
+                                            </td>
+                                            <td><a href="a/especialidades/${p.id}"
+                                                   class="btn-floating btn-small waves-effect waves-light blue"><i
+                                                    class="material-icons">edit</i></a></td>
+                                            <td><a href="#modal-delete"
+                                                   class="btn-floating btn-small waves-effect waves-light red modal-trigger"
+                                                   data-url="${pageContext.request.contextPath}/a/especialidades/${p.id}"
+                                                   data-name="${p.name}"><i
+                                                    class="material-icons">delete_forever</i></a></td>
+                                        </tr>
+                                    </c:forEach>
                                     </tbody>
                                 </table>
                             </c:if>
                             <!-- Paginação -->
                             <div class="center">
-                                <t:pagination pagination="${pagination}" relativePath="/a/especialidades"></t:pagination>
+                                <t:pagination pagination="${pagination}"
+                                              relativePath="/a/especialidades"></t:pagination>
                             </div>
                             <!-- Fim Paginação -->
                         </div>
@@ -154,7 +170,7 @@
     </jsp:body>
 </t:admin>
 <script>
-    document.getElementById("imageInput").addEventListener("change", function() {
+    document.getElementById("imageInput").addEventListener("change", function () {
         console.log('entrou....')
         var preview = document.getElementById("previewImage");
         var file = this.files[0];
@@ -164,7 +180,7 @@
             var reader = new FileReader();
 
             // Defina a função de callback para quando a leitura do arquivo estiver completa
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 preview.src = e.target.result;
                 preview.style.display = "block";
             };

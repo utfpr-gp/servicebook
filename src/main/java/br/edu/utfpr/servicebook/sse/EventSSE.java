@@ -67,13 +67,15 @@ public class EventSSE {
      * @return
      */
     private String getMessage(Status status){
-        if(status == Status.NEW_CANDIDATURE){
-            return "Uma nova candidatura";
+        switch (status){
+            case JOB_CANCELED :
+                return "Profissional cancelou a realização do serviço";
+            case NEW_CANDIDATURE :
+                return "Uma nova candidatura";
+            case JOB_CONFIRMED:
+                return "Profissional confirmou a realização do serviço";
+            default: return "Mensagem desconhecida";
         }
-        else if (status == Status.JOB_CONFIRMED){
-            return "Profissional confirmou a realização do serviço";
-        }
-        return "Mensagem desconhecida";
     }
 
 }

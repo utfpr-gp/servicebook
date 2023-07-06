@@ -55,6 +55,9 @@ public class MyAccountController {
     private UserService userService;
 
     @Autowired
+    private CompanyService companyService;
+
+    @Autowired
     private IndividualMapper individualMapper;
 
     @Autowired
@@ -87,25 +90,23 @@ public class MyAccountController {
     @Autowired
     PhoneNumberVerificationService phoneNumberVerificationService;
 
-    private String userSmsErrorForwarding(String step, UserSmsDTO dto, Model model, BindingResult errors) {
-        model.addAttribute("dto", dto);
-        model.addAttribute("errors", errors.getAllErrors());
-
-       return "redirect:/minha-conta/meu-contato/{id}";
-    }
     @Autowired
     private Cloudinary cloudinary;
 
     @Autowired
     private ModerateService moderateService;
 
+    private String userSmsErrorForwarding(String step, UserSmsDTO dto, Model model, BindingResult errors) {
+        model.addAttribute("dto", dto);
+        model.addAttribute("errors", errors.getAllErrors());
+
+        return "redirect:/minha-conta/meu-contato/{id}";
+    }
+
     @GetMapping
     public String home(HttpServletRequest request) {
         return "redirect:/minha-conta/cliente";
     }
-
-    @Autowired
-    private CompanyService companyService;
 
     /**
      * Mostra a tela de perfil do usuário.
@@ -703,17 +704,14 @@ public class MyAccountController {
             try {
                 Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
 
-
                 String imageUrl = (String) uploadResult.get("url");
 
-                if(moderateService.nsfwFilter(imageUrl)){
+                if(moderateService.isNsfwImage(imageUrl)){
                     String publicId = (String) uploadResult.get("public_id");
                     cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
                     redirectAttributes.addFlashAttribute("msgError", "A imagem enviada contém conteúdo impróprio. Por favor, envie outra foto.");
                     return "redirect:/minha-conta/perfil";
                 }
-
-
 
                 User user = oUser.get();
                 user.setProfilePicture(imageUrl);

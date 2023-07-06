@@ -1,7 +1,7 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <t:admin title="Cadastro de Categoria">
     <jsp:body>
@@ -21,7 +21,8 @@
                                 <input name="id" type="hidden" value="${dto.id}">
 
                                 <div class="input-field">
-                                    <input placeholder="Reformas e reparos" type="text" id="autocomplete-input" name="name" value="${dto.name}">
+                                    <input placeholder="Reformas e reparos" type="text" id="autocomplete-input"
+                                           name="name" value="${dto.name}">
                                     <label for="autocomplete-input">Categoria</label>
                                 </div>
 
@@ -61,8 +62,13 @@
                                         <h4>Você tem certeza que deseja excluir <strong id="strong-name"></strong>?</h4>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
-                                        <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
+                                        <button type="button"
+                                                class="modal-close btn-flat waves-effect waves-light btn btn-gray">
+                                            Cancelar
+                                        </button>
+                                        <button type="submit" class="modal-close btn waves-effect waves-light gray">
+                                            Sim
+                                        </button>
                                     </div>
                                 </form>
                             </div>
@@ -82,14 +88,21 @@
                                         <tr>
                                             <td>${p.id}</td>
                                             <td>${p.name}</td>
-                                            <td><a href="a/categorias/${p.id}" class="btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">edit</i></a></td>
-                                            <td><a href="#modal-delete" class="btn-floating btn-small waves-effect waves-light red modal-trigger" data-url="${pageContext.request.contextPath}/a/categorias/${p.id}" data-name="${p.name}"><i class="material-icons">delete_forever</i></a></td>
+                                            <td><a href="a/categorias/${p.id}"
+                                                   class="btn-floating btn-small waves-effect waves-light blue"><i
+                                                    class="material-icons">edit</i></a></td>
+                                            <td><a href="#modal-delete"
+                                                   class="btn-floating btn-small waves-effect waves-light red modal-trigger"
+                                                   data-url="${pageContext.request.contextPath}/a/categorias/${p.id}"
+                                                   data-name="${p.name}"><i
+                                                    class="material-icons">delete_forever</i></a></td>
                                         </tr>
                                     </c:forEach>
                                     </tbody>
                                 </table>
                             </c:if>
-                            <div class="center"><t:pagination pagination="${pagination}" relativePath="/a/categorias"></t:pagination></div>
+                            <div class="center"><t:pagination pagination="${pagination}"
+                                                              relativePath="/a/categorias"></t:pagination></div>
                         </div>
                     </div>
                 </div>
