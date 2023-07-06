@@ -61,7 +61,7 @@
                         <li>
                             <a class='dropdown-trigger btn' href='#' data-target='dropdown-cliente'>SOU CLIENTE<i class="tiny material-icons right">arrow_drop_down</i></a>
                             <ul id='dropdown-cliente' class='dropdown-content'>
-                                <li><a href="minha-conta/profissional">Sou profissional</a></li>
+                                <li><a href="profissional">Sou profissional</a></li>
                             </ul>
                         </li>
                     </c:when>
@@ -85,7 +85,7 @@
                         <li>
                             <a class='dropdown-trigger btn' href='#' data-target='dropdown-cliente-default'>SOU CLIENTE<i class="tiny material-icons right">arrow_drop_down</i></a>
                             <ul id='dropdown-cliente-default' class='dropdown-content'>
-                                <li><a href="minha-conta/profissional">Sou profissional</a></li>
+                                <li><a href="profissional">Sou profissional</a></li>
                             </ul>
                         </li>
                     </c:otherwise>
