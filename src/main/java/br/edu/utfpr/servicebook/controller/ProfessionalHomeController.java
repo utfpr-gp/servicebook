@@ -111,14 +111,28 @@ public class ProfessionalHomeController {
     /**
      * Mostra a tela da minha conta no perfil do profissional, mostrando os anúncios disponíveis por default.
      * @param expertiseId
+     * @param request
+     * @param id
+     * @param page
+     * @param size
+     * @param order
+     * @param direction
      * @return
      * @throws Exception
      */
     @GetMapping
     @RolesAllowed({RoleType.USER})
-    public ModelAndView showMyAccountProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> expertiseId) throws Exception {
+    public ModelAndView showMyAccountProfessional(
+            HttpServletRequest request,
+            @RequestParam(required = false, defaultValue = "0") Optional<Long> expertiseId,
+            @RequestParam(required = false, defaultValue = "0") Long id,
+            @RequestParam(value = "pag", defaultValue = "1") int page,
+            @RequestParam(value = "siz", defaultValue = "5") int size,
+            @RequestParam(value = "ord", defaultValue = "id") String order,
+            @RequestParam(value = "dir", defaultValue = "ASC") String direction
+    ) throws Exception {
         log.debug("ServiceBook: Minha conta.");
-   
+
         Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
 //        Optional<User> oProfessional = (userService.findByEmail(authentication.getEmail()));
 
@@ -126,8 +140,11 @@ public class ProfessionalHomeController {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        ModelAndView mv = new ModelAndView("professional/my-account");
-    
+        Page<JobRequest> jobRequestPage = findJobRequests(id, JobRequest.Status.AVAILABLE, page, size);
+        List<JobRequestFullDTO> jobRequestFullDTOs = generateJobRequestDTOList(jobRequestPage);
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/profissional");
+        ModelAndView mv = new ModelAndView("professional/initial");
+
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
         List<ExpertiseDTO> professionalExpertiseDTOs = professionalExpertises.stream()
                 .map(professionalExpertise -> professionalExpertise.getExpertise())
@@ -153,6 +170,8 @@ public class ProfessionalHomeController {
         mv.addObject("professionalExpertises", professionalExpertiseDTOs);
         mv.addObject("userInfo", individualInfo);
         mv.addObject("statisticInfo", statisticInfo);
+        mv.addObject("pagination", paginationDTO);
+        mv.addObject("jobs", jobRequestFullDTOs);
 
         return mv;
     }
