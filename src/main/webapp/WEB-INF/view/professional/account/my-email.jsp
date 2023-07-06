@@ -49,37 +49,6 @@
                     </form>
                 </div>
             </div>
-
-            <c:if test="${!user.emailVerified}">
-                <div class="row">
-                    <h3 class="center secondary-color-text">
-                        Vamos validar o seu email?
-                    </h3>
-                    <h5 class="center secondary-color-text">
-                        Enviamos um código para o seu email. Por favor, digite o código para validar este endereço
-                        de email.
-                    </h5>
-
-                    <form method="post" action="minha-conta/valida-email/${user.id}">
-                        <div class="row">
-                            <div class="input-field col s10 m8 l6 xl6 offset-s1 offset-m2 offset-l3 offset-xl3">
-                                <input id="code" name="code" type="text" class="validate" required>
-                                <label for="code">Código</label>
-                            </div>
-                        </div>
-                        <div class="row col s12">
-                            <div class="sendEmail col s6 center">
-                                <button class="waves-effect waves-light btn" type="button">
-                                    Reenviar email
-                                </button>
-                            </div>
-                            <div class="center col s6">
-                                <button class="waves-effect waves-light btn" type="submit">Salvar</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </c:if>
         </main>
 
     </jsp:body>
@@ -91,17 +60,6 @@
             $('#email-form input').prop('disabled', false);
             $(this).hide();
             $('#save-button').show();
-        });
-    });
-
-    $('.sendEmail').click(function () {
-        $.post("minha-conta/salvar-email/${professional.id}", {email: "${professional.email}"}).done(function () {
-            console.log('foi no evento');
-            swal({
-                title: "Deu certo!",
-                text: "Foi enviado um email para ${professional.email}.",
-                icon: "success",
-            });
         });
     });
 </script>

@@ -42,7 +42,7 @@
                     </h5>
 
                     <form method="post" action="minha-conta/valida-email/${user.id}">
-                        <input type="hidden" id="email" name="email" value=""/>
+                        <input type="hidden" id="email" name="email" value="${user.email}"/>
                         <div class="row">
                             <div class="input-field col s10 m8 l6 xl6 offset-s1 offset-m2 offset-l3 offset-xl3">
                                 <input id="code" name="code" type="text" class="validate" required>
@@ -51,7 +51,7 @@
                         </div>
                         <div class="row col s12">
                             <div class="sendEmail col s6 center">
-                                <button class="waves-effect waves-light btn" type="button">
+                                <button class="waves-effect waves-light btn" type="button" id="resend-email-button">
                                     Reenviar email
                                 </button>
                             </div>
@@ -61,6 +61,7 @@
                         </div>
                     </form>
                 </div>
+            </div>
         </main>
 
     </jsp:body>
@@ -70,8 +71,6 @@
     const email = urlParams.get('email');
 
     $(document).ready(function() {
-        $('#email').attr("value", email)
-        $('#email-div').append("<h5>Enviamos um código para " + email + ". Por favor, digite o código para validar este endereço de email.<h5>")
         $('#edit-button').click(function(){
             console.log($(this))
             $('#email-form input').prop('disabled', false);
@@ -80,7 +79,7 @@
         });
     });
 
-    $('.sendEmail').click(function () {
+    $('#resend-email-button').click(function () {
         $.get("minha-conta/reenvia-codigo-verificacao-email/${user.id}", {email: email}).done(function () {
             swal({
                 title: "Sucesso!",

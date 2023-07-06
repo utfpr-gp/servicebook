@@ -69,15 +69,20 @@ public class User implements Serializable {
 	protected Integer denounceAmount;
 	protected Long followsAmount;
 
-	@PrePersist
-	@PreUpdate
-	public void onSave() {
-		if(this.password == null) {
-			return;
-		}
+//	@PrePersist
+//	@PreUpdate
+//	public void onSave() {
+//
+//		if(this.password == null || this.password.isEmpty()) {
+//			return;
+//		}
+//
+//		final String hashed = PasswordUtil.generateBCrypt(getPassword());
+//		setPassword(hashed);
+//	}
 
-		final String hashed = PasswordUtil.generateBCrypt(getPassword());
-		setPassword(hashed);
+	public void setPassword(String password) {
+		this.password = PasswordUtil.generateBCrypt(password);
 	}
 
 	public User(String name, String email, String password, String phoneNumber){

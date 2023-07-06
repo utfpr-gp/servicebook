@@ -164,8 +164,7 @@ public class MyAccountController {
         }
 
         User user = oUser.get();
-        String description = request.getParameter("description");
-        user.setDescription(description);
+        user.setDescription(request.getParameter("description"));
         this.userService.save(user);
 
         return "redirect:/minha-conta/meu-anuncio/{id}";
@@ -175,12 +174,10 @@ public class MyAccountController {
 
     /**
      * Apresenta a tela de email do usuário.
-     * FIXME Depois de modificado, informar para o usuário fazer o login novamente.
      * @param id
      * @return
      * @throws IOException
      */
-
     @GetMapping("/edita-email/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showFormEditEmail(@PathVariable Long id) throws IOException {
@@ -207,6 +204,15 @@ public class MyAccountController {
         return mv;
     }
 
+    /**
+     * Salva o email do usuário.
+     * @param id
+     * @param userDTO
+     * @param errors
+     * @param redirectAttributes
+     * @return
+     * @throws IOException
+     */
     @PatchMapping("/edita-email/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String saveEmail(
@@ -216,15 +222,12 @@ public class MyAccountController {
             RedirectAttributes redirectAttributes)
             throws IOException {
 
-        //Faz a validação dos campos
-
         if (errors.hasErrors()) {
             redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
             return "redirect:/minha-conta/edita-email/" + id;
         }
 
         //busca o usuário pelo id passado na URL
-
         Optional<User> oUser = this.userService.findById(id);
 
         if(!oUser.isPresent()) {
@@ -232,7 +235,6 @@ public class MyAccountController {
         }
 
         //busca o usuário autenticado e verifica se o id passado na URL é o mesmo do usuário autenticado
-
         Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
         User userAuthenticated = oUserAuthenticated.get();
 
@@ -241,17 +243,14 @@ public class MyAccountController {
         }
 
         //verifica se o email já está cadastrado para outro usuário
-
         String email = userDTO.getEmail();
         Optional<User> oOtherUser = userService.findByEmail(email);
-
         if (oOtherUser.isPresent()){
             redirectAttributes.addFlashAttribute("msgError", "Email já cadastrado! Por favor, insira um email não cadastrado!");
             return "redirect:/minha-conta/edita-email/" + id;
         }
 
         //Verifica se o email foi verificado
-
         Optional<UserCode> oUserCode = userCodeService.findByEmail(email);
         String actualCode = "";
 
@@ -270,9 +269,19 @@ public class MyAccountController {
         String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/codigo/" + actualCode;
         quartzService.sendEmailToConfirmationCode(email, actualCode, tokenLink);
 
-        return "redirect:/minha-conta/valida-email/" + id + "?email=" + email;
+        userAuthenticated.setEmail(email);
+        userAuthenticated.setEmailVerified(false);
+        this.userService.save(userAuthenticated);
+
+        return "redirect:/minha-conta/valida-email/" + id;
     }
 
+    /**
+     * Apresenta a tela de validação de email do usuário.
+     * @param id
+     * @return
+     * @throws IOException
+     */
     @GetMapping("/valida-email/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showFormValidateEmail(@PathVariable Long id) throws IOException {
@@ -283,15 +292,9 @@ public class MyAccountController {
             throw new EntityNotFoundException("O usuário não foi encontrado.");
         }
 
-        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
+        UserDTO userDTO = userMapper.toDto(oUser.get());
 
-        User userAuthenticated = oUserAuthenticated.get();
-
-        if (id != userAuthenticated.getId()) {
-            throw new AuthenticationCredentialsNotFoundException("Você não tem permissão para alterar este email.");
-        }
-
-        UserDTO userDTO = userMapper.toDto(userAuthenticated);
+        System.out.println("Valida com email: " + userDTO.getEmail());
 
         ModelAndView mv = new ModelAndView("professional/account/validate-my-email");
         mv.addObject("user", userDTO);
@@ -299,6 +302,14 @@ public class MyAccountController {
         return mv;
     }
 
+    /**
+     * Salva o código de validação de email do usuário.
+     * @param id
+     * @param dto
+     * @param errors
+     * @param redirectAttributes
+     * @return
+     */
     @PostMapping("/valida-email/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String saveUserEmailCode(
@@ -307,41 +318,35 @@ public class MyAccountController {
             BindingResult errors,
             RedirectAttributes redirectAttributes
     ) {
+
+        if (errors.hasErrors()) {
+            redirectAttributes.addFlashAttribute("msgError", "Houve um erro na verificação do código, verifique se digitou corretamente!");
+            return "redirect:/minha-conta/valida-email/" + id;
+        }
+
         Optional<User> oUser = this.userService.findById(id);
 
         if(!oUser.isPresent()) {
             throw new EntityNotFoundException("O usuário não foi encontrado.");
         }
 
-        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
-        User userAuthenticated = oUserAuthenticated.get();
-
-        if (id != userAuthenticated.getId()) {
-            throw new AuthenticationCredentialsNotFoundException("Você não tem permissão para alterar esta senha.");
-        }
-
         String email = dto.getEmail();
-
-        if (errors.hasErrors()) {
-            redirectAttributes.addFlashAttribute("msgError", "Houve um erro na verificação do código, verifique se digitou corretamente!");
-            return "redirect:/minha-conta/valida-email/" + id + "?email=" + email;
-        }
 
         Optional<UserCode> oUserCode = userCodeService.findByEmail(email);
 
         if (!oUserCode.isPresent()) {
             redirectAttributes.addFlashAttribute("msgError", "Código inválido! Por favor, insira o código de autenticação.");
-            return "redirect:/minha-conta/valida-email/" + id + "?email=" + email;
+            return "redirect:/minha-conta/valida-email/" + id;
         }
 
         if (!dto.getCode().equals(oUserCode.get().getCode())) {
             redirectAttributes.addFlashAttribute("msgError", "Código inválido! Por favor, insira o código de autenticação.");
-            return "redirect:/minha-conta/valida-email/" + id + "?email=" + email;
+            return "redirect:/minha-conta/valida-email/" + id;
         }
 
-        userAuthenticated.setEmailVerified(true);
-        userAuthenticated.setEmail(email);
-        this.userService.save(userAuthenticated);
+        User user = oUser.get();
+        user.setEmailVerified(true);
+        this.userService.save(user);
 
         redirectAttributes.addFlashAttribute("msg", "Email salvo com sucesso!");
 
@@ -363,13 +368,6 @@ public class MyAccountController {
             throw new EntityNotFoundException("O usuário não foi encontrado.");
         }
 
-        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
-        User userAuthenticated = oUserAuthenticated.get();
-
-        if (id != userAuthenticated.getId()) {
-            throw new AuthenticationCredentialsNotFoundException("Você não ter permissão para atualizar esse telefone.");
-        }
-
         Optional<UserCode> oUserCode = userCodeService.findByEmail(email);
         String actualCode = "";
 
@@ -387,8 +385,6 @@ public class MyAccountController {
 
         String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/codigo/" + actualCode;
         quartzService.sendEmailToConfirmationCode(email, actualCode, tokenLink);
-
-        System.out.println("sus------------------------------------------------------------------------------");
 
         return "";
     }
