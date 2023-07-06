@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.persistence.EntityNotFoundException;
@@ -156,4 +157,11 @@ public class GlobalExceptionHandler {
 	public String handleDatabaseException(HttpServletRequest req, Exception e) {
 		return "error/error-database";
 	}
+
+	@ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ModelAndView handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
+        ModelAndView modelAndView = new ModelAndView("client/job-request/wizard-step-05");
+        modelAndView.addObject("errors", "O tamanho máximo do arquivo foi excedido. Tente fazer o upload de arquivos menores.");
+        return modelAndView;
+    }
 }

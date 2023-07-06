@@ -5,6 +5,7 @@ import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
 import br.edu.utfpr.servicebook.model.dto.IndividualDTO;
 import br.edu.utfpr.servicebook.model.dto.JobRequestDTO;
 import br.edu.utfpr.servicebook.model.dto.ProfessionalSearchItemDTO;
+import br.edu.utfpr.servicebook.model.dto.ResponseDTO;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
@@ -22,6 +23,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,7 +42,9 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -59,6 +63,9 @@ public class JobRequestController {
 
     @Autowired
     private JobRequestService jobRequestService;
+
+    @Autowired
+    private JobImagesService jobImagesService;
 
     @Autowired
     private JobAvailableToHideService jobAvailableToHideService;
@@ -276,7 +283,7 @@ public class JobRequestController {
      * @return
      * @throws IOException
      */
-    @PostMapping("/passo-5")
+    /* @PostMapping("/passo-5")
     @PermitAll
     public String saveFormImagePath(HttpSession httpSession, RedirectAttributes redirectAttributes, JobRequestDTO dto, Model model) throws IOException {
 
@@ -298,6 +305,83 @@ public class JobRequestController {
             return "redirect:/requisicoes/passo=5";
         } else {
             return "redirect:/requisicoes/passo=5";
+        }
+    } */
+
+    @PostMapping("/upload-fotos")
+    @PermitAll
+    public ResponseEntity<?> saveFormImagePath(@RequestParam("images") MultipartFile[] images, HttpSession httpSession, RedirectAttributes redirectAttributes, JobRequestDTO dto, Model model) throws IOException {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            log.debug("Passo 4 {}", images);
+            if(images == null || images.length == 0 || images[0].isEmpty()){
+                responseDTO.setMessage("Nenhuma imagem enviada. Tente novamente.");
+                return ResponseEntity.status(400).body(responseDTO);
+            }
+
+            JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
+
+            List<String> successImages = new ArrayList<>();
+
+            for (MultipartFile image : images) {
+                if (!isValidateImage(image)) {
+                    responseDTO.setMessage("Revise os anexos e tente novamente. Arquivo inválido: " + image.getOriginalFilename() + ".");
+                    return ResponseEntity.status(400).body(responseDTO);
+                }
+
+                File jobImage = Files.createTempFile("temp", image.getOriginalFilename()).toFile();
+                image.transferTo(jobImage);
+
+                Map data = cloudinary.uploader().upload(jobImage, ObjectUtils.asMap("folder", "jobs"));
+
+                if(!data.containsKey("url")){
+                    responseDTO.setMessage("Revise os anexos e tente novamente. Não foi possível salvar o arquivo: " + image.getOriginalFilename() + ".");
+                    return ResponseEntity.status(400).body(responseDTO);
+                }
+
+                successImages.add((String) data.get("url"));
+            }
+
+            successImages.addAll(sessionDTO.getImagesSession());
+            sessionDTO.setImagesSession(successImages);
+            Map<String, List<String>> succesData = new HashMap<>() {{
+                put("successImages", successImages);
+            }};
+
+            responseDTO.setData(succesData);
+            return ResponseEntity.ok(responseDTO);
+        } catch (Exception e){
+            responseDTO.setMessage("Um erro inesperado aconteceu. Tente novamente!");
+            return ResponseEntity.status(400).body(responseDTO);
+        }
+    }
+
+    @DeleteMapping("/session/image/{url}")
+    public ResponseEntity<?> deleteImageSession(@PathVariable String url, HttpSession httpSession, RedirectAttributes redirectAttributes, JobRequestDTO dto, Model model) throws IOException {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
+
+            for (String path : sessionDTO.getImagesSession()) {
+                if(path.contains(url)) {
+                    int index = sessionDTO.getImagesSession().indexOf(path);
+                    String remove = sessionDTO.getImagesSession().remove(index);
+
+                    Map<String, String> statusData = new HashMap<>() {{
+                        put("url", remove);
+                    }};
+
+                    responseDTO.setData(statusData);
+                    return ResponseEntity.ok(responseDTO);
+                }
+            }
+
+            responseDTO.setMessage("Imagem não encontrada. Por favor, tente novamente.");
+            return ResponseEntity.status(400).body(responseDTO);
+
+        } catch (Exception e){
+            responseDTO.setMessage("Erro ao deletar imagem. Por favor, tente novamente.");
+            return ResponseEntity.status(400).body(responseDTO);
         }
     }
 
@@ -355,6 +439,10 @@ public class JobRequestController {
 
         //jobRequest.setImage(sessionDTO.getImageSession());
         jobRequestService.save(jobRequest);
+        for (String path : sessionDTO.getImagesSession()) {
+            JobImages jobImage = new JobImages(jobRequest, path);
+            jobImagesService.save(jobImage);
+        }
         //envia a notificação SSE
         EventSSE eventSse = new EventSSE(EventSSE.Status.JOB_CONFIRMED, jobRequest.getDescription().toString(), user.getName(), jobRequest.getUser().getName(), jobRequest.getUser().getEmail());
         sseService.send(eventSse);

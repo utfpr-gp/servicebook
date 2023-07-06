@@ -184,6 +184,15 @@ blockquote{
   background-color: #5164ce;
 }
 
+.btn-validate{
+  color: #fff;
+  background-color: #28a745;
+}
+
+.btn-validate:hover{
+  background-color: #28a745 !important;
+}
+
 .select-wrapper{
   margin-left: auto;
   margin-right: auto;
@@ -632,6 +641,28 @@ textarea {
 .progress-bar .progress {
   margin-right: 1rem;
   margin-top: 14px;
+}
+
+.gallery {
+  margin: -3px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.box-image{
+  width: 100px;
+  height: 140px;
+  display: inline-block;
+}
+
+.box-image img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+
+.box-image a {
+  color: #f44336;
 }
 
 @media only screen and (max-width : 992px) {
