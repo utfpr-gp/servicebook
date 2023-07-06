@@ -9,7 +9,8 @@
             <div class="row">
                 <!-- Painel lateral -->
                 <div class="col m4 l3 hide-on-med-and-down">
-                    <t:side-panel userInfo="${userInfo}" followdto="${followdto}" statisticInfo="${statisticInfo}"></t:side-panel>
+                    <t:side-panel userInfo="${userInfo}" followdto="${followdto}"
+                                  statisticInfo="${statisticInfo}"></t:side-panel>
                 </div>
 
                 <!-- Painel com as solicitações de serviços -->
@@ -21,7 +22,7 @@
 
                         <div class="col s12">
                             <label>
-                                <input name="group1" type="radio" id="open-radio" checked />
+                                <input name="group1" type="radio" id="open-radio" checked/>
                                 <span style="color: rgb(63 81 181)">ABERTOS</span>
                             </label>
                             <label>
@@ -50,18 +51,22 @@
                         <div class="row" style="margin-top: 20px">
                             <ul class="tabs tabs-fixed-width center open-jobs-tabs">
                                 <li class="tab" id="1">
-                                    <a id="tab-default" data-url="minha-conta/profissional/em-disputa" href="#emDisputa">EM DISPUTA</a>
+                                    <a id="tab-default" data-url="minha-conta/profissional/em-disputa"
+                                       href="#emDisputa">EM DISPUTA</a>
                                 </li>
                                 <li class="tab" id="2">
-                                    <a data-url="minha-conta/profissional/em-orcamento" href="#paraOrcamento">PARA ORÇAMENTO</a>
+                                    <a data-url="minha-conta/profissional/em-orcamento" href="#paraOrcamento">PARA
+                                        ORÇAMENTO</a>
                                 </li>
                                 <li class="tab" id="3">
-                                    <a data-url="minha-conta/profissional/para-contratar" href="#paraContratar">PARA CONFIRMAR</a>
+                                    <a data-url="minha-conta/profissional/para-contratar" href="#paraContratar">PARA
+                                        CONFIRMAR</a>
                                 </li>
                             </ul>
                             <ul class="tabs tabs-fixed-width center todo-jobs-tabs" style="display: none">
                                 <li class="tab" id="4">
-                                    <a id="tab-default-todo" data-url="minha-conta/profissional/para-fazer" href="#paraFazer">PARA FAZER</a>
+                                    <a id="tab-default-todo" data-url="minha-conta/profissional/para-fazer"
+                                       href="#paraFazer">PARA FAZER</a>
                                 </li>
                                 <li class="tab" id="5">
                                     <a data-url="minha-conta/profissional/fazendo" href="#fazendo">FAZENDO</a>
@@ -69,7 +74,8 @@
                             </ul>
                             <ul class="tabs tabs-fixed-width center closed-jobs-tabs" style="display: none">
                                 <li class="tab" id="6">
-                                    <a id="tab-default-closed" data-url="minha-conta/profissional/executados" href="#executados">EXECUTADOS</a>
+                                    <a id="tab-default-closed" data-url="minha-conta/profissional/executados"
+                                       href="#executados">EXECUTADOS</a>
                                 </li>
                                 <li class="tab" id="7">
                                     <a data-url="minha-conta/profissional/cancelados" href="#cancelados">CANCELADOS</a>
@@ -111,7 +117,7 @@
             $('#tab-default').click();
         });
 
-        $('#open-radio').click(function (){
+        $('#open-radio').click(function () {
             $('.todo-jobs-tabs').hide();
             $('.todo-jobs').hide();
 
@@ -130,7 +136,7 @@
             });
         });
 
-        $('#todo-radio').click(function (){
+        $('#todo-radio').click(function () {
             $('.open-jobs-tabs').hide();
             $('.open-jobs').hide();
 
@@ -149,7 +155,7 @@
             });
         });
 
-        $('#closed-radio').click(function (){
+        $('#closed-radio').click(function () {
             $('.todo-jobs-tabs').hide();
             $('.todo-jobs').hide();
 
@@ -181,7 +187,7 @@
 
         $(href).load(url, function (result) {
             //console.log(result)
-            $('html, body').stop().animate({scrollTop:0}, 600, 'swing', function() {
+            $('html, body').stop().animate({scrollTop: 0}, 600, 'swing', function () {
                 //console.log("animação finalizada.");
             });
 

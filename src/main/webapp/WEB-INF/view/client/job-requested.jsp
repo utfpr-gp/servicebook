@@ -30,13 +30,16 @@
                         </h4>
 
                         <h5 class="center">
-                            Acompanhe seu pedido para ter acesso aos dados dos profissionais que se candidataram ao seu pedido.
+                            Acompanhe seu pedido para ter acesso aos dados dos profissionais que se candidataram ao seu
+                            pedido.
                         </h5>
                         <h5 class="center">
-                            Selecione alguns profissionais para orçamento, converse com eles e escolha o melhor para o seu serviço!
+                            Selecione alguns profissionais para orçamento, converse com eles e escolha o melhor para o
+                            seu serviço!
                         </h5>
                         <h5 class="center">
-                            Não esqueça de informar pelo acompanhamento do pedido qual foi o profissional escolhido para que você possa avaliar depois!
+                            Não esqueça de informar pelo acompanhamento do pedido qual foi o profissional escolhido para
+                            que você possa avaliar depois!
                         </h5>
 
                         <div class="section center-align">
