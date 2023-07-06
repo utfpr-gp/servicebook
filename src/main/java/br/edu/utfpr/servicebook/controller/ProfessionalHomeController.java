@@ -86,6 +86,16 @@ public class ProfessionalHomeController {
     private JobCandidateMapper jobCandidateMapper;
 
     @Autowired
+    private JobService jobService;
+
+    @Autowired
+    private PaginationUtil paginationUtil;
+
+    @Autowired
+    private JobMapper jobMapper;
+
+
+    @Autowired
     private StateService stateService;
 
     @Autowired
@@ -103,8 +113,6 @@ public class ProfessionalHomeController {
     @Autowired
     private IAuthentication authentication;
 
-    @Autowired
-    private PaginationUtil paginationUtil;
     @Autowired
     private UserService userService;
 
@@ -534,6 +542,47 @@ public class ProfessionalHomeController {
         mv.addObject("userInfo", individualInfo);
         return mv;
     }
+
+    /**
+     * Lista todas as vagas de emprego disponíveis
+     * @param page
+     * @param size
+     * @param order
+     * @param direction
+     * @return
+     */
+    @GetMapping("/vagas")
+    @RolesAllowed({RoleType.USER})
+    public ModelAndView listAll(@RequestParam(value = "pag", defaultValue = "1") int page,
+                                @RequestParam(value = "siz", defaultValue = "5") int size,
+                                @RequestParam(value = "ord", defaultValue = "title") String order,
+                                @RequestParam(value = "dir", defaultValue = "ASC") String direction){
+
+        ModelAndView mv = new ModelAndView("professional/jobs-avaliable");
+        PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
+
+        Page<Job> jobPage = jobService.findAll( pageRequest);
+
+
+        List<JobDTO> jobOpeningsDTOs = jobPage.stream()
+                .map(s -> jobMapper.toDto(s))
+                .collect(Collectors.toList());
+
+        mv.addObject("jobs", jobOpeningsDTOs);
+
+        List<ExpertiseDTO> expertiseDTOS = expertiseService.findAll().stream()
+                .map(expertise -> expertiseMapper.toDto(expertise)).collect(Collectors.toList());
+        mv.addObject("expertises", expertiseDTOS);
+
+        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobPage);
+        mv.addObject("pagination", paginationDTO);
+        return mv;
+    }
+
+    public String getCityNameById(Long cityId){
+        return cityService.findById(cityId).get().getName();
+    }
+
 
     /**
      * Realiza a busca no banco de dados pelos anúncios com paginação filtrando por status e especialidades.

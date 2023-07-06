@@ -26,11 +26,16 @@ public class JobDTO implements Serializable {
     @NotNull(message = "A especialidade é obrigatória")
     private Long expertiseId;
 
+    @NotNull(message = "A empresa é obrigatória")
+    private Long companyId;
+
     @NotBlank(message = "A descrição da vaga é obrigatória")
     private String description;
 
     private Long salary;
 
     private ExpertiseDTO expertise;
+
+    private CompanyDTO company;
 
 }

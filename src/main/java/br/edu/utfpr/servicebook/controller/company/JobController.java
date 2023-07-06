@@ -66,37 +66,7 @@ public class JobController {
     @Autowired
     private ProfessionalExpertiseService professionalExpertiseService;
 
-    /**
-     * Lista todas as vagas de emprego disponíveis
-     * @param page
-     * @param size
-     * @param order
-     * @param direction
-     * @return
-     */
-    @GetMapping("/listar")
-    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
-    public ModelAndView listAll(@RequestParam(value = "pag", defaultValue = "1") int page,
-                                 @RequestParam(value = "siz", defaultValue = "5") int size,
-                                 @RequestParam(value = "ord", defaultValue = "title") String order,
-                                 @RequestParam(value = "dir", defaultValue = "ASC") String direction){
 
-        ModelAndView mv = new ModelAndView("company/jobs-avaliable");
-        PageRequest pageRequest = PageRequest.of(page-1, size, Sort.Direction.valueOf(direction), order);
-
-        Optional<User> oUser = userService.findByEmail(authentication.getEmail());
-        Page<Job> jobPage = jobService.findAll( pageRequest);
-
-        List<JobDTO> jobOpeningsDTOs = jobPage.stream()
-                .map(s -> jobMapper.toDto(s))
-                .collect(Collectors.toList());
-
-        mv.addObject("jobs", jobOpeningsDTOs);
-
-        PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobPage);
-        mv.addObject("pagination", paginationDTO);
-        return mv;
-    }
 
     /**
      * Mostra o formulário de cadastro de vagas de emprego

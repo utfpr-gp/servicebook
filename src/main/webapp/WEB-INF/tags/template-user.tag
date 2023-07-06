@@ -17,6 +17,9 @@
             <ul id='dropdown-perfil' class='dropdown-content'>
                 <li><a href="/servicebook/minha-conta/cliente">Minha Conta</a></li>
                 <li><a href="/servicebook/minha-conta/perfil">Meu perfil</a></li>
+                <c:if test="${fn:contains(currenturl, '/minha-conta/profissional')}">
+                    <li><a href="/servicebook/minha-conta/profissional/vagas">Vagas</a></li>
+                </c:if>
                 <li class="divider" tabindex="-1"></li>
                 <li>
                     <a href="logout">Sair</a>
