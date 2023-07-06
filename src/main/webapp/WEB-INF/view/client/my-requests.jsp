@@ -1,16 +1,19 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" %> <%@ taglib
-uri="http://www.springframework.org/tags/form" prefix="form" %> <%@taglib
-prefix="t" tagdir="/WEB-INF/tags" %> <%@ taglib prefix="c"
-uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@ taglib
+        uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@taglib
+        prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="c"
+           uri="http://java.sun.com/jsp/jstl/core" %>
 
-<t:template title="Minhas Solicitações" userInfo="${user}">
+<t:template title="Minhas Solicitações" userInfo="${userInfo}">
     <jsp:body>
         <main class="container">
             <!-- row -->
             <div class="row">
                 <!-- Painel lateral -->
                 <div class="col m4 l3 hide-on-med-and-down">
-                    <t:side-panel userInfo="${user}"></t:side-panel>
+                    <t:side-panel userInfo="${userInfo}"></t:side-panel>
                 </div>
 
                 <!-- Painel com as solicitações de serviços -->
@@ -101,15 +104,15 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                 </div>
             </div>
             <!-- Fim do modal de mensagem -->
-    </main>
-  </jsp:body>
+        </main>
+    </jsp:body>
 </t:template>
 <script src="assets/resources/scripts/requests.js"></script>
 
 <c:if test="${not empty msg}">
-  <script>
-    $(document).ready(function () {
-      $("#modal-msg").modal("open");
-    });
-  </script>
+    <script>
+        $(document).ready(function () {
+            $("#modal-msg").modal("open");
+        });
+    </script>
 </c:if>

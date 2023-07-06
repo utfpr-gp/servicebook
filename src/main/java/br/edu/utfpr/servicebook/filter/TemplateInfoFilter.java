@@ -1,7 +1,7 @@
 package br.edu.utfpr.servicebook.filter;
 
+import br.edu.utfpr.servicebook.service.FollowsService;
 import br.edu.utfpr.servicebook.model.entity.User;
-import br.edu.utfpr.servicebook.model.repository.IndividualRepository;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.service.UserService;
 import br.edu.utfpr.servicebook.util.TemplateUtil;
@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 /**
- * Filtro para adicionar informações do usuário logado no template
+ * Filtro para adicionar informações do usuário logado no template.
  */
 public class TemplateInfoFilter implements Filter {
 
@@ -28,6 +28,9 @@ public class TemplateInfoFilter implements Filter {
 
     @Autowired
     private IAuthentication authentication;
+
+    @Autowired
+    private FollowsService followsService;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -46,8 +49,11 @@ public class TemplateInfoFilter implements Filter {
         HttpSession httpSession = req.getSession();
 
         Optional<User> oUser = userService.findByEmail(authentication.getEmail());
+
         if(oUser.isPresent()){
             UserTemplateInfo userInfo = templateUtil.getUserInfo(oUser.get());
+            Long clientFollowingAmount = followsService.countByClient(oUser.get());
+            userInfo.setFollowingAmount(clientFollowingAmount);
             request.setAttribute("userInfo", userInfo);
         }
 

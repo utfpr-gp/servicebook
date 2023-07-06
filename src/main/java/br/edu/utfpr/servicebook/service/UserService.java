@@ -1,11 +1,15 @@
 package br.edu.utfpr.servicebook.service;
 
+import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
+import br.edu.utfpr.servicebook.model.entity.Expertise;
+import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
 import br.edu.utfpr.servicebook.model.entity.User;
-import br.edu.utfpr.servicebook.model.repository.ProfessionalExpertiseRepository;
+import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +20,10 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private ProfessionalExpertiseRepository professionalExpertiseRepository;
+    private ProfessionalExpertiseService professionalExpertiseService;
+
+    @Autowired
+    private ExpertiseMapper expertiseMapper;
 
     public void save(User entity) {
         userRepository.save(entity);
@@ -52,5 +59,23 @@ public class UserService {
 
     public Long countUsersWithoutExpertise(){
         return this.userRepository.countUsersWithoutExpertise();
+    }
+
+    /**
+     * Retorna uma lista de ExpertiseDTOs de um profissional
+     * @param professional
+     * @return
+     */
+    public List<ExpertiseDTO> getExpertiseDTOs(User professional){
+        List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(professional);
+
+        List<ExpertiseDTO> expertiseDTOs = new ArrayList<>();
+        for (ProfessionalExpertise professionalExpertise : professionalExpertises) {
+            Expertise expertise = professionalExpertise.getExpertise();
+
+            expertiseDTOs.add(expertiseMapper.toDto(expertise));
+        }
+
+        return expertiseDTOs;
     }
 }

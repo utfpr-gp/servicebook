@@ -22,7 +22,7 @@
                                 <input name="id" type="hidden" value="${dto.id}">
 
                                 <!-- select de estados -->
-                                <select id="select-state" name="idState" >
+                                <select id="select-state" name="idState">
                                     <option disabled selected>Selecione um estado</option>
                                     <c:if test="${empty dto.idState}">
                                         <c:forEach var="state" items="${states}">
@@ -45,14 +45,16 @@
                                 <!-- fim select de estados -->
 
                                 <div class="input-field">
-                                    <input type="text" id="autocomplete-input" name="name" class="autocomplete" value="${dto.name}">
+                                    <input type="text" id="autocomplete-input" name="name" class="autocomplete"
+                                           value="${dto.name}">
                                     <label for="autocomplete-input">Cidade</label>
                                 </div>
 
                                 <div class="file-field input-field">
                                     <div class="btn">
                                         <span>imagem</span>
-                                        <input id="imageInput" type="file" name="image" accept=".jpg, .jpeg, .png" value="${dto.image}">
+                                        <input id="imageInput" type="file" name="image" accept=".jpg, .jpeg, .png"
+                                               value="${dto.image}">
                                     </div>
                                     <div class="file-path-wrapper">
                                         <input class="file-path validate" placeholder="image.jpg" type="text">
@@ -99,24 +101,30 @@
                             <c:if test="${not empty cities}">
                                 <table class="striped centered">
                                     <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>NOME</th>
-                                            <th>ESTADO</th>
-                                            <th>EDITAR</th>
-                                            <th>EXCLUIR</th>
-                                        </tr>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>NOME</th>
+                                        <th>ESTADO</th>
+                                        <th>EDITAR</th>
+                                        <th>EXCLUIR</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
-                                        <c:forEach var="city" items="${cities}">
-                                            <tr>
-                                                <td>${city.id}</td>
-                                                <td>${city.name}</td>
-                                                <td>${city.state.name}</td>
-                                                <td><a href="a/cidades/${city.id}" class="btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">edit</i></a></td>
-                                                <td><a href="#modal-delete" data-url="${pageContext.request.contextPath}/a/cidades/${city.id}" data-name="${city.name}" class="btn-floating btn-small waves-effect waves-light red modal-trigger"><i class="material-icons">delete_forever</i></a></td>
-                                            </tr>
-                                        </c:forEach>
+                                    <c:forEach var="city" items="${cities}">
+                                        <tr>
+                                            <td>${city.id}</td>
+                                            <td>${city.name}</td>
+                                            <td>${city.state.name}</td>
+                                            <td><a href="a/cidades/${city.id}"
+                                                   class="btn-floating btn-small waves-effect waves-light blue"><i
+                                                    class="material-icons">edit</i></a></td>
+                                            <td><a href="#modal-delete"
+                                                   data-url="${pageContext.request.contextPath}/a/cidades/${city.id}"
+                                                   data-name="${city.name}"
+                                                   class="btn-floating btn-small waves-effect waves-light red modal-trigger"><i
+                                                    class="material-icons">delete_forever</i></a></td>
+                                        </tr>
+                                    </c:forEach>
                                     </tbody>
                                 </table>
                             </c:if>
@@ -141,7 +149,9 @@
                             <h4>Você tem certeza que deseja excluir <strong id="strong-name"></strong>?</h4>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
+                            <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">
+                                Cancelar
+                            </button>
                             <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
                         </div>
                     </form>
@@ -154,7 +164,7 @@
 </a:admin>
 <script src="assets/resources/scripts/cities.js"></script>
 <script>
-    document.getElementById("imageInput").addEventListener("change", function() {
+    document.getElementById("imageInput").addEventListener("change", function () {
         var preview = document.getElementById("previewImage");
         var file = this.files[0];
 
@@ -163,7 +173,7 @@
             var reader = new FileReader();
 
             // Defina a função de callback para quando a leitura do arquivo estiver completa
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 preview.src = e.target.result;
                 preview.style.display = "block";
             };

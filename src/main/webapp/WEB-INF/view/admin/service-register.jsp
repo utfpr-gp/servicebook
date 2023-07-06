@@ -1,11 +1,10 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <t:admin title="Cadastro de Serviços">
     <jsp:body>
-
         <main>
             <div class="container">
                 <div class="section">
@@ -19,7 +18,8 @@
 
                         <!-- Formulário de Serviços -->
                         <div class="col s12 l6 offset-l3 spacing-buttons">
-                            <form action="a/servicos" class="form-expertises" method="post" enctype="multipart/form-data">
+                            <form action="a/servicos" class="form-expertises" method="post"
+                                  enctype="multipart/form-data">
                                 <input name="id" type="hidden" value="${dto.id}">
 
                                 <select name="expertiseId" id="expertise-select">
@@ -34,12 +34,15 @@
                                 </select>
 
                                 <div class="input-field">
-                                    <input placeholder="" type="text" id="autocomplete-input" name="name" class="autocomplete" value="${dto.name}">
+                                    <input placeholder="" type="text" id="autocomplete-input" name="name"
+                                           class="autocomplete" value="${dto.name}">
                                     <label for="autocomplete-input">Serviços</label>
                                 </div>
 
                                 <div class="input-field">
-                                    <textarea id="description" class="materialize-textarea" name="description" value="${dto.description}" placeholder="Realiza serviços de consertos em geral">${dto.description}</textarea>
+                                    <textarea id="description" class="materialize-textarea" name="description"
+                                              value="${dto.description}"
+                                              placeholder="Realiza serviços de consertos em geral">${dto.description}</textarea>
                                     <label for="description">Descrição</label>
                                 </div>
 
@@ -85,8 +88,13 @@
                                         <h4>Você tem certeza que deseja excluir <strong id="strong-name"></strong>?</h4>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
-                                        <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
+                                        <button type="button"
+                                                class="modal-close btn-flat waves-effect waves-light btn btn-gray">
+                                            Cancelar
+                                        </button>
+                                        <button type="submit" class="modal-close btn waves-effect waves-light gray">
+                                            Sim
+                                        </button>
                                     </div>
                                 </form>
                             </div>
@@ -112,8 +120,14 @@
                                             <td>${p.id}</td>
                                             <td>${p.expertise.name}</td>
                                             <td>${p.name}</td>
-                                            <td><a href="a/servicos/${p.id}" class="btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">edit</i></a></td>
-                                            <td><a href="#modal-delete" class="btn-floating btn-small waves-effect waves-light red modal-trigger" data-url="${pageContext.request.contextPath}/a/servicos/${p.id}" data-name="${p.name}"><i class="material-icons">delete_forever</i></a></td>
+                                            <td><a href="a/servicos/${p.id}"
+                                                   class="btn-floating btn-small waves-effect waves-light blue"><i
+                                                    class="material-icons">edit</i></a></td>
+                                            <td><a href="#modal-delete"
+                                                   class="btn-floating btn-small waves-effect waves-light red modal-trigger"
+                                                   data-url="${pageContext.request.contextPath}/a/servicos/${p.id}"
+                                                   data-name="${p.name}"><i
+                                                    class="material-icons">delete_forever</i></a></td>
                                         </tr>
                                     </c:forEach>
                                     </tbody>

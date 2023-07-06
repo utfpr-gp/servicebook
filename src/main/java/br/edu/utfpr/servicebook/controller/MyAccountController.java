@@ -1,14 +1,13 @@
 package br.edu.utfpr.servicebook.controller;
 
+import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.*;
-import br.edu.utfpr.servicebook.model.entity.City;
-import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.model.entity.User;
-import br.edu.utfpr.servicebook.model.entity.UserCode;
+import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
+import br.edu.utfpr.servicebook.util.PasswordUtil;
 import br.edu.utfpr.servicebook.util.PhoneNumberVerificationService;
 import br.edu.utfpr.servicebook.util.UserTemplateInfo;
 import br.edu.utfpr.servicebook.util.TemplateUtil;
@@ -24,12 +23,24 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
+import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
+import br.edu.utfpr.servicebook.model.mapper.JobRequestMapper;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.Map;
 
 @RequestMapping("/minha-conta")
 @Controller
@@ -43,6 +54,9 @@ public class MyAccountController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CompanyService companyService;
 
     @Autowired
     private IndividualMapper individualMapper;
@@ -77,12 +91,19 @@ public class MyAccountController {
     @Autowired
     PhoneNumberVerificationService phoneNumberVerificationService;
 
+    @Autowired
+    private Cloudinary cloudinary;
+
+    @Autowired
+    private ModerateService moderateService;
+
     private String userSmsErrorForwarding(String step, UserSmsDTO dto, Model model, BindingResult errors) {
         model.addAttribute("dto", dto);
         model.addAttribute("errors", errors.getAllErrors());
 
         return "redirect:/minha-conta/meu-contato/{id}";
     }
+
     @GetMapping
     public String home(HttpServletRequest request) {
         return "redirect:/minha-conta/cliente";
@@ -127,6 +148,7 @@ public class MyAccountController {
     /**
      * Mostra a tela de edição do anúncio geral do profissional.
      * Esta descrição aparecerá no portfólio público do profissional.
+     *
      * @param id
      * @return
      * @throws IOException
@@ -487,6 +509,12 @@ public class MyAccountController {
         return "redirect:/minha-conta/valida-telefone/" + id;
     }
 
+    /**
+     * Reenvia o código de verificação para o telefone do usuário.
+     * @param id
+     * @return
+     * @throws IOException
+     */
     @GetMapping("/reenvia-codigo-verificacao/{id}")
     @ResponseBody
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
@@ -547,6 +575,14 @@ public class MyAccountController {
         return mv;
     }
 
+    /**
+     * Salva o código de validação do telefone do usuário.
+     * @param id
+     * @param dto
+     * @param errors
+     * @param redirectAttributes
+     * @return
+     */
     @PostMapping("/valida-telefone/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String saveUserPhoneCode(
@@ -604,5 +640,157 @@ public class MyAccountController {
 
         return "redirect:/minha-conta/edita-telefone/" + id;
     }
+
+    //edita senha
+
+    /**
+     * Apresenta a tela de editar senha do usuário.
+     * @param id
+     * @return
+     * @throws IOException
+     */
+    @GetMapping("/edita-senha/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public ModelAndView showFormEditPassword(@PathVariable Long id) throws IOException {
+
+        Optional<User> oUser = this.userService.findById(id);
+
+        if (!oUser.isPresent()) {
+            throw new EntityNotFoundException("O usuário não foi encontrado.");
+        }
+
+        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
+        User userAuthenticated = oUserAuthenticated.get();
+
+        if (id != userAuthenticated.getId()) {
+            throw new AuthenticationCredentialsNotFoundException("Você não tem permissão para alterar esta senha.");
+        }
+
+        UserDTO userDTO = userMapper.toDto(userAuthenticated);
+
+        ModelAndView mv = new ModelAndView("professional/account/my-password");
+        mv.addObject("user", userDTO);
+
+        return mv;
+    }
+
+    @PatchMapping("/edita-senha/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public String savePassword(
+            @PathVariable Long id,
+            @Validated(UserDTO.RequestUserPasswordInfoGroupValidation.class) UserDTO userDTO,
+            BindingResult errors,
+            RedirectAttributes redirectAttributes)
+            throws IOException {
+
+        if (errors.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+            return "redirect:/minha-conta/edita-senha/" + id;
+        }
+
+        //verifica se a senha e contrasenha são iguais
+        if(!userDTO.getPassword().equals(userDTO.getRepassword())){
+            errors.rejectValue("password", "error.dto", "As senhas não correspondem. Por favor, tente novamente.");
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+            return "redirect:/minha-conta/edita-senha/" + id;
+        }
+
+        Optional<User> oUser = this.userService.findById(id);
+
+        if(!oUser.isPresent()) {
+            throw new EntityNotFoundException("O usuário não foi encontrado.");
+        }
+
+        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
+        User userAuthenticated = oUserAuthenticated.get();
+
+        if (id != userAuthenticated.getId()) {
+            throw new AuthenticationCredentialsNotFoundException("Você não tem permissão para alterar esta senha.");
+        }
+
+        //verifica se realmente está alterando a senha
+        if(PasswordUtil.isSamePassword(userDTO.getPassword(), userAuthenticated.getPassword())){
+            errors.rejectValue("password", "error.dto", "A senha informada é igual a senha atual. Por favor, tente novamente.");
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+            return "redirect:/minha-conta/edita-senha/" + id;
+        }
+
+        userAuthenticated.setPassword(userDTO.getPassword());
+        this.userService.save(userAuthenticated);
+
+        redirectAttributes.addFlashAttribute("msg", "Senha salva com sucesso.");
+
+        return "redirect:/minha-conta/edita-senha/" + id;
+    }
+
+    /**
+     * Altera a foto do usuário.
+     * @return
+     * @throws IOException
+     */
+    @PostMapping("/enviar-foto")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public String uploadPhoto(
+            @RequestParam("fileUpload") MultipartFile file,
+            RedirectAttributes redirectAttributes
+    ) {
+        Optional<User> oUser = userService.findByEmail(authentication.getEmail());
+        if (!oUser.isPresent()) {
+            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        if (file.isEmpty()) {
+            redirectAttributes.addFlashAttribute("msgError", "Nenhuma foto foi selecionada!");
+            return "redirect:/minha-conta/perfil";
+        }
+
+
+        if(!isValidateImage(file)) {
+            redirectAttributes.addFlashAttribute("msgError", "Você não enviou uma imagem em formato valido. Por gentileza selecione imagens em png,jpg ou jpeg");
+            return "redirect:/minha-conta/perfil";
+        }
+
+        try {
+            Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+
+            String imageUrl = (String) uploadResult.get("url");
+
+            if(moderateService.isNsfwImage(imageUrl)){
+                String publicId = (String) uploadResult.get("public_id");
+                cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+                redirectAttributes.addFlashAttribute("msgError", "A imagem enviada contém conteúdo impróprio. Por favor, envie outra foto.");
+                return "redirect:/minha-conta/perfil";
+            }
+
+            User user = oUser.get();
+            user.setProfilePicture(imageUrl);
+            userService.save(user);
+
+            redirectAttributes.addFlashAttribute("msg", "Foto enviada com sucesso!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("msgError", "Ocorreu um erro ao enviar a foto.");
+        }
+
+        return "redirect:/minha-conta/perfil";
+    }
+
+    /**
+     * Verifica se a imagem é valida.
+     * @param image
+     * @return
+     */
+    public boolean isValidateImage(MultipartFile image){
+        List<String> contentTypes = Arrays.asList("image/png", "image/jpg", "image/svg");
+
+        for(int i = 0; i < contentTypes.size(); i++){
+            if(image.getContentType().toLowerCase().startsWith(contentTypes.get(i))){
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
+
+
 

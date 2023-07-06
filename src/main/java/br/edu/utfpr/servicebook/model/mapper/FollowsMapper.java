@@ -1,7 +1,7 @@
-package br.edu.utfpr.servicebook.follower;
+package br.edu.utfpr.servicebook.model.mapper;
 
 
-import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
+import br.edu.utfpr.servicebook.model.dto.FollowsDTO;
 import br.edu.utfpr.servicebook.model.entity.Follows;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

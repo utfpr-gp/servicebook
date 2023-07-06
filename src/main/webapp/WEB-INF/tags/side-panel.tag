@@ -4,7 +4,7 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ attribute name="userInfo" type="br.edu.utfpr.servicebook.util.UserTemplateInfo" %>
 <%@ attribute name="statisticInfo" type="br.edu.utfpr.servicebook.util.UserTemplateStatisticInfo" %>
-<%@ attribute name="followdto" type="br.edu.utfpr.servicebook.follower.FollowsDTO" %>
+<%@ attribute name="followdto" type="br.edu.utfpr.servicebook.model.dto.FollowsDTO" %>
 <c:set var="currenturl" value="${requestScope['javax.servlet.forward.request_uri']}"/>
 
 <div class="col s12" style="padding-left: 0" id="area-perfil">
@@ -115,11 +115,12 @@
             <div class="row secondary-background-color no-margin">
                 <div class="col s12">
                     <h5 class="name-header no-margin center white-text">
-                        <strong><a href="profissionais-favoritos">${userInfo.followingAmount}</a></strong>
+                        <strong><a href="minha-conta/cliente/profissionais-favoritos">${userInfo.followingAmount}</a></strong>
                     </h5>
                 </div>
             </div>
             <!-- Fim profissionais favoritos -->
+
             <!-- Acesso como perfil -->
             <sec:authorize access="hasRole('COMPANY')">
                 <div class="row no-margin center">
@@ -141,8 +142,8 @@
                     </div>
                 </div>
             </sec:authorize>
-
             <!-- Fim Acesso como perfil -->
+
         </c:when>
         <c:when test="${fn:contains(currenturl, '/minha-conta/empresa') or fn:contains(currenturl, '/minha-conta/profissional')}">
             <!-- Seguidores -->
@@ -154,7 +155,7 @@
             <div class="row secondary-background-color no-margin">
                 <div class="col s12">
                     <h5 class="name-header no-margin center white-text">
-                        <strong><a href="profissionais-favoritos">${userInfo.followingAmount}</a></strong>
+                        <strong>${userInfo.followingAmount}</strong>
                     </h5>
                 </div>
             </div>
@@ -208,7 +209,7 @@
 
                     <form method="get" action="minha-conta/profissional" id="form-expertise">
                         <div class="input-field col s12 no-padding white-text">
-                            <select name="id" id="select-expertise">
+                            <select name="id" id="select-expertise" onchange="updateStatistics(this)">
                                 <option value="0">Todas as Especialidades</option>
 
                                 <c:forEach var="e" items="${professionalExpertises}">
@@ -242,16 +243,16 @@
                     <p class="header-verification tertiary-color-text center">ESTRELAS</p>
                     <div class="row secondary-background-color no-margin">
                         <div class="col s12 white-text center">
-                            <div class="row tooltipped offset-s1 center" data-position="bottom"
-                                 data-tooltip="${statisticInfo.ratingScore != 0 ? statisticInfo.ratingScore : individual.rating} estrela (s).">
+                            <div class="row tooltipped" data-position="bottom"
+                                 data-tooltip="${statisticInfo.ratingScore != 0 ? statisticInfo.ratingScore : userInfo.rating} estrela (s).">
 
                                 <c:if test="${statisticInfo.ratingScore == 0}">
                                     <c:forEach var="star" begin="1" end="5">
                                         <c:if test="${star <= userInfo.rating}">
-                                            <i class="expertise-rating-star material-icons yellow-text small col s2">star</i>
+                                            <i class="material-icons yellow-text small col s2">star</i>
                                         </c:if>
                                         <c:if test="${star > userInfo.rating}">
-                                            <i class="expertise-rating-star material-icons yellow-text small col s2">star_border</i>
+                                            <i class="material-icons yellow-text small col s2">star_border</i>
                                         </c:if>
                                     </c:forEach>
                                 </c:if>
@@ -259,10 +260,10 @@
                                 <c:if test="${statisticInfo.ratingScore != 0}">
                                     <c:forEach var="star" begin="1" end="5">
                                         <c:if test="${star <= statisticInfo.ratingScore}">
-                                            <i class="expertise-rating-star material-icons yellow-text small col s2">star</i>
+                                            <i class="material-icons yellow-text small col s2">star</i>
                                         </c:if>
                                         <c:if test="${star > statisticInfo.ratingScore}">
-                                            <i class="expertise-rating-star material-icons yellow-text small col s2">star_border</i>
+                                            <i class="material-icons yellow-text small col s2">star_border</i>
                                         </c:if>
                                     </c:forEach>
                                 </c:if>
@@ -275,7 +276,7 @@
                     <p class="header-verification tertiary-color-text center">SERVIÇOS REALIZADOS</p>
                     <div class="row secondary-background-color no-margin">
                         <h5 class="info-headers no-margin center white-text center">
-                            <strong id="expertise-jobs">${statisticInfo.jobs}</strong>
+                            <strong id="expertise-jobs" class="expertise-jobs">${statisticInfo.jobs}</strong>
                         </h5>
                     </div>
                 </div>
@@ -283,7 +284,7 @@
                     <p class="header-verification tertiary-color-text center">AVALIAÇÕES</p>
                     <div class="row secondary-background-color no-margin">
                         <h5 class="info-headers no-margin center white-text center">
-                            <strong id="expertise-ratings">${statisticInfo.ratings}</strong>
+                            <strong id="expertise-ratings" class="expertise-ratings">${statisticInfo.ratings}</strong>
                         </h5>
                     </div>
                 </div>
@@ -291,7 +292,7 @@
                     <p class="header-verification tertiary-color-text center">COMENTÁRIOS</p>
                     <div class="row secondary-background-color no-margin">
                         <h5 class="info-headers no-margin center white-text center">
-                            <strong id="expertise-comments">${statisticInfo.comments}</strong>
+                            <strong id="expertise-comments" class="expertise-comments">${statisticInfo.comments}</strong>
                         </h5>
                     </div>
                 </div>
@@ -307,3 +308,5 @@
         </c:when>
     </c:choose>
 </div>
+
+<script src="assets/resources/scripts/professional-statistics.js"></script>
