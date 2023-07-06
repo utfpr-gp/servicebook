@@ -30,37 +30,19 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col s12 l6 offset-l3">
-                        <h3 class="secondary-color-text">Meu email</h3>
-                    </div>
-                    <form id="email-form" class="col s12 l6 offset-l3" action="minha-conta/edita-email/${user.id}" method="post">
-                        <input type="hidden" name="_method" value="PATCH"/>
-                        <input type="hidden" name="id" value="${user.id}"/>
-
-                        <div class="input-field">
-                            <input id="email" name="email" type="email" value="${user.email}"
-                                   class="validate" required disabled>
-                            <label for="email">Email</label>
-                        </div>
-                        <div class="right">
-                            <button id="edit-button" class="waves-effect waves-light btn" type="button">Editar</button>
-                            <button id="save-button" class="waves-effect waves-light btn" type="submit" style="display: none">Salvar</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <c:if test="${!user.emailVerified}">
-                <div class="row">
                     <h3 class="center secondary-color-text">
                         Vamos validar o seu email?
                     </h3>
                     <h5 class="center secondary-color-text">
-                        Enviamos um código para o seu email. Por favor, digite o código para validar este endereço
-                        de email.
+                        Por medidas de segurança, o email só pode ser alterado com a validação do mesmo.
+                        <br>
+                        <div id="email-div">
+
+                        </div>
                     </h5>
 
                     <form method="post" action="minha-conta/valida-email/${user.id}">
+                        <input type="hidden" id="email" name="email" value=""/>
                         <div class="row">
                             <div class="input-field col s10 m8 l6 xl6 offset-s1 offset-m2 offset-l3 offset-xl3">
                                 <input id="code" name="code" type="text" class="validate" required>
@@ -74,18 +56,22 @@
                                 </button>
                             </div>
                             <div class="center col s6">
-                                <button class="waves-effect waves-light btn" type="submit">Salvar</button>
+                                <button id="validate-button" class="waves-effect waves-light btn" type="submit">Salvar</button>
                             </div>
                         </div>
                     </form>
                 </div>
-            </c:if>
         </main>
 
     </jsp:body>
 </t:template>
 <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get('email');
+
     $(document).ready(function() {
+        $('#email').attr("value", email)
+        $('#email-div').append("<h5>Enviamos um código para " + email + ". Por favor, digite o código para validar este endereço de email.<h5>")
         $('#edit-button').click(function(){
             console.log($(this))
             $('#email-form input').prop('disabled', false);
@@ -95,11 +81,11 @@
     });
 
     $('.sendEmail').click(function () {
-        $.post("minha-conta/salvar-email/${professional.id}", {email: "${professional.email}"}).done(function () {
+        $.post("minha-conta/edita-email/${user.id}", {email: email}).done(function () {
             console.log('foi no evento');
             swal({
                 title: "Deu certo!",
-                text: "Foi enviado um email para ${professional.email}.",
+                text: "Foi enviado um email para " + email + ".",
                 icon: "success",
             });
         });

@@ -1,8 +1,10 @@
 package br.edu.utfpr.servicebook.controller;
 
-import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.model.dto.*;
-import br.edu.utfpr.servicebook.model.entity.*;
+import br.edu.utfpr.servicebook.model.entity.City;
+import br.edu.utfpr.servicebook.model.entity.Individual;
+import br.edu.utfpr.servicebook.model.entity.User;
+import br.edu.utfpr.servicebook.model.entity.UserCode;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
@@ -26,7 +28,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -80,19 +81,15 @@ public class MyAccountController {
         model.addAttribute("dto", dto);
         model.addAttribute("errors", errors.getAllErrors());
 
-       return "redirect:/minha-conta/meu-contato/{id}";
+        return "redirect:/minha-conta/meu-contato/{id}";
     }
     @GetMapping
     public String home(HttpServletRequest request) {
         return "redirect:/minha-conta/cliente";
     }
 
-    @Autowired
-    private CompanyService companyService;
-
     /**
      * Mostra a tela de perfil do usuário.
-     *
      * @return
      * @throws IOException
      */
@@ -130,7 +127,6 @@ public class MyAccountController {
     /**
      * Mostra a tela de edição do anúncio geral do profissional.
      * Esta descrição aparecerá no portfólio público do profissional.
-     *
      * @param id
      * @return
      * @throws IOException
@@ -163,7 +159,7 @@ public class MyAccountController {
 
         Optional<User> oUser = this.userService.findByEmail(authentication.getEmail());
 
-        if (!oUser.isPresent()) {
+        if(!oUser.isPresent()) {
             throw new EntityNotFoundException("Profissional não encontrado pelo id informado.");
         }
 
@@ -180,66 +176,81 @@ public class MyAccountController {
     /**
      * Apresenta a tela de email do usuário.
      * FIXME Depois de modificado, informar para o usuário fazer o login novamente.
-     *
      * @param id
      * @return
      * @throws IOException
      */
-    @GetMapping("/meu-email/{id}")
+
+    @GetMapping("/edita-email/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
-    public ModelAndView showMyEmail(@PathVariable Long id) throws IOException {
+    public ModelAndView showFormEditEmail(@PathVariable Long id) throws IOException {
+
         Optional<User> oUser = this.userService.findById(id);
 
         if (!oUser.isPresent()) {
-            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+            throw new EntityNotFoundException("O usuário não foi encontrado.");
         }
 
-        UserDTO userDTO = userMapper.toDto(oUser.get());
+        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
+
+        User userAuthenticated = oUserAuthenticated.get();
+
+        if (id != userAuthenticated.getId()) {
+            throw new AuthenticationCredentialsNotFoundException("Você não tem permissão para alterar este email.");
+        }
+
+        UserDTO userDTO = userMapper.toDto(userAuthenticated);
 
         ModelAndView mv = new ModelAndView("professional/account/my-email");
-
-        mv.addObject("professional", userDTO);
+        mv.addObject("user", userDTO);
 
         return mv;
     }
 
-    /**
-     * FIXME Ao mudar o email, fazer logout para o usuário logar novamente, aí com o novo email
-     *
-     * @param id
-     * @param request
-     * @param redirectAttributes
-     * @return
-     * @throws IOException
-     */
-    @PostMapping("/salvar-email/{id}")
+    @PatchMapping("/edita-email/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String saveEmail(
             @PathVariable Long id,
-            HttpServletRequest request,
+            @Validated(UserDTO.RequestUserEmailInfoGroupValidation.class) UserDTO userDTO,
+            BindingResult errors,
             RedirectAttributes redirectAttributes)
             throws IOException {
 
-        Optional<User> oUser = this.userService.findByEmail(authentication.getEmail());
+        //Faz a validação dos campos
 
-        if (!oUser.isPresent()) {
-            throw new EntityNotFoundException("Profissional não encontrado pelas informações fornecidas.");
+        if (errors.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+            return "redirect:/minha-conta/edita-email/" + id;
         }
 
+        //busca o usuário pelo id passado na URL
 
-        User user = oUser.get();
+        Optional<User> oUser = this.userService.findById(id);
 
-        String email = request.getParameter("email");
+        if(!oUser.isPresent()) {
+            throw new EntityNotFoundException("O usuário não foi encontrado.");
+        }
+
+        //busca o usuário autenticado e verifica se o id passado na URL é o mesmo do usuário autenticado
+
+        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
+        User userAuthenticated = oUserAuthenticated.get();
+
+        if (id != userAuthenticated.getId()) {
+            throw new AuthenticationCredentialsNotFoundException("Você não tem permissão para alterar esta senha.");
+        }
+
+        //verifica se o email já está cadastrado para outro usuário
+
+        String email = userDTO.getEmail();
         Optional<User> oOtherUser = userService.findByEmail(email);
 
-        if (oOtherUser.isPresent()) {
+        if (oOtherUser.isPresent()){
             redirectAttributes.addFlashAttribute("msgError", "Email já cadastrado! Por favor, insira um email não cadastrado!");
-            return "redirect:/minha-conta/meu-email/{id}";
+            return "redirect:/minha-conta/edita-email/" + id;
         }
 
-        user.setEmail(email);
-        user.setEmailVerified(false);
-        this.userService.save(user);
+        //Verifica se o email foi verificado
 
         Optional<UserCode> oUserCode = userCodeService.findByEmail(email);
         String actualCode = "";
@@ -259,12 +270,36 @@ public class MyAccountController {
         String tokenLink = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString() + "/login/codigo/" + actualCode;
         quartzService.sendEmailToConfirmationCode(email, actualCode, tokenLink);
 
-        redirectAttributes.addFlashAttribute("msg", "Email salvo com sucesso!");
-
-        return "redirect:/minha-conta/meu-email/{id}";
+        return "redirect:/minha-conta/valida-email/" + id + "?email=" + email;
     }
 
-    @PostMapping("/validar-email/{id}")
+    @GetMapping("/valida-email/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public ModelAndView showFormValidateEmail(@PathVariable Long id) throws IOException {
+
+        Optional<User> oUser = this.userService.findById(id);
+
+        if (!oUser.isPresent()) {
+            throw new EntityNotFoundException("O usuário não foi encontrado.");
+        }
+
+        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
+
+        User userAuthenticated = oUserAuthenticated.get();
+
+        if (id != userAuthenticated.getId()) {
+            throw new AuthenticationCredentialsNotFoundException("Você não tem permissão para alterar este email.");
+        }
+
+        UserDTO userDTO = userMapper.toDto(userAuthenticated);
+
+        ModelAndView mv = new ModelAndView("professional/account/validate-my-email");
+        mv.addObject("user", userDTO);
+
+        return mv;
+    }
+
+    @PostMapping("/valida-email/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String saveUserEmailCode(
             @PathVariable Long id,
@@ -272,158 +307,45 @@ public class MyAccountController {
             BindingResult errors,
             RedirectAttributes redirectAttributes
     ) {
+        Optional<User> oUser = this.userService.findById(id);
+
+        if(!oUser.isPresent()) {
+            throw new EntityNotFoundException("O usuário não foi encontrado.");
+        }
+
+        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
+        User userAuthenticated = oUserAuthenticated.get();
+
+        if (id != userAuthenticated.getId()) {
+            throw new AuthenticationCredentialsNotFoundException("Você não tem permissão para alterar esta senha.");
+        }
+
+        String email = dto.getEmail();
 
         if (errors.hasErrors()) {
             redirectAttributes.addFlashAttribute("msgError", "Houve um erro na verificação do código, verifique se digitou corretamente!");
-            return "redirect:/minha-conta/meu-email/{id}";
+            return "redirect:/minha-conta/valida-email/" + id + "?email=" + email;
         }
 
-        Optional<Individual> oProfessional = this.individualService.findById(id);
-
-        if (!oProfessional.isPresent()) {
-            throw new EntityNotFoundException("Profissional não encontrado pelas informações fornecidas.");
-        }
-
-        Individual professional = oProfessional.get();
-        Optional<UserCode> oUserCode = userCodeService.findByEmail(professional.getEmail());
+        Optional<UserCode> oUserCode = userCodeService.findByEmail(email);
 
         if (!oUserCode.isPresent()) {
             redirectAttributes.addFlashAttribute("msgError", "Código inválido! Por favor, insira o código de autenticação.");
-            return "redirect:/minha-conta/meu-email/{id}";
+            return "redirect:/minha-conta/valida-email/" + id + "?email=" + email;
         }
 
         if (!dto.getCode().equals(oUserCode.get().getCode())) {
             redirectAttributes.addFlashAttribute("msgError", "Código inválido! Por favor, insira o código de autenticação.");
-            return "redirect:/minha-conta/meu-email/{id}";
+            return "redirect:/minha-conta/valida-email/" + id + "?email=" + email;
         }
 
-        professional.setEmailVerified(true);
-        this.individualService.save(professional);
+        userAuthenticated.setEmailVerified(true);
+        userAuthenticated.setEmail(email);
+        this.userService.save(userAuthenticated);
 
-        redirectAttributes.addFlashAttribute("msg", "Email verificado com sucesso!");
+        redirectAttributes.addFlashAttribute("msg", "Email salvo com sucesso!");
 
-        return "redirect:/minha-conta/meu-email/{id}";
-    }
-
-    //edição de informações pessoais do individuo e empresa
-
-    /**
-     * Mostra a tela de edição das informações do indivíduo e empresa
-     *
-     * @param id
-     * @return
-     * @throws IOException
-     */
-    @GetMapping("/informacoes-pessoais/{id}")
-    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
-    public ModelAndView showMyPersonalData(@PathVariable Long id) throws IOException {
-
-        Optional<User> oUser = this.userService.findById(id);
-
-        if (!oUser.isPresent()) {
-            throw new EntityNotFoundException("O usuário não foi encontrado.");
-        }
-
-        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
-        User userAuthenticated = oUserAuthenticated.get();
-
-        if (id != userAuthenticated.getId()) {
-            throw new AuthenticationCredentialsNotFoundException("Você não tem permissão para atualizar essas informações pessoais.");
-        }
-
-        UserDTO userDTO = userMapper.toDto(userAuthenticated);
-
-        ModelAndView mv = new ModelAndView("professional/account/my-personal-info");
-        mv.addObject("userDTO", userDTO);
-
-        return mv;
-    }
-
-    /**
-     * Atualiza as informações pessoais do indivíduo e empresa
-     * @param id
-     * @param userDTO
-     * @param errors
-     * @param redirectAttributes
-     * @return
-     * @throws IOException
-     */
-    @PatchMapping("/cadastra-informacoes-pessoais/{id}")
-    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
-    public String updateMyPersonalData(
-            @PathVariable Long id,
-            @Validated(UserDTO.RequestUpdatePersonalInfo.class) UserDTO userDTO,
-            BindingResult errors,
-            RedirectAttributes redirectAttributes
-    ) throws IOException {
-
-        if (errors.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
-            return "redirect:/minha-conta/informacoes-pessoais/" + id;
-        }
-
-        Optional<User> oUser = this.userService.findById(id);
-
-        if (!oUser.isPresent()) {
-            throw new EntityNotFoundException("O usuário não foi encontrado.");
-        }
-
-        Optional<User> oUserAuthenticated = this.userService.findByEmail(authentication.getEmail());
-        User userAuthenticated = oUserAuthenticated.get();
-
-        if (id != userAuthenticated.getId()) {
-            throw new AuthenticationCredentialsNotFoundException("Você não tem permissão para atualizar essas informações pessoais.");
-        }
-
-        if (userDTO.getCnpj() == null) {
-            Optional<Individual> oInvididual = this.individualService.findById(id);
-
-            //verifica se o CPF já está cadastrado para outro usuário
-            Optional<Individual> oOtherUser = individualService.findByCpf(userDTO.getCpf());
-
-            if(oOtherUser.isPresent() && oOtherUser.get().getId() != userAuthenticated.getId()) {
-                errors.rejectValue(
-                        "cpf",
-                        "error.dto.cpf.duplicate",
-                        "Este CPF já está cadastrado para outro usuário."
-                );
-                redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
-                return "redirect:/minha-conta/informacoes-pessoais/" + id;
-            }
-
-            Individual individual = oInvididual.get();
-            individual.setName(userDTO.getName());
-            individual.setCpf(userDTO.getCpf());
-            individual.setBirthDate(userDTO.getBirthDate());
-
-            this.individualService.save(individual);
-        } else {
-            Optional<Company> oCompany = this.companyService.findById(id);
-
-            //verifica se o CNPJ já está cadastrado para outro usuário
-            Optional<Company> oOtherCompany = this.companyService.findByCnpj(userDTO.getCnpj());
-
-            if(oOtherCompany.isPresent() && oOtherCompany.get().getId() != userAuthenticated.getId()) {
-                errors.rejectValue(
-                        "cnpj",
-                        "error.dto.cnpj.duplicate",
-                        "Este CNPJ já está cadastrado para outro usuário."
-                );
-                redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
-
-                return "redirect:/minha-conta/informacoes-pessoais/" + id;
-            }
-
-            Company company = oCompany.get();
-            company.setName(userDTO.getName());
-            company.setCnpj(userDTO.getCnpj());
-
-            this.companyService.save(company);
-        }
-
-        redirectAttributes.addFlashAttribute("msg", "Informações pessoais atualizadas com sucesso!");
-
-        return "redirect:/minha-conta/informacoes-pessoais/" + id;
+        return "redirect:/logout";
     }
 
     //Métodos para edição de telefone
@@ -524,12 +446,6 @@ public class MyAccountController {
         return "redirect:/minha-conta/valida-telefone/" + id;
     }
 
-    /**
-     * Reenvia o código de verificação para o telefone do usuário.
-     * @param id
-     * @return
-     * @throws IOException
-     */
     @GetMapping("/reenvia-codigo-verificacao/{id}")
     @ResponseBody
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
@@ -590,14 +506,6 @@ public class MyAccountController {
         return mv;
     }
 
-    /**
-     * Salva o código de validação do telefone do usuário.
-     * @param id
-     * @param dto
-     * @param errors
-     * @param redirectAttributes
-     * @return
-     */
     @PostMapping("/valida-telefone/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String saveUserPhoneCode(
@@ -656,3 +564,4 @@ public class MyAccountController {
         return "redirect:/minha-conta/edita-telefone/" + id;
     }
 }
+
