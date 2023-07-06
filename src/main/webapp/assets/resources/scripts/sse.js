@@ -1,4 +1,4 @@
-const URL = 'sse/subscribe';
+const URL_SSE = 'sse/subscribe';
 const SSE = 'sse-data';
 
 /**
@@ -6,7 +6,7 @@ const SSE = 'sse-data';
  */
 window.onload = function () {
 
-    let eventSource = new EventSource(URL)
+    let eventSource = new EventSource(URL_SSE)
 
     //aguarda uma mensagem global.
     eventSource.addEventListener("message", function (event) {

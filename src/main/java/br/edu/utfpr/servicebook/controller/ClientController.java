@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -103,6 +105,12 @@ public class ClientController {
 
     @Autowired
     private ProfessionalMapper professionalMapper;
+
+    @Autowired
+    private PaymentService paymentService;
+
+    @Autowired
+    private PaymentMapper paymentMapper;
 
 
     /**
@@ -785,5 +793,53 @@ public class ClientController {
         jobContractedService.save(jobContracted);
 
         return "redirect:/minha-conta/cliente/meus-pedidos/"+jobId;
+    }
+
+    /**
+     * Responsável por realizar o pagamento via API Mercado Pago.
+     */
+    @PostMapping("/pagamento")
+    @RolesAllowed({RoleType.USER})
+    public ResponseEntity<?> createPayment(@RequestBody Map<String, Object> paymentData){
+        ResponseDTO response = new ResponseDTO();
+
+        try {
+            if (paymentData == null || paymentData.isEmpty()) {
+                response.setMessage("Erro ao enviar dados. Verifique os campos e tente novamente!");
+                return ResponseEntity.status(400).body(response);
+            }
+
+            Optional<User> oUser = (userService.findByEmail(authentication.getEmail()));
+
+            if (!oUser.isPresent()) {
+                response.setMessage("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+                return ResponseEntity.status(401).body(response);
+            }
+
+            ResponseEntity<?> paymentResponse = paymentService.pay(paymentData);
+    
+            if(!paymentResponse.getStatusCode().is2xxSuccessful()){
+                response.setMessage("Erro ao processar pagamento. Tente novamente");
+                return ResponseEntity.status(paymentResponse.getStatusCode()).body(response);
+            }
+
+            Object responseBody = paymentResponse.getBody();
+
+            Map<?, ?> responseMap = (Map<?, ?>) responseBody;
+            Integer paymentId = (Integer) responseMap.get("id");
+            String status = (String) responseMap.get("status");
+
+            PaymentDTO paymentDTO = new PaymentDTO(paymentId, status);
+            Payment payment = paymentMapper.toEntity(paymentDTO);
+
+            paymentService.save(payment);
+        
+            response.setData(paymentResponse.getBody());
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            response.setMessage("Erro ao fazer pagamento. Por favor, tente novamente.");
+            return ResponseEntity.status(400).body(response);
+        }
     }
 }
