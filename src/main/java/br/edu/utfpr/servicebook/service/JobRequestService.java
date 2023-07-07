@@ -8,8 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -82,5 +84,30 @@ public class JobRequestService {
 
     public Long countAll(){
         return this.jobRequestRepository.countAll();
+    }
+
+    /**
+     * Conta a quantidade de requisições de serviço por status.
+     * @param status
+     * @return
+     */
+    public Long countByStatus(JobRequest.Status status){
+        return this.jobRequestRepository.countByStatus(status);
+    }
+
+    public List<JobRequest> findByDateCreatedBetween(LocalDate startDate, LocalDate endDate){
+        return this.jobRequestRepository.findByDateCreatedBetween(startDate, endDate);
+    }
+
+    public List<JobRequest> findByDateCreatedMonth(int year, int month){
+        return this.jobRequestRepository.findByDateCreatedMonth(year, month);
+    }
+
+    public long countByDateCreatedBetween(LocalDate startDate, LocalDate endDate){
+        return this.jobRequestRepository.countByDateCreatedBetween(startDate, endDate);
+    }
+
+    public long countByDateCreatedMonth(int year, int month){
+        return this.jobRequestRepository.countByDateCreatedMonth(year, month);
     }
 }

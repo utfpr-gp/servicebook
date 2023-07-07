@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -162,5 +163,26 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
 
     @Query("SELECT COUNT(*) FROM JobRequest")
     Long countAll();
+
+    /**
+     * Conta o número de requisições de um determinado Status.
+     * @param status
+     * @return
+     */
+    Long countByStatus(JobRequest.Status status);
+
+    Long countByDateCreatedIsBetween(Date dateFrom, Date dateTo);
+
+    @Query("SELECT j FROM JobRequest j WHERE j.dateCreated BETWEEN :startDate AND :endDate")
+    List<JobRequest> findByDateCreatedBetween(LocalDate startDate, LocalDate endDate);
+
+    @Query("SELECT j FROM JobRequest j WHERE YEAR(j.dateCreated) = :year AND MONTH(j.dateCreated) = :month")
+    List<JobRequest> findByDateCreatedMonth(int year, int month);
+
+    @Query("SELECT COUNT(j) FROM JobRequest j WHERE j.dateCreated BETWEEN :startDate AND :endDate")
+    long countByDateCreatedBetween(LocalDate startDate, LocalDate endDate);
+
+    @Query("SELECT COUNT(j) FROM JobRequest j WHERE YEAR(j.dateCreated) = :year AND MONTH(j.dateCreated) = :month")
+    long countByDateCreatedMonth(int year, int month);
 
 }

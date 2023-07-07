@@ -82,4 +82,12 @@ public class UserService {
 
         return expertiseDTOs;
     }
+
+    /**
+     * Retorna o total de usuários.
+     * @return
+     */
+    public Long countAll(){
+        return this.userRepository.count();
+    }
 }

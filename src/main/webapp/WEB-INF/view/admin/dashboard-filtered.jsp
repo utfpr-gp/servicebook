@@ -30,7 +30,7 @@
         <!-- Fim Mensagens -->
         <div class="row">
             <div class="col s3 center">
-                <form action="a/dashboard/q" method="get" id="date-filter-form">
+                <form action="a/dashboard/q" method="get">
                     <h4>Data </h4>
                     <select name="startDate" id="select-status" class="white-text select-city" >
                         <option value="--" disabled selected>Mês / Ano</option>
@@ -50,7 +50,7 @@
                     </select>
                     <button class="waves-effect waves-light btn" type="submit"><i class="material-icons left">filter_list</i> Filtrar</button>
                 </form>
-                <a class="waves-effect waves-light btn grey col s12 mt-1" href="a/dashboard"><i class="material-icons left">delete</i> Limpar</a>
+                <a class="waves-effect waves-light btn grey col s12 mt-1" href="a/servicos/dashboard"><i class="material-icons left">delete</i> Limpar</a>
 
             </div>
 
