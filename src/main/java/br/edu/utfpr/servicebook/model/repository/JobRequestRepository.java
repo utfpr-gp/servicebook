@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -154,6 +155,8 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
     Page<JobRequest> findByStatusAndExpertiseAndJobContracted_User(JobRequest.Status status, Expertise expertise, User user, Pageable pageable);
 
     List<JobRequest> findByUserOrderByDateCreatedDesc(User client);
+
+    List<JobRequest> findOrderByDateCreatedAfter(Date dateFrom);
 
     Page<JobRequest> findByStatusAndUser(JobRequest.Status status, User client, Pageable pageable);
 

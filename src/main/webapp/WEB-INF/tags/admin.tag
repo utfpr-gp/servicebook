@@ -30,7 +30,9 @@
             </svg>
             <h4 class="left logo-text">ServiceBook</h4>
         </a>
+
         <ul class="right hide-on-med-and-down">
+            <li><a href="a/servicos/dashboard" class="menu-itens">DASHBOARD</a></li>
             <li><a class="menu-itens dropdown-trigger" href="#!" data-target="dropdown1">CADASTRAR<i class="material-icons right">arrow_drop_down</i></a></li>
             <li><a class="menu-itens" href="#!">MINHA CONTA</a></li>
             <li><a class="menu-itens" href="#!">SAIR</a></li>

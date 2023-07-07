@@ -1,15 +1,14 @@
 package br.edu.utfpr.servicebook.controller.admin;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
-import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
-import br.edu.utfpr.servicebook.model.dto.ServiceDTO;
-import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.Service;
-import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
-import br.edu.utfpr.servicebook.model.mapper.ServiceMapper;
+import br.edu.utfpr.servicebook.model.dto.*;
+import br.edu.utfpr.servicebook.model.entity.*;
+import br.edu.utfpr.servicebook.model.mapper.*;
+import br.edu.utfpr.servicebook.model.repository.CompanyRepository;
+import br.edu.utfpr.servicebook.model.repository.JobContractedRepository;
 import br.edu.utfpr.servicebook.security.RoleType;
-import br.edu.utfpr.servicebook.service.ExpertiseService;
-import br.edu.utfpr.servicebook.service.ServiceService;
+import br.edu.utfpr.servicebook.service.*;
+import br.edu.utfpr.servicebook.util.DateUtil;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import org.slf4j.Logger;
@@ -28,9 +27,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.text.DateFormatter;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.spi.DateFormatProvider;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,6 +60,33 @@ public class ServiceController {
 
     @Autowired
     private ExpertiseMapper expertiseMapper;
+
+    @Autowired
+    private IndividualService individualService;
+
+    @Autowired
+    private IndividualMapper individualMapper;
+
+    @Autowired
+    private CompanyService companyService;
+
+    @Autowired
+    private CompanyMapper companyMapper;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private JobRequestService jobRequestService;
+
+    @Autowired
+    private JobRequestMapper jobRequestMapper;
+
+    @Autowired
+    private JobContractedService jobContractedService;
 
     @GetMapping
     @PermitAll
@@ -249,4 +281,60 @@ public class ServiceController {
 
         return mv;
     }
+
+    @GetMapping("/dashboard")
+    @RolesAllowed({RoleType.ADMIN})
+    public ModelAndView showDashboard( @RequestParam(value = "dateFinal", defaultValue = "2023-07-01") String dateFinal)
+    {
+
+        ModelAndView mv = new ModelAndView("admin/dashboard");
+
+        List<Expertise> expertises = expertiseService.findAll();
+        List<ExpertiseDTO> expertiseDTOs = expertises.stream()
+                .map(s -> expertiseMapper.toDto(s))
+                .collect(Collectors.toList());
+
+        mv.addObject("totalCompanies", companyService.countAll());
+        mv.addObject("totalProfessionals", userService.countProfessionals());
+        mv.addObject("totalClients", userService.countUsersWithoutExpertise());
+        mv.addObject("expertises", expertiseDTOs);
+//      mv.addObject("totalJobRequests", jobRequestService.findOrderByDateCreatedDesc(dateFinal).size());
+        mv.addObject("totalJobContracted", jobContractedService.countAll());
+        mv.addObject("totalJobDoing", jobContractedService.findAllJobRequestsToDoing().size());
+//      mv.addObject("totalJobDone", jobContractedService.findAllJobRequestsToClose(1).size());
+
+        return mv;
+    }
+
+    @PostMapping("/dashboard")
+    @RolesAllowed({RoleType.ADMIN})
+    public ModelAndView filterDashboard(DashFilterBodyMinDto requestBody)
+    {
+
+        ModelAndView mv = new ModelAndView("admin/dashboard");
+
+        System.out.println("Data: " + requestBody.getDateFinal());
+        System.out.println("Profissão: " + requestBody.getExpertise());
+
+        if(requestBody.getExpertise() != null){
+            Long expertiseId = Long.parseLong(requestBody.getExpertise());
+            System.out.println("expertiseId " +  expertiseId);
+            mv.addObject("totalProfessionals", userService.countProfessionalsByExpertise(expertiseId));
+
+            mv.addObject("userFilterParam", expertiseService.findById(Long.getLong(requestBody.getExpertise())).get().getName());
+        }
+        if(requestBody.getExpertise() != null){
+    //      mv.addObject("totalJobRequests", jobRequestService.findOrderByDateCreatedDesc(dateFinal).size());
+            mv.addObject("jobRequestFilterParam", Date.valueOf(requestBody.getDateFinal()).toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE));
+        }
+
+        List<Expertise> expertises = expertiseService.findAll();
+        List<ExpertiseDTO> expertiseDTOs = expertises.stream()
+                .map(s -> expertiseMapper.toDto(s))
+                .collect(Collectors.toList());
+        mv.addObject("expertises", expertiseDTOs);
+        return mv;
+    }
+
+
 }

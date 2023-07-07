@@ -52,7 +52,7 @@ public class IndexController {
     public ModelAndView showIndexPage() {
 
         ModelAndView mv = new ModelAndView("visitor/index");
-        System.out.println("Principal: " + authentication.getAuthentication().getPrincipal());
+
         if(!(authentication.getAuthentication() instanceof AnonymousAuthenticationToken)){
             Optional<User> oUser = userService.findByEmail(authentication.getEmail());
             UserTemplateInfo userInfo = templateUtil.getUserInfo(oUser.get());
@@ -61,8 +61,6 @@ public class IndexController {
 
         List<City> cities = cityService.findAll();
         mv.addObject("cities", cities);
-
-
         mv.addObject("totalCompanies", companyService.countAll());
         mv.addObject("totalJobRequests", jobRequestService.countAll());
         mv.addObject("totalExpertises", expertiseService.countAll());

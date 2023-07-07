@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,12 +42,15 @@ public class JobRequestService {
     }
 
     public List<JobRequest> findByStatus(JobRequest.Status status) {
-
         return this.jobRequestRepository.findByStatus(status);
     }
 
     public List<JobRequest> findByClientOrderByDateCreatedDesc(User client) {
         return this.jobRequestRepository.findByUserOrderByDateCreatedDesc(client);
+    }
+    public List<JobRequest> findOrderByDateCreatedDesc(String finalDate) {
+        Date finalDateFormat = new Date(finalDate);
+        return this.jobRequestRepository.findOrderByDateCreatedAfter(finalDateFormat);
     }
 
     public Page<JobRequest> findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status status, User user, Pageable pageable) {

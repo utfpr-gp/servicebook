@@ -61,6 +61,10 @@ public class UserService {
         return this.userRepository.countUsersWithoutExpertise();
     }
 
+    public Long countProfessionalsByExpertise(Long expertiseId){
+        return this.userRepository.countProfessionalByExpertiseId(expertiseId);
+    }
+
     /**
      * Retorna uma lista de ExpertiseDTOs de um profissional
      * @param professional
