@@ -128,7 +128,7 @@ public class DashboardController {
                                   Model model){
 
         //valida os parâmetros, caso sejam vazios, encaminha para a tela inicial
-        if(startDate.isEmpty() && expertiseId.equals(0)){
+        if(startDate.isEmpty() && expertiseId == null){
             return "redirect:/a/dashboard";
         }
 
