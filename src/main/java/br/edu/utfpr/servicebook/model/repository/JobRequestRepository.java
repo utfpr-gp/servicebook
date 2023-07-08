@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -108,7 +110,6 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
      * e que não foram marcadas como Não Quero, ou seja, que não foram escondidas pelo profissional.
      * @param status
      * @param expertise
-     * @param user
      * @param pageable
      * @return
      */
@@ -159,5 +160,83 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
 
     @Query("SELECT COUNT(*) FROM JobRequest")
     Long countAll();
+
+    /**
+     * Conta o número de requisições de um determinado Status.
+     * @param status
+     * @return
+     */
+    @Query("SELECT COUNT(j) FROM JobRequest j WHERE j.status = :status")
+    Long countByStatus(JobRequest.Status status);
+
+    @Query("SELECT j FROM JobRequest j WHERE j.dateCreated BETWEEN :startDate AND :endDate")
+    List<JobRequest> findByDateCreatedBetween(java.sql.Date startDate, java.sql.Date endDate);
+
+    @Query("SELECT j FROM JobRequest j WHERE YEAR(j.dateCreated) = :year AND MONTH(j.dateCreated) = :month")
+    List<JobRequest> findByDateCreatedMonth(int year, int month);
+
+    /**
+     * Conta o número de requisições criadas em um período.
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    @Query("SELECT COUNT(j) FROM JobRequest j WHERE j.dateCreated BETWEEN :startDate AND :endDate")
+    Long countByDateCreatedBetween(LocalDate startDate, LocalDate endDate);
+
+    /**
+     * Conta o número de requisições criadas em um período de uma determinada Especialidade.
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    @Query("SELECT COUNT(j) FROM JobRequest j WHERE j.expertise = :expertise AND j.dateCreated BETWEEN :startDate AND :endDate")
+    Long countByExpertiseAndDateCreatedBetween(Expertise expertise, LocalDate startDate, LocalDate endDate);
+
+    /**
+     * Conta o número de requisições criadas em um período de um determinado Status e Especialidade.
+     * @param status
+     * @param expertise
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    @Query("SELECT COUNT(j) FROM JobRequest j WHERE j.status = :status AND j.expertise = :expertise AND j.dateCreated BETWEEN :startDate AND :endDate")
+    Long countByStatusAndExpertiseAndDateCreatedBetween(JobRequest.Status status, Expertise expertise, LocalDate startDate, LocalDate endDate);
+
+    /**
+     * Conta o número de requisições criadas em um determinado mês.
+     * @param year
+     * @param month
+     * @return
+     */
+    @Query("SELECT COUNT(j) FROM JobRequest j WHERE YEAR(j.dateCreated) = :year AND MONTH(j.dateCreated) = :month")
+    Long countByDateCreatedMonth(int year, int month);
+
+    /**
+     * Conta o número de requisições de um determinado Status e intervalo de dias.
+     * É útil para saber quantas requisições foram criadas em um determinado período e estão em um determinado Status.
+     * @param status
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    @Query("SELECT COUNT(j) FROM JobRequest j WHERE j.status = :status AND j.dateCreated BETWEEN :startDate AND :endDate")
+    Long countByStatusAndDateCreatedBetween(JobRequest.Status status, LocalDate startDate, LocalDate endDate);
+
+    /**
+     * Conta o número de requisições de uma determinada Especialidade.
+     */
+    @Query("SELECT COUNT(j) FROM JobRequest j WHERE j.expertise = :expertise")
+    Long countByExpertise(Expertise expertise);
+
+    /**
+     * Conta o número de requisições de um determinado Status e Especialidade.
+     * @param status
+     * @param expertise
+     * @return
+     */
+    @Query("SELECT COUNT(j) FROM JobRequest j WHERE j.status = :status AND j.expertise = :expertise")
+    Long countByStatusAndExpertise(JobRequest.Status status, Expertise expertise);
 
 }

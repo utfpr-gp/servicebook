@@ -1,5 +1,6 @@
 package br.edu.utfpr.servicebook.model.entity;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -54,16 +55,14 @@ public class JobRequest {
 	@NonNull
 	private int quantityCandidatorsMax;
 
-	@Temporal(TemporalType.DATE)
-	private Date dateCreated;
+	private LocalDate dateCreated;
 
 	/**
 	 * Data que o cliente deseja que o serviço seja realizado, mas não necessariamente será a data de realização.
 	 * Esta data será negociada com o profissional, o qual definirá a data oficial no JobContracted
 	 */
-	@Temporal(TemporalType.DATE)
 	@NonNull
-	private Date dateTarget;
+	private LocalDate dateTarget;
 
 	private boolean clientConfirmation;
 	
@@ -80,8 +79,7 @@ public class JobRequest {
 
 	@PrePersist
 	public void onPersist(){
-		final Date now = new Date();
-		this.dateCreated = now;
+		this.dateCreated = LocalDate.now();
 		this.status = Status.AVAILABLE;
 	}
 

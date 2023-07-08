@@ -1,15 +1,14 @@
 package br.edu.utfpr.servicebook.controller.admin;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
-import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
-import br.edu.utfpr.servicebook.model.dto.ServiceDTO;
-import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.Service;
-import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
-import br.edu.utfpr.servicebook.model.mapper.ServiceMapper;
+import br.edu.utfpr.servicebook.model.dto.*;
+import br.edu.utfpr.servicebook.model.entity.*;
+import br.edu.utfpr.servicebook.model.mapper.*;
+import br.edu.utfpr.servicebook.model.repository.CompanyRepository;
+import br.edu.utfpr.servicebook.model.repository.JobContractedRepository;
 import br.edu.utfpr.servicebook.security.RoleType;
-import br.edu.utfpr.servicebook.service.ExpertiseService;
-import br.edu.utfpr.servicebook.service.ServiceService;
+import br.edu.utfpr.servicebook.service.*;
+import br.edu.utfpr.servicebook.util.DateUtil;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import org.slf4j.Logger;
@@ -28,9 +27,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.text.DateFormatter;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.spi.DateFormatProvider;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,6 +60,33 @@ public class ServiceController {
 
     @Autowired
     private ExpertiseMapper expertiseMapper;
+
+    @Autowired
+    private IndividualService individualService;
+
+    @Autowired
+    private IndividualMapper individualMapper;
+
+    @Autowired
+    private CompanyService companyService;
+
+    @Autowired
+    private CompanyMapper companyMapper;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private JobRequestService jobRequestService;
+
+    @Autowired
+    private JobRequestMapper jobRequestMapper;
+
+    @Autowired
+    private JobContractedService jobContractedService;
 
     @GetMapping
     @PermitAll

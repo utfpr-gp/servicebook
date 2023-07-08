@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +37,7 @@ class JobOpeningsCandidateRepositoryTest {
     public static final Logger log =
             LoggerFactory.getLogger(JobOpeningsCandidateRepositoryTest.class);
 
-    final Date dateOfNow = new Date();
+    final LocalDate dateOfNow = LocalDate.now();
 
     @BeforeEach
     void setUp() {

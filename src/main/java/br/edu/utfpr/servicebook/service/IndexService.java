@@ -6,6 +6,7 @@ import br.edu.utfpr.servicebook.util.CPFUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -74,11 +75,11 @@ public class IndexService {
         company.setDenounceAmount(1);
         companyRepository.save(company);
 
-        JobRequest jb1 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, new Date());
+        JobRequest jb1 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, LocalDate.now());
         jb1.setExpertise(expertise1);
         jb1.setUser(client1);
 
-        JobRequest jb2 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, new Date());
+        JobRequest jb2 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, LocalDate.now());
         jb1.setExpertise(expertise1);
         jb1.setUser(client2);
 

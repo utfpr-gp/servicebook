@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @SpringBootTest
@@ -36,7 +37,7 @@ class JobOpeningsRequestRepositoryTest {
     public static final Logger log =
             LoggerFactory.getLogger(JobOpeningsRequestRepositoryTest.class);
 
-    final Date dateOfNow = new Date();
+    final LocalDate dateOfNow = LocalDate.now();
 
     private static final String MECHANIC = "Mecânico de moto";
     private static final String DEVELOPER = "Desenvolvedor de Sistemas";

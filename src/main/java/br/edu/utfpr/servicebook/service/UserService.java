@@ -53,6 +53,14 @@ public class UserService {
         return this.userRepository.findByPhoneNumber(phoneNumber);
     }
 
+    public List<User> findProfessionalsByExpertiseId(Long expertiseId) {
+        return this.userRepository.findByExpertiseId(expertiseId);
+    }
+
+    public List<User> findByExpertise(Expertise expertise) {
+        return this.userRepository.findByExpertise(expertise);
+    }
+
     public Long countProfessionals(){
         return this.userRepository.countProfessionals();
     }
@@ -77,5 +85,13 @@ public class UserService {
         }
 
         return expertiseDTOs;
+    }
+
+    /**
+     * Retorna o total de usuários.
+     * @return
+     */
+    public Long countAll(){
+        return this.userRepository.count();
     }
 }
