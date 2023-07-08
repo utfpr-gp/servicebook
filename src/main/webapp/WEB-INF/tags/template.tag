@@ -149,6 +149,7 @@
 <script src="assets/resources/scripts/main.js"></script>
 <script src="assets/resources/scripts/init.js"></script>
 <script src="assets/resources/scripts/sse.js"></script>
+<script src="assets/resources/scripts/vacancy.js"></script>
 <script src="assets/libraries/jquery.mask.js"></script>
 <!--script src="assets/resources/scripts/expertise-sidepanel-ajax.js"></script!-->
 <script type="text/javascript">

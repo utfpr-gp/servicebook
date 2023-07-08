@@ -66,6 +66,8 @@ public class JobController {
     @Autowired
     private ProfessionalExpertiseService professionalExpertiseService;
 
+
+
     /**
      * Mostra o formulário de cadastro de vagas de emprego
      * @param page

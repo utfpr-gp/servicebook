@@ -150,6 +150,12 @@ VALUES ('1', '2', 'false'),
 
 
 INSERT INTO follows (client_id, professional_id)
-VALUES (4, 2)
+VALUES (4, 2);
+
+INSERT INTO job (id, description, salary, title, company_id, expertise_id)
+VALUES (0, 'Auxilar os programadores a identar o código de maneira correta', 1250, 'Chat GPT Humano (Estagiário)', 7, 1),
+       (1, 'Auxilar os programadores a implementar o código de maneira correta', 1250, 'Chat GPT Humano (Junior)', 7, 2),
+       (2, 'Auxilar os programadores a revisar o código de maneira correta', 1250, 'Chat GPT Humano (Pleno)', 7, 3),
+       (3, 'Reclamar dos códigos dos programadores', 1250, 'Chat GPT Humano (Sênior)', 7, 4);
 
 
