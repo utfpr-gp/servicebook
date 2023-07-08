@@ -95,7 +95,7 @@ public class JobRequestService {
         return this.jobRequestRepository.countByStatus(status);
     }
 
-    public List<JobRequest> findByDateCreatedBetween(LocalDate startDate, LocalDate endDate){
+    public List<JobRequest> findByDateCreatedBetween(java.sql.Date startDate, java.sql.Date endDate){
         return this.jobRequestRepository.findByDateCreatedBetween(startDate, endDate);
     }
 

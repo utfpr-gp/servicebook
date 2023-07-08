@@ -52,6 +52,9 @@ public class UserService {
     public Optional<User> findByPhoneNumber(String phoneNumber) {
         return this.userRepository.findByPhoneNumber(phoneNumber);
     }
+    public List<User> findProfessionalsByExpertiseId(Long expertiseId) {
+        return this.userRepository.findByExpertiseId(expertiseId);
+    }
 
     public Long countProfessionals(){
         return this.userRepository.countProfessionals();

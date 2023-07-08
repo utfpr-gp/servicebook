@@ -174,7 +174,7 @@ public interface JobRequestRepository extends JpaRepository<JobRequest, Long> {
     Long countByDateCreatedIsBetween(Date dateFrom, Date dateTo);
 
     @Query("SELECT j FROM JobRequest j WHERE j.dateCreated BETWEEN :startDate AND :endDate")
-    List<JobRequest> findByDateCreatedBetween(LocalDate startDate, LocalDate endDate);
+    List<JobRequest> findByDateCreatedBetween(java.sql.Date startDate, java.sql.Date endDate);
 
     @Query("SELECT j FROM JobRequest j WHERE YEAR(j.dateCreated) = :year AND MONTH(j.dateCreated) = :month")
     List<JobRequest> findByDateCreatedMonth(int year, int month);

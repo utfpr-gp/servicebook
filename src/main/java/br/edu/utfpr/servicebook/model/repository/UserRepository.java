@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -36,6 +37,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT COUNT(u) FROM User u WHERE NOT EXISTS (SELECT pe FROM ProfessionalExpertise pe WHERE pe.professional = u)")
     Long countUsersWithoutExpertise();
+
+
+    @Query("SELECT User FROM ProfessionalExpertise pe WHERE pe.id = :expertiseId")
+    List<User> findByExpertiseId(@Param("expertiseId") Long expertiseId);
 
 
 
