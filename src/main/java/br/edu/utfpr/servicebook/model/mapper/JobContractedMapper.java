@@ -39,7 +39,7 @@ public class JobContractedMapper {
     public JobContractedFullDTO toFullDto(JobContracted entity, Optional<Long> totalCandidates) {
         JobContractedFullDTO dto = mapper.map(entity, JobContractedFullDTO.class);
         dto.getJobRequest().setTotalCandidates(totalCandidates.get());
-        dto.getJobRequest().setTextualDate(DateUtil.getTextualDate(DateUtil.toLocalDate(entity.getJobRequest().getDateTarget())));
+        dto.getJobRequest().setTextualDate(DateUtil.getTextualDate((entity.getJobRequest().getDateTarget())));
 
         return dto;
     }

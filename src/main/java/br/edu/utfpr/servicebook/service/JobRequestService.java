@@ -11,8 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,11 +50,6 @@ public class JobRequestService {
     public List<JobRequest> findByClientOrderByDateCreatedDesc(User client) {
         return this.jobRequestRepository.findByUserOrderByDateCreatedDesc(client);
     }
-    public List<JobRequest> findOrderByDateCreatedDesc(String finalDate) {
-        Date finalDateFormat = new Date(finalDate);
-        return this.jobRequestRepository.findOrderByDateCreatedAfter(finalDateFormat);
-    }
-
     public Page<JobRequest> findByStatusAndJobCandidatesIsNullOrJobCandidates_ProfessionalNot(JobRequest.Status status, User user, Pageable pageable) {
         return this.jobRequestRepository.findByStatusAndJobCandidatesIsNullOrJobCandidates_UserNot(status, user, pageable);
     }
@@ -91,11 +86,11 @@ public class JobRequestService {
      * @param status
      * @return
      */
-    public Long countByStatus(JobRequest.Status status){
+    public long countByStatus(JobRequest.Status status){
         return this.jobRequestRepository.countByStatus(status);
     }
 
-    public List<JobRequest> findByDateCreatedBetween(LocalDate startDate, LocalDate endDate){
+    public List<JobRequest> findByDateCreatedBetween(java.sql.Date startDate, java.sql.Date endDate){
         return this.jobRequestRepository.findByDateCreatedBetween(startDate, endDate);
     }
 
@@ -109,5 +104,25 @@ public class JobRequestService {
 
     public long countByDateCreatedMonth(int year, int month){
         return this.jobRequestRepository.countByDateCreatedMonth(year, month);
+    }
+
+    public long countByStatusAndDateCreatedBetween(JobRequest.Status status, LocalDate startDate, LocalDate endDate){
+        return this.jobRequestRepository.countByStatusAndDateCreatedBetween(status, startDate, endDate);
+    }
+
+    public long countByExpertiseAndDateCreatedBetween(Expertise expertise, LocalDate startDate, LocalDate endDate){
+        return this.jobRequestRepository.countByExpertiseAndDateCreatedBetween(expertise, startDate, endDate);
+    }
+
+    public long countByStatusAndExpertiseAndDateCreatedBetween(JobRequest.Status status, Expertise expertise, LocalDate startDate, LocalDate endDate){
+        return this.jobRequestRepository.countByStatusAndExpertiseAndDateCreatedBetween(status, expertise, startDate, endDate);
+    }
+
+    public long countByExpertise(Expertise expertise){
+        return this.jobRequestRepository.countByExpertise(expertise);
+    }
+
+    public long countByStatusAndExpertise(JobRequest.Status status, Expertise expertise){
+        return this.jobRequestRepository.countByStatusAndExpertise(status, expertise);
     }
 }

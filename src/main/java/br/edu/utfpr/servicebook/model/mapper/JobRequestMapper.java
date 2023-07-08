@@ -42,7 +42,7 @@ public class JobRequestMapper {
         JobRequestDetailsDTO dto = mapper.map(entity, JobRequestDetailsDTO.class);
         dto.setDateCreated(this.dateFormat.format(entity.getDateCreated()));
         dto.setDateTarget(this.dateFormat.format(entity.getDateTarget()));
-        dto.setTextualDate(DateUtil.getTextualDate(DateUtil.toLocalDate(entity.getDateTarget())));
+        dto.setTextualDate(DateUtil.getTextualDate((entity.getDateTarget())));
 
         return dto;
     }
@@ -69,7 +69,7 @@ public class JobRequestMapper {
         dto.setTotalCandidates(totalCandidates.get());
         dto.setDateCreated(this.dateFormat.format(entity.getDateCreated()));
         dto.setDateTarget(this.dateFormat.format(entity.getDateTarget()));
-        dto.setTextualDate(DateUtil.getTextualDate(DateUtil.toLocalDate(entity.getDateTarget())));
+        dto.setTextualDate(DateUtil.getTextualDate((entity.getDateTarget())));
 
         return dto;
     }

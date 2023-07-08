@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook.model.entity;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,6 +27,8 @@ public class User implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	protected Long id;
+
+	private LocalDate dateCreated;
 
 	@NonNull
 	protected String name;

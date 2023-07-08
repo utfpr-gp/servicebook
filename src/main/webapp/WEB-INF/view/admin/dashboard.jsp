@@ -1,11 +1,24 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <t:admin title="Dash de Serviços">
     <jsp:body>
         <!-- Mensagens -->
+        <style>
+            .input-field {
+                padding: 0 !important;
+            }
+
+            .input-field .select-wrapper input {
+                padding: 0 !important;
+                align-items: center !important;
+                justify-content: center !important;
+                text-align: center !important;
+            }
+        </style>
         <div class="row">
             <div class="col s12 l6 offset-l3 spacing-buttons">
                 <c:if test="${not empty msg}">
@@ -19,7 +32,7 @@
                     </div>
                 </c:if>
                 <c:if test="${not empty errors}">
-                    <div class="card-panel red msg-view center-align">
+                    <div class="card-panel red msg-view center-align no-padding center">
                         <c:forEach var="e" items="${errors}">
                             <span class="white-text">${e.getDefaultMessage()}</span><br>
                         </c:forEach>
@@ -28,44 +41,64 @@
             </div>
         </div>
         <!-- Fim Mensagens -->
-        <div class="row">
+        <div class="row ">
             <div class="col s3 center">
-                <form action="a/dashboard/q" method="get" id="date-filter-form">
-                    <h4>Data </h4>
-                    <select name="startDate" id="select-status" class="white-text select-city" >
-                        <option value="--" disabled selected>Mês / Ano</option>
-                        <c:forEach var="entry" items="${months}">
-                            <option value="${entry.key}">${entry.value}</option>
-                        </c:forEach>
-                    </select>
-                    <button class="waves-effect waves-light btn" type="submit"><i class="material-icons left">filter_list</i> Filtrar</button>
-                </form>
+                <h4>Filtrar por</h4>
                 <form action="a/dashboard/q" method="get">
-                    <h4>Especialidade</h4>
-                    <select name="expertiseId" id="select-professional" class="white-text select-city">
-                        <option value="--">Qualquer</option>
-                        <c:forEach var="expertise" items="${expertises}">
-                            <option value="${expertise.id}">${expertise.name}</option>
-                        </c:forEach>
-                    </select>
-                    <button class="waves-effect waves-light btn" type="submit"><i class="material-icons left">filter_list</i> Filtrar</button>
+                    <h6>Data do serviço</h6>
+                    <div class="input-field col s12">
+                        <select name="startDate" id="select-status" class="white-text mt-1 no-padding center"
+                                style="padding: 0 !important;">
+                            <c:choose>
+                                <c:when test="${not empty setMonth}">
+                                    <option value="${setMonth}" disabled selected>${jobRequestFilterParam}</option>
+                                </c:when>
+                                <c:otherwise>
+                                    <option value="" disabled selected>Mês / Ano</option>
+                                </c:otherwise>
+                            </c:choose>
+                            <c:forEach var="entry" items="${months}">
+                                <option value="${entry.key}">${entry.value}</option>
+                            </c:forEach>
+                        </select>
+                    </div>
+                    <h6>Especialidade do usuário</h6>
+                    <div class="input-field col s12">
+                        <select name="expertiseId" id="select-professional" class="white-text mt-1 no-padding center"
+                                style="padding: 0 !important;">
+                            <c:choose>
+                                <c:when test="${not empty setExpertise}">
+                                    <option value="${setExpertise}" disabled selected>${userFilterParam}</option>
+                                </c:when>
+                                <c:otherwise>
+                                    <option value="" disabled selected>Qualquer especialidade</option>
+                                </c:otherwise>
+                            </c:choose>
+                            <c:forEach var="expertise" items="${expertises}">
+                                <option value="${expertise.id}">${expertise.name}</option>
+                            </c:forEach>
+                        </select>
+                    </div>
+                    <button class="waves-effect waves-light btn col s12 mt-1 center" type="submit"><i
+                            class="material-icons left">filter_list</i> Filtrar
+                    </button>
+                    <a class="waves-effect waves-light btn grey col s12 mt-1 center" href="a/dashboard"><i
+                            class="material-icons left">delete</i> Limpar</a>
                 </form>
-                <a class="waves-effect waves-light btn grey col s12 mt-1" href="a/dashboard"><i class="material-icons left">delete</i> Limpar</a>
-
             </div>
 
             <div class="col s9">
                 <div class="row">
-                    <h4>REQUISIÇÕES DE SERVIÇOS
-                        <c:if test="${jobRequestFilterParam}">
-                            (desde ${jobRequestFilterParam})
+                    <h4 style="padding-left: .4em">Requisições de serviços
+                        <c:if test="${not empty jobRequestFilterParam}">
+                            em ${jobRequestFilterParam}
                         </c:if>
                     </h4>
 
                     <div class="col s12 m3">
                         <div class="card indigo">
                             <div class="card-content white-text">
-                                <span class="card-title">${totalJobAvailable}</span>
+                                <span class="card-title">${totalJobAvailable != null ? totalJobAvailable : 0}</span>
                                 <p>DISPONÍVEIS</p>
                             </div>
                         </div>
@@ -74,7 +107,7 @@
                     <div class="col s12 m3">
                         <div class="card indigo">
                             <div class="card-content white-text">
-                                <span class="card-title">${totalJobDoing}</span>
+                                <span class="card-title">${totalJobDoing != null ? totalJobDoing : 0}</span>
                                 <p>EM ANDAMENTO</p>
                             </div>
                         </div>
@@ -83,7 +116,7 @@
                     <div class="col s12 m3">
                         <div class="card indigo">
                             <div class="card-content white-text">
-                                <span class="card-title">${totalJobClosed}</span>
+                                <span class="card-title">${totalJobClosed != null ? totalJobClosed : 0}</span>
                                 <p>FINALIZADOS</p>
                             </div>
                         </div>
@@ -92,7 +125,7 @@
                     <div class="col s12 m3">
                         <div class="card indigo">
                             <div class="card-content white-text">
-                                <span class="card-title">${totalJobs}</span>
+                                <span class="card-title">${totalJobs != null ? totalJobs : 0}</span>
                                 <p>TOTAL</p>
                             </div>
                         </div>
@@ -100,56 +133,48 @@
 
 
                     <div class="col s12 cards-container">
-                        <h4>USUÁRIOS
-                        <c:if test="${serFilterParam}">
-                            (apenas ${userFilterParam})
-                        </c:if>
+                        <h4 style="padding-left: .4em">Usuários
+                            <c:if test="${not empty userFilterParam}">
+                                com especialidade: ${userFilterParam}
+                            </c:if>
                         </h4>
 
-                        <c:if test="${not empty totalClients}">
-                            <div class="col s12 m3">
-                                <div class="card indigo">
-                                    <div class="card-content white-text">
-                                        <span class="card-title">${totalClients}</span>
-                                        <p>CLIENTES</p>
-                                    </div>
+                        <div class="col s12 m3">
+                            <div class="card indigo">
+                                <div class="card-content white-text">
+                                    <span class="card-title">${totalClients}</span>
+                                    <p>CLIENTES</p>
                                 </div>
                             </div>
-                        </c:if>
+                        </div>
 
-                        <c:if test="${not empty totalProfessionals}">
-                            <div class="col s12 m3">
-                                <div class="card indigo">
-                                    <div class="card-content white-text">
-                                        <span class="card-title">${totalProfessionals}</span>
-                                        <p>PROFISSIONAIS</p>
-                                    </div>
+                        <div class="col s12 m3">
+                            <div class="card indigo">
+                                <div class="card-content white-text">
+                                    <span class="card-title">${totalProfessionals}</span>
+                                    <p>PROFISSIONAIS</p>
                                 </div>
                             </div>
-                        </c:if>
+                        </div>
 
-                        <c:if test="${not empty totalCompanies}">
-
-                            <div class="col s12 m3">
-                                <div class="card indigo">
-                                    <div class="card-content white-text">
-                                        <span class="card-title">${totalCompanies}</span>
-                                        <p>EMPRESAS</p>
-                                    </div>
+                        <div class="col s12 m3">
+                            <div class="card indigo">
+                                <div class="card-content white-text">
+                                    <span class="card-title">${totalCompanies}</span>
+                                    <p>EMPRESAS</p>
                                 </div>
                             </div>
-                        </c:if>
+                        </div>
 
-                        <c:if test="${not empty totalClients}">
-                            <div class="col s12 m3">
-                                <div class="card indigo">
-                                    <div class="card-content white-text">
-                                        <span class="card-title">${totalClients}</span>
-                                        <p>TOTAL</p>
-                                    </div>
+                        <div class="col s12 m3">
+                            <div class="card indigo">
+                                <div class="card-content white-text">
+                                    <span class="card-title">${totalUsers}</span>
+                                    <p>TOTAL</p>
                                 </div>
                             </div>
-                        </c:if>
+                        </div>
+
                     </div>
                 </div>
             </div>

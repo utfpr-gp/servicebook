@@ -22,6 +22,10 @@ public class ProfessionalExpertiseService {
         return this.professionalExpertiseRepository.findByProfessionalAndExpertise(user, expertise);
     }
 
+    public List<ProfessionalExpertise> findByExpertise(Expertise expertise) {
+        return this.professionalExpertiseRepository.findByExpertise(expertise);
+    }
+
     public List<ProfessionalExpertise> findByProfessional(User user) {
         return this.professionalExpertiseRepository.findByProfessional(user);
     }

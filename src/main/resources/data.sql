@@ -112,14 +112,14 @@ VALUES ('false', '2021-01-01', '2021-01-01', 'Preciso de um Encanador 1!', 'true
        ('true', '2021-01-01', '2021-01-01', 'Preciso de um Pintor 1!', 'true', '5', 'TO_HIRED', '4', '3'),
        ('true', '2021-01-01', '2021-01-02', 'Preciso de um Pintor 2!', 'true', '10', 'AVAILABLE', '4', '3'),
        ('true', '2021-01-01', '2021-01-03', 'Preciso de um Pintor 3!', 'true', '15', 'TO_HIRED', '4', '3'),
-       ('true', '2021-01-01', '2021-01-04', 'Preciso de um Pintor 4!', 'true', '20', 'TO_DO', '3', '3'), -- 19
-       ('true', '2021-01-01', '2021-01-04', 'Preciso de um Pintor 5!', 'true', '20', 'CLOSED', '4', '3'),
-       ('true', '2021-01-01', '2021-01-04', 'Preciso de um Pintor 6!', 'true', '20', 'DOING', '4', '3'),
-       ('true', '2021-08-26', '2021-08-27', 'Preciso de um Mecânico 1!', 'true', '5', 'AVAILABLE', '4', '4'),
-       ('true', '2021-08-26', '2021-08-28', 'Preciso de um Mecânico 2!', 'true', '10', 'AVAILABLE', '4', '4'),
-       ('true', '2021-08-26', '2021-09-01', 'Preciso de um Mecânico 3!', 'true', '15', 'AVAILABLE', '4', '4'),
-       ('true', '2021-08-26', '2021-09-10', 'Preciso de um Mecânico 4!', 'true', '20', 'AVAILABLE', '4', '4'),
-       ('true', '2023-01-16', '2023-01-17', 'Preciso de um Mecânico 5!', 'true', '20', 'CLOSED', '4', '4');
+       ('true', '2023-01-01', '2021-01-04', 'Preciso de um Pintor 4!', 'true', '20', 'TO_DO', '3', '3'), -- 19
+       ('true', '2023-07-01', '2021-01-04', 'Preciso de um Pintor 5!', 'true', '20', 'CLOSED', '4', '3'),
+       ('true', '2023-04-01', '2021-01-04', 'Preciso de um Pintor 6!', 'true', '20', 'DOING', '4', '3'),
+       ('true', '2023-04-26', '2021-08-27', 'Preciso de um Mecânico 1!', 'true', '5', 'AVAILABLE', '4', '4'),
+       ('true', '2023-05-26', '2021-08-28', 'Preciso de um Mecânico 2!', 'true', '10', 'AVAILABLE', '4', '4'),
+       ('true', '2023-03-26', '2021-09-01', 'Preciso de um Mecânico 3!', 'true', '15', 'AVAILABLE', '4', '4'),
+       ('true', '2023-02-26', '2021-09-10', 'Preciso de um Mecânico 4!', 'true', '20', 'AVAILABLE', '4', '4'),
+       ('true', '2023-02-16', '2023-01-17', 'Preciso de um Mecânico 5!', 'true', '20', 'CLOSED', '4', '4');
 
 
 

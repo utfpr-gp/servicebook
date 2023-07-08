@@ -43,7 +43,7 @@ public class JobCandidateMapper {
             dto.setDate(this.dateFormat.format(entity.getDateCreated()));
         }
         dto.getJobRequest().setTotalCandidates(totalCandidates.get());
-        dto.getJobRequest().setTextualDate(DateUtil.getTextualDate(DateUtil.toLocalDate(entity.getJobRequest().getDateTarget())));
+        dto.getJobRequest().setTextualDate(DateUtil.getTextualDate(entity.getJobRequest().getDateTarget()));
 
         return dto;
     }
