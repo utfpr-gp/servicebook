@@ -6,7 +6,6 @@
     <link href="${pageContext.request.contextPath}/assets/resources/styles/professional/professional.css" rel="stylesheet">
 </head>
 
-
 <t:template title="ServiceBook - Minha conta" userInfo="${userInfo}">
     <jsp:body>
         <main class="container">

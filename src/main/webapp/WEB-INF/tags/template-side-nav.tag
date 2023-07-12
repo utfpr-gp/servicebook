@@ -137,7 +137,21 @@
             <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         </div>
     </nav>
-    <jsp:doBody/>
+    <div class="container">
+        <div class="row">
+
+            <!-- Painel lateral -->
+            <div class="col m4 l3 hide-on-med-and-down">
+                <t:side-panel userInfo="${userInfo}" followdto="${followdto}"
+                              statisticInfo="${statisticInfo}"></t:side-panel>
+            </div>
+
+            <!-- Painel com as solicitações de serviços -->
+            <div class="col s12 l9">
+                <jsp:doBody/>
+            </div>
+        </div>
+    </div>
 </main>
 <footer class="page-footer">
 
