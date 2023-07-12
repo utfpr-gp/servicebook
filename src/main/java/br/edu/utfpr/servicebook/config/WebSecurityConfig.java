@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook.config;
 
 import br.edu.utfpr.servicebook.security.RoleType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,8 +18,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig {
 
-//    @Autowired
-//    UserDetailServiceImpl userDetailService;
+    @Autowired
+    CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
 
     private static final String[] PUBLIC_URLS = {
             "/",
@@ -52,6 +54,7 @@ public class WebSecurityConfig {
             .and()
                 .formLogin()//tela de login padrão
                 .loginPage("/login").permitAll()
+                .successHandler(customAuthenticationSuccessHandler)//redireciona para a tela correta de acordo com o perfil do usuário
                 .failureUrl("/login?error=true")
             .and()
                 .logout(logout -> logout.deleteCookies("JSESSIONID").logoutSuccessUrl("/").permitAll())

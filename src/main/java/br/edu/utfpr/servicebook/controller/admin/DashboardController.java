@@ -82,6 +82,14 @@ public class DashboardController {
     @Autowired
     private ProfessionalExpertiseService professionalExpertiseService;
 
+    @GetMapping()
+    @RolesAllowed({RoleType.ADMIN})
+    public ModelAndView index(){
+
+        ModelAndView mv = new ModelAndView("admin/index");
+        return mv;
+    }
+
     /**
      * Mostra a página inicial do dashboard
      *
