@@ -2,6 +2,10 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<head>
+    <!-- Funciona apenas com caminho absoluto porque é renderizado antes da tag base -->
+    <link href="${pageContext.request.contextPath}/assets/resources/styles/visitor/visitor.css" rel="stylesheet">
+</head>
 
 <t:template title="Servicebook - Cadastro - Passo 1">
     <jsp:body>

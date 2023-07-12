@@ -6,6 +6,13 @@
 <jsp:useBean id="userInfo" type="br.edu.utfpr.servicebook.util.UserTemplateInfo" scope="request"/>
 <jsp:useBean id="jobRequest" type="br.edu.utfpr.servicebook.model.dto.JobRequestFullDTO" scope="request"/>
 <jsp:useBean id="candidates" type="java.util.List<br.edu.utfpr.servicebook.model.dto.JobCandidateDTO>" scope="request"/>
+
+<head>
+    <!-- Funciona apenas com caminho absoluto porque é renderizado antes da tag base -->
+    <link href="${pageContext.request.contextPath}/assets/resources/styles/client/client.css" rel="stylesheet">
+</head>
+
+
 <t:template title="Detalhes da Solicitação" userInfo="${userInfo}">
     <jsp:body>
         <main class="container">

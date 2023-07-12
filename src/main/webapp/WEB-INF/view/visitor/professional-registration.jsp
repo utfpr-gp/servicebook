@@ -1,10 +1,14 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<head>
+    <!-- Funciona apenas com caminho absoluto porque é renderizado antes da tag base -->
+    <link href="${pageContext.request.contextPath}/assets/resources/styles/visitor/visitor.css" rel="stylesheet">
+</head>
 
 <t:template title="Cadastro de Profissional">
     <jsp:body>
-
+        <link href="assets/resources/styles/visitor/visitor.css" rel="stylesheet">
         <main>
             <div class="container">
                 <div class="section">

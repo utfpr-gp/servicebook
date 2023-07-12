@@ -16,7 +16,10 @@
     <meta name="twitter:title" content="${professional.description}">
     <meta name="twitter:description" content="SERVICEBOOK - O MELHOR PROFISSIONAL QUE VOCÊ PRECISA ESTÁ AQUI!">
     <meta name="twitter:image "content="${professional.profilePicture}">
+    <!-- Funciona apenas com caminho absoluto porque é renderizado antes da tag base -->
+    <link href="${pageContext.request.contextPath}/assets/resources/styles/visitor/visitor.css" rel="stylesheet">
 </head>
+
 <t:template title="Servicebook - Início">
     <jsp:body>
         <div id="" class="blue lighten-1">

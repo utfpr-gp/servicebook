@@ -3,6 +3,10 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<head>
+    <!-- Funciona apenas com caminho absoluto porque é renderizado antes da tag base -->
+    <link href="${pageContext.request.contextPath}/assets/resources/styles/professional/professional.css" rel="stylesheet" type="text/css"/>
+</head>
 <t:template title="Editar perfil">
     <jsp:body>
         <main class="container">
@@ -75,10 +79,10 @@
                     </a>
                 </div>
                 <div class="col s12 l5 spacing-buttons">
-                    <a href="#!" class="dark-color-text">
+                    <a href="${pageContext.request.contextPath}/minha-conta/edita-senha/${professional.id}" class="dark-color-text">
                         <div class="active-profission no-padding">
-                            <h3 class="center"><strong><i class="medium material-icons">stars</i></strong></h3>
-                            <h4 class="center"><strong>Minhas especialidades</strong></h4>
+                            <h3 class="center"><strong><i class="medium material-icons">lock</i></strong></h3>
+                            <h4 class="center"><strong>Minha senha</strong></h4>
                         </div>
                     </a>
                 </div>
@@ -98,15 +102,6 @@
                         </div>
                     </a>
                 </div>
-                <div class="col s12 l5 offset-l1 spacing-buttons">
-                    <a href="${pageContext.request.contextPath}/minha-conta/edita-senha/${professional.id}" class="dark-color-text">
-                        <div class="active-profission no-padding">
-                            <h3 class="center"><strong><i class="medium material-icons">lock</i></strong></h3>
-                            <h4 class="center"><strong>Minha senha</strong></h4>
-                        </div>
-                    </a>
-                </div>
-
             </div>
         </main>
     </jsp:body>

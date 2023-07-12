@@ -1,0 +1,46 @@
+.nav-main{
+    height: 80px;
+    background-color: #1c2231;
+    color: #53b1ed;
+}
+
+.logo-icon{
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.logo-text{
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    margin-top: 20px;
+    margin-left: 18px;
+    margin-bottom: 15px;
+    text-shadow:  4px 4px 4px #FFF, -4px -4px 4px #FFF, 4px -4px 4px #FFF, -4px 4px 4px #FFF, 2px 2px 0 #FFF, 2px -2px 0 #FFF, -2px 2px 0 #FFF, -2px -2px 0 #FFF, 2px 0px 0 #FFF, 0px 2px 0 #FFF, -2px 0px 0 #FFF, 0px -2px 0 #FFF;
+    font-weight: 800;
+    color: #53b1ed;
+}
+
+.menu-link{
+    font-size: 110%;
+    margin-right: 5rem;
+    color: #53b1ed;
+}
+
+.menu-itens{
+    margin-top: 15px;
+    color: #53b1ed;
+}
+
+.dropdown-content {
+    background-color: #fff;
+    margin-top: 43px !important;
+}
+
+.dropdown-content li span {
+    color: #1c2231;
+}

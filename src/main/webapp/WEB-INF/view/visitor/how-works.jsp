@@ -1,8 +1,13 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<head>
+    <!-- Funciona apenas com caminho absoluto porque é renderizado antes da tag base -->
+    <link href="${pageContext.request.contextPath}/assets/resources/styles/visitor/visitor.css" rel="stylesheet">
+</head>
 
 <t:template title="Como Funciona?">
     <jsp:body>
+
         <main>
             <div class="container">
                 <div class="section">

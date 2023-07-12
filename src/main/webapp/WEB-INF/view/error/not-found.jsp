@@ -8,7 +8,7 @@
 
         <div class="row">
             <div class="col s12 center">
-                <img class="img-responsive" src="assets/resources/images/404.png" height="500px">
+                <img class="img-responsive" src="assets/resources/images/errors/404.png" height="500px">
             </div>
         </div>
     </jsp:body>

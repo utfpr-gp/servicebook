@@ -3,22 +3,14 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<head>
+    <!-- Funciona apenas com caminho absoluto porque é renderizado antes da tag base -->
+    <link href="${pageContext.request.contextPath}/assets/resources/styles/admin/admin.css" rel="stylesheet">
+</head>
 
 <t:admin title="Dash de Serviços">
     <jsp:body>
-        <!-- Mensagens -->
-        <style>
-            .input-field {
-                padding: 0 !important;
-            }
 
-            .input-field .select-wrapper input {
-                padding: 0 !important;
-                align-items: center !important;
-                justify-content: center !important;
-                text-align: center !important;
-            }
-        </style>
         <div class="row">
             <div class="col s12 l6 offset-l3 spacing-buttons">
                 <c:if test="${not empty msg}">
