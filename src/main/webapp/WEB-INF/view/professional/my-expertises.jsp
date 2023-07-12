@@ -9,7 +9,8 @@
 
                 <!-- Painel lateral -->
                 <div class="col m4 l3 hide-on-med-and-down">
-                    <t:side-panel userInfo="${userInfo}" followdto="${followdto}" statisticInfo="${statisticInfo}"></t:side-panel>
+                    <t:side-panel userInfo="${userInfo}" followdto="${followdto}"
+                                  statisticInfo="${statisticInfo}"></t:side-panel>
                 </div>
 
                 <!-- Painel com as solicitações de serviços -->
@@ -25,55 +26,46 @@
                             </blockquote>
                         </div>
                     </div>
-                    <!-- Modal para remoção de uma especialidade -->
-                    <div id="modal-delete" class="modal">
-                        <div class="modal-content">
-                            <form action="" method="post">
 
-                                <input type="hidden" name="_method" value="DELETE"/>
-
-                                <div class="modal-content">
-                                    <h4>Você tem certeza que deseja remover <strong id="strong-name"></strong> das suas especialidades?</h4>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
-                                    <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <!-- Modal para remoção de uma especialidade -->
-                    <div class="col s12">
-                        <div class="row expertises">
-                            <c:forEach var="professionalExpertise" items="${professionalExpertises}">
-                                <div class="col s12 m5 offset-m1 card-expertise-list row">
-                                    <div class="col s2 delete-exerpertise expertise-icon">
-                                        <i class="material-icons">work</i>
-                                    </div>
-                                    <div class="col s8">
-                                        <p class="center">
-                                            <strong>
-                                                    ${professionalExpertise.name}
-                                            </strong>
-                                        </p>
-                                    </div>
-                                    <div class="col s2 delete-exerpertise expertise-icon">
-                                        <a href="#modal-delete" id="delete-exerpertise-professional" class="myclass waves-effect waves-teal btn-flat delete-exerpertise-professional modal-trigger"
-                                           data-url="${pageContext.request.contextPath}/minha-conta/profissional/especialidades/${professionalExpertise.id}"
-                                           data-name="${professionalExpertise.name}"><i class="myclass material-icons">delete</i></a>
-                                    </div>
-                                    <div class="col s12 right">
-                                        <p class="center">
-                                            Descrição da especialidade
-                                        </p>
+                    <div class="row">
+                        <c:forEach var="professionalExpertise" items="${professionalExpertises}">
+                            <div class="col s12 m6">
+                                <div class="card">
+                                    <div class="card-content">
+                                        <div class="row">
+                                        <div class="col s2">
+                                            <div class="valign-wrapper">
+                                                <img class="responsive-img" src="${professionalExpertise.pathIcon}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col s8">
+                                            <p class="center">
+                                                <strong>
+                                                        ${professionalExpertise.name}
+                                                </strong>
+                                            </p>
+                                        </div>
+                                        <div class="col s2 valign-wrapper">
+                                            <a href="#modal-delete" id="delete-exerpertise-professional"
+                                               class="myclass waves-effect waves-teal btn-flat delete-exerpertise-professional modal-trigger"
+                                               data-url="${pageContext.request.contextPath}/minha-conta/profissional/especialidades/${professionalExpertise.id}"
+                                               data-name="${professionalExpertise.name}">
+                                                <i class="myclass material-icons">delete</i>
+                                            </a>
+                                        </div>
+                                        <div class="col s12 right">
+                                            <p class="center">
+                                                Descrição da especialidade
+                                            </p>
+                                        </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </c:forEach>
-
-                        </div>
+                            </div>
+                        </c:forEach>
                     </div>
                     <div class="center spacing-buttons">
-                        <button  class="waves-effect waves-light btn">
+                        <button class="waves-effect waves-light btn">
                             <a href="#modal-expertises" class="modal-trigger">
                                 Adicionar nova especialidade
                             </a>
@@ -106,13 +98,16 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <form class="s12" id="form-expertises" action="minha-conta/profissional/especialidades" method="post">
+                                <form class="s12" id="form-expertises" action="minha-conta/profissional/especialidades"
+                                      method="post">
                                     <ul id="search-expertises">
                                         <c:forEach var="expertise" items="${otherExpertises}">
                                             <li>
                                                 <label class='card-expertise col s12 m10 offset-m1'>
-                                                    <input id='ids' name='ids' type='checkbox' class='reset-checkbox' value="${expertise.id}">
-                                                    <span class='center name-expertise expertise-select-card' style="cursor: pointer">
+                                                    <input id='ids' name='ids' type='checkbox' class='reset-checkbox'
+                                                           value="${expertise.id}">
+                                                    <span class='center name-expertise expertise-select-card'
+                                                          style="cursor: pointer">
                                                     <i class='material-icons'>work</i>
                                                     ${expertise.name}
                                                 </span>
@@ -123,7 +118,9 @@
                                     <div class="row">
                                         <div class="col s12 m10 offset-m1">
                                             <div class="right">
-                                                <button id="submit-expertise" type="submit" class="btn waves-effect waves-light">Salvar</button>
+                                                <button id="submit-expertise" type="submit"
+                                                        class="btn waves-effect waves-light">Salvar
+                                                </button>
                                                 <a class="btn waves-effect waves-light modal-close">Cancelar</a>
                                             </div>
                                         </div>
@@ -134,6 +131,29 @@
                         </div>
                     </div>
                     <!-- Modal para a escolha de uma nova especialidade -->
+
+                    <!-- Modal para remoção de uma especialidade -->
+                    <div id="modal-delete" class="modal">
+                        <div class="modal-content">
+                            <form action="" method="post">
+
+                                <input type="hidden" name="_method" value="DELETE"/>
+
+                                <div class="modal-content">
+                                    <h4>Você tem certeza que deseja remover <strong id="strong-name"></strong> das suas
+                                        especialidades?</h4>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button"
+                                            class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar
+                                    </button>
+                                    <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Fim Modal para remoção de uma especialidade -->
                 </div>
             </div>
         </main>
@@ -142,20 +162,20 @@
 
 <script>
 
-    $(function(){
-        $("#txtBusca").keyup(function(){
+    $(function () {
+        $("#txtBusca").keyup(function () {
             var texto = $(this).val();
 
             //$("#search-expertises li").css("display", "block");
             $("#search-expertises li").css("display", "none");
-            $("#search-expertises li").each(function(){
-                if($(this).text().toUpperCase().indexOf(texto.toUpperCase()) < 0)
+            $("#search-expertises li").each(function () {
+                if ($(this).text().toUpperCase().indexOf(texto.toUpperCase()) < 0)
                     $(this).css("display", "none");
             });
         });
     });
 
-    $(".myclass").hover(function(e) {
-        $(this).css("color",e.type === "mouseenter"?"red":"grey")
+    $(".myclass").hover(function (e) {
+        $(this).css("color", e.type === "mouseenter" ? "red" : "grey")
     })
 </script>

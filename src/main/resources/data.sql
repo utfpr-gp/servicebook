@@ -70,10 +70,10 @@ VALUES ('Animais de estimação'),
 
 
 INSERT INTO expertises (name, description, path_icon, category_id)
-VALUES ('Encanador', 'Realiza serviço como encanador', 'https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg', 7),
-       ('Eletricista', 'Realiza serviço como eletricista', 'https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg', 7),
-       ('Pintor', 'Realiza serviço como pintor', 'https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg', 7),
-       ('Mecânico', 'Realiza serviço como mecânico', 'https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg', 7);
+VALUES ('Encanador', 'Realiza serviço como encanador', 'https://res.cloudinary.com/dgueb0wir/image/upload/v1689176874/servicebook/expertises/encanador_q7b9vg.svg', 7),
+       ('Eletricista', 'Realiza serviço como eletricista', 'https://res.cloudinary.com/dgueb0wir/image/upload/v1689176874/servicebook/expertises/eletricista_tlqro5.svg', 7),
+       ('Pintor', 'Realiza serviço como pintor', 'https://res.cloudinary.com/dgueb0wir/image/upload/v1689176875/servicebook/expertises/pintor_kfl3de.svg', 7),
+       ('Mecânico', 'Realiza serviço como mecânico', 'https://res.cloudinary.com/dgueb0wir/image/upload/v1689176876/servicebook/expertises/mecanico_quczum.svg', 7);
 
 INSERT INTO professional_expertises (expertise_id, professional_id, rating)
 VALUES (1, 2, 1),
