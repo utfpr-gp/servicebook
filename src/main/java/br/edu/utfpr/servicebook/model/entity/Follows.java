@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * Classe para armazenar as informações necessárias para a classe auxiliar n x n
@@ -23,7 +23,7 @@ public class Follows {
 	@EmbeddedId
 	private FollowsPK id;
 
-	private Date date;
+	private LocalDate date;
 
 	@ManyToOne
 	@MapsId("clientId")
@@ -43,6 +43,6 @@ public class Follows {
 
 	@PrePersist
 	public void onPersist() {
-		this.date = new Date();
+		this.date = LocalDate.now();
 	}
 }

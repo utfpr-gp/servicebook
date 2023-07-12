@@ -2,7 +2,6 @@ package br.edu.utfpr.servicebook.model.entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -70,7 +69,7 @@ public class User implements Serializable {
 
 	protected String description;
 	protected Integer denounceAmount;
-	protected Long followsAmount;
+
 
 //	@PrePersist
 //	@PreUpdate

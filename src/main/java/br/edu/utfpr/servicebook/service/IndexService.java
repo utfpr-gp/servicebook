@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Date;
 
 @Service
 public class IndexService {
@@ -45,7 +44,7 @@ public class IndexService {
         expertiseRepository.saveAll(Arrays.asList(expertise1, expertise2, expertise3, expertise4, expertise5));
 
         Individual individual1 = new Individual("Darth Vader", "darth_vader@mail.com", "Senha123", "(42)9 9999-9999", CPFUtil.geraCPF());
-        individual1.setBirthDate(new Date());
+        individual1.setBirthDate(LocalDate.now());
         individual1.setProfilePicture("https://i.imgur.com/owhNAKK.png");
         individual1.setDescription("Sua falta de fé é perturbadora.");
         individual1.setRating(5);
@@ -53,7 +52,7 @@ public class IndexService {
         individualRepository.save(individual1);
 
         Individual individual2 = new Individual("Chewbacca", "chewbacca@mail.com", "Senha123", "(42)9 9999-9999", CPFUtil.geraCPF());
-        individual2.setBirthDate(new Date());
+        individual2.setBirthDate(LocalDate.now());
         individual2.setProfilePicture("https://i.imgur.com/owhNAKK.png");
         individual2.setDescription("Sua falta de fé é perturbadora.");
         individual2.setRating(5);

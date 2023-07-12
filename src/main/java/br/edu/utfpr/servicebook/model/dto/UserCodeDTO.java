@@ -7,7 +7,6 @@ import lombok.ToString;
 
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor

@@ -16,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -38,7 +38,7 @@ public class UserDTO implements IWizardDTO, Serializable {
     //@Pattern(regexp = "^\\d{4}-(1[012]|0[1-9])-(3[01]|[12]\\d|0[0-9])$", message = "A data deve estar no formato yyyy-MM-dd", groups = UserDTO.RequestUpdatePersonalInfo.class)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Past(message = "Data de nascimento inválida! Por favor, insira uma data de nascimento válida.", groups = UserDTO.RequestUpdatePersonalInfo.class)
-    protected Date birthDate;
+    protected LocalDate birthDate;
 
 
     @NotBlank(message = "Email inválido! Por favor, insira o email.", groups = UserDTO.RequestUserEmailInfoGroupValidation.class)

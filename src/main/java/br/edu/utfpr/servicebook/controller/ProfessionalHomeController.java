@@ -30,7 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,7 +41,7 @@ public class ProfessionalHomeController {
 
     public static final Logger log = LoggerFactory.getLogger(ProfessionalHomeController.class);
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Autowired
     private FollowsService followsService;
@@ -514,7 +514,7 @@ public class ProfessionalHomeController {
             JobContracted jobContracted = oJobContracted.get();
             boolean hasToDoDate = jobContracted.getTodoDate() != null;
 
-            String date = this.dateFormat.format(jobRequest.getDateTarget());
+            String date = this.dateTimeFormatter.format(jobRequest.getDateTarget());
 
             mv.addObject("todoDate",  date);
             mv.addObject("hasTodoDate",  hasToDoDate);

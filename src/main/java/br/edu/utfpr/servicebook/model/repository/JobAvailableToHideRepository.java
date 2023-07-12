@@ -8,14 +8,14 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-import java.util.Date;
+
 
 public interface JobAvailableToHideRepository extends JpaRepository<JobAvailableToHide, JobRequestUserPK> {
 
     @Query("select j from JobAvailableToHide j where j.date <= ?1")
-    List<JobAvailableToHide> findAllByDateLessThan(Date date);
+    List<JobAvailableToHide> findAllByDateLessThan(LocalDate date);
 
     @Query("SELECT jr FROM JobRequest jr JOIN JobAvailableToHide ja on ja.jobRequest.id=:id")
     List<JobRequest> findAllByJobRequest(Long id);

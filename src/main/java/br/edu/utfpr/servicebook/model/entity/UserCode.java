@@ -6,8 +6,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @Table(name = "users_code")
@@ -31,12 +30,12 @@ public class UserCode {
     @Column(unique = true)
     private String code;
 
-    private Date expiredDate;
+    private LocalDate expiredDate;
 
     @PrePersist
     public void onSave(){
-        Date today = new Date();
-        Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
         this.expiredDate = tomorrow;
     }
 }

@@ -32,7 +32,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -135,9 +135,9 @@ public class ClientController {
                     Optional<Long> amountOfCandidates = jobCandidateService.countByJobRequest(job);
 
                     if (amountOfCandidates.isPresent()) {
-                        return jobRequestMapper.toMinDto(job, amountOfCandidates);
+                        return jobRequestMapper.toMinDto(job, amountOfCandidates.get());
                     }
-                    return jobRequestMapper.toMinDto(job, Optional.ofNullable(0L));
+                    return jobRequestMapper.toMinDto(job, 0L);
                 })
                 .collect(Collectors.toList());
 
@@ -218,14 +218,11 @@ public class ClientController {
 
         List<JobCandidateDTO> jobCandidatesDTOs = jobCandidates.stream()
                 .map(candidate -> {
-                    Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(candidate.getUser());
-                    candidate.getUser().setFollowsAmount(oProfessionalFollowingAmount.get());
                     return jobCandidateMapper.toDto(candidate);
                 })
                 .collect(Collectors.toList());
 
         mv.addObject("candidates", jobCandidatesDTOs);
-        mv.addObject("userInfo", this.getSidePanelUser());
         mv.addObject("expertise", expertiseDTO);
         mv.addObject("jobRequest", jobDTO);
         return mv;
@@ -243,26 +240,30 @@ public class ClientController {
     public ModelAndView showDetailsRequestCandidate(@PathVariable Optional<Long> jobId, @PathVariable Optional<Long> candidateId) throws Exception {
         ModelAndView mv = new ModelAndView("client/details-request-candidate");
 
-        Optional<Individual> oCandidate = individualService.findById(candidateId.get());
+        Optional<User> oCandidate = userService.findById(candidateId.get());
         if (!oCandidate.isPresent()) {
-            throw new EntityNotFoundException("O usuário não foi encontrado!");
+            throw new EntityNotFoundException("O candidato não foi encontrado!");
         }
 
         Optional<JobCandidate> jobCandidate = jobCandidateService.findById(jobId.get(), oCandidate.get().getId());
         if (!jobCandidate.isPresent()) {
             throw new EntityNotFoundException("Candidato não encontrado. Por favor, tente novamente.");
         }
-        JobCandidateDTO jobCandidateDTO = jobCandidateMapper.toDto(jobCandidate.get());
 
-        Optional<Individual> client = (individualService.findByEmail(authentication.getEmail()));
-        IndividualDTO individualDTO = individualMapper.toDto(client.get());
-        jobCandidateDTO.setIndividual(professionalMapper.toMinDto(oCandidate.get()));
-        List<Follows> follows = followsService.findFollowProfessionalClient(oCandidate.get(), client.get());
+        Optional<User> oClient = (userService.findByEmail(authentication.getEmail()));
+        if (!oClient.isPresent()) {
+            throw new EntityNotFoundException("Usuário não encontrado. Por favor, tente novamente.");
+        }
+
+        JobCandidateDTO jobCandidateDTO = jobCandidateMapper.toDto(jobCandidate.get());
+        UserDTO clientDTO = userMapper.toDto(oClient.get());
+
+        List<Follows> follows = followsService.findFollowProfessionalClient(oCandidate.get(), oClient.get());
         boolean isFollow = !follows.isEmpty();
         System.out.println(jobCandidateDTO.getId());
         mv.addObject("jobCandidate", jobCandidateDTO);
         mv.addObject("isFollow", isFollow);
-        mv.addObject("jobClient", individualDTO);
+        mv.addObject("client", clientDTO);
 
         return mv;
     }
@@ -739,7 +740,7 @@ public class ClientController {
         }
 
         JobContracted jobContracted = oJobContracted.get();
-        jobContracted.setFinishDate(new Date());
+        jobContracted.setFinishDate(LocalDate.now());
         jobContractedService.save(jobContracted);
 
         return "redirect:/minha-conta/cliente#executados";
@@ -781,7 +782,7 @@ public class ClientController {
         }
 
         JobContracted jobContracted = oJobContracted.get();
-        jobContracted.setHiredDate(new Date());
+        jobContracted.setHiredDate(LocalDate.now());
         jobContractedService.save(jobContracted);
 
         return "redirect:/minha-conta/cliente/meus-pedidos/"+jobId;

@@ -9,8 +9,8 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @Component
@@ -22,11 +22,8 @@ public class DeleteJobAvailableToHideJob implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         try {
-            Date now = new Date();
-            Calendar c = Calendar.getInstance();
-            c.setTime(now);
-            c.add(Calendar.DATE, 3);
-            Date currentDatePlusThree = c.getTime();
+            LocalDate now = LocalDate.now();
+            LocalDate currentDatePlusThree = now.plusDays(3);
 
             List<JobAvailableToHide> jobAvailableToHideList = jobAvailableToHideService.findAllByDateLessThan(currentDatePlusThree);
             for (JobAvailableToHide s : jobAvailableToHideList) {

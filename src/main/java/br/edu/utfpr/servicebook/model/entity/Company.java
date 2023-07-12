@@ -2,9 +2,8 @@ package br.edu.utfpr.servicebook.model.entity;
 
 import br.edu.utfpr.servicebook.security.ProfileEnum;
 import lombok.*;
-
 import javax.persistence.*;
-import java.util.Date;
+
 
 @Data
 @NoArgsConstructor

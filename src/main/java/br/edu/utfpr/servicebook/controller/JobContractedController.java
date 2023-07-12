@@ -33,7 +33,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Controller
@@ -103,13 +104,13 @@ public class JobContractedController {
         JobContracted jobContracted = oJobContracted.get();
 
         if (dto.isConfirm()) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
             JobRequest jobRequest = jobContracted.getJobRequest();
             jobRequest.setStatus(JobRequest.Status.TO_DO);
             jobRequestService.save(jobRequest);
 
-            jobContracted.setTodoDate(formatter.parse(dto.getTodoDate()));
+            jobContracted.setTodoDate(LocalDate.parse(dto.getTodoDate(), dateTimeFormatter));
             jobContractedService.save(jobContracted);
         } else {
             JobRequest jobRequest = jobContracted.getJobRequest();

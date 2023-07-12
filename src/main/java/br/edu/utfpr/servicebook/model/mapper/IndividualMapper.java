@@ -33,11 +33,6 @@ public class IndividualMapper {
         return dto;
     }
 
-    public IndividualMinDTO toMinDto(Individual entity){
-        IndividualMinDTO dto = mapper.map(entity, IndividualMinDTO.class);
-        return dto;
-    }
-
     public IndividualDTO toResponseDto(Individual entity) {
         IndividualDTO dto = mapper.map(entity, IndividualDTO.class);
         dto.setId(dto.getId());

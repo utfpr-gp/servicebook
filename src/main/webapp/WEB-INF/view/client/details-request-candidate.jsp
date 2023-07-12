@@ -11,8 +11,8 @@
                     <div class="container">
                         <div class="row center-align">
                             <c:choose>
-                                <c:when test="${jobCandidate.getIndividual().profilePicture != null}">
-                                    <img src="${jobCandidate.getIndividual().profilePicture}" class="avatar"
+                                <c:when test="${jobCandidate.user.profilePicture != null}">
+                                    <img src="${jobCandidate.user.profilePicture}" class="avatar"
                                          alt="Foto de perfil">
                                 </c:when>
                                 <c:otherwise>
@@ -24,10 +24,10 @@
                         <div class="row center">
                             <div class="col s4">
                                 <c:forEach var="star" begin="1" end="5">
-                                    <c:if test="${star <= jobCandidate.getIndividual().rating}">
+                                    <c:if test="${star <= jobCandidate.user.rating}">
                                         <i class="material-icons yellow-text small">star</i>
                                     </c:if>
-                                    <c:if test="${star > jobCandidate.getIndividual().rating}">
+                                    <c:if test="${star > jobCandidate.user.rating}">
                                         <i class="material-icons yellow-text small">star_border</i>
                                     </c:if>
                                 </c:forEach>
@@ -35,15 +35,15 @@
                             <div class="col s4">
                                 <c:if test="${!isFollow}">
                                     <form method="post" id="follow-form">
-                                        <input type="hidden" name="professional" value="${jobCandidate.getId()}"/>
-                                        <input type="hidden" name="client" value="${jobClient.id}"/>
+                                        <input type="hidden" name="professional" value="${jobCandidate.id}"/>
+                                        <input type="hidden" name="client" value="${client.id}"/>
                                         <button alt="seguir" type="button"
                                                 class="waves-effect waves-light btn" id="follow-button">Seguir
                                         </button>
                                     </form>
                                 </c:if>
                                 <c:if test="${isFollow}">
-                                    <button type="button" data-professional="${jobCandidate.getId()}"
+                                    <button type="button" data-professional="${jobCandidate.id}"
                                             class="waves-effect waves-light btn"
                                             id="unfollow-button">Deixar de Seguir
                                     </button>
@@ -61,7 +61,7 @@
             <div class="tertiary-background-color white-text center-align no-margin">
                 <p class="upper-case job-details-professional-name">
 
-                        ${jobCandidate.getIndividual().name}
+                        ${jobCandidate.user.name}
                 </p>
             </div>
 
@@ -71,18 +71,18 @@
                         <div class="col s6">
                             <i class="left material-icons">email</i>
                             <span class="left">
-                                    ${jobCandidate.getIndividual().email}
+                                    ${jobCandidate.user.email}
                             </span>
                         </div>
                         <div class="col s6">
                             <i class="left material-icons">local_phone</i>
                             <span class="left">
-                                    ${jobCandidate.getIndividual().phoneNumber}
+                                    ${jobCandidate.user.phoneNumber}
                             </span>
                         </div>
                     </div>
                     <div class="row center-align">
-                        <p class="contact-item center dark-color-text">${jobCandidate.getIndividual().description}</p>
+                        <p class="contact-item center dark-color-text">${jobCandidate.user.description}</p>
                     </div>
 
                     <c:if test="${jobCandidate.getJobRequest().status == 'AVAILABLE'}">
@@ -113,7 +113,7 @@
                     <c:if test="${jobCandidate.getJobRequest().status == 'AVAILABLE' || jobCandidate.getJobRequest().status == 'BUDGET'}">
                         <div class="row center-align">
                             <p class="contact-item center dark-color-text">Solicitar ou cancelar orçamento</p>
-                            <form action="minha-conta/cliente/orcamento-ao/${jobCandidate.getIndividual().id}/para/${jobCandidate.getJobRequest().id}"
+                            <form action="minha-conta/cliente/orcamento-ao/${jobCandidate.user.id}/para/${jobCandidate.getJobRequest().id}"
                                   method="post">
                                 <input type="hidden" name="_method" value="PATCH"/>
                                 <button type="submit" class="btn">
@@ -132,7 +132,7 @@
 
                     <c:if test="${jobCandidate.getJobRequest().status == 'BUDGET'}">
                         <div class="row center-align">
-                            <form action="minha-conta/cliente/contrata/${jobCandidate.getIndividual().id}/para/${jobCandidate.getJobRequest().id}"
+                            <form action="minha-conta/cliente/contrata/${jobCandidate.user.id}/para/${jobCandidate.getJobRequest().id}"
                                   method="post">
                                 <input type="hidden" name="_method" value="PATCH"/>
                                 <button type="submit" class="btn">

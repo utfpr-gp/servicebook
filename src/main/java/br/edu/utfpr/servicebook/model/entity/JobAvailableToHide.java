@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * Classe auxiliar para chave composta em um relacionamento n x n.
@@ -25,7 +25,7 @@ public class JobAvailableToHide {
 	@EmbeddedId
 	private JobRequestUserPK id;
 
-	private Date date;
+	private LocalDate date;
 
 	@ManyToOne
 	@MapsId("jobRequestId")
@@ -45,6 +45,6 @@ public class JobAvailableToHide {
 
 	@PrePersist
 	public void onPersist() {
-		this.date = new Date();
+		this.date = LocalDate.now();
 	}
 }

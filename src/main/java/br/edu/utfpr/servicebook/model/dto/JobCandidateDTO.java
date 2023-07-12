@@ -16,9 +16,7 @@ public class JobCandidateDTO implements Serializable {
 
     private JobRequestMinDTO  jobRequest;
 
-    private IndividualMinDTO individual;
+    private UserDTO user;
 
     private boolean chosenByBudget;
-
-
 }

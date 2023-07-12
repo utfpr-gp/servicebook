@@ -28,7 +28,7 @@
                             </div>
                         </div>
                         <div class="col s8 right">
-                            <div class="left black-text">${jobCandidate.individual.followsAmount != 0 ? jobCandidate.individual.followsAmount : " "}</div>
+                            <div class="left black-text">${jobCandidate.individual.followingAmount != 0 ? jobCandidate.individual.followingAmount : " "}</div>
                             <div class="right"><i alt="seguir"
                                                   class="material-icons black-text small">thumb_up</i>
                             </div>
