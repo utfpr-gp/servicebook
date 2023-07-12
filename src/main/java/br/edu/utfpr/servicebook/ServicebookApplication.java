@@ -1,7 +1,7 @@
 package br.edu.utfpr.servicebook;
 
-import br.edu.utfpr.servicebook.filter.JobRequestFilter;
-import br.edu.utfpr.servicebook.filter.TemplateInfoFilter;
+import br.edu.utfpr.servicebook.filter.TemplateStatisticInfoFilter;
+import br.edu.utfpr.servicebook.filter.TemplateUserInfoFilter;
 import br.edu.utfpr.servicebook.service.IndexService;
 import br.edu.utfpr.servicebook.service.QuartzService;
 import br.edu.utfpr.servicebook.util.quartz.AutoWiringSpringBeanJobFactory;
@@ -99,12 +99,29 @@ public class ServicebookApplication {
      * @return
      */
     @Bean
-    public FilterRegistrationBean<TemplateInfoFilter> templateInfoFilterRegistrationBean(){
-        FilterRegistrationBean<TemplateInfoFilter> registrationBean
+    public FilterRegistrationBean<TemplateUserInfoFilter> templateUserInfoFilterRegistrationBean(){
+        FilterRegistrationBean<TemplateUserInfoFilter> registrationBean
                 = new FilterRegistrationBean<>();
 
-        registrationBean.setFilter(new TemplateInfoFilter());
+        registrationBean.setFilter(new TemplateUserInfoFilter());
         registrationBean.addUrlPatterns("/*");
+        registrationBean.setOrder(1);
+
+        return registrationBean;
+    }
+
+    /**
+     * Filtro para enviar os dados para apresentação no template quando usuário está logado.
+     * Filtra apenas as páginas do profissional, uma vez apenas nesta página que é mostrado o painel lateral com as estatísticas.
+     * @return
+     */
+    @Bean
+    public FilterRegistrationBean<TemplateStatisticInfoFilter> templateStatisticInfoFilterRegistrationBean(){
+        FilterRegistrationBean<TemplateStatisticInfoFilter> registrationBean
+                = new FilterRegistrationBean<>();
+
+        registrationBean.setFilter(new TemplateStatisticInfoFilter());
+        registrationBean.addUrlPatterns("/minha-conta/profissional/*");
         registrationBean.setOrder(1);
 
         return registrationBean;

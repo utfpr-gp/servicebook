@@ -48,6 +48,15 @@ public class TemplateUtil {
     }
 
     /**
+     * Retorna os dados estatísticos a serem apresentados no menu lateral para todas as especialidades.
+     * @param oProfessional
+     * @return
+     */
+    public UserTemplateStatisticInfo getProfessionalStatisticInfo(User oProfessional) {
+        return getProfessionalStatisticInfo(oProfessional, 0L);
+    }
+
+    /**
      * Retorna os dados estatísticos a serem apresentados no menu lateral para o perfil do profissional.
      * Se o id for 0, então retorna para a soma de todas as especialidades do profissional.
      * Caso contrário, retorna as estatísticas apenas para a especialidade.
@@ -56,52 +65,6 @@ public class TemplateUtil {
      * @return
      */
     public UserTemplateStatisticInfo getProfessionalStatisticInfo(User oProfessional, Long expertiseId) {
-
-        if (expertiseId == 0L) {
-            ProfessionalDTO professional = professionalMapper.toResponseDto(oProfessional);
-
-            return new UserTemplateStatisticInfo(
-                    jobContractedService.countByProfessional(oProfessional).orElse(0L),
-                    jobContractedService.countRatingByProfessional(oProfessional).orElse(0L),
-                    jobContractedService.countCommentsByProfessional(oProfessional).orElse(0L),
-                    professional.getRating()
-            );
-        }
-
-        if (expertiseId < 0) {
-            throw new InvalidParamsException("O identificador da especialidade não pode ser negativo. Por favor, tente novamente.");
-        }
-
-        Optional<Expertise> oExpertise = expertiseService.findById(expertiseId);
-        if (!oExpertise.isPresent()) {
-            throw new EntityNotFoundException("A especialidade não foi encontrada pelo id informado. Por favor, tente novamente.");
-        }
-
-        Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(
-                oProfessional,
-                oExpertise.get()
-        );
-
-        if (!oProfessionalExpertise.isPresent()) {
-            throw new InvalidParamsException("A especialidade profissional não foi encontrada. Por favor, tente novamente.");
-        }
-
-        Long totalJobsByExpertise = jobContractedService.countByProfessionalAndJobRequest_Expertise(
-                oProfessional, oExpertise.get()).orElse(0L);
-        Long totalRatingsByExpertise = jobContractedService.countRatingByProfessionalAndJobRequest_Expertise(
-                oProfessional, oExpertise.get()).orElse(0L);
-        Long totalCommentsByExpertise = jobContractedService.countCommentsByProfessionalAndJobRequest_Expertise(
-                oProfessional, oExpertise.get()).orElse(0L);
-
-        return new UserTemplateStatisticInfo(
-                totalJobsByExpertise,
-                totalRatingsByExpertise,
-                totalCommentsByExpertise,
-                oProfessionalExpertise.get().getRating()
-        );
-    }
-
-    public UserTemplateStatisticInfo getCompanyStatisticInfo(Individual oProfessional, Long expertiseId) {
 
         if (expertiseId == 0L) {
             ProfessionalDTO professional = professionalMapper.toResponseDto(oProfessional);

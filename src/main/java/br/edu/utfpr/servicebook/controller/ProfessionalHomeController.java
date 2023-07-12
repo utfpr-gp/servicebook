@@ -126,7 +126,7 @@ public class ProfessionalHomeController {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        ModelAndView mv = new ModelAndView("professional/my-account");
+
     
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
         List<ExpertiseDTO> professionalExpertiseDTOs = professionalExpertises.stream()
@@ -134,11 +134,6 @@ public class ProfessionalHomeController {
                 .map(expertise -> expertiseMapper.toDto(expertise))
                 .collect(Collectors.toList());
 
-        IndividualDTO professionalDTO = individualMapper.toDto(oProfessional.get());
-        Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(oProfessional.get());
-        professionalDTO.setFollowingAmount(oProfessionalFollowingAmount.get());
-
-        UserTemplateInfo individualInfo = templateUtil.getUserInfo(professionalDTO);
         UserTemplateStatisticInfo statisticInfo = templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId.get());
 
         //envia a notificação ao usuário
@@ -149,9 +144,9 @@ public class ProfessionalHomeController {
                 })
                 .collect(Collectors.toList());
 
+        ModelAndView mv = new ModelAndView("professional/my-account");
         mv.addObject("eventsse", eventSSEDTOs);
         mv.addObject("professionalExpertises", professionalExpertiseDTOs);
-        mv.addObject("userInfo", individualInfo);
         mv.addObject("statisticInfo", statisticInfo);
 
         return mv;

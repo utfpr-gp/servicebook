@@ -18,7 +18,7 @@ import java.util.Optional;
 /**
  * Filtro para adicionar informações do usuário logado no template.
  */
-public class TemplateInfoFilter implements Filter {
+public class TemplateUserInfoFilter implements Filter {
 
     @Autowired
     private TemplateUtil templateUtil;
