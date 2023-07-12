@@ -2,7 +2,6 @@ package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
 import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.model.mapper.*;
@@ -10,7 +9,6 @@ import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
 
-import br.edu.utfpr.servicebook.util.UserTemplateInfo;
 import br.edu.utfpr.servicebook.util.UserTemplateStatisticInfo;
 import br.edu.utfpr.servicebook.util.TemplateUtil;
 import org.slf4j.Logger;
@@ -79,40 +77,36 @@ public class ProfessionalExpertiseController {
      * @throws Exception
      */
     @GetMapping()
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showExpertises(@RequestParam(required = false, defaultValue = "0") Optional<Long> id)  throws Exception {
 
-        User professional = this.getProfessional();
-        UserDTO professionalMinDTO = userMapper.toDto(professional);
-
-        ModelAndView mv = new ModelAndView("professional/my-expertises");
+        User professional = this.getAuthenticatedUser();
 
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(professional);
 
-        UserTemplateInfo userTemplateInfo = templateUtil.getUserInfo(professionalMinDTO);
         UserTemplateStatisticInfo statisticInfo = templateUtil.getProfessionalStatisticInfo(professional, id.get());
-
-        mv.addObject("statisticInfo", statisticInfo);
-        mv.addObject("userInfo", userTemplateInfo);
-        mv.addObject("currentExpertiseId", id.orElse(0L));
 
         List<ExpertiseDTO> professionalExpertiseDTOs = professionalExpertises.stream()
                 .map(professionalExpertise -> professionalExpertise.getExpertise())
                 .map(expertise -> expertiseMapper.toDto(expertise))
                 .collect(Collectors.toList());
-        List<Expertise> professionPage = expertiseService.findExpertiseNotExist(getProfessional().getId());
+
+        List<Expertise> professionPage = expertiseService.findExpertiseNotExist(getAuthenticatedUser().getId());
 
         List<ExpertiseDTO> otherExpertisesDTOs = professionPage.stream()
                 .map(s -> expertiseMapper.toDto(s))
                 .collect(Collectors.toList());
 
+        ModelAndView mv = new ModelAndView("professional/my-expertises");
+        mv.addObject("statisticInfo", statisticInfo);
+        mv.addObject("currentExpertiseId", id.orElse(0L));
         mv.addObject("otherExpertises", otherExpertisesDTOs);
         mv.addObject("professionalExpertises", professionalExpertiseDTOs);
         return mv;
     }
 
     @PostMapping()
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView saveExpertises(@Valid List<Integer> ids, BindingResult errors, RedirectAttributes redirectAttributes) throws Exception {
 
         ModelAndView mv = new ModelAndView("redirect:especialidades");
@@ -121,7 +115,7 @@ public class ProfessionalExpertiseController {
             return mv;
         }
 
-        User professional = this.getProfessional();
+        User professional = this.getAuthenticatedUser();
 
         for (int id : ids) {
             Optional<Expertise> e = expertiseService.findById((Long.valueOf(id)));
@@ -145,7 +139,7 @@ public class ProfessionalExpertiseController {
     @RolesAllowed({RoleType.USER})
     public String delete(@PathVariable Expertise id, RedirectAttributes redirectAttributes) throws Exception {
         log.debug("Removendo uma especialidade com id {}", id);
-        User professional = this.getProfessional();
+        User professional = this.getAuthenticatedUser();
 
         Optional <ProfessionalExpertise> optionalProfession = this.professionalExpertiseService.findByProfessionalAndExpertise(professional,id);
 
@@ -204,11 +198,11 @@ public class ProfessionalExpertiseController {
      * @return
      * @throws Exception
      */
-    private User getProfessional() throws Exception {
+    private User getAuthenticatedUser() throws Exception {
         Optional<User> oProfessional = (userService.findByEmail(authentication.getEmail()));
 
         if (!oProfessional.isPresent()) {
-            throw new Exception("Opss! Não foi possivel encontrar seus dados, tente fazer login novamente");
+            throw new EntityNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
         return oProfessional.get();

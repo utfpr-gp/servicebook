@@ -60,6 +60,9 @@
                                         </div>
                                         </div>
                                     </div>
+                                    <div class="card-action center">
+                                        <a class="blue-text" href="minha-conta/profissional/servicos/${professionalExpertise.id}">MEUS SERVIÇOS</a>
+                                    </div>
                                 </div>
                             </div>
                         </c:forEach>

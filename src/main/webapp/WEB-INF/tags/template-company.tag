@@ -22,6 +22,7 @@
             <ul id='dropdown-perfil' class='dropdown-content'>
                 <li><a href="/servicebook/minha-conta/empresa">Minha Conta</a></li>
                 <li><a href="/servicebook/minha-conta/perfil">Meu perfil</a></li>
+                <li><a href="/servicebook/minha-conta/profissional/especialidades">Minhas Especialidades</a></li>
                 <li class="divider" tabindex="-1"></li>
                 <li>
                     <a onclick="document.getElementById('my-button').click()">Sair</a>

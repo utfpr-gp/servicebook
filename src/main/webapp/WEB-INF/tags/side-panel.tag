@@ -222,19 +222,6 @@
                     </form>
                 </div>
             </div>
-
-            <div class="row no-margin center">
-                <div class="col s12 no-margin no-padding input-field area-profission-select">
-                    <div class="row no-margin center">
-                        <div class="col s12 no-margin no-padding input-field area-profission-select">
-                            <div class="spacing-buttons">
-                                <a class="waves-effect waves-light btn" href="minha-conta/profissional/especialidades">
-                                    Adicionar Especialidades </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <!-- Fim Especialidades -->
 
             <!-- Estatísticas -->
