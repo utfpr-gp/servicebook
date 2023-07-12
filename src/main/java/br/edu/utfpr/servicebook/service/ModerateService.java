@@ -17,7 +17,7 @@ public class ModerateService {
     public ModerateService(
                              @Value("${X_RAPIDAPI_KEY}") String rapidapiKey,
                              @Value("${X_RAPIDAPI_HOST}") String rapidapiHost,
-                             @Value("${api.key}") String API_KEY) {
+                             @Value("${PERSPECTIVE_API_KEY}") String API_KEY) {
         this.rapidapiKey = rapidapiKey;
         this.rapidapiHost = rapidapiHost;
         this.API_KEY = API_KEY;

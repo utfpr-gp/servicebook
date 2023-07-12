@@ -22,7 +22,7 @@
           media="screen,projection"/>
     <link href="assets/resources/styles/tags/template-tag.css" type="text/css" rel="stylesheet"
           media="screen,projection"/>
-    <link href="assets/resources/styles/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="assets/resources/styles/styles.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 
 <body>

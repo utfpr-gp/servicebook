@@ -780,7 +780,8 @@ public class MyAccountController {
      * @return
      */
     public boolean isValidateImage(MultipartFile image){
-        List<String> contentTypes = Arrays.asList("image/png", "image/jpg", "image/svg");
+
+        List<String> contentTypes = Arrays.asList("image/png", "image/jpg", "image/jpeg", "image/svg");
 
         for(int i = 0; i < contentTypes.size(); i++){
             if(image.getContentType().toLowerCase().startsWith(contentTypes.get(i))){

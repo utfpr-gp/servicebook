@@ -17,6 +17,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,6 +31,9 @@ public class ServicebookApplication {
 
     @Autowired
     QuartzService quartzService;
+
+    @Autowired
+    private Environment env;
 
     public static void main(String[] args) {
         SpringApplication.run(ServicebookApplication.class, args);
@@ -49,12 +53,20 @@ public class ServicebookApplication {
         return new ModelMapper();
     }
 
+    /**
+     * Bean para injetar o Cloudinary em outras classes.
+     * @return
+     */
     @Bean
     public Cloudinary cloudinary(){
+        String cloudName = env.getProperty("CLOUDINARY_CLOUD_NAME");
+        String apiKey = env.getProperty("CLOUDINARY_API_KEY");
+        String apiSecret = env.getProperty("CLOUDINARY_API_SECRET");
+
         return new Cloudinary(ObjectUtils.asMap(
-                "cloud_name","dgueb0wir",
-                "api_key", "546318655587864",
-                "api_secret", "UPEpuVA_PWlah9B5BrkZMx7E5VE"
+                "cloud_name", cloudName,
+                "api_key", apiKey,
+                "api_secret", apiSecret
         ));
     }
 
