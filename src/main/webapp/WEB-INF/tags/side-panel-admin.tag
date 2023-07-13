@@ -2,8 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ attribute name="userInfo" type="br.edu.utfpr.servicebook.util.UserTemplateInfo" %>
 
+<%@ attribute name="userInfo" type="br.edu.utfpr.servicebook.util.UserTemplateInfo" %>
 <%@ attribute name="followdto" type="br.edu.utfpr.servicebook.model.dto.FollowsDTO" %>
 
 <c:set var="currenturl" value="${requestScope['javax.servlet.forward.request_uri']}"/>
@@ -26,10 +26,6 @@
                          class="col s10 offset-s1 responsive-img">
                 </div>
             </c:if>
-
-            <h5 class="edit-link tertiary-color-text">
-                <a class="tertiary-color-text" href="minha-conta/perfil">Editar perfil</a>
-            </h5>
         </div>
         <!-- Foto do perfil -->
     </div>
@@ -43,5 +39,21 @@
         </div>
     </div>
     <!-- Fim nome da empresa -->
+
+    <!-- Links de cadastros -->
+    <div class="row">
+        <div class="col s12 no-margin no-padding">
+            <p class="header-verification secondary-color-text center">CADASTROS</p>
+            <div class="col s12">
+                <div class="collection">
+                    <a href="a/categorias" class="collection-item primary-color-text">CATEGORIA</a>
+                    <a href="a/especialidades" class="collection-item primary-color-text">ESPECIALIDADE</a>
+                    <a href="a/servicos" class="collection-item primary-color-text">SERVIÇO</a>
+                    <a href="a/cidades" class="collection-item primary-color-text">CIDADE</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Fim links de cadastros -->
 </div>
 

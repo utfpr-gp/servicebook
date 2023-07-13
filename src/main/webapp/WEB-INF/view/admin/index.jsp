@@ -8,11 +8,8 @@
     <link href="${pageContext.request.contextPath}/assets/resources/styles/admin/admin.css" rel="stylesheet">
 </head>
 
-<t:admin title="Área do Administrador">
+<t:template-admin title="Área do Administrador">
     <jsp:body>
-
        Tela do Administrador
-        ${userInfo}
-
     </jsp:body>
-</t:admin>
+</t:template-admin>

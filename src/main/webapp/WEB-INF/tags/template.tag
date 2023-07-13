@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ attribute name="title" %>
 <%@ attribute name="userInfo" type="br.edu.utfpr.servicebook.util.UserTemplateInfo" %>
-<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
@@ -48,15 +47,21 @@
             </sec:authorize>
 
             <sec:authorize access="hasRole('COMPANY')">
-                <t:template-company userInfo="${userInfo}"></t:template-company>
+                <t:navbar-company userInfo="${userInfo}"></t:navbar-company>
             </sec:authorize>
 
             <sec:authorize access="hasRole('USER')">
-                <t:template-user userInfo="${userInfo}"></t:template-user>
+                <t:navbar-user userInfo="${userInfo}"></t:navbar-user>
+            </sec:authorize>
+
+            <sec:authorize access="hasRole('ADMIN')">
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="logout">SAIR</a></li>
+                </ul>
             </sec:authorize>
 
             <%-- Usuário logado --%>
-            <sec:authorize access="isAuthenticated()">
+            <sec:authorize access="isAuthenticated() && !hasRole('ADMIN')">
                 <ul class="right nav-btn hide-on-med-and-down">
                     <a class="left menu-link" href="requisicoes?passo=1">ANUNCIAR</a>
                     <c:choose>
@@ -102,8 +107,14 @@
 
             <!-- sidenav -->
             <!-- usuário logado -->
+            <sec:authorize var="isAdmin" access="hasRole('ADMIN')"/>
             <sec:authorize access="isAuthenticated()">
                 <c:choose>
+                    <c:when test="${isAdmin}">
+                        <div id="nav-mobile" class="sidenav">
+                            <t:side-panel-admin userInfo="${userInfo}"></t:side-panel-admin>
+                        </div>
+                    </c:when>
                     <c:when test="${fn:contains(currenturl, '/minha-conta/cliente')}">
                         <div id="nav-mobile" class="sidenav">
                             <t:side-panel userInfo="${userInfo}" followdto="${followdto}"

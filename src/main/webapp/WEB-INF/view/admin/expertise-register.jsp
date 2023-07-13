@@ -7,21 +7,21 @@
     <link href="${pageContext.request.contextPath}/assets/resources/styles/admin/admin.css" rel="stylesheet">
 </head>
 
-<t:admin title="Cadastro de Especialidades">
+<t:template-admin title="Cadastro de Especialidades">
     <jsp:body>
         <main>
             <div class="container">
                 <div class="section">
                     <div class="row">
-                        <div class="col s12 l6 offset-l3">
+                        <div class="col s12">
                             <h3 class="secondary-color-text">Especialidades</h3>
                         </div>
-                        <div class="col s12 l6 offset-l3 spacing-buttons">
+                        <div class="col s12 spacing-buttons">
                             <a class="waves-effect waves-light btn" href="a/especialidades">NOVA ESPECIALIDADE</a>
                         </div>
 
                         <!-- Formulário -->
-                        <div class="col s12 l6 offset-l3 spacing-buttons">
+                        <div class="col s12 spacing-buttons">
                             <form action="a/especialidades" method="post" enctype="multipart/form-data">
                                 <input name="id" type="hidden" value="${dto.id}">
 
@@ -69,9 +69,11 @@
                                         <input class="file-path validate" placeholder="icon.svg" type="text">
                                     </div>
                                 </div>
-                                <div class="col s10 offset-s1 spacing-buttons center">
-                                    <img id="previewImage" src="${dto.pathIcon}" width="30%">
-                                </div>
+                                <c:if test="${not empty dto.pathIcon}">
+                                    <div class="col s10 offset-s1 center">
+                                        <img id="previewImage" src="${dto.pathIcon}" width="30%">
+                                    </div>
+                                </c:if>
                                 <div class="right">
                                     <button class="waves-effect waves-light btn" type="submit">Salvar</button>
                                 </div>
@@ -81,7 +83,7 @@
 
                         <!-- Mensagens -->
                         <div class="row">
-                            <div class="col s12 l6 offset-l3 spacing-buttons">
+                            <div class="col s12 spacing-buttons">
                                 <c:if test="${not empty msg}">
                                     <div class="card-panel green lighten-1 msg-view center-align">
                                         <span class="white-text">${msg}</span>
@@ -126,7 +128,7 @@
                         <!-- Fim Modal de exclusão -->
 
                         <!-- Tabela de especialidades -->
-                        <div class="col s12 l6 offset-l3 spacing-buttons">
+                        <div class="col s12 spacing-buttons">
                             <c:if test="${not empty expertises}">
                                 <table class="striped centered">
                                     <thead>
@@ -172,7 +174,7 @@
             </div>
         </main>
     </jsp:body>
-</t:admin>
+</t:template-admin>
 <script>
     document.getElementById("imageInput").addEventListener("change", function () {
         console.log('entrou....')

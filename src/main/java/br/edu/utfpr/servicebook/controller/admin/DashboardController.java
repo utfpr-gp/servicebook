@@ -86,7 +86,7 @@ public class DashboardController {
     @RolesAllowed({RoleType.ADMIN})
     public ModelAndView index(){
 
-        ModelAndView mv = new ModelAndView("admin/index");
+        ModelAndView mv = new ModelAndView("forward:/a/dashboard");
         return mv;
     }
 

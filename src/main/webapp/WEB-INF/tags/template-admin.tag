@@ -1,10 +1,11 @@
 <%@tag description="Template inicial" pageEncoding="UTF-8" %>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ attribute name="userInfo" type="br.edu.utfpr.servicebook.util.UserTemplateInfo" %>
-<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ attribute name="userInfo" type="br.edu.utfpr.servicebook.util.UserTemplateInfo" %>
 
 <%@attribute name="title" %>
 
@@ -18,7 +19,7 @@
     <link rel="shortcut icon" href="assets/resources/images/favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="assets/libraries/materialize/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
-    <link href="assets/resources/styles/tags/admin-tag.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="assets/resources/styles/tags/template-admin-tag.css" type="text/css" rel="stylesheet" media="screen,projection"/>
     <link href="assets/resources/styles/styles.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 </head>
 <body>
@@ -41,23 +42,23 @@
             </sec:authorize>
 
             <%-- Usuário logado --%>
-            <!-- sidenav -->
-            <!-- usuário logado -->
             <sec:authorize access="isAuthenticated()">
                 <ul class="right hide-on-med-and-down">
+                    <li><a href="a/dashboard">Dashboard</a></li>
                     <li><a href="logout">SAIR</a></li>
                 </ul>
+                <div id="nav-mobile" class="sidenav">
+                    <t:side-panel-admin userInfo="${userInfo}"></t:side-panel-admin>
+                </div>
             </sec:authorize>
             <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         </div>
     </nav>
     <div class="container">
         <div class="row">
-
             <!-- Painel lateral -->
             <div class="col m4 l3 hide-on-med-and-down">
-                <t:side-panel-admin userInfo="${userInfo}" followdto="${followdto}"
-                              statisticInfo="${statisticInfo}"></t:side-panel-admin>
+                <t:side-panel-admin userInfo="${userInfo}"></t:side-panel-admin>
             </div>
 
             <!-- Painel com as solicitações de serviços -->
@@ -67,10 +68,8 @@
         </div>
     </div>
 </main>
-<jsp:doBody/>
 
 <footer class="page-footer">
-
     <div class="footer-copyright">
         <div class="container">
             <p class="center">© Copyright 2021 - ServiceBook - Todos os direitos</p>

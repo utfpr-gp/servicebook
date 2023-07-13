@@ -18,9 +18,7 @@
                 <li><a href="/servicebook/minha-conta/perfil">Meu Perfil</a></li>
                 <li><a href="/servicebook/minha-conta/profissional/especialidades">Minhas Especialidades</a></li>
                 <li class="divider" tabindex="-1"></li>
-                <li>
-                    <a href="logout">Sair</a>
-                </li>
+                <li><a href="logout">Sair</a></li>
             </ul>
         </li>
 

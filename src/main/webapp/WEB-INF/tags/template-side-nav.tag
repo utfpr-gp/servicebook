@@ -48,11 +48,11 @@
             </sec:authorize>
 
             <sec:authorize access="hasRole('COMPANY')">
-                <t:template-company userInfo="${userInfo}"></t:template-company>
+                <t:navbar-company userInfo="${userInfo}"></t:navbar-company>
             </sec:authorize>
 
             <sec:authorize access="hasRole('USER')">
-                <t:template-user userInfo="${userInfo}"></t:template-user>
+                <t:navbar-user userInfo="${userInfo}"></t:navbar-user>
             </sec:authorize>
 
             <%-- Usuário logado --%>

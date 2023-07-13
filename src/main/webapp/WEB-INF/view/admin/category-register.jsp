@@ -7,20 +7,19 @@
     <link href="${pageContext.request.contextPath}/assets/resources/styles/admin/admin.css" rel="stylesheet">
 </head>
 
-<t:admin title="Cadastro de Categoria">
+<t:template-admin title="Cadastro de Categoria">
     <jsp:body>
-
         <main>
             <div class="container">
                 <div class="section">
                     <div class="row">
-                        <div class="col s12 l6 offset-l3">
+                        <div class="col s12">
                             <h3 class="secondary-color-text">Categorias</h3>
                         </div>
-                        <div class="col s12 l6 offset-l3 spacing-buttons">
+                        <div class="col s12 spacing-buttons">
                             <a class="waves-effect waves-light btn" href="a/categorias">NOVA CATEGORIA</a>
                         </div>
-                        <div class="col s12 l6 offset-l3 spacing-buttons">
+                        <div class="col s12 spacing-buttons">
                             <form action="a/categorias" method="post" enctype="multipart/form-data">
                                 <input name="id" type="hidden" value="${dto.id}">
 
@@ -37,7 +36,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col s12 l6 offset-l3 spacing-buttons">
+                            <div class="col s12 spacing-buttons">
                                 <c:if test="${not empty msg}">
                                     <div class="card-panel green lighten-1 msg-view center-align">
                                         <span class="white-text">${msg}</span>
@@ -77,7 +76,7 @@
                                 </form>
                             </div>
                         </div>
-                        <div class="col s12 l6 offset-l3 spacing-buttons">
+                        <div class="col s12 spacing-buttons">
                             <c:if test="${not empty categories}">
                                 <table class="striped centered">
                                     <thead>
@@ -113,4 +112,4 @@
             </div>
         </main>
     </jsp:body>
-</t:admin>
+</t:template-admin>
