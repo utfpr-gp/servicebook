@@ -1,9 +1,9 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
-import br.edu.utfpr.servicebook.model.dto.ResponseDTO;
+import br.edu.utfpr.servicebook.model.dto.ProfessionalServiceOfferingDTO;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
+import br.edu.utfpr.servicebook.model.entity.ProfessionalServiceOffering;
 import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.security.IAuthentication;
@@ -14,35 +14,24 @@ import br.edu.utfpr.servicebook.util.UserTemplateStatisticInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequestMapping("/minha-conta/profissional/servicos")
 @Controller
-public class ProfessionalServiceController {
+public class ProfessionalServiceOfferingController {
     public static final Logger log = LoggerFactory.getLogger(ProfessionalHomeController.class);
     @Autowired
     private UserService userService;
 
     @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
-    private ProfessionalExpertiseService professionalExpertiseService;
-
-    @Autowired
-    private ProfessionalMapper professionalMapper;
+    private ProfessionalServiceOfferingService professionalServiceOfferingService;
 
     @Autowired
     private ExpertiseService expertiseService;
@@ -51,10 +40,7 @@ public class ProfessionalServiceController {
     private ExpertiseMapper expertiseMapper;
 
     @Autowired
-    private JobContractedService jobContractedService;
-
-    @Autowired
-    private ProfessionalExpertiseMapper professionalExpertiseMapper;
+    private ProfessionalServiceOfferingMapper ProfessionalServiceOfferingMapper;
 
     @Autowired
     private TemplateUtil templateUtil;
@@ -73,11 +59,16 @@ public class ProfessionalServiceController {
 
         ExpertiseDTO expertiseDTO = expertiseMapper.toDto(expertise);
 
-        UserTemplateStatisticInfo statisticInfo = templateUtil.getProfessionalStatisticInfo(user, id);
+        List<ProfessionalServiceOffering> professionalServiceOfferings = professionalServiceOfferingService.findProfessionalServiceOfferingByUserAndService_Expertise(user, expertise);
+
+        //transforma a lista de ofertas de serviços em uma lista de DTOs com stream
+        List<ProfessionalServiceOfferingDTO> professionalServiceOfferingsDTO = professionalServiceOfferings.stream()
+                .map(professionalServiceOffering -> ProfessionalServiceOfferingMapper.toDTO(professionalServiceOffering))
+                .toList();
 
         ModelAndView mv = new ModelAndView("professional/my-services");
-        mv.addObject("statisticInfo", statisticInfo);
-        mv.addObject("expertiseDTO", expertiseDTO);
+        mv.addObject("expertise", expertiseDTO);
+        mv.addObject("professionalServiceOfferings", professionalServiceOfferingsDTO);
 
         return mv;
     }

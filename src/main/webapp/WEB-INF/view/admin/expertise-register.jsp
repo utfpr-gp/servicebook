@@ -55,8 +55,8 @@
                                 <div class="input-field input-name-expertise">
                                     <textarea id="description" class="materialize-textarea" name="description"
                                               value="${dto.description}"
-                                              placeholder="Realiza serviços de consertos em geral">${dto.description}</textarea>
-                                    <label for="description">Descrição</label>
+                                              placeholder="Eu realizo serviços de consertos em geral">${dto.description}</textarea>
+                                    <label for="description">Descrição (texto na primeira pessoa)</label>
                                 </div>
 
                                 <div class="file-field input-field">

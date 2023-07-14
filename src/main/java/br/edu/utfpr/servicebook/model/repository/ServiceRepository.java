@@ -22,8 +22,8 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
      * @return
      */
     Optional<Service> findByName(String name);
-    List<Service> findAll();
 
+    List<Service> findAll();
 
     Page<Service> findAll(Pageable pageable);
 
@@ -31,5 +31,4 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
 
     @Query("SELECT e FROM Service e WHERE e.name = :name AND e.expertise = :expertise")
     Optional<Service> findByNameAndExpertise(@Param("name") String name, @Param("expertise") Expertise expertise);
-
 }

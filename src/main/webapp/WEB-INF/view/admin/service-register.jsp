@@ -51,6 +51,13 @@
                                     <label for="description">Descrição</label>
                                 </div>
 
+                                <p>
+                                    <label>
+                                        <input type="checkbox"/>
+                                        <span>Permitir agendamento para este serviço.</span>
+                                    </label>
+                                </p>
+
                                 <div class="right">
                                     <button class="waves-effect waves-light btn" type="submit">Salvar</button>
                                 </div>

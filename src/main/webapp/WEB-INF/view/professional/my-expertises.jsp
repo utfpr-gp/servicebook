@@ -26,34 +26,17 @@
             <c:forEach var="professionalExpertise" items="${professionalExpertises}">
                 <div class="col s12 m6">
                     <div class="card">
+                        <div class="center">
+                            <img class="activator responsive-img" style="width: 40%; margin-top: 20px" src="${professionalExpertise.pathIcon}">
+                        </div>
                         <div class="card-content">
-                            <div class="row">
-                                <div class="col s2">
-                                    <div class="valign-wrapper">
-                                        <img class="responsive-img" src="${professionalExpertise.pathIcon}"/>
-                                    </div>
-                                </div>
-                                <div class="col s8">
-                                    <p class="center">
-                                        <strong>
-                                                ${professionalExpertise.name}
-                                        </strong>
-                                    </p>
-                                </div>
-                                <div class="col s2 valign-wrapper">
-                                    <a href="#modal-delete" id="delete-exerpertise-professional"
-                                       class="myclass waves-effect waves-teal btn-flat delete-exerpertise-professional modal-trigger"
-                                       data-url="${pageContext.request.contextPath}/minha-conta/profissional/especialidades/${professionalExpertise.id}"
-                                       data-name="${professionalExpertise.name}">
-                                        <i class="myclass material-icons">delete</i>
-                                    </a>
-                                </div>
-                                <div class="col s12 right">
-                                    <p class="center">
-                                        Descrição da especialidade
-                                    </p>
-                                </div>
-                            </div>
+                            <span class="card-title activator grey-text text-darken-4">${professionalExpertise.name}<i class="material-icons right">more_vert</i></span>
+                        </div>
+                        <div class="card-reveal">
+                            <span class="card-title grey-text text-darken-4">${professionalExpertise.name}<i class="material-icons right">close</i></span>
+                            <p>
+                                    ${professionalExpertise.description}
+                            </p>
                         </div>
                         <div class="card-action center">
                             <a class="blue-text" href="minha-conta/profissional/servicos/${professionalExpertise.id}">MEUS

@@ -13,7 +13,7 @@
     <jsp:body>
         <div class="row">
             <div class="col s12">
-                <h2 class="secondary-color-text">Meus serviços de ${fn:toLowerCase(expertiseDTO.name)}</h2>
+                <h2 class="secondary-color-text">Meus serviços de ${fn:toLowerCase(expertise.name)}</h2>
                 <blockquote class="light-blue lighten-5 info-headers">
                     <p>Adicione os serviços que você oferece para que os clientes saibam exatamente qual é a sua
                         especialidade e possam encontrá-lo com maior facilidade.</p>
@@ -25,6 +25,50 @@
                 </blockquote>
             </div>
         </div>
+
+        <!-- Lista vazia -->
+        <c:if test="${empty professionalServiceOfferings}">
+            <t:empty-list message=""></t:empty-list>
+        </c:if>
+
+        <!-- Lista de serviços -->
+        <div class="row">
+            <c:forEach var="serviceOffering" items="${professionalServiceOfferings}">
+                <c:set var="serviceName" value="${not empty serviceOffering.name ? serviceOffering.name : serviceOffering.service.name}" />
+                <c:set var="serviceDescription" value="${not empty serviceOffering.description ? serviceOffering.description : serviceOffering.service.description}" />
+                <div class="col s12 m6">
+                    <div class="card">
+                        <div class="">
+                            <div class="row">
+                                <div class="col s2 offset-s10 valign-wrapper">
+                                    <a href="#modal-delete" id="delete-service-offering"
+                                       class="myclass waves-effect waves-teal btn-flat modal-trigger"
+                                       data-url="${pageContext.request.contextPath}/minha-conta/profissional/servicos/${serviceOffering.id}"
+                                       data-name="${serviceName}">
+                                        <i class="myclass material-icons">delete</i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title activator grey-text text-darken-4">${serviceName}<i class="material-icons right">more_vert</i></span>
+                        </div>
+                        <div class="card-reveal">
+                            <span class="card-title grey-text text-darken-4">${serviceName}<i class="material-icons right">close</i></span>
+                            <p>
+                                    ${serviceDescription}
+                            </p>
+                        </div>
+                        <div class="card-action center">
+                            <a class="blue-text" href="minha-conta/profissional/meus-anuncios/${serviceOffering.id}">MEUS ANÚNCIOS</a>
+                        </div>
+                    </div>
+                </div>
+            </c:forEach>
+        </div>
+
+
+        <!-- Fim Lista de serviços -->
 
         <div class="center spacing-buttons">
             <button class="waves-effect waves-light btn">

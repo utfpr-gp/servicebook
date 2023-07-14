@@ -84,9 +84,13 @@ VALUES (1, 2, 1),
        (2, 7, 4),
        (2, 4, 4);
 
-INSERT INTO services (name, description, expertise_id)
-VALUES ('Balanceamento', 'Balanceamento das rodas', 4),
-       ('Troca de óleo', 'Troca do óleo do motor', 4);
+INSERT INTO services (name, description, allow_scheduling, expertise_id)
+VALUES ('Balanceamento', 'Balanceamento das rodas', false, 4),
+       ('Troca de óleo', 'Troca do óleo do motor', false, 4);
+
+INSERT INTO professional_service_offerings (name, description, service_id, user_id)
+VALUES ('Balanceamento com máquina importada', 'O balanceamento com 100% de garantia', 1, 2),
+       (null, null, 2, 2);
 
 INSERT INTO companies (cnpj, id)
 VALUES ('98.988.640/0001-91', 7);
