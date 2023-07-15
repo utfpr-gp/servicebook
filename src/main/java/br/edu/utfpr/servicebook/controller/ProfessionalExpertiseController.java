@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.dto.*;
+import br.edu.utfpr.servicebook.model.entity.Category;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
 import br.edu.utfpr.servicebook.model.entity.User;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -59,10 +61,10 @@ public class ProfessionalExpertiseController {
     private ExpertiseMapper expertiseMapper;
 
     @Autowired
-    private JobContractedService jobContractedService;
+    private CategoryService categoryService;
 
     @Autowired
-    private ProfessionalExpertiseMapper professionalExpertiseMapper;
+    private CategoryMapper categoryMapper;
 
     @Autowired
     private TemplateUtil templateUtil;
@@ -82,6 +84,13 @@ public class ProfessionalExpertiseController {
 
         User professional = this.getAuthenticatedUser();
 
+        //lista de categorias
+        List<Category> categories = categoryService.findAll();
+        List<CategoryDTO> categoryDTOs = categories.stream()
+                .map(s -> categoryMapper.toDto(s))
+                .collect(Collectors.toList());
+
+
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(professional);
 
         UserTemplateStatisticInfo statisticInfo = templateUtil.getProfessionalStatisticInfo(professional, id.get());
@@ -100,32 +109,103 @@ public class ProfessionalExpertiseController {
         ModelAndView mv = new ModelAndView("professional/my-expertises");
         mv.addObject("statisticInfo", statisticInfo);
         mv.addObject("currentExpertiseId", id.orElse(0L));
+        mv.addObject("categories", categoryDTOs);
         mv.addObject("otherExpertises", otherExpertisesDTOs);
         mv.addObject("professionalExpertises", professionalExpertiseDTOs);
         return mv;
     }
 
+    /**
+     * Retorna as especialidades de uma categoria para uma requisição ajax.
+     * Porém, apenas as especialidades que o profissional não possui para a categoria.
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/categorias/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    @ResponseBody
+    public List<ExpertiseDTO> getExpertisesByCategory(@PathVariable Long id)  throws Exception {
+
+        User professional = this.getAuthenticatedUser();
+
+        //lista de categorias
+        List<Expertise> expertises = expertiseService.findExpertiseNotExistByUserAndCategory(professional.getId(), id);
+
+        List<ExpertiseDTO> expertisesDTO = expertises.stream()
+                .map(s -> expertiseMapper.toDto(s))
+                .collect(Collectors.toList());
+
+        return expertisesDTO;
+    }
+
+    /**
+     * Retorna uma especialidade para uma requisição ajax.
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    @ResponseBody
+    public ExpertiseDTO getExpertiseById(@PathVariable Long id)  throws Exception {
+
+        User professional = this.getAuthenticatedUser();
+
+        //lista de categorias
+        Optional<Expertise> oExpertise = expertiseService.findById(id);
+
+        if (!oExpertise.isPresent()) {
+            return new ExpertiseDTO();
+        }
+
+        ExpertiseDTO expertiseDTO = expertiseMapper.toDto(oExpertise.get());
+        return expertiseDTO;
+    }
+
+    /**
+     * Adiciona uma especialidade para o profissional.
+     * @param expertiseDTO
+     * @param errors
+     * @param model
+     * @param redirectAttributes
+     * @return
+     * @throws Exception
+     */
     @PostMapping()
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
-    public ModelAndView saveExpertises(@Valid List<Integer> ids, BindingResult errors, RedirectAttributes redirectAttributes) throws Exception {
+    public String saveExpertises(@Valid ChooseExpertiseDTO expertiseDTO, BindingResult errors, Model model, RedirectAttributes redirectAttributes) throws Exception {
 
-        ModelAndView mv = new ModelAndView("redirect:especialidades");
+        if (errors.hasErrors()) {
+            log.error("Erro de validação de especialidade");
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+            return "redirect:/minha-conta/profissional/especialidades";
+        }
 
-        if (ids == null) {
-            return mv;
+        //verifica se a especialidade existe
+        Long expertiseId = expertiseDTO.getId();
+        Optional<Expertise> oExpertise = expertiseService.findById(expertiseDTO.getId());
+
+        if(!oExpertise.isPresent()) {
+        	throw new Exception("Não existe essa especialidade!");
         }
 
         User professional = this.getAuthenticatedUser();
 
-        for (int id : ids) {
-            Optional<Expertise> e = expertiseService.findById((Long.valueOf(id)));
+        //verifica se o profissional já possui a especialidade
+        Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(professional, oExpertise.get());
 
-            if (!e.isPresent()) {
-                throw new Exception("Não existe essa especialidade!");
-            }
-            ProfessionalExpertise p = professionalExpertiseService.save(new ProfessionalExpertise(professional, e.get()));
+        if(oProfessionalExpertise.isPresent()) {
+        	throw new Exception("Você já possui essa especialidade!");
         }
-        return mv;
+
+        //cria e adiciona a descrição personalizada para o profissional sobre a especialidade
+        ProfessionalExpertise professionalExpertise = new ProfessionalExpertise(professional, oExpertise.get());
+        professionalExpertise.setDescription(expertiseDTO.getDescription());
+
+        professionalExpertiseService.save(professionalExpertise);
+
+        return("redirect:/minha-conta/profissional/especialidades");
     }
 
     /**

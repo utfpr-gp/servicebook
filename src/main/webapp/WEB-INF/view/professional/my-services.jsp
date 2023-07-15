@@ -60,7 +60,7 @@
                             </p>
                         </div>
                         <div class="card-action center">
-                            <a class="blue-text" href="minha-conta/profissional/meus-anuncios/${serviceOffering.id}">MEUS ANÚNCIOS</a>
+                            <a class="blue-text" href="minha-conta/profissional/meus-anuncios/${serviceOffering.id}">ANUNCIAR</a>
                         </div>
                     </div>
                 </div>

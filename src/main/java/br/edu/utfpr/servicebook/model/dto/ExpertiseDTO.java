@@ -40,4 +40,6 @@ public class ExpertiseDTO implements Serializable {
      * Campo usado para exibir o nome da categoria na tela de cadastro de especialidade para edição
      */
     private String pathIcon;
+
+
 }

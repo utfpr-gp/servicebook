@@ -37,16 +37,53 @@ public class ExpertiseService {
     }
 
 
+    /**
+     * Busca todas as especialidades que o usuário não possui.
+     * @param individual
+     * @return
+     */
     public List<Expertise> findExpertiseNotExist(Long individual) {
         return this.expertiseRepository.findExpertiseNotExist(individual);
     }
 
+    /**
+     * Busca todas as especialidades que o usuário não possui para uma dada categoria.
+     * @param user
+     * @param category
+     * @return
+     */
+    public List<Expertise> findExpertiseNotExistByUserAndCategory(@Param("user") Long user, @Param("category") Long category){
+        return this.expertiseRepository.findExpertiseNotExistByUserAndCategory(user, category);
+    }
+
+    /**
+     * Conta todas as especialidades
+     * @return
+     */
     public Long countAll(){
         return this.expertiseRepository.countAll();
     }
 
     public Optional<Expertise> findByNameAndCategory(String name, Category category){
         return this.expertiseRepository.findByNameAndCategory(name, category);
+    }
+
+    /**
+     * Busca todas as especialidades de uma categoria
+     * @param category
+     * @return
+     */
+    public List<Expertise> findByCategory(Category category){
+        return this.expertiseRepository.findByCategory(category);
+    }
+
+    /**
+     * Busca todas as especialidades de uma categoria
+     * @param categoryId
+     * @return
+     */
+    public List<Expertise> findByCategoryId(Long categoryId){
+        return this.expertiseRepository.findByCategory_Id(categoryId);
     }
 
 }

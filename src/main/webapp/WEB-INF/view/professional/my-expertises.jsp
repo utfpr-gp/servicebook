@@ -22,18 +22,25 @@
             </div>
         </div>
 
+        <c:if test="${empty professionalExpertises}">
+            <t:empty-list message="Você ainda não tem especialidades."></t:empty-list>
+        </c:if>
+
         <div class="row">
             <c:forEach var="professionalExpertise" items="${professionalExpertises}">
                 <div class="col s12 m6">
                     <div class="card">
                         <div class="center">
-                            <img class="activator responsive-img" style="width: 40%; margin-top: 20px" src="${professionalExpertise.pathIcon}">
+                            <img class="activator responsive-img" style="width: 40%; margin-top: 20px"
+                                 src="${professionalExpertise.pathIcon}">
                         </div>
                         <div class="card-content">
-                            <span class="card-title activator grey-text text-darken-4">${professionalExpertise.name}<i class="material-icons right">more_vert</i></span>
+                            <span class="card-title activator grey-text text-darken-4">${professionalExpertise.name}<i
+                                    class="material-icons right">more_vert</i></span>
                         </div>
                         <div class="card-reveal">
-                            <span class="card-title grey-text text-darken-4">${professionalExpertise.name}<i class="material-icons right">close</i></span>
+                            <span class="card-title grey-text text-darken-4">${professionalExpertise.name}<i
+                                    class="material-icons right">close</i></span>
                             <p>
                                     ${professionalExpertise.description}
                             </p>
@@ -49,14 +56,15 @@
         <div class="center spacing-buttons">
             <button class="waves-effect waves-light btn">
                 <a href="#modal-expertises" class="modal-trigger">
-                    Adicionar nova especialidade
+                    nova especialidade
                 </a>
             </button>
         </div>
 
         <!-- Modal para a escolha de uma nova especialidade -->
         <div id="modal-expertises" class="modal">
-            <div class="modal-content ui-front">
+            <div class="modal-content">
+
                 <div class="row">
                     <div class="col s9 offset-m1">
                         <h4 class="flow-text">Escolha uma ou mais especialidades!</h4>
@@ -70,45 +78,49 @@
 
                 <div class="row">
                     <div class="col s12 m10 offset-m1">
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <i class="material-icons prefix">work</i>
-                                <input type="text" id="txtBusca" class="autocomplete">
-                                <label for="txtBusca">Selecione sua especialidade</label>
+                        <form id="expertise-form" action="minha-conta/profissional/especialidades"
+                              method="post">
+                            <input type="hidden" name="id" id="id-input" value="${dto.id}">
+                            <div class="input-field">
+                                <label for="category-select">Selecione uma categoria</label>
+                                <select name="categoryId" id="category-select">
+                                    <option disabled selected>Selecione uma categoria</option>
+                                    <c:forEach var="category" items="${categories}">
+                                        <option value="${category.id}">${category.name}</option>
+                                    </c:forEach>
+                                </select>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <form class="s12" id="form-expertises" action="minha-conta/profissional/especialidades"
-                          method="post">
-                        <ul id="search-expertises">
-                            <c:forEach var="expertise" items="${otherExpertises}">
-                                <li>
-                                    <label class='card-expertise col s12 m10 offset-m1'>
-                                        <input id='ids' name='ids' type='checkbox' class='reset-checkbox'
-                                               value="${expertise.id}">
-                                        <span class='center name-expertise expertise-select-card'
-                                              style="cursor: pointer">
-                                                    <i class='material-icons'>work</i>
-                                                    ${expertise.name}
-                                                </span>
-                                    </label>
-                                </li>
-                            </c:forEach>
-                        </ul>
-                        <div class="row">
-                            <div class="col s12 m10 offset-m1">
-                                <div class="right">
-                                    <button id="submit-expertise" type="submit"
-                                            class="btn waves-effect waves-light">Salvar
-                                    </button>
-                                    <a class="btn waves-effect waves-light modal-close">Cancelar</a>
-                                </div>
-                            </div>
-                        </div>
 
-                    </form>
+                            <div class="input-field">
+                                <label for="expertise-select">Selecione uma especiali</label>
+                                <select name="expertiseId" id="expertise-select">
+                                    <option disabled selected>Selecione uma especialidade</option>
+                                    <c:forEach var="expertise" items="${expertises}">
+                                        <option value="${expertise.id}">${expertise.name}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+
+                            <div class="input-field" style="margin-top: 30px">
+                                <textarea id="description-textarea" class="materialize-textarea" name="description"
+                                  placeholder="Eu realizo serviços de consertos em geral">${dto.description}</textarea>
+                                <label for="description-textarea">Descrição</label>
+                            </div>
+
+                            <blockquote id="description-blockquote" class="light-blue lighten-5 info-headers" style="margin-top: 30px; display: none">
+                                <p>Edite o texto padrão com as suas habilidades e experiências nesta especialidade.
+                                    Este texto será usado para formar a sua página pública de divulgação de suas
+                                    especialidades.</p>
+                            </blockquote>
+
+                            <div class="right">
+                                <button type="submit"
+                                        class="btn waves-effect waves-light">Salvar
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -143,14 +155,35 @@
 <script>
 
     $(function () {
-        $("#txtBusca").keyup(function () {
-            var texto = $(this).val();
+        //inicializa o select de expertises após a seleção de uma categoria
+        $("#category-select").change(function () {
+            let categoryId = $(this).val();
+            $.ajax({
+                url: "minha-conta/profissional/especialidades/categorias/" + categoryId,
+                type: "GET",
+                success: function (expertises) {
+                    $("#expertise-select").empty();
+                    $("#expertise-select").append("<option disabled selected>Selecione uma especialidade</option>");
+                    $.each(expertises, function (index, expertise) {
+                        $("#expertise-select").append("<option value='" + expertise.id + "'>" + expertise.name + "</option>");
+                    });
+                    $("#expertise-select").formSelect();
+                }
+            });
+        });
 
-            //$("#search-expertises li").css("display", "block");
-            $("#search-expertises li").css("display", "none");
-            $("#search-expertises li").each(function () {
-                if ($(this).text().toUpperCase().indexOf(texto.toUpperCase()) < 0)
-                    $(this).css("display", "none");
+        //inicializa o campo de descrição da expertise após a seleção de uma expertise
+        $("#expertise-select").change(function () {
+            let expertiseId = $(this).val();
+            $.ajax({
+                url: "minha-conta/profissional/especialidades/" + expertiseId,
+                type: "GET",
+                success: function (expertise) {
+                    $("#description-textarea").val(expertise.description);
+                    $('#id-input').val(expertise.id);
+                    M.textareaAutoResize($("#description-textarea"));
+                    $("#description-blockquote").show();
+                }
             });
         });
     });
