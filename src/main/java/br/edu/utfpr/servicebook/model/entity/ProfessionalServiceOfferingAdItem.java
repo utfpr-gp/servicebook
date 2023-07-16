@@ -35,11 +35,11 @@ public class ProfessionalServiceOfferingAdItem {
 	@ManyToOne
 	@MapsId("professionalServiceOfferingAdId")
 	@JoinColumn(name = "professional_service_offering_Ad")
-	private ProfessionalServiceOfferingAd professionalServiceOfferingAd;
+	private ProfessionalServicePackageOffering professionalServicePackageOffering;
 
-	public ProfessionalServiceOfferingAdItem(ProfessionalServiceOffering professionalServiceOffering, ProfessionalServiceOfferingAd professionalServiceOfferingAd){
+	public ProfessionalServiceOfferingAdItem(ProfessionalServiceOffering professionalServiceOffering, ProfessionalServicePackageOffering professionalServicePackageOffering){
 		this.professionalServiceOffering = professionalServiceOffering;
-		this.professionalServiceOfferingAd = professionalServiceOfferingAd;
-		this.id = new ProfessionalServiceOfferingAdItemPK(professionalServiceOffering.getId(), professionalServiceOfferingAd.getId());
+		this.professionalServicePackageOffering = professionalServicePackageOffering;
+		this.id = new ProfessionalServiceOfferingAdItemPK(professionalServiceOffering.getId(), professionalServicePackageOffering.getId());
 	}
 }

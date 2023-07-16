@@ -5,23 +5,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
+/**
+ * DTO usado para escolher um profissional escolher um serviço para o seu portfólio.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ServiceDTO implements Serializable {
+public class ChooseServiceDTO implements Serializable {
 
+    @NotBlank(message = "Você deve escolher um serviço")
     private Long id;
 
-    @NotBlank(message = "O nome do serviço é obrigatório")
     private String name;
 
-    @NotBlank(message = "A descrição é obrigatória")
     private String description;
 
     @NotNull(message = "O nome da especialidade é obrigatório")

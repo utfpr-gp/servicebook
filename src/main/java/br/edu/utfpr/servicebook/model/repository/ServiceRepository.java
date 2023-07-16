@@ -29,6 +29,20 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
 
     List<Service> findAllById(Iterable<Long> longs);
 
+    /**
+     * Busca um serviço pelo nome e especialidade
+     * @param name
+     * @param expertise
+     * @return
+     */
     @Query("SELECT e FROM Service e WHERE e.name = :name AND e.expertise = :expertise")
     Optional<Service> findByNameAndExpertise(@Param("name") String name, @Param("expertise") Expertise expertise);
+
+    /**
+     * Busca os serviços de uma especialidade
+     * @param expertise
+     * @return
+     */
+    @Query("SELECT e FROM Service e WHERE e.expertise = :expertise")
+    List<Service> findByExpertise(@Param("expertise") Expertise expertise);
 }

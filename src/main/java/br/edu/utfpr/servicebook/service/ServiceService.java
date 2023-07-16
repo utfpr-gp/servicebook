@@ -6,6 +6,7 @@ import br.edu.utfpr.servicebook.model.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -36,5 +37,15 @@ public class ServiceService {
 
     public Optional<Service> findByNameAndExpertise(String name, Expertise expertise){
         return this.serviceRepository.findByNameAndExpertise(name, expertise);
+    }
+
+    /**
+     * Busca os serviços de uma especialidade
+     * @param expertise
+     * @return
+     */
+    @Query("SELECT e FROM Service e WHERE e.expertise = :expertise")
+    public List<Service> findByExpertise(Expertise expertise){
+        return this.serviceRepository.findByExpertise(expertise);
     }
 }

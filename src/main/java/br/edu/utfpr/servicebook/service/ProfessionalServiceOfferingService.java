@@ -9,12 +9,22 @@ import br.edu.utfpr.servicebook.model.repository.ProfessionalServiceOfferingRepo
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import java.util.List;
+import java.util.Optional;
 
 @org.springframework.stereotype.Service
 public class ProfessionalServiceOfferingService {
 
     @Autowired
     private ProfessionalServiceOfferingRepository professionalServiceOfferingRepository;
+
+    /**
+     * Busca uma oferta de serviço de um profissional
+     * @param id
+     * @return
+     */
+    public ProfessionalServiceOffering findById(Long id) {
+        return professionalServiceOfferingRepository.findById(id).orElse(null);
+    }
 
     /**
      * Salva uma oferta de serviço de um profissional
@@ -79,4 +89,12 @@ public class ProfessionalServiceOfferingService {
         return professionalServiceOfferingRepository.findProfessionalServiceOfferingByUserAndService_Expertise(user, expertise);
     }
 
+    /**
+     * Busca o serviço pelo nome.
+     * @param name
+     * @return
+     */
+    public Optional<ProfessionalServiceOffering> findProfessionalServiceOfferingByName(String name){
+        return professionalServiceOfferingRepository.findProfessionalServiceOfferingByName(name);
+    }
 }

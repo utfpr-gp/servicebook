@@ -35,8 +35,11 @@
                                  src="${professionalExpertise.pathIcon}">
                         </div>
                         <div class="card-content">
-                            <span class="card-title activator grey-text text-darken-4">${professionalExpertise.name}<i
-                                    class="material-icons right">more_vert</i></span>
+                            <span class="card-title grey-text text-darken-4">${professionalExpertise.name}
+                                <i class="material-icons right activator" style="cursor: pointer">more_vert</i>
+                                <i class="material-icons right">delete</i>
+                                <i class="material-icons right">edit</i>
+                            </span>
                         </div>
                         <div class="card-reveal">
                             <span class="card-title grey-text text-darken-4">${professionalExpertise.name}<i
@@ -54,141 +57,9 @@
             </c:forEach>
         </div>
         <div class="center spacing-buttons">
-            <button class="waves-effect waves-light btn">
-                <a href="#modal-expertises" class="modal-trigger">
-                    nova especialidade
-                </a>
-            </button>
+            <a href="minha-conta/profissional/especialidades/novo" class="waves-effect waves-light btn">
+                NOVA ESPECIALIDADE
+            </a>
         </div>
-
-        <!-- Modal para a escolha de uma nova especialidade -->
-        <div id="modal-expertises" class="modal">
-            <div class="modal-content">
-
-                <div class="row">
-                    <div class="col s9 offset-m1">
-                        <h4 class="flow-text">Escolha uma ou mais especialidades!</h4>
-                    </div>
-                    <div class="col s3 m2">
-                        <button class="modal-close modal-expertise-close right">
-                            <i class="material-icons">close</i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col s12 m10 offset-m1">
-                        <form id="expertise-form" action="minha-conta/profissional/especialidades"
-                              method="post">
-                            <input type="hidden" name="id" id="id-input" value="${dto.id}">
-                            <div class="input-field">
-                                <label for="category-select">Selecione uma categoria</label>
-                                <select name="categoryId" id="category-select">
-                                    <option disabled selected>Selecione uma categoria</option>
-                                    <c:forEach var="category" items="${categories}">
-                                        <option value="${category.id}">${category.name}</option>
-                                    </c:forEach>
-                                </select>
-                            </div>
-
-                            <div class="input-field">
-                                <label for="expertise-select">Selecione uma especiali</label>
-                                <select name="expertiseId" id="expertise-select">
-                                    <option disabled selected>Selecione uma especialidade</option>
-                                    <c:forEach var="expertise" items="${expertises}">
-                                        <option value="${expertise.id}">${expertise.name}</option>
-                                    </c:forEach>
-                                </select>
-                            </div>
-
-                            <div class="input-field" style="margin-top: 30px">
-                                <textarea id="description-textarea" class="materialize-textarea" name="description"
-                                  placeholder="Eu realizo serviços de consertos em geral">${dto.description}</textarea>
-                                <label for="description-textarea">Descrição</label>
-                            </div>
-
-                            <blockquote id="description-blockquote" class="light-blue lighten-5 info-headers" style="margin-top: 30px; display: none">
-                                <p>Edite o texto padrão com as suas habilidades e experiências nesta especialidade.
-                                    Este texto será usado para formar a sua página pública de divulgação de suas
-                                    especialidades.</p>
-                            </blockquote>
-
-                            <div class="right">
-                                <button type="submit"
-                                        class="btn waves-effect waves-light">Salvar
-                                </button>
-                            </div>
-
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Modal para a escolha de uma nova especialidade -->
-
-        <!-- Modal para remoção de uma especialidade -->
-        <div id="modal-delete" class="modal">
-            <div class="modal-content">
-                <form action="" method="post">
-
-                    <input type="hidden" name="_method" value="DELETE"/>
-
-                    <div class="modal-content">
-                        <h4>Você tem certeza que deseja remover <strong id="strong-name"></strong> das suas
-                            especialidades?</h4>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button"
-                                class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar
-                        </button>
-                        <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <!-- Fim Modal para remoção de uma especialidade -->
-
     </jsp:body>
 </t:template-side-nav>
-
-<script>
-
-    $(function () {
-        //inicializa o select de expertises após a seleção de uma categoria
-        $("#category-select").change(function () {
-            let categoryId = $(this).val();
-            $.ajax({
-                url: "minha-conta/profissional/especialidades/categorias/" + categoryId,
-                type: "GET",
-                success: function (expertises) {
-                    $("#expertise-select").empty();
-                    $("#expertise-select").append("<option disabled selected>Selecione uma especialidade</option>");
-                    $.each(expertises, function (index, expertise) {
-                        $("#expertise-select").append("<option value='" + expertise.id + "'>" + expertise.name + "</option>");
-                    });
-                    $("#expertise-select").formSelect();
-                }
-            });
-        });
-
-        //inicializa o campo de descrição da expertise após a seleção de uma expertise
-        $("#expertise-select").change(function () {
-            let expertiseId = $(this).val();
-            $.ajax({
-                url: "minha-conta/profissional/especialidades/" + expertiseId,
-                type: "GET",
-                success: function (expertise) {
-                    $("#description-textarea").val(expertise.description);
-                    $('#id-input').val(expertise.id);
-                    M.textareaAutoResize($("#description-textarea"));
-                    $("#description-blockquote").show();
-                }
-            });
-        });
-    });
-
-    $(".myclass").hover(function (e) {
-        $(this).css("color", e.type === "mouseenter" ? "red" : "grey")
-    })
-</script>

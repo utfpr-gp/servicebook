@@ -11,13 +11,15 @@ import javax.persistence.*;
  * Este anúncio é criado pelo profissional e pode ser comprado por um cliente.
  * O cliente pode agendar o serviço com o profissional diretamente pela plataforma.
  * O anúncio pode ser de um serviço individual, de serviços diferentes combinados ou de um pacote com quantidade de um único serviço.
+ * Esta classe deve ser usada apenas para cadastrar anúncios de pacotes de serviços.
+ * Porém, ela pode ser usada para cadastrar anúncios de serviços individuais, mas não é recomendado.
  * Tipos: individual, pacote combinado, pacote simples.
  */
 @Data
-@Table(name = "professional_service_offering_ads")
+@Table(name = "professional_service_package_offering")
 @NoArgsConstructor
 @Entity
-public class ProfessionalServiceOfferingAd {
+public class ProfessionalServicePackageOffering {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -56,6 +58,11 @@ public class ProfessionalServiceOfferingAd {
      * Quando é tipo individual, a descrição é a descrição do serviço.
      */
     private String description;
+
+    /**
+     * Preço do pacote de serviços.
+     */
+    private Long price;
 
     /**
      * Usuário que criou o anúncio.

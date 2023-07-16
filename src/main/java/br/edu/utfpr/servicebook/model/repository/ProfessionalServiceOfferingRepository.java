@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProfessionalServiceOfferingRepository extends JpaRepository<ProfessionalServiceOffering, Long> {
@@ -52,5 +53,16 @@ public interface ProfessionalServiceOfferingRepository extends JpaRepository<Pro
      * @return
      */
     public List<ProfessionalServiceOffering> findProfessionalServiceOfferingByUserAndService_Expertise(User user, Expertise expertise);
+
+    /**
+     * Busca o serviço pelo nome.
+     * O nome deve ser único.
+     * @param name
+     * @return
+     */
+    @Query("SELECT e FROM ProfessionalServiceOffering e WHERE e.name = :name")
+    public Optional<ProfessionalServiceOffering> findProfessionalServiceOfferingByName(String name);
+
+
 
 }

@@ -1,10 +1,9 @@
 package br.edu.utfpr.servicebook.model.repository;
 
-import br.edu.utfpr.servicebook.model.entity.ProfessionalServiceOfferingAd;
+import br.edu.utfpr.servicebook.model.entity.ProfessionalServicePackageOffering;
 import br.edu.utfpr.servicebook.model.entity.ProfessionalServiceOfferingAdItem;
 import br.edu.utfpr.servicebook.model.entity.ProfessionalServiceOfferingAdItemPK;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,7 +15,7 @@ public interface ProfessionalServiceOfferingAdItemRepository extends JpaReposito
      * Busca todos os itens de um anúncio de um profissional.
      * É util para pegar os ProfessionalServiceOffering de um anúncio, principalmente quando é do tipo pacote.
      */
-    List<ProfessionalServiceOfferingAdItem> findAllByProfessionalServiceOfferingAd(ProfessionalServiceOfferingAd professionalServiceOfferingAd);
+    List<ProfessionalServiceOfferingAdItem> findAllByProfessionalServicePackageOffering(ProfessionalServicePackageOffering professionalServicePackageOffering);
 
 
 

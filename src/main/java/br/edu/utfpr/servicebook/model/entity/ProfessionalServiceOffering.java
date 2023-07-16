@@ -28,7 +28,9 @@ public class ProfessionalServiceOffering {
      * O profissional pode customizar o nome do serviço cadastrado pelo administrador de várias maneiras, dependendo
      * do tipo de particularidade que o seu serviço tem.
      * Caso ele não especifique o nome do serviço, o nome do serviço cadastrado pelo administrador será usado.
+     * O título do serviço deve ser único.
      */
+    @Column(unique = true)
     private String name;
 
     /**
@@ -38,6 +40,11 @@ public class ProfessionalServiceOffering {
      * Caso ele não especifique a descrição do serviço, a descrição do serviço cadastrado pelo administrador será usada.
      */
     private String description;
+
+    /**
+     * Preço do serviço individual.
+     */
+    private Long price;
 
     /**
      * Serviço cadastrado pelo administrador.

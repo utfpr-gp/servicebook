@@ -1,10 +1,10 @@
 package br.edu.utfpr.servicebook.controller;
 
+import br.edu.utfpr.servicebook.model.dto.ChooseExpertiseDTO;
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
 import br.edu.utfpr.servicebook.model.dto.ProfessionalServiceOfferingDTO;
-import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.ProfessionalServiceOffering;
-import br.edu.utfpr.servicebook.model.entity.User;
+import br.edu.utfpr.servicebook.model.dto.ServiceDTO;
+import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
@@ -15,8 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
@@ -34,6 +37,12 @@ public class ProfessionalServiceOfferingController {
     private ProfessionalServiceOfferingService professionalServiceOfferingService;
 
     @Autowired
+    private ServiceService serviceService;
+
+    @Autowired
+    private ServiceMapper serviceMapper;
+
+    @Autowired
     private ExpertiseService expertiseService;
 
     @Autowired
@@ -43,14 +52,17 @@ public class ProfessionalServiceOfferingController {
     private ProfessionalServiceOfferingMapper ProfessionalServiceOfferingMapper;
 
     @Autowired
-    private TemplateUtil templateUtil;
-
-    @Autowired
     private IAuthentication authentication;
 
+    /**
+     * Retorna a lista de serviços oferecidos pelo profissional.
+     * @param id
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/{id}")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
-    public ModelAndView showExpertises(@PathVariable Long id)  throws Exception {
+    public ModelAndView showServices(@PathVariable Long id)  throws Exception {
 
         User user = this.getAuthenticatedUser();
 
@@ -71,6 +83,79 @@ public class ProfessionalServiceOfferingController {
         mv.addObject("professionalServiceOfferings", professionalServiceOfferingsDTO);
 
         return mv;
+    }
+
+    /**
+     * Retorna o formulário para cadastrar um novo serviço para uma das especialidades do profissional.
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/novo/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public ModelAndView showServicesFormToRegister(@PathVariable Long id)  throws Exception {
+
+        User user = this.getAuthenticatedUser();
+
+        Expertise expertise = expertiseService.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Especialidade não encontrada"));
+
+        List<Service> services = serviceService.findByExpertise(expertise);
+        List<ServiceDTO> servicesDTO = services.stream()
+                .map(service -> serviceMapper.toDto(service))
+                .toList();
+
+        ExpertiseDTO expertiseDTO = expertiseMapper.toDto(expertise);
+
+        ModelAndView mv = new ModelAndView("professional/my-services-register");
+        mv.addObject("expertise", expertiseDTO);
+        mv.addObject("services", servicesDTO);
+
+        return mv;
+    }
+
+    @PostMapping()
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public String saveService(@Validated ServiceDTO serviceDTO, BindingResult errors, RedirectAttributes redirectAttributes) throws Exception {
+
+        String routeRedirect = "redirect:/minha-conta/profissional/servicos/novo/" + serviceDTO.getExpertiseId();
+        if (errors.hasErrors()) {
+            log.error("Erro de validação de especialidade");
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+            return routeRedirect;
+        }
+
+        //verifica se o serviço existe, se foi cadastrado pelo administrador
+        Long serviceId = serviceDTO.getId();
+        Optional<Service> oService = serviceService.findById(serviceId);
+        if(!oService.isPresent()){
+            log.error("Serviço não encontrado");
+            errors.rejectValue("id", "service.not.found", "Serviço não encontrado");
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+            return routeRedirect;
+        }
+
+        //verifica se já existe o serviço cadastrado pelo nome
+        Optional<ProfessionalServiceOffering> oProfessionalServiceOffering = professionalServiceOfferingService.findProfessionalServiceOfferingByName(serviceDTO.getName());
+
+        if(oProfessionalServiceOffering.isPresent()){
+            log.error("Serviço já cadastrado");
+            errors.rejectValue("name", "service.already.registered", "Serviço já cadastrado");
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+            return routeRedirect;
+        }
+
+        User professional = this.getAuthenticatedUser();
+
+        ProfessionalServiceOffering professionalServiceOffering = new ProfessionalServiceOffering();
+        professionalServiceOffering.setName(serviceDTO.getName());
+        professionalServiceOffering.setDescription(serviceDTO.getDescription());
+        professionalServiceOffering.setUser(professional);
+        professionalServiceOffering.setService(oService.get());
+
+        professionalServiceOfferingService.save(professionalServiceOffering);
+
+        return routeRedirect;
     }
 
 

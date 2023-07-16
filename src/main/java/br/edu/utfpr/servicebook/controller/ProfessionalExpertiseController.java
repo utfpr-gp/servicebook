@@ -19,13 +19,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -74,13 +74,12 @@ public class ProfessionalExpertiseController {
 
     /**
      * Apresenta a tela para o profissional adicionar especialidades.
-     * @param id
      * @return
      * @throws Exception
      */
     @GetMapping()
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
-    public ModelAndView showExpertises(@RequestParam(required = false, defaultValue = "0") Optional<Long> id)  throws Exception {
+    public ModelAndView showExpertises()  throws Exception {
 
         User professional = this.getAuthenticatedUser();
 
@@ -90,10 +89,7 @@ public class ProfessionalExpertiseController {
                 .map(s -> categoryMapper.toDto(s))
                 .collect(Collectors.toList());
 
-
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(professional);
-
-        UserTemplateStatisticInfo statisticInfo = templateUtil.getProfessionalStatisticInfo(professional, id.get());
 
         List<ExpertiseDTO> professionalExpertiseDTOs = professionalExpertises.stream()
                 .map(professionalExpertise -> professionalExpertise.getExpertise())
@@ -107,11 +103,33 @@ public class ProfessionalExpertiseController {
                 .collect(Collectors.toList());
 
         ModelAndView mv = new ModelAndView("professional/my-expertises");
-        mv.addObject("statisticInfo", statisticInfo);
-        mv.addObject("currentExpertiseId", id.orElse(0L));
         mv.addObject("categories", categoryDTOs);
         mv.addObject("otherExpertises", otherExpertisesDTOs);
         mv.addObject("professionalExpertises", professionalExpertiseDTOs);
+        return mv;
+    }
+
+    /**
+     * Apresenta a tela para o profissional adicionar especialidades.
+     * Envia apenas as categorias. Assim, as especialidades disponíveis são carregadas via ajax.
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/novo")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public ModelAndView showFormToRegister()  throws Exception {
+
+        User professional = this.getAuthenticatedUser();
+
+        //lista de categorias
+        List<Category> categories = categoryService.findAll();
+        List<CategoryDTO> categoryDTOs = categories.stream()
+                .map(s -> categoryMapper.toDto(s))
+                .collect(Collectors.toList());
+
+        ModelAndView mv = new ModelAndView("professional/my-expertises-register");
+        mv.addObject("categories", categoryDTOs);
+
         return mv;
     }
 
@@ -167,19 +185,18 @@ public class ProfessionalExpertiseController {
      * Adiciona uma especialidade para o profissional.
      * @param expertiseDTO
      * @param errors
-     * @param model
      * @param redirectAttributes
      * @return
      * @throws Exception
      */
     @PostMapping()
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
-    public String saveExpertises(@Valid ChooseExpertiseDTO expertiseDTO, BindingResult errors, Model model, RedirectAttributes redirectAttributes) throws Exception {
+    public String saveExpertises(@Validated ChooseExpertiseDTO expertiseDTO, BindingResult errors, RedirectAttributes redirectAttributes) throws Exception {
 
         if (errors.hasErrors()) {
             log.error("Erro de validação de especialidade");
             redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
-            return "redirect:/minha-conta/profissional/especialidades";
+            return "redirect:/minha-conta/profissional/especialidades/novo";
         }
 
         //verifica se a especialidade existe
