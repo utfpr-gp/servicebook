@@ -155,7 +155,7 @@ public class ProfessionalServiceOfferingController {
 
         professionalServiceOfferingService.save(professionalServiceOffering);
 
-        return routeRedirect;
+        return "redirect:/minha-conta/profissional/servicos/" + serviceDTO.getExpertiseId();
     }
 
 
