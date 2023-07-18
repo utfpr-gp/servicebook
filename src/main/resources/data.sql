@@ -84,9 +84,9 @@ VALUES (1, 2, 1),
        (2, 7, 4),
        (2, 4, 4);
 
-INSERT INTO services (name, description, allow_scheduling, expertise_id)
-VALUES ('Balanceamento', 'Balanceamento das rodas', false, 4),
-       ('Troca de óleo', 'Troca do óleo do motor', false, 4);
+INSERT INTO services (name, description, allow_scheduling, path_icon, expertise_id)
+VALUES ('Balanceamento', 'Balanceamento das rodas', false, 'https://res.cloudinary.com/dgueb0wir/image/upload/v1689176876/servicebook/expertises/mecanico_quczum.svg', 4),
+       ('Troca de óleo', 'Troca do óleo do motor', false, 'https://res.cloudinary.com/dgueb0wir/image/upload/v1689176876/servicebook/expertises/mecanico_quczum.svg', 4);
 
 INSERT INTO professional_service_offerings (name, description, service_id, user_id)
 VALUES ('Balanceamento com máquina importada', 'O balanceamento com 100% de garantia', 1, 2),

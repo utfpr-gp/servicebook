@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -32,4 +33,10 @@ public class ServiceDTO implements Serializable {
      */
     private ExpertiseDTO expertise;
 
+    /**
+     * Ícone do serviço
+     */
+    private String pathIcon;
+
+    private MultipartFile icon;
 }

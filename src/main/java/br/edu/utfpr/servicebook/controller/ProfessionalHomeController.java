@@ -118,23 +118,43 @@ public class ProfessionalHomeController {
     @RolesAllowed({RoleType.USER})
     public ModelAndView showMyAccountProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> expertiseId) throws Exception {
         log.debug("ServiceBook: Minha conta.");
-   
-        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
-//        Optional<User> oProfessional = (userService.findByEmail(authentication.getEmail()));
+
+        Optional<User> oProfessional = (userService.findByEmail(authentication.getEmail()));
 
         if (!oProfessional.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
+        //envia a notificação ao usuário
+        List<EventSSE> eventSsesList = sseService.findPendingEventsByEmail(authentication.getEmail());
+        List<EventSSEDTO> eventSSEDTOs = eventSsesList.stream()
+                .map(eventSse -> {
+                    return eventSseMapper.toFullDto(eventSse);
+                })
+                .collect(Collectors.toList());
 
-    
+        ModelAndView mv = new ModelAndView("professional/my-account-menu");
+        mv.addObject("eventsse", eventSSEDTOs);
+
+        return mv;
+    }
+
+    @GetMapping("/meus-jobs")
+    @RolesAllowed({RoleType.USER})
+    public ModelAndView showMyJobsProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> expertiseId) throws Exception {
+        log.debug("ServiceBook: Minha conta.");
+
+        Optional<User> oProfessional = (userService.findByEmail(authentication.getEmail()));
+
+        if (!oProfessional.isPresent()) {
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
         List<ExpertiseDTO> professionalExpertiseDTOs = professionalExpertises.stream()
                 .map(professionalExpertise -> professionalExpertise.getExpertise())
                 .map(expertise -> expertiseMapper.toDto(expertise))
                 .collect(Collectors.toList());
-
-        UserTemplateStatisticInfo statisticInfo = templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId.get());
 
         //envia a notificação ao usuário
         List<EventSSE> eventSsesList = sseService.findPendingEventsByEmail(authentication.getEmail());
@@ -147,7 +167,6 @@ public class ProfessionalHomeController {
         ModelAndView mv = new ModelAndView("professional/my-account");
         mv.addObject("eventsse", eventSSEDTOs);
         mv.addObject("professionalExpertises", professionalExpertiseDTOs);
-        mv.addObject("statisticInfo", statisticInfo);
 
         return mv;
     }

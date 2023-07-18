@@ -14,11 +14,18 @@
             <a class='dropdown-trigger btn truncate' href='#' data-target='dropdown-perfil'>${userInfo.name}<i
                     class="tiny material-icons right">arrow_drop_down</i></a>
             <ul id='dropdown-perfil' class='dropdown-content'>
-                <li><a href="/servicebook/minha-conta/cliente">Minha Conta</a></li>
+                <c:choose>
+                    <c:when test="${fn:contains(currenturl, '/minha-conta/cliente')}">
+                        <li><a href="/servicebook/minha-conta/cliente">Minha Conta</a></li>
+                    </c:when>
+                    <c:when test="${fn:contains(currenturl, '/minha-conta/profissional')}">
+                        <li><a href="/servicebook/minha-conta/profissional">Minha Conta</a></li>
+                    </c:when>
+                    <c:otherwise>
+                        <li><a href="/servicebook/minha-conta/cliente">Minha Conta</a></li>
+                    </c:otherwise>
+                </c:choose>
                 <li><a href="/servicebook/minha-conta/perfil">Meu Perfil</a></li>
-                <li><a href="/servicebook/minha-conta/profissional/especialidades">Minhas Especialidades</a></li>
-                <li><a href="/servicebook/minha-conta/profissional/servicos">Minha Loja</a></li>
-                <li><a href="/servicebook/minha-conta/profissional/agendamento">Minha Agenda</a></li>
                 <li class="divider" tabindex="-1"></li>
                 <li><a href="logout">Sair</a></li>
             </ul>

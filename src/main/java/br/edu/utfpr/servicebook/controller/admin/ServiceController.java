@@ -11,6 +11,8 @@ import br.edu.utfpr.servicebook.service.*;
 import br.edu.utfpr.servicebook.util.DateUtil;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -31,12 +34,16 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.swing.text.DateFormatter;
 import javax.validation.Valid;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.spi.DateFormatProvider;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -62,31 +69,7 @@ public class ServiceController {
     private ExpertiseMapper expertiseMapper;
 
     @Autowired
-    private IndividualService individualService;
-
-    @Autowired
-    private IndividualMapper individualMapper;
-
-    @Autowired
-    private CompanyService companyService;
-
-    @Autowired
-    private CompanyMapper companyMapper;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
-    private JobRequestService jobRequestService;
-
-    @Autowired
-    private JobRequestMapper jobRequestMapper;
-
-    @Autowired
-    private JobContractedService jobContractedService;
+    private Cloudinary cloudinary;
 
     @GetMapping
     @PermitAll
@@ -143,12 +126,28 @@ public class ServiceController {
 
         //verifica se o id é nulo, se for, é um novo registro
         if(dto.getId() == null){
+
+            if(!isValidateImage(dto.getIcon())) {
+                errors.rejectValue("icon", "dto.icon", "Por favor, envie um ícone no formato SVG.");
+                return errorFowarding(dto, errors);
+            }
+
             //verifica se já existe um serviço com o mesmo nome e especialidade
             Optional<Service> oService = serviceService.findByNameAndExpertise(dto.getName(), oExpertise.get());
             if (oService.isPresent()) {
                 errors.rejectValue("name", "error.dto", "O serviço já está cadastrado!");
                 return errorFowarding(dto, errors);
             }
+
+            String url = null;
+            try {
+                url = uploadImage(dto);
+
+            }catch (IOException exception) {
+                errors.rejectValue("name", "error.dto", "Houve um erro ao manipular o ícone.");
+                return errorFowarding(dto, errors);
+            }
+            dto.setPathIcon(url);
         }
 
         //verifica se o id é diferente de nulo, se for, é uma atualização
@@ -171,6 +170,27 @@ public class ServiceController {
                     return errorFowarding(dto, errors);
                 }
             }
+
+            //verifica se o usuário mudou o ícone
+            String url = null;
+            if (dto.getIcon() != null && !dto.getIcon().isEmpty()) {
+                //verifica se o ícone é válido (formato .svg)
+                if(!isValidateImage(dto.getIcon())) {
+                    errors.rejectValue("icon", "dto.icon", "Por favor, envie um ícone no formato SVG.");
+                    return errorFowarding(dto, errors);
+                }
+
+                //insere o ícone no cloudinary
+                try {
+                    url = uploadImage(dto);
+
+                }catch (IOException exception) {
+                    errors.rejectValue("name", "error.dto", "Houve um erro ao manipular o ícone.");
+                    return errorFowarding(dto, errors);
+                }
+            }
+            //se o ícone não foi atualizado, coloca a imagem existente
+            dto.setPathIcon(url != null ? url : service.getPathIcon());
         }
 
         Service service = serviceMapper.toEntity(dto);
@@ -280,5 +300,31 @@ public class ServiceController {
         mv.addObject("pagination", paginationDTO);
 
         return mv;
+    }
+
+    private boolean isValidateImage(MultipartFile image){
+        List<String> contentTypes = Arrays.asList("image/svg");
+
+        for(int i = 0; i < contentTypes.size(); i++){
+            if(image.getContentType().toLowerCase().startsWith(contentTypes.get(i))){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Faz o upload da imagem para o cloudinary
+     * @param dto
+     * @return
+     * @throws IOException
+     */
+    public String uploadImage(ServiceDTO dto) throws IOException {
+        File image = Files.createTempFile("temp", dto.getIcon().getOriginalFilename()).toFile();
+        dto.getIcon().transferTo(image);
+        Map data = cloudinary.uploader().upload(image, ObjectUtils.asMap("folder", "images"));
+
+        return (String)data.get("url");
     }
 }

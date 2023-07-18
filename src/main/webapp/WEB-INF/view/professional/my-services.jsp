@@ -62,6 +62,10 @@
                        value="${not empty serviceOffering.description ? serviceOffering.description : serviceOffering.service.description}"/>
                 <div class="col s12 m6">
                     <div class="card">
+                        <div class="center">
+                            <img class="activator responsive-img" style="width: 40%; margin-top: 20px"
+                                 src="${serviceOffering.service.pathIcon}">
+                        </div>
                         <div class="card-content">
                             <span class="card-title grey-text text-darken-4">${serviceName}
                                 <i class="material-icons right activator" style="cursor: pointer">more_vert</i>

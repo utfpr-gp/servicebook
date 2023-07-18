@@ -51,6 +51,22 @@
                                     <label for="description">Descrição</label>
                                 </div>
 
+                                <div class="file-field input-field">
+                                    <div class="btn">
+                                        <span>Ícone</span>
+                                        <input id="imageInput" type="file" value="${dto.icon}" name="icon"
+                                               accept=".svg">
+                                    </div>
+                                    <div class="file-path-wrapper">
+                                        <input class="file-path validate" placeholder="icon.svg" type="text">
+                                    </div>
+                                </div>
+                                <c:if test="${not empty dto.pathIcon}">
+                                    <div class="col s10 offset-s1 center">
+                                        <img id="previewImage" src="${dto.pathIcon}" width="30%">
+                                    </div>
+                                </c:if>
+
                                 <p>
                                     <label>
                                         <input type="checkbox"/>

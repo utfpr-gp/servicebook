@@ -45,6 +45,9 @@ public class Service {
      */
     private boolean allowScheduling;
 
+    @Column(nullable = false)
+    private String pathIcon;
+
     /**
      * A especialidade do serviço.
      */
