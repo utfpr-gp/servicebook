@@ -11,6 +11,7 @@
 <t:template-side-nav title="ServiceBook - Minha conta">
     <jsp:body>
         <div class="row">
+            <t:message-box/>
             <div class="col s12">
                 <h2 class="secondary-color-text">Minhas especialidades</h2>
                 <blockquote class="light-blue lighten-5 info-headers">
@@ -49,7 +50,7 @@
                             </p>
                         </div>
                         <div class="card-action center">
-                            <a class="blue-text" href="minha-conta/profissional/servicos/${professionalExpertise.id}">MEUS
+                            <a class="blue-text" href="minha-conta/profissional/servicos?id=${professionalExpertise.id}">MEUS
                                 SERVIÇOS</a>
                         </div>
                     </div>

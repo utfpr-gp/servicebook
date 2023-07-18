@@ -25,11 +25,18 @@
                         <div class="col s12">
                             <form action="minha-conta/profissional/servicos"
                                   method="post">
-                                <input type="hidden" name="expertiseId" id="id-input" value="${expertise.id}">
 
                                 <div class="input-field">
-                                    <label for="service-select">Selecione uma especiali</label>
-                                    <select name="id" id="service-select">
+                                    <select id="expertise-select" name="expertiseId" value="${expertise.id}">
+                                        <option disabled selected>Selecione uma especialidade</option>
+                                        <c:forEach var="e" items="${expertises}">
+                                            <option value="${e.id}" ${e.id eq expertise.id ? 'selected="selected"' : ''}>${e.name}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+
+                                <div class="input-field">
+                                    <select id="service-select" name="id">
                                         <option disabled selected>Selecione um serviço</option>
                                         <c:forEach var="service" items="${services}">
                                             <option value="${service.id}">${service.name}</option>
@@ -54,7 +61,7 @@
                                 </blockquote>
 
                                 <div class="right">
-                                    <a href="minha-conta/profissional/servicos/${expertise.id}"
+                                    <a href="minha-conta/profissional/servicos?id=${expertise.id}"
                                        class="waves-effect waves-light btn-flat">Cancelar</a>
                                     <button type="submit"
                                             class="btn waves-effect waves-light">Salvar
@@ -106,5 +113,20 @@
                 $('#description-blockquote').show();
               });
          });
+
+        //inicializa o select de serviços com os serviços da especialidade selecionada
+        $('#expertise-select').change(function () {
+            let expertiseId = $(this).val();
+            let url = 'minha-conta/profissional/especialidades/' + expertiseId + '/servicos';
+
+            $.get(url, function (data) {
+                let options = '<option disabled selected>Selecione um serviço</option>';
+                data.forEach(function (service) {
+                    options += '<option value="' + service.id + '">' + service.name + '</option>';
+                });
+                $('#service-select').html(options);
+                $('#service-select').formSelect();
+            });
+        });
     });
 </script>

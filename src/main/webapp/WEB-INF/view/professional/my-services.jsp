@@ -12,8 +12,14 @@
 <t:template-side-nav title="ServiceBook - Minha conta">
     <jsp:body>
         <div class="row">
+            <t:message-box/>
             <div class="col s12">
-                <h2 class="secondary-color-text">Meus serviços de ${fn:toLowerCase(expertise.name)}</h2>
+                <c:if test="${expertise != null}">
+                    <h2 class="secondary-color-text">Meus serviços de ${fn:toLowerCase(expertise.name)}</h2>
+                </c:if>
+                <c:if test="${empty expertise}">
+                    <h2 class="secondary-color-text">Meus serviços</h2>
+                </c:if>
                 <blockquote class="light-blue lighten-5 info-headers">
                     <p>Adicione os serviços que você oferece para que os clientes saibam exatamente qual é a sua
                         especialidade e possam encontrá-lo com maior facilidade.</p>
@@ -25,6 +31,22 @@
                 </blockquote>
             </div>
         </div>
+
+<%--        <hr style="margin-bottom: 50px"/>--%>
+
+        <form id="expertise-form" action="minha-conta/profissional/servicos" style="margin: 50px 0px" method="get">
+            <div class="input-field">
+                <select id="expertise-select" name="id" value="${expertise.id}">
+                    <option disabled selected>Todas as especialidades</option>
+                    <c:forEach var="e" items="${expertises}">
+                        <option value="${e.id}" ${e.id eq expertise.id ? 'selected="selected"' : ''}>${e.name}</option>
+                    </c:forEach>
+                </select>
+                <label for="expertise-select" style="top: -42px">Selecione uma especialidade</label>
+            </div>
+        </form>
+
+<%--        <hr style="margin: 50px 0px"/>--%>
 
         <!-- Lista vazia -->
         <c:if test="${empty professionalServiceOfferings}">
@@ -65,7 +87,7 @@
         <!-- Fim Lista de serviços -->
 
         <div class="center spacing-buttons">
-            <a class="waves-effect waves-light btn" href="minha-conta/profissional/servicos/novo/${expertise.id}">
+            <a class="waves-effect waves-light btn" href="minha-conta/profissional/servicos/novo?id=${expertise.id}">
                 NOVO SERVIÇO
             </a>
         </div>
@@ -73,4 +95,7 @@
 </t:template-side-nav>
 
 <script>
+    document.getElementById("expertise-select").addEventListener("change", function() {
+        document.getElementById("expertise-form").submit();
+    });
 </script>

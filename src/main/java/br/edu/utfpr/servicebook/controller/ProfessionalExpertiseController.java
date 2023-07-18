@@ -1,10 +1,7 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.dto.*;
-import br.edu.utfpr.servicebook.model.entity.Category;
-import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
-import br.edu.utfpr.servicebook.model.entity.User;
+import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
@@ -37,13 +34,10 @@ public class ProfessionalExpertiseController {
     public static final Logger log = LoggerFactory.getLogger(ProfessionalHomeController.class);
 
     @Autowired
-    private IndividualService individualService;
-
-    @Autowired
-    private IndividualMapper individualMapper;
-
-    @Autowired
     private UserService userService;
+
+    @Autowired
+    private ServiceService serviceService;
 
     @Autowired
     private UserMapper userMapper;
@@ -53,6 +47,9 @@ public class ProfessionalExpertiseController {
 
     @Autowired
     private ProfessionalMapper professionalMapper;
+
+    @Autowired
+    private ServiceMapper serviceMapper;
 
     @Autowired
     private ExpertiseService expertiseService;
@@ -155,6 +152,25 @@ public class ProfessionalExpertiseController {
                 .collect(Collectors.toList());
 
         return expertisesDTO;
+    }
+
+    @GetMapping("/{expertiseId}/servicos")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    @ResponseBody
+    public List<ServiceDTO> findServicesByExpertise(@PathVariable Long expertiseId)  throws Exception {
+
+        User professional = this.getAuthenticatedUser();
+
+        Expertise expertise = expertiseService.findById(expertiseId).orElseThrow(() -> new EntityNotFoundException("Especialidade não encontrada"));
+
+        //lista de serviços
+        List<Service> services = serviceService.findByExpertise(expertise);
+
+        List<ServiceDTO> servicesDTO = services.stream()
+                .map(s -> serviceMapper.toDto(s))
+                .collect(Collectors.toList());
+
+        return servicesDTO;
     }
 
     /**

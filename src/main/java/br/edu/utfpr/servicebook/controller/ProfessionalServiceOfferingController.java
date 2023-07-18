@@ -23,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +50,7 @@ public class ProfessionalServiceOfferingController {
     private ExpertiseMapper expertiseMapper;
 
     @Autowired
-    private ProfessionalServiceOfferingMapper ProfessionalServiceOfferingMapper;
+    private ProfessionalServiceOfferingMapper professionalServiceOfferingMapper;
 
     @Autowired
     private IAuthentication authentication;
@@ -60,26 +61,38 @@ public class ProfessionalServiceOfferingController {
      * @return
      * @throws Exception
      */
-    @GetMapping("/{id}")
+    @GetMapping("")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
-    public ModelAndView showServices(@PathVariable Long id)  throws Exception {
+    public ModelAndView showServices(@RequestParam(required = false) Long id)  throws Exception {
 
         User user = this.getAuthenticatedUser();
 
-        Expertise expertise = expertiseService.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Especialidade não encontrada"));
+        //verifica se o id da especialidade foi passado, caso contrário retorna os serviços de todas as especialidades
+        ExpertiseDTO expertiseDTO = null;
+        List<ProfessionalServiceOffering> professionalServiceOfferings = null;
+        if(id != null && id > 0){
+            Expertise expertise = expertiseService.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Especialidade não encontrada"));
 
-        ExpertiseDTO expertiseDTO = expertiseMapper.toDto(expertise);
+            expertiseDTO = expertiseMapper.toDto(expertise);
 
-        List<ProfessionalServiceOffering> professionalServiceOfferings = professionalServiceOfferingService.findProfessionalServiceOfferingByUserAndService_Expertise(user, expertise);
+            professionalServiceOfferings = professionalServiceOfferingService.findProfessionalServiceOfferingByUserAndService_Expertise(user, expertise);
+        }
+        else {
+            professionalServiceOfferings = professionalServiceOfferingService.findProfessionalServiceOfferingByUser(user);
+        }
+
+        //todas as expertises do profissional
+        List<ExpertiseDTO> expertisesDTO = userService.getExpertiseDTOs(user);
 
         //transforma a lista de ofertas de serviços em uma lista de DTOs com stream
         List<ProfessionalServiceOfferingDTO> professionalServiceOfferingsDTO = professionalServiceOfferings.stream()
-                .map(professionalServiceOffering -> ProfessionalServiceOfferingMapper.toDTO(professionalServiceOffering))
+                .map(professionalServiceOffering -> professionalServiceOfferingMapper.toDTO(professionalServiceOffering))
                 .toList();
 
         ModelAndView mv = new ModelAndView("professional/my-services");
         mv.addObject("expertise", expertiseDTO);
+        mv.addObject("expertises", expertisesDTO);
         mv.addObject("professionalServiceOfferings", professionalServiceOfferingsDTO);
 
         return mv;
@@ -91,24 +104,37 @@ public class ProfessionalServiceOfferingController {
      * @return
      * @throws Exception
      */
-    @GetMapping("/novo/{id}")
+    @GetMapping("/novo")
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
-    public ModelAndView showServicesFormToRegister(@PathVariable Long id)  throws Exception {
+    public ModelAndView showServicesFormToRegister(@RequestParam(required = false, defaultValue = "0") Long id)  throws Exception {
 
         User user = this.getAuthenticatedUser();
 
-        Expertise expertise = expertiseService.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Especialidade não encontrada"));
+        //verifica se o id da especialidade foi passado, caso contrário retorna os serviços de todas as especialidades
+        ExpertiseDTO expertiseDTO = null;
+        List<ServiceDTO> servicesDTO = null;
+        if(id != null && id > 0){
 
-        List<Service> services = serviceService.findByExpertise(expertise);
-        List<ServiceDTO> servicesDTO = services.stream()
-                .map(service -> serviceMapper.toDto(service))
-                .toList();
+            Expertise expertise = expertiseService.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Especialidade não encontrada"));
+            expertiseDTO = expertiseMapper.toDto(expertise);
 
-        ExpertiseDTO expertiseDTO = expertiseMapper.toDto(expertise);
+            //lista os serviços desta especialidade
+            List<Service> services = serviceService.findByExpertise(expertise);
+            servicesDTO = services.stream()
+                    .map(service -> serviceMapper.toDto(service))
+                    .toList();
+        }
+        else {
+
+        }
+
+        //todas as expertises do profissional
+        List<ExpertiseDTO> expertisesDTO = userService.getExpertiseDTOs(user);
 
         ModelAndView mv = new ModelAndView("professional/my-services-register");
         mv.addObject("expertise", expertiseDTO);
+        mv.addObject("expertises", expertisesDTO);
         mv.addObject("services", servicesDTO);
 
         return mv;
@@ -118,7 +144,14 @@ public class ProfessionalServiceOfferingController {
     @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String saveService(@Validated ServiceDTO serviceDTO, BindingResult errors, RedirectAttributes redirectAttributes) throws Exception {
 
-        String routeRedirect = "redirect:/minha-conta/profissional/servicos/novo/" + serviceDTO.getExpertiseId();
+        String routeRedirect = "redirect:/minha-conta/profissional/servicos/novo?id=" + serviceDTO.getExpertiseId();
+        if(serviceDTO.getExpertiseId() == null){
+            routeRedirect = "redirect:/minha-conta/profissional/servicos/novo";
+        }
+        else{
+            routeRedirect = "redirect:/minha-conta/profissional/servicos/novo?id=" + serviceDTO.getExpertiseId();
+        }
+
         if (errors.hasErrors()) {
             log.error("Erro de validação de especialidade");
             redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
@@ -155,9 +188,14 @@ public class ProfessionalServiceOfferingController {
 
         professionalServiceOfferingService.save(professionalServiceOffering);
 
-        return "redirect:/minha-conta/profissional/servicos/" + serviceDTO.getExpertiseId();
+        //sucesso
+        if(serviceDTO.getExpertiseId() == null){
+            return "redirect:/minha-conta/profissional/servicos";
+        }
+        else{
+            return "redirect:/minha-conta/profissional/servicos?id=" + serviceDTO.getExpertiseId();
+        }
     }
-
 
     /**
      * Retorna o usuário logado.
