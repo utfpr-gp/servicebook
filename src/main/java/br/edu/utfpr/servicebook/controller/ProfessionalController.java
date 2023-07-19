@@ -4,6 +4,7 @@ import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.IndividualMapper;
 import br.edu.utfpr.servicebook.model.mapper.JobContractedMapper;
+import br.edu.utfpr.servicebook.model.mapper.ProfessionalServiceOfferingMapper;
 import br.edu.utfpr.servicebook.model.mapper.UserMapper;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.service.*;
@@ -31,6 +32,12 @@ public class ProfessionalController {
     private IndividualService individualService;
 
     @Autowired
+    private ProfessionalServiceOfferingService professionalServiceOfferingService;
+
+    @Autowired
+    private ProfessionalExpertiseService professionalExpertiseService;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
@@ -50,6 +57,9 @@ public class ProfessionalController {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private ProfessionalServiceOfferingMapper professionalServiceOfferingMapper;
 
     @Value("${pagination.size}")
     private Integer paginationSize;
@@ -147,7 +157,6 @@ public class ProfessionalController {
     @GetMapping("/detalhes/{id}")
     @PermitAll
     protected ModelAndView showProfessionalDetailsToVisitors(@PathVariable("id") Long id) throws Exception {
-        ModelAndView mv = new ModelAndView("visitor/professional-details");
 
         Optional<User> oProfessional = userService.findById(id);
 
@@ -155,8 +164,39 @@ public class ProfessionalController {
             throw new EntityNotFoundException("Profissional não encontrado.");
         }
 
+        //cliente autenticado, caso esteja logado
         Optional<User> oClientAuthenticated = (userService.findByEmail(authentication.getEmail()));
+
+        //profissional requisitado
+        UserDTO professionalDTO = userMapper.toDto(oProfessional.get());
+
+        //especialidades do profissional requisitado
+        List<ExpertiseDTO> expertisesDTO = userService.getExpertiseDTOs(oProfessional.get());
+
+        List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
+
+        //serviços por especialidade
+        Map<ProfessionalExpertise, List<ProfessionalServiceOfferingDTO>> servicesByExpertise = new HashMap<>();
+        for(ProfessionalExpertise pe : professionalExpertises) {
+            List<ProfessionalServiceOffering> professionalServiceOfferings = professionalServiceOfferingService.findProfessionalServiceOfferingByUserAndExpertise(oProfessional.get().getId(), pe.getExpertise().getId());
+
+            if(professionalServiceOfferings.isEmpty()){
+                continue;
+            }
+
+            //transforma para DTO
+            List<ProfessionalServiceOfferingDTO> professionalServiceOfferingsDTO = professionalServiceOfferings.stream()
+                    .map(service -> professionalServiceOfferingMapper.toDTO(service))
+                    .collect(Collectors.toList());
+
+            servicesByExpertise.put(pe, professionalServiceOfferingsDTO);
+        }
+
+        ModelAndView mv = new ModelAndView("visitor/professional-details");
+        mv.addObject("professional", professionalDTO);
+        mv.addObject("professionalExpertises", expertisesDTO);
         mv.addObject("logged", oClientAuthenticated.isPresent());
+        mv.addObject("servicesByExpertise", servicesByExpertise);
 
         //se o cliente está logado, mostra se ele segue o profissional
         if(oClientAuthenticated.isPresent()){
@@ -166,13 +206,6 @@ public class ProfessionalController {
             mv.addObject("isFollow", isFollow);
             mv.addObject("client", clientDTO);
         }
-
-        List<ExpertiseDTO> expertiseDTOs = userService.getExpertiseDTOs(oProfessional.get());
-
-        UserDTO professionalDTO = userMapper.toDto(oProfessional.get());
-
-        mv.addObject("professional", professionalDTO);
-        mv.addObject("professionalExpertises", expertiseDTOs);
         return mv;
     }
 }

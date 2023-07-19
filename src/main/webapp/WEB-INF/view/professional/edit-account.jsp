@@ -10,24 +10,6 @@
 <t:template title="Editar perfil">
     <jsp:body>
         <main class="container">
-            <c:if test="${not empty msgError}">
-                <div class="row">
-                    <div class="col s12">
-                        <div class="card-panel red lighten-1 msg-view center-align">
-                            <span class="white-text">${msgError}</span>
-                        </div>
-                    </div>
-                </div>
-            </c:if>
-            <c:if test="${not empty msg}">
-                <div class="row">
-                    <div class="col s12">
-                        <div class="card-panel green lighten-1 msg-view center-align">
-                            <span class="white-text">${msg}</span>
-                        </div>
-                    </div>
-                </div>
-            </c:if>
             <div class="row primary-background-color">
                 <div class="col s12 m4 center">
                     <c:if test="${professional.profilePicture == null}">
@@ -54,7 +36,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col s12 l5 offset-l1 spacing-buttons">
+                <div class="col s12 l6 spacing-buttons">
                     <a href="${pageContext.request.contextPath}/minha-conta/meu-anuncio/${professional.id}" class="dark-color-text">
                         <div class="active-profission no-padding">
                             <h3 class="center"><strong><i class="medium material-icons">chrome_reader_mode</i></strong></h3>
@@ -62,7 +44,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="col s12 l5 spacing-buttons">
+                <div class="col s12 l6 spacing-buttons">
                     <a href="${pageContext.request.contextPath}/minha-conta/meu-endereco/${professional.id}" class="dark-color-text">
                         <div class="active-profission no-padding">
                             <h3 class="center"><strong><i class="medium material-icons">location_on</i></strong></h3>
@@ -70,7 +52,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="col s12 l5 offset-l1 spacing-buttons">
+                <div class="col s12 l6 spacing-buttons">
                     <a href="${pageContext.request.contextPath}/minha-conta/informacoes-pessoais/${professional.id}" class="dark-color-text">
                         <div class="active-profission no-padding">
                             <h3 class="center"><strong><i class="medium material-icons">person</i></strong></h3>
@@ -78,7 +60,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="col s12 l5 spacing-buttons">
+                <div class="col s12 l6 spacing-buttons">
                     <a href="${pageContext.request.contextPath}/minha-conta/edita-senha/${professional.id}" class="dark-color-text">
                         <div class="active-profission no-padding">
                             <h3 class="center"><strong><i class="medium material-icons">lock</i></strong></h3>
@@ -86,7 +68,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="col s12 l5 offset-l1 spacing-buttons">
+                <div class="col s12 l6 spacing-buttons">
                     <a href="${pageContext.request.contextPath}/minha-conta/edita-email/${professional.id}" class="dark-color-text">
                         <div class="active-profission no-padding">
                             <h3 class="center"><strong><i class="medium material-icons">email</i></strong></h3>
@@ -94,7 +76,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="col s12 l5 spacing-buttons">
+                <div class="col s12 l6 spacing-buttons">
                     <a href="${pageContext.request.contextPath}/minha-conta/edita-telefone/${professional.id}" class="dark-color-text">
                         <div class="active-profission no-padding">
                             <h3 class="center"><strong><i class="medium material-icons">local_phone</i></strong></h3>

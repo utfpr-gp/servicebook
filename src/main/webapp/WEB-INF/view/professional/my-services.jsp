@@ -56,35 +56,8 @@
         <!-- Lista de serviços -->
         <div class="row">
             <c:forEach var="serviceOffering" items="${professionalServiceOfferings}">
-                <c:set var="serviceName"
-                       value="${not empty serviceOffering.name ? serviceOffering.name : serviceOffering.service.name}"/>
-                <c:set var="serviceDescription"
-                       value="${not empty serviceOffering.description ? serviceOffering.description : serviceOffering.service.description}"/>
                 <div class="col s12 m6">
-                    <div class="card">
-                        <div class="center">
-                            <img class="activator responsive-img" style="width: 40%; margin-top: 20px"
-                                 src="${serviceOffering.service.pathIcon}">
-                        </div>
-                        <div class="card-content">
-                            <span class="card-title grey-text text-darken-4">${serviceName}
-                                <i class="material-icons right activator" style="cursor: pointer">more_vert</i>
-                                <i class="material-icons right">delete</i>
-                                <i class="material-icons right">edit</i></span>
-                        </div>
-                        <div class="card-reveal">
-                            <span class="card-title grey-text text-darken-4">${serviceName}<i
-                                    class="material-icons right">close</i></span>
-                            <p>
-                                    ${serviceDescription}
-                            </p>
-                        </div>
-
-                        <div class="card-action center">
-                            <a class="blue-text" href="minha-conta/profissional/meus-anuncios/${serviceOffering.id}">ANUNCIAR</a>
-                        </div>
-
-                    </div>
+                    <t:service-card serviceOffering="${serviceOffering}" edit="true"/>
                 </div>
             </c:forEach>
         </div>

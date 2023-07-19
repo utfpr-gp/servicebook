@@ -67,14 +67,35 @@
             <div class="section">
                 <div class="row">
                     <c:forEach var="expertise" items="${professionalExpertises}">
-                        <div class="col expertise-label">${expertise.name}</div>
+                        <div class="chip">
+                            <img src="${expertise.pathIcon}">
+                                ${expertise.name}
+                        </div>
                     </c:forEach>
                 </div>
 
-                <div class="row center-align">
-                    <h5>Descrição geral do profissional</h5>
-                    <p class="contact-item center dark-color-text">${professional.description}</p>
+                <div class="row">
+                    <h5><strong>Descrição geral</strong></h5>
+                    <div class="col s12">
+                        <p class="dark-color-text">${professional.description}</p>
+                    </div>
                 </div>
+
+                <c:forEach var="entry" items="${servicesByExpertise.entrySet()}">
+                    <div class="row">
+                        <h5><strong>${entry.key.expertise.name}</strong></h5>
+                        <div class="col s12">
+                                <p class="dark-color-text">${entry.key.description}</p>
+                        </div>
+                        <div class="col s12">
+                            <c:forEach var="service" items="${entry.value}">
+                                <div class="col s12 m6">
+                                    <t:service-card edit="false" serviceOffering="${service}"/>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </div>
+                </c:forEach>
 
                 <div class="row center-align">
                     <a href="https://web.whatsapp.com/send?phone=55${professional.getOnlyNumbersFromPhone()}" target="_blank">

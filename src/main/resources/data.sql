@@ -75,14 +75,14 @@ VALUES ('Encanador', 'Realiza serviço como encanador', 'https://res.cloudinary.
        ('Pintor', 'Realiza serviço como pintor', 'https://res.cloudinary.com/dgueb0wir/image/upload/v1689176875/servicebook/expertises/pintor_kfl3de.svg', 7),
        ('Mecânico', 'Realiza serviço como mecânico', 'https://res.cloudinary.com/dgueb0wir/image/upload/v1689176876/servicebook/expertises/mecanico_quczum.svg', 7);
 
-INSERT INTO professional_expertises (expertise_id, professional_id, rating)
-VALUES (1, 2, 1),
-       (2, 2, 2),
-       (3, 2, 3),
-       (4, 2, 4),
-       (2, 5, 4),
-       (2, 7, 4),
-       (2, 4, 4);
+INSERT INTO professional_expertises (expertise_id, professional_id, rating, description)
+VALUES (1, 2, 1, 'descrição'),
+       (2, 2, 2, 'descrição'),
+       (3, 2, 3, 'descrição'),
+       (4, 2, 4, 'descrição'),
+       (2, 5, 4, 'descrição'),
+       (2, 7, 4, 'descrição'),
+       (2, 4, 4, 'descrição');
 
 INSERT INTO services (name, description, allow_scheduling, path_icon, expertise_id)
 VALUES ('Balanceamento', 'Balanceamento das rodas', false, 'https://res.cloudinary.com/dgueb0wir/image/upload/v1689176876/servicebook/expertises/mecanico_quczum.svg', 4),

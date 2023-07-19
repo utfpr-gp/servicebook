@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -57,6 +58,9 @@ public class ProfessionalHomeController {
 
     @Autowired
     private CityMapper cityMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     private ProfessionalExpertiseService professionalExpertiseService;
@@ -119,11 +123,21 @@ public class ProfessionalHomeController {
     public ModelAndView showMyAccountProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> expertiseId) throws Exception {
         log.debug("ServiceBook: Minha conta.");
 
-        Optional<User> oProfessional = (userService.findByEmail(authentication.getEmail()));
+        Optional<User> oUser = (userService.findByEmail(authentication.getEmail()));
 
-        if (!oProfessional.isPresent()) {
-            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        if (!oUser.isPresent()) {
+            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
+
+        User user = oUser.get();
+        UserDTO userDTO = userMapper.toDto(user);
+
+        //cidade do usuário
+        Optional<City> oCity = cityService.findById(user.getAddress().getCity().getId());
+        if (!oCity.isPresent()) {
+            throw new EntityNotFoundException("Cidade não foi encontrada pelo id informado.");
+        }
+        CityMinDTO cityMinDTO = cityMapper.toMinDto(oCity.get());
 
         //envia a notificação ao usuário
         List<EventSSE> eventSsesList = sseService.findPendingEventsByEmail(authentication.getEmail());
@@ -135,6 +149,8 @@ public class ProfessionalHomeController {
 
         ModelAndView mv = new ModelAndView("professional/my-account-menu");
         mv.addObject("eventsse", eventSSEDTOs);
+        mv.addObject("professional", userDTO);
+        mv.addObject("city", cityMinDTO);
 
         return mv;
     }

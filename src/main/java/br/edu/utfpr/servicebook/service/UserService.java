@@ -88,6 +88,23 @@ public class UserService {
     }
 
     /**
+     * Retorna uma lista de Expertise de um profissional
+     * @param professional
+     * @return
+     */
+    public List<Expertise> getExpertises(User professional){
+        List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(professional);
+
+        List<Expertise> expertises = new ArrayList<>();
+        for (ProfessionalExpertise professionalExpertise : professionalExpertises) {
+            Expertise expertise = professionalExpertise.getExpertise();
+            expertises.add(expertise);
+        }
+
+        return expertises;
+    }
+
+    /**
      * Retorna o total de usuários.
      * @return
      */
