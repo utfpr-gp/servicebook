@@ -52,52 +52,12 @@
             </sec:authorize>
 
             <sec:authorize access="hasRole('USER')">
-                <t:navbar-user userInfo="${userInfo}"></t:navbar-user>
-            </sec:authorize>
-
-            <%-- Usuário logado --%>
-            <sec:authorize access="isAuthenticated()">
-                <ul class="right nav-btn hide-on-med-and-down">
-                    <a class="left menu-link" href="requisicoes?passo=1">ANUNCIAR</a>
-                    <c:choose>
-                        <c:when test="${fn:contains(currenturl, '/minha-conta/cliente')}">
-                            <li>
-                                <a class='dropdown-trigger btn' href='#' data-target='dropdown-cliente'>SOU CLIENTE<i
-                                        class="tiny material-icons right">arrow_drop_down</i></a>
-                                <ul id='dropdown-cliente' class='dropdown-content'>
-                                    <li><a href="minha-conta/profissional">Sou profissional</a></li>
-                                </ul>
-                            </li>
-                        </c:when>
-                        <c:when test="${fn:contains(currenturl, '/minha-conta/profissional')}">
-                            <li>
-                                <a class='dropdown-trigger btn' href='#' data-target='dropdown-profissional'>SOU
-                                    PROFISSIONAL<i class="tiny material-icons right">arrow_drop_down</i></a>
-                                <ul id='dropdown-profissional' class='dropdown-content'>
-                                    <li><a href="minha-conta/cliente">Sou Cliente</a></li>
-                                </ul>
-                            </li>
-                        </c:when>
-                        <c:when test="${fn:contains(currenturl, '/minha-conta/empresa')}">
-                            <li>
-                                <a class='dropdown-trigger btn' href='#' data-target='dropdown-company'>SOU EMPRESA<i
-                                        class="tiny material-icons right">arrow_drop_down</i></a>
-                                <ul id='dropdown-company' class='dropdown-content'>
-                                    <li><a href="minha-conta/cliente">Sou cliente</a></li>
-                                </ul>
-                            </li>
-                        </c:when>
-                        <c:otherwise>
-                            <li>
-                                <a class='dropdown-trigger btn' href='#' data-target='dropdown-cliente-default'>SOU
-                                    CLIENTE<i class="tiny material-icons right">arrow_drop_down</i></a>
-                                <ul id='dropdown-cliente-default' class='dropdown-content'>
-                                    <li><a href="minha-conta/profissional">Sou profissional</a></li>
-                                </ul>
-                            </li>
-                        </c:otherwise>
-                    </c:choose>
-                </ul>
+                <c:if test="${access_type eq 'PROFESSIONAL'}">
+                    <t:navbar-professional userInfo="${userInfo}"></t:navbar-professional>
+                </c:if>
+                <c:if test="${access_type eq 'CLIENT'}">
+                    <t:navbar-client userInfo="${userInfo}"></t:navbar-client>
+                </c:if>
             </sec:authorize>
 
             <!-- sidenav -->
@@ -182,7 +142,8 @@
         let elems = document.querySelectorAll('.dropdown-trigger');
         console.log((elems))
         let t = M.Dropdown.init(elems, {
-            coverTrigger: false,
+            coverTrigger: false, // Displays dropdown below the button
+            constrainWidth: false, // Does not change width of dropdown to that of the activator
         });
     });
 </script>

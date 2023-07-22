@@ -105,7 +105,7 @@
     <!-- Fim da verificação de perfil -->
 
     <c:choose>
-        <c:when test="${fn:contains(currenturl, '/minha-conta/cliente')}">
+        <c:when test="${access_type eq 'CLIENT'}">
             <!-- profissionais favoritos -->
             <div class="row primary-background-color no-margin">
                 <div class="col s12">
@@ -120,32 +120,9 @@
                 </div>
             </div>
             <!-- Fim profissionais favoritos -->
-
-            <!-- Acesso como perfil -->
-            <sec:authorize access="hasRole('COMPANY')">
-                <div class="row no-margin center">
-                    <div class="col s12 no-margin no-padding input-field area-profission-select">
-                        <div class="spacing-buttons">
-                            <a class="waves-effect waves-light btn" href="minha-conta/empresa">
-                                Acessar como empresa </a>
-                        </div>
-                    </div>
-                </div>
-            </sec:authorize>
-            <sec:authorize access="hasRole('USER')">
-                <div class="row no-margin center">
-                    <div class="col s12 no-margin no-padding input-field area-profission-select">
-                        <div class="spacing-buttons">
-                            <a class="waves-effect waves-light btn" href="minha-conta/profissional">
-                                Acessar como profissional </a>
-                        </div>
-                    </div>
-                </div>
-            </sec:authorize>
-            <!-- Fim Acesso como perfil -->
-
         </c:when>
-        <c:when test="${fn:contains(currenturl, '/minha-conta/empresa') or fn:contains(currenturl, '/minha-conta/profissional')}">
+        <c:when test="${access_type eq 'PROFESSIONAL' or access_type eq 'COMPANY'}">
+
             <!-- Seguidores -->
             <div class="row primary-background-color no-margin">
                 <div class="col s12">
@@ -162,7 +139,7 @@
             <!-- Fim Seguidores -->
 
             <!-- Funcionários - mostra só para empresa -->
-            <c:if test="${fn:contains(currenturl, '/minha-conta/empresa')}">
+            <c:if test="${access_type eq 'COMPANY'}">
                 <!-- Quantidade de funcionários -->
                 <div class="row primary-background-color no-margin">
                     <div class="col s12">
@@ -188,17 +165,6 @@
                 </div>
             </c:if>
             <!-- Fim Funcionários - mostra só para empresa -->
-
-            <!-- Acesso ao perfil -->
-            <div class="row no-margin center">
-                <div class="col s12 no-margin no-padding input-field area-profission-select">
-                    <div class="spacing-buttons">
-                        <a class="waves-effect waves-light btn" href="minha-conta/cliente">
-                            Acessar como cliente </a>
-                    </div>
-                </div>
-            </div>
-            <!-- Fim Acesso ao perfil -->
 
             <!-- Especialidades -->
             <div class="row no-margin center">
@@ -285,13 +251,6 @@
                 </div>
             </div>
             <!-- Fim Estatísticas -->
-        </c:when>
-        <c:when test="${fn:contains(currenturl, '/minha-conta/empresa')}">
-
-
-        </c:when>
-        <c:when test="${fn:contains(currenturl, '/minha-conta/profissional')}">
-
         </c:when>
     </c:choose>
 </div>

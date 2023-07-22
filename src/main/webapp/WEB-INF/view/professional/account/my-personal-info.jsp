@@ -15,27 +15,7 @@
             <!-- Container -->
             <div class="container">
                 <!-- Mensagens -->
-                <div class="row">
-                    <div class="col s12 l6 offset-l3 spacing-buttons">
-                        <c:if test="${not empty msg}">
-                            <div class="card-panel green lighten-1 msg-view center-align">
-                                <span class="white-text">${msg}</span>
-                            </div>
-                        </c:if>
-                        <c:if test="${not empty msgError}">
-                            <div class="card-panel red msg-view center-align">
-                                <span class="white-text">${msgError}</span>
-                            </div>
-                        </c:if>
-                        <c:if test="${not empty errors}">
-                            <div class="card-panel red msg-view center-align">
-                                <c:forEach var="e" items="${errors}">
-                                    <span class="white-text">${e.getDefaultMessage()}</span><br>
-                                </c:forEach>
-                            </div>
-                        </c:if>
-                    </div>
-                </div>
+                <t:message-box/>
                 <!-- Fim Mensagens -->
 
                 <!-- Formulário -->
@@ -66,8 +46,7 @@
                             </div>
                             <div class="row">
                                 <div class="input-field">
-                                    <fmt:formatDate var="formattedDate" value="${userDTO.birthDate}" pattern="yyyy-MM-dd" />
-                                    <input type="date" id="birthDate" name="birthDate" disabled class="validate" value="${formattedDate}">
+                                    <input type="date" id="birthDate" name="birthDate" disabled class="validate" value="${userDTO.birthDate}">
                                     <label for="birthDate" class="active">Atualize sua data de nascimento:</label>
                                 </div>
                             </div>

@@ -27,7 +27,7 @@
 
 .menu-link{
     font-size: 110%;
-    margin-right: 5rem;
+    margin-right: 20px;
     color: #53b1ed;
 }
 
@@ -43,4 +43,8 @@
 
 .dropdown-content li span {
     color: #1c2231;
+}
+
+.dropdown-content-width {
+    width: 250px !important;
 }

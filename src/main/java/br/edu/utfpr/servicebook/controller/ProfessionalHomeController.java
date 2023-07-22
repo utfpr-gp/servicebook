@@ -12,6 +12,7 @@ import br.edu.utfpr.servicebook.sse.EventSSE;
 import br.edu.utfpr.servicebook.sse.EventSSEDTO;
 import br.edu.utfpr.servicebook.sse.EventSseMapper;
 import br.edu.utfpr.servicebook.sse.SSEService;
+import br.edu.utfpr.servicebook.util.SessionNames;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import br.edu.utfpr.servicebook.util.UserTemplateInfo;
@@ -31,6 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -204,6 +206,7 @@ public class ProfessionalHomeController {
     @RolesAllowed({RoleType.USER})
     public ModelAndView showAvailableJobs(
             HttpServletRequest request,
+            HttpSession httpSession,
             @RequestParam(required = false, defaultValue = "0") Long id,
             @RequestParam(value = "pag", defaultValue = "1") int page,
             @RequestParam(value = "siz", defaultValue = "5") int size,
@@ -211,13 +214,15 @@ public class ProfessionalHomeController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
+        httpSession.setAttribute(SessionNames.ACCESS_USER_KEY, SessionNames.ACCESS_USER_PROFESSIONAL_VALUE);
+
         Page<JobRequest> jobRequestPage = findJobRequests(id, JobRequest.Status.AVAILABLE, page, size);
 
         List<JobRequestFullDTO> jobRequestFullDTOs = generateJobRequestDTOList(jobRequestPage);
 
         PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/profissional/disponiveis");
 
-        ModelAndView mv = new ModelAndView("professional/available-jobs-report");
+        ModelAndView mv = new ModelAndView("professional/professional-index");
         mv.addObject("pagination", paginationDTO);
         mv.addObject("jobs", jobRequestFullDTOs);
 

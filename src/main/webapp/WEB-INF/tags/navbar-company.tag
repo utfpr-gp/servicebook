@@ -11,6 +11,14 @@
 <div class="right">
     <ul class="right nav-btn hide-on-med-and-down">
         <li>
+            <a class='dropdown-trigger btn' href='#' data-target='dropdown-company'>SOU EMPRESA<i
+                    class="tiny material-icons right">arrow_drop_down</i></a>
+            <ul id='dropdown-company' class='dropdown-content'>
+                <li><a href="cliente">Sou cliente</a></li>
+            </ul>
+        </li>
+
+        <li>
             <a class='dropdown-trigger btn truncate' href='#' data-target='dropdown-perfil'>${userInfo.name}<i class="tiny material-icons right">arrow_drop_down</i></a>
             <ul id='dropdown-perfil' class='dropdown-content'>
                 <li><a href="/servicebook/minha-conta/empresa">Minha Conta</a></li>

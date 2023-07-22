@@ -29,6 +29,7 @@
     <c:set var="currenturl" value="${requestScope['javax.servlet.forward.request_uri']}"/>
     <nav class="nav-main" role="navigation">
         <div class="nav-wrapper container">
+
             <a id="logo-container" href="" class="brand-logo">
                 <svg class="logo-icon left" style="width: 50px;height:50px" viewBox="0 0 24 24">
                     <path class="primary-color-icon"
@@ -51,57 +52,17 @@
             </sec:authorize>
 
             <sec:authorize access="hasRole('USER')">
-                <t:navbar-user userInfo="${userInfo}"></t:navbar-user>
+                <c:if test="${access_type eq 'PROFESSIONAL'}">
+                    <t:navbar-professional userInfo="${userInfo}"></t:navbar-professional>
+                </c:if>
+                <c:if test="${access_type eq 'CLIENT'}">
+                    <t:navbar-client userInfo="${userInfo}"></t:navbar-client>
+                </c:if>
             </sec:authorize>
 
             <sec:authorize access="hasRole('ADMIN')">
                 <ul class="right hide-on-med-and-down">
                     <li><a href="logout">SAIR</a></li>
-                </ul>
-            </sec:authorize>
-
-            <%-- Usuário logado --%>
-            <sec:authorize access="isAuthenticated() && !hasRole('ADMIN')">
-                <ul class="right nav-btn hide-on-med-and-down">
-                    <a class="left menu-link" href="requisicoes?passo=1">ANUNCIAR</a>
-                    <c:choose>
-                        <c:when test="${fn:contains(currenturl, '/minha-conta/cliente')}">
-                            <li>
-                                <a class='dropdown-trigger btn' href='#' data-target='dropdown-cliente'>SOU CLIENTE<i
-                                        class="tiny material-icons right">arrow_drop_down</i></a>
-                                <ul id='dropdown-cliente' class='dropdown-content'>
-                                    <li><a href="minha-conta/profissional">Sou profissional</a></li>
-                                </ul>
-                            </li>
-                        </c:when>
-                        <c:when test="${fn:contains(currenturl, '/minha-conta/profissional')}">
-                            <li>
-                                <a class='dropdown-trigger btn' href='#' data-target='dropdown-profissional'>SOU
-                                    PROFISSIONAL<i class="tiny material-icons right">arrow_drop_down</i></a>
-                                <ul id='dropdown-profissional' class='dropdown-content'>
-                                    <li><a href="minha-conta/cliente">Sou Cliente</a></li>
-                                </ul>
-                            </li>
-                        </c:when>
-                        <c:when test="${fn:contains(currenturl, '/minha-conta/empresa')}">
-                            <li>
-                                <a class='dropdown-trigger btn' href='#' data-target='dropdown-company'>SOU EMPRESA<i
-                                        class="tiny material-icons right">arrow_drop_down</i></a>
-                                <ul id='dropdown-company' class='dropdown-content'>
-                                    <li><a href="minha-conta/cliente">Sou cliente</a></li>
-                                </ul>
-                            </li>
-                        </c:when>
-                        <c:otherwise>
-                            <li>
-                                <a class='dropdown-trigger btn' href='#' data-target='dropdown-cliente-default'>SOU
-                                    CLIENTE<i class="tiny material-icons right">arrow_drop_down</i></a>
-                                <ul id='dropdown-cliente-default' class='dropdown-content'>
-                                    <li><a href="minha-conta/profissional">Sou profissional</a></li>
-                                </ul>
-                            </li>
-                        </c:otherwise>
-                    </c:choose>
                 </ul>
             </sec:authorize>
 
@@ -145,7 +106,9 @@
                     </c:otherwise>
                 </c:choose>
             </sec:authorize>
-            <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+
+            <a href="#" data-target="nav-mobile" class="sidenav-trigger valign-wrapper"><i class="material-icons">menu</i></a>
+
         </div>
     </nav>
     <jsp:doBody/>
@@ -179,7 +142,7 @@
         let elems = document.querySelectorAll('.dropdown-trigger');
         console.log((elems))
         let t = M.Dropdown.init(elems, {
-            coverTrigger: false,
+            coverTrigger: false, constrainWidth: false, hover: true
         });
     });
 </script>

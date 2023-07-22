@@ -4,6 +4,7 @@ import br.edu.utfpr.servicebook.filter.TemplateStatisticInfoFilter;
 import br.edu.utfpr.servicebook.filter.TemplateUserInfoFilter;
 import br.edu.utfpr.servicebook.service.IndexService;
 import br.edu.utfpr.servicebook.service.QuartzService;
+import br.edu.utfpr.servicebook.util.SessionNames;
 import br.edu.utfpr.servicebook.util.quartz.AutoWiringSpringBeanJobFactory;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -22,6 +23,9 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
+
 @SpringBootApplication()
 @ServletComponentScan
 public class ServicebookApplication {
@@ -34,6 +38,9 @@ public class ServicebookApplication {
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    private ServletContext servletContext;
 
     public static void main(String[] args) {
         SpringApplication.run(ServicebookApplication.class, args);
@@ -152,6 +159,8 @@ public class ServicebookApplication {
 
         BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
         System.out.println(bc.encode("qwerty123"));
+
+        servletContext.setAttribute(SessionNames.ACCESS_USER_KEY, SessionNames.ACCESS_USER_CLIENT_VALUE);
     }
 
     @EventListener(ApplicationStartedEvent.class)
