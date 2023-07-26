@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@RequestMapping("/c/vagas-de-emprego")
+@RequestMapping("/minha-conta/empresa/vagas-de-emprego")
 @Controller
 public class JobController {
 
@@ -106,8 +106,6 @@ public class JobController {
         return mv;
     }
 
-
-
     /**
      * Método responsável por salvar uma vaga de emprego
      * @param dto
@@ -122,7 +120,7 @@ public class JobController {
         if(errors.hasErrors()){
             redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
             redirectAttributes.addFlashAttribute("dto", dto);
-            return "redirect:/c/vagas-de-emprego";
+            return "redirect:/minha-conta/empresa/vagas-de-emprego";
         }
 
         Optional<User> oUser = userService.findByEmail(authentication.getEmail());
@@ -138,7 +136,7 @@ public class JobController {
             errors.rejectValue("expertiseId","error.dto.expertiseId.not-found","A especialidade não foi encontrada!");
             redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
             redirectAttributes.addFlashAttribute("dto", dto);
-            return "redirect:/c/vagas-de-emprego";
+            return "redirect:/minha-conta/empresa/vagas-de-emprego";
         }
 
         //verifica se a empresa tem esta especialidade
@@ -146,7 +144,7 @@ public class JobController {
             errors.rejectValue("expertiseId","error.dto.expertiseId.not-exists","A empresa não possui esta especialidade!");
             redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
             redirectAttributes.addFlashAttribute("dto", dto);
-            return "redirect:/c/vagas-de-emprego";
+            return "redirect:/minha-conta/empresa/vagas-de-emprego";
         }
 
         Job job = jobMapper.toEntity(dto);
@@ -157,7 +155,7 @@ public class JobController {
 
         redirectAttributes.addFlashAttribute("msg", "Vaga de emprego salva com sucesso!");
 
-        return "redirect:/c/vagas-de-emprego";
+        return "redirect:/minha-conta/empresa/vagas-de-emprego";
     }
 
     /**
@@ -239,10 +237,10 @@ public class JobController {
         try{
             this.jobService.delete(id);
             redirectAttributes.addFlashAttribute("msg", "A vaga de emprego foi removida com sucesso!");
-            return "redirect:/c/vagas-de-emprego";
+            return "redirect:/minha-conta/empresa/vagas-de-emprego";
         }catch (Exception exception) {
             redirectAttributes.addFlashAttribute("msgError", "A vaga de emprego não pode ser removida!");
-            return "redirect:/c/vagas-de-emprego";
+            return "redirect:/minha-conta/empresa/vagas-de-emprego";
         }
     }
 }

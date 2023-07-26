@@ -14,4 +14,10 @@ public interface CityRepository extends JpaRepository<City, Long> {
 
     Optional<City> findByName(String name);
 
+    /**
+     * Busque as cidades e ordene por nome
+     */
+    @Query("SELECT c FROM City c ORDER BY c.name")
+    Optional<City> findAllOrderByName();
+
 }

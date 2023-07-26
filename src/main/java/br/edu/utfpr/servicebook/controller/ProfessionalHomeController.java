@@ -203,7 +203,7 @@ public class ProfessionalHomeController {
      * @throws Exception
      */
     @GetMapping("/disponiveis")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showAvailableJobs(
             HttpServletRequest request,
             HttpSession httpSession,

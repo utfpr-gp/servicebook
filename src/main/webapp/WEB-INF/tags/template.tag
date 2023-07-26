@@ -48,7 +48,12 @@
             </sec:authorize>
 
             <sec:authorize access="hasRole('COMPANY')">
-                <t:navbar-company userInfo="${userInfo}"></t:navbar-company>
+                <c:if test="${access_type eq 'CLIENT'}">
+                    <t:navbar-client userInfo="${userInfo}"></t:navbar-client>
+                </c:if>
+                <c:if test="${access_type eq 'COMPANY'}">
+                    <t:navbar-company userInfo="${userInfo}"></t:navbar-company>
+                </c:if>
             </sec:authorize>
 
             <sec:authorize access="hasRole('USER')">

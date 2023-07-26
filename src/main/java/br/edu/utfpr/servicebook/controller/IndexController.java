@@ -76,6 +76,10 @@ public class IndexController {
             if(accessType == SessionNames.ACCESS_USER_PROFESSIONAL_VALUE){
                 return new ModelAndView("redirect:/minha-conta/profissional/disponiveis");
             }
+
+            if(accessType == SessionNames.ACCESS_USER_COMPANY_VALUE){
+                return new ModelAndView("redirect:/minha-conta/empresa/disponiveis");
+            }
         }
 
         List<City> cities = cityService.findAll();

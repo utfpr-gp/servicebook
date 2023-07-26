@@ -141,6 +141,7 @@ public class ServicebookApplication {
 
         registrationBean.setFilter(new TemplateStatisticInfoFilter());
         registrationBean.addUrlPatterns("/minha-conta/profissional/*");
+        registrationBean.addUrlPatterns("/minha-conta/empresa/*");
         registrationBean.setOrder(1);
 
         return registrationBean;

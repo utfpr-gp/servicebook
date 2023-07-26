@@ -4,51 +4,29 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
-<t:template title="Cadastro de Vagas de Emprego">
+<t:template-side-nav title="Cadastro de Vagas de Emprego">
     <jsp:body>
         <main>
             <div class="container">
-                <!-- Mensagens de erro -->
-                <div class="row">
-                    <div class="col s12 l6 offset-l3 spacing-buttons">
-                        <c:if test="${not empty msg}">
-                            <div class="card-panel green lighten-1 msg-view center-align">
-                                <span class="white-text">${msg}</span>
-                            </div>
-                        </c:if>
-                        <c:if test="${not empty msgError}">
-                            <div class="card-panel red msg-view center-align">
-                                <span class="white-text">${msgError}</span>
-                            </div>
-                        </c:if>
-                        <c:if test="${not empty errors}">
-                            <div class="card-panel red msg-view center-align">
-                                <c:forEach var="e" items="${errors}">
-                                    <span class="white-text">${e.getDefaultMessage()}</span><br>
-                                </c:forEach>
-                            </div>
-                        </c:if>
-                    </div>
-                </div>
-                <!-- Fim das mensagens de erro -->
-
                 <div class="section">
                     <!-- Formulário de cadastro de vagas de emprego -->
                     <div class="row">
-                        <div class="col s12 l6 offset-l3">
+                        <div class="col s12">
                             <h3 class="secondary-color-text">Vagas de Emprego</h3>
                         </div>
-                        <div class="col s12 l6 offset-l3 spacing-buttons">
-                            <a class="waves-effect waves-light btn" href="c/vagas-de-emprego">Nova Vaga</a>
+                        <t:message-box/>
+                        <div class="col s12 spacing-buttons">
+                            <a class="waves-effect waves-light btn" href="minha-conta/empresa/vagas-de-emprego">Nova Vaga</a>
                         </div>
-                        <div class="col s12 l6 offset-l3 spacing-buttons">
-                            <form action="c/vagas-de-emprego" method="post" enctype="multipart/form-data">
+                        <div class="col s12 spacing-buttons">
+                            <form action="minha-conta/empresa/vagas-de-emprego" method="post" enctype="multipart/form-data">
                                 <input name="id" type="hidden" value="${dto.id}">
 
                                 <div class="col s12 input-field">
                                     <input  type="text" id="title" name="title" value="${dto.title}">
                                     <label for="title">Título da vaga</label>
                                 </div>
+
                                 <div class="col s12 input-field">
                                     <select name="expertiseId" id="expertise-select">
                                         <option disabled selected>Selecione uma especialidade</option>
@@ -61,10 +39,12 @@
                                         </c:forEach>
                                     </select>
                                 </div>
+
                                 <div class="col s12 input-field">
                                     <input type="text" id="description" name="description" value="${dto.description}">
                                     <label for="description">Descrição</label>
                                 </div>
+
                                 <div class="col s12 input-field">
                                     <input type="number" id="salary-input" name="salary">
                                     <label for="salary-input">Salário</label>
@@ -80,7 +60,7 @@
 
                     <!-- Lista de vagas de emprego -->
                     <div class="row">
-                        <div class="col s12 l6 offset-l3 spacing-buttons">
+                        <div class="col s12 spacing-buttons">
                             <c:if test="${not empty jobs}">
                                 <table class="striped centered">
                                     <thead>
@@ -107,14 +87,14 @@
                                                     <c:otherwise>À combinar</c:otherwise>
                                                 </c:choose>
                                             </td>
-                                            <td><a href="${pageContext.request.contextPath}/c/vagas-de-emprego/${p.id}" class="btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">edit</i></a></td>
-                                            <td><a href="#modal-delete" class="btn-floating btn-small waves-effect waves-light red modal-trigger" data-url="${pageContext.request.contextPath}/c/vagas-de-emprego/${p.id}" data-name="${p.title}"><i class="material-icons">delete_forever</i></a></td>
+                                            <td><a href="minha-conta/empresa/vagas-de-emprego/${p.id}" class="btn-floating btn-small waves-effect waves-light blue"><i class="material-icons">edit</i></a></td>
+                                            <td><a href="#modal-delete" class="btn-floating btn-small waves-effect waves-light red modal-trigger" data-url="minha-conta/empresa/vagas-de-emprego/${p.id}" data-name="${p.title}"><i class="material-icons">delete_forever</i></a></td>
                                         </tr>
                                     </c:forEach>
                                     </tbody>
                                 </table>
                             </c:if>
-                            <div class="center"><t:pagination pagination="${pagination}" relativePath="/c/vagas-de-emprego"></t:pagination></div>
+                            <div class="center"><t:pagination pagination="${pagination}" relativePath="/minha-conta/empresa/vagas-de-emprego"></t:pagination></div>
                         </div>
                     </div>
                     <!-- Fim da lista de vagas de emprego -->
@@ -141,7 +121,7 @@
         </main>
 
     </jsp:body>
-</t:template>
+</t:template-side-nav>
 <script src="assets/libraries/jquery.mask.js"></script>
 <!--script>
     $(document).ready(function() {

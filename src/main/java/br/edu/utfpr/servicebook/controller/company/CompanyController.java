@@ -1,4 +1,4 @@
-package br.edu.utfpr.servicebook.controller;
+package br.edu.utfpr.servicebook.controller.company;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
 import br.edu.utfpr.servicebook.service.FollowsService;
@@ -12,6 +12,7 @@ import br.edu.utfpr.servicebook.sse.EventSSE;
 import br.edu.utfpr.servicebook.sse.EventSSEDTO;
 import br.edu.utfpr.servicebook.sse.EventSseMapper;
 import br.edu.utfpr.servicebook.sse.SSEService;
+import br.edu.utfpr.servicebook.util.SessionNames;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import br.edu.utfpr.servicebook.util.UserTemplateInfo;
@@ -32,6 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -112,14 +114,12 @@ public class CompanyController {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        ModelAndView mv = new ModelAndView("company/my-account");
+        ModelAndView mv = new ModelAndView("company/my-account-menu");
+
         UserDTO professionalDTO = userMapper.toDto(oProfessional.get());
 
         Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(oProfessional.get());
         professionalDTO.setFollowingAmount(oProfessionalFollowingAmount.get());
-        UserTemplateInfo individualInfo = templateUtil.getUserInfo(professionalDTO);
-        UserTemplateStatisticInfo statisticInfo = templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId.get());
-        mv.addObject("userInfo", individualInfo);
 
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
         List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
@@ -134,15 +134,19 @@ public class CompanyController {
                     return eventSseMapper.toFullDto(eventSse);
                 })
                 .collect(Collectors.toList());
-        UserDTO professionalDTO1 = userMapper.toDto(oProfessional.get());
+
         mv.addObject("eventsse", eventSSEDTOs);
         mv.addObject("expertises", expertiseDTOs);
-        mv.addObject("userInfo", individualInfo);
-        mv.addObject("professionalDTO1", professionalDTO1);
-        mv.addObject("statisticInfo", statisticInfo);
         mv.addObject("company", true);
         return mv;
     }
+
+    /**
+     * Apresenta a tela para adição de um novo funcionário a uma empresa.
+     * @param expertiseId
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/adicionar-profissional")
     @RolesAllowed({RoleType.COMPANY})
     public ModelAndView newProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> expertiseId
@@ -186,12 +190,15 @@ public class CompanyController {
     @RolesAllowed({RoleType.COMPANY})
     public ModelAndView showAvailableJobs(
             HttpServletRequest request,
+            HttpSession httpSession,
             @RequestParam(required = false, defaultValue = "0") Long id,
             @RequestParam(value = "pag", defaultValue = "1") int page,
             @RequestParam(value = "siz", defaultValue = "5") int size,
             @RequestParam(value = "ord", defaultValue = "id") String order,
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
+        //altera o tipo de usuário para empresa
+        httpSession.setAttribute(SessionNames.ACCESS_USER_KEY, SessionNames.ACCESS_USER_COMPANY_VALUE);
 
         Page<JobRequest> jobRequestPage = findJobRequests(id, JobRequest.Status.AVAILABLE, page, size);
 
@@ -199,7 +206,7 @@ public class CompanyController {
 
         PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/profissional/disponiveis");
 
-        ModelAndView mv = new ModelAndView("professional/available-jobs-report");
+        ModelAndView mv = new ModelAndView("professional/professional-index");
         mv.addObject("pagination", paginationDTO);
         mv.addObject("jobs", jobRequestFullDTOs);
 

@@ -18,16 +18,6 @@
             </ul>
         </li>
 
-        <li>
-            <a class='dropdown-trigger btn truncate' href='#' data-target='dropdown-perfil'>${userInfo.name}<i class="tiny material-icons right">arrow_drop_down</i></a>
-            <ul id='dropdown-perfil' class='dropdown-content'>
-                <li><a href="/servicebook/minha-conta/empresa">Minha Conta</a></li>
-                <li><a href="/servicebook/minha-conta/perfil">Meu perfil</a></li>
-                <li class="divider" tabindex="-1"></li>
-                <li><a href="logout">Sair</a></li>
-            </ul>
-        </li>
-
         <c:if test="${empty eventsse}">
             <li id="li-notifications">
                 <a onclick="M.toast({html: 'Não há notificação!'})" class='dropdown-trigger btn eventSize' href='#' data-target='dropdown3'><i class="material-icons">notifications</i></a>
@@ -59,5 +49,24 @@
                 </ul>
             </li>
         </c:if>
+
+        <li>
+            <a class='dropdown-trigger circle truncate' href='#' data-target='dropdown-perfil'>
+                <img src="${userInfo.profilePicture}" class="responsive-img" style="width: 50px; padding: 15px 5px 0px 5px">
+            </a>
+            <ul id='dropdown-perfil' class='dropdown-content dropdown-content-width'>
+                <li style="background-color: #f0f0f0">
+                    <div class="center-align">
+                        <img src="${userInfo.profilePicture}" class="responsive-img" style="width: 50px; padding: 15px 5px 0px 5px">
+                    </div>
+                    <span class="center upper-case disabled">${userInfo.name}</span>
+                </li>
+                <li class="divider" tabindex="-1"></li>
+                <li><a href="/servicebook/minha-conta/empresa">Minha Conta</a></li>
+                <li><a href="/servicebook/minha-conta/perfil">Meu perfil</a></li>
+                <li class="divider" tabindex="-1"></li>
+                <li><a href="logout">Sair</a></li>
+            </ul>
+        </li>
     </ul>
 </div>

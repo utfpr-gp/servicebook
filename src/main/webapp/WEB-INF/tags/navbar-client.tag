@@ -18,7 +18,12 @@
             <a class='dropdown-trigger btn' href='#' data-target='dropdown-cliente'>SOU CLIENTE<i
                     class="tiny material-icons right">arrow_drop_down</i></a>
             <ul id='dropdown-cliente' class='dropdown-content'>
-                <li><a href="minha-conta/profissional/disponiveis">Sou profissional</a></li>
+                <sec:authorize access="hasRole('COMPANY')">
+                    <li><a href="minha-conta/empresa/disponiveis">Sou empresa</a></li>
+                </sec:authorize>
+                <sec:authorize access="hasRole('USER')">
+                    <li><a href="minha-conta/profissional/disponiveis">Sou profissional</a></li>
+                </sec:authorize>
             </ul>
         </li>
 

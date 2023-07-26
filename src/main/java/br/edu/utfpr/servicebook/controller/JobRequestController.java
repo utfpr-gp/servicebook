@@ -123,7 +123,6 @@ public class JobRequestController {
         }
         JobRequestDTO dto = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         model.addAttribute("dto", dto);
-        model.addAttribute("individualInfo", this.getSidePanelUser());
 
         if(step == 1L){
             List<Expertise> expertise = expertiseService.findAll();
@@ -151,7 +150,6 @@ public class JobRequestController {
         if(errors.hasErrors()){
             model.addAttribute("dto", dto);
             model.addAttribute("errors", errors.getAllErrors());
-            model.addAttribute("individualInfo", this.getSidePanelUser());
 
             List<Expertise> expertises = expertiseService.findAll();
             List<ExpertiseDTO> expertiseDTOs = expertises.stream()
@@ -179,7 +177,6 @@ public class JobRequestController {
         if(errors.hasErrors()){
             model.addAttribute("dto", dto);
             model.addAttribute("errors", errors.getAllErrors());
-            model.addAttribute("individualInfo", this.getSidePanelUser());
             log.debug("Passo 2 {}", dto);
             log.debug("Errors 2 {}", errors);
             return "client/job-request/wizard-step-02";
@@ -228,7 +225,7 @@ public class JobRequestController {
         if(errors.hasErrors()){
             model.addAttribute("dto", dto);
             model.addAttribute("errors", errors.getAllErrors());
-            model.addAttribute("individualInfo", this.getSidePanelUser());
+
             log.debug("Passo 3 {}", dto);
             log.debug("Errors 3 {}", errors);
             return "client/job-request/wizard-step-03";
@@ -250,11 +247,10 @@ public class JobRequestController {
         if(errors.hasErrors()){
             model.addAttribute("dto", dto);
             model.addAttribute("errors", errors.getAllErrors());
-            model.addAttribute("individualInfo", this.getSidePanelUser());
+
             log.debug("Passo 4 {}", dto);
             log.debug("Errors 4 {}", errors);
             return "client/job-request/wizard-step-04";
-
         }
 
         JobRequestDTO sessionDTO = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
@@ -401,8 +397,6 @@ public class JobRequestController {
      * depois que realizao login na aplicação.
      * Esta requisição de serviço é pega da sessão e então, é salva no BD e o usuário é encaminhado para este endereço.
      * TODO apresentar uma mensagem de erro genérica no JSP caso error seja true
-     * @param isError informa se houve falha na persistência ou validação da requisição de serviço.
-     * @param httpSession
      * @return
      */
 //    @GetMapping("pedido-recebido")
@@ -461,16 +455,5 @@ public class JobRequestController {
         this.jobAvailableToHideService.save(jobAvailableToHide);
 
         return "redirect:/minha-conta/profissional#disponiveis";
-    }
-
-    private UserTemplateInfo getSidePanelUser() throws Exception {
-        Optional<Individual> client = (individualService.findByEmail(authentication.getEmail()));
-
-        if (!client.isPresent()) {
-            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
-        }
-        IndividualDTO individualDTO = individualMapper.toDto(client.get());
-
-        return templateUtil.getUserInfo(individualDTO);
     }
 }

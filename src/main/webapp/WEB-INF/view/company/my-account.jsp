@@ -4,36 +4,28 @@
 
 <t:template-side-nav title="ServiceBook - Minha conta">
     <jsp:body>
-        <main class="container">
+        <main class="">
             <div class="row">
-                <div class="row">
-                    <div class="col s12">
-                        <h2 class="secondary-color-text">Anúncios de serviços</h2>
+                <div class="col s12">
+                    <h2 class="secondary-color-text">Anúncios de serviços</h2>
+                </div>
+                <div class="col s12">
+                    <t:message-box/>
+                </div>
+                <div class="col s12">
+                    <div class="row">
+                        <ul class="tabs tabs-fixed-width center">
+                            <li class="tab">
+                                <a id="tab-default" data-url="minha-conta/empresa/disponiveis"
+                                   href="#disponiveis" class="truncate">
+                                    DISPONÍVEIS
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="col s12">
-                        <c:if test="${not empty msg}">
-                            <div class="row">
-                                <div class="col s12 l4 offset-l4">
-                                    <div class="card-panel green lighten-1 msg-view center-align">
-                                        <span class="white-text">${msg}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </c:if>
-                        <div class="row">
-                            <ul class="tabs tabs-fixed-width center">
-                                <li class="tab">
-                                    <a id="tab-default" data-url="minha-conta/empresa/disponiveis"
-                                       href="#disponiveis" class="truncate">
-                                        DISPONÍVEIS
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div id="disponiveis" class="col s12">
-                        </div>
+                    <div id="disponiveis" class="col s12">
+                    </div>
 
-                    </div>
                 </div>
             </div>
         </main>

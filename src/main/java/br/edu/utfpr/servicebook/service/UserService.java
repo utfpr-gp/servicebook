@@ -2,10 +2,12 @@ package br.edu.utfpr.servicebook.service;
 
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
+import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
 import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.repository.UserRepository;
+import br.edu.utfpr.servicebook.security.IAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private IAuthentication authentication;
 
     @Autowired
     private ProfessionalExpertiseService professionalExpertiseService;
@@ -110,5 +115,19 @@ public class UserService {
      */
     public Long countAll(){
         return this.userRepository.count();
+    }
+
+    /**
+     * Retorna o usuário autenticado ou nulo.
+     * @return
+     */
+    public User getAuthenticated(){
+        Optional<User> oUser = findByEmail(authentication.getEmail());
+
+        if (oUser.isPresent()) {
+            return oUser.get();
+        }
+
+        return null;
     }
 }
