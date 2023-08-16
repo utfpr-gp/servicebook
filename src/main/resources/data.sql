@@ -154,6 +154,21 @@ VALUES ('1', '2', 'false'),
 
 
 INSERT INTO follows (client_id, professional_id)
-VALUES (4, 2)
+VALUES (4, 2);
 
+-- DURAÇÃO DE SERVIÇOS
+INSERT INTO duration_services (name)
+VALUES ('Sem agendamento'),
+       ('30 minutos'),
+       ('1 hora'),
+       ('1 hora e meia'),
+       ('2 horas'),
+       ('3 horas'),
+       ('Um período do dia'),
+       ('O dia inteiro');
 
+-- UNIDADE DE PREÇO
+INSERT INTO price_units (name)
+VALUES ('Hora'),
+       ('Metro quadrado'),
+       ('Unidade');

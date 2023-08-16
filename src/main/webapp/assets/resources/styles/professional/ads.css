@@ -1,0 +1,10 @@
+.active-profission{
+    border: #00b0ff 2px solid;
+    padding: 20px;
+}
+/*LABEL DOS CAMPOS*/
+.label-ads{
+    /*margin-top: 5% !important;*/
+    margin: 0 !important;
+    font-size: .75rem !important;
+}
