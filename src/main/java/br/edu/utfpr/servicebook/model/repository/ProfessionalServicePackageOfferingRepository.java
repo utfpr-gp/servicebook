@@ -24,5 +24,8 @@ public interface ProfessionalServicePackageOfferingRepository extends JpaReposit
     /**
      * Busca os anúncios de um dado profissional.
      */
-    public List<ProfessionalServicePackageOffering> findAllByUser(User user);
+    public List<ProfessionalServicePackageOffering> findFirst3ByUserAndType(User user, Enum type);
+
+    public List<ProfessionalServicePackageOffering> findByUserAndType(User user, Enum type);
+
 }

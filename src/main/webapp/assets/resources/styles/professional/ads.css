@@ -8,3 +8,29 @@
     margin: 0 !important;
     font-size: .75rem !important;
 }
+
+/*.card{*/
+/*    height: 100%;*/
+/*}*/
+
+#show-service-combined{
+    margin-top: 45px;
+}
+#add-service-combined{
+    height: 3rem;
+    line-height: 3rem;
+    width: 100%;
+}
+
+.texto-com-elipse {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 200px;
+}
+
+.ads-price-label{
+    border: none !important;
+    color: black !important;
+}
+

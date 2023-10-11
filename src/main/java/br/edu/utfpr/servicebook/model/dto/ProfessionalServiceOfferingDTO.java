@@ -1,11 +1,13 @@
 package br.edu.utfpr.servicebook.model.dto;
 
+import br.edu.utfpr.servicebook.model.entity.ProfessionalServicePackageOffering;
 import br.edu.utfpr.servicebook.model.entity.Service;
 import br.edu.utfpr.servicebook.model.entity.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Classe que representa um serviço adicionado por um profissional ao seu portfólio.
@@ -19,6 +21,13 @@ public class ProfessionalServiceOfferingDTO {
 
     private Long id;
 
+    public enum Type {
+        INDIVIDUAL,
+        COMBINED_PACKAGE,
+        SIMPLE_PACKAGE
+    }
+
+    private Type type;
     /**
      * Nome do serviço.
      * O profissional pode customizar o nome do serviço cadastrado pelo administrador de várias maneiras, dependendo
@@ -34,6 +43,17 @@ public class ProfessionalServiceOfferingDTO {
      * Caso ele não especifique a descrição do serviço, a descrição do serviço cadastrado pelo administrador será usada.
      */
     private String description;
+    private Set<Long> descriptions;
+
+    /**
+     * Unidade de preço do serviço.
+     */
+    private String unit;
+
+    /**
+     * Duração do serviço.
+     */
+    private String duration;
 
     /**
      * Serviço cadastrado pelo administrador.
@@ -43,6 +63,7 @@ public class ProfessionalServiceOfferingDTO {
     private ServiceDTO service;
 
     private Long serviceId;
+    private Long price;
 
     /**
      * Profissional que oferece o serviço.

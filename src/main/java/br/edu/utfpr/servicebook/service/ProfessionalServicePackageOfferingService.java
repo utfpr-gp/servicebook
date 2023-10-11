@@ -32,7 +32,23 @@ public class ProfessionalServicePackageOfferingService {
     /**
      * Busca os anúncios de pacote de serviços de um dado profissional.
      */
-    public List<ProfessionalServicePackageOffering> findAllByUser(User user){
-        return this.professionalServicePackageOfferingRepository.findAllByUser(user);
+    public List<ProfessionalServicePackageOffering> findAllByUserAndType(User user, Enum type){
+        return this.professionalServicePackageOfferingRepository.findFirst3ByUserAndType(user, type);
+    }
+
+    /**
+     * Salva uma oferta de serviço de um profissional
+     * @param professionalServicePackageOffering
+     */
+    public void save(ProfessionalServicePackageOffering professionalServicePackageOffering){
+        professionalServicePackageOfferingRepository.save(professionalServicePackageOffering);
+    }
+
+    public ProfessionalServicePackageOffering findById(Long id) {
+        return professionalServicePackageOfferingRepository.findById(id).orElse(null);
+    }
+
+    public List<ProfessionalServicePackageOffering> findByTypeAndUser(User user, Enum type) {
+        return professionalServicePackageOfferingRepository.findByUserAndType(user,type);
     }
 }

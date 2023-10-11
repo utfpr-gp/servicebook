@@ -7,6 +7,8 @@ import br.edu.utfpr.servicebook.model.entity.User;
 import br.edu.utfpr.servicebook.model.repository.CategoryRepository;
 import br.edu.utfpr.servicebook.model.repository.ProfessionalServiceOfferingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +52,13 @@ public class ProfessionalServiceOfferingService {
         return professionalServiceOfferingRepository.findProfessionalServiceOfferingByUser(user);
     }
 
+    public List<ProfessionalServiceOffering> findFirst3ProfessionalServiceOfferingByUserAndType(User user, Enum type){
+        return professionalServiceOfferingRepository.findFirst3ByUserAndType(user, type);
+    }
+
+    public List<ProfessionalServiceOffering> findProfessionalServiceOfferingByUserAndType(User user, Enum type){
+        return professionalServiceOfferingRepository.findByUserAndType(user, type);
+    }
     /**
      * Busca todas as ofertas de serviços de um profissional
      * @param id
@@ -96,5 +105,22 @@ public class ProfessionalServiceOfferingService {
      */
     public Optional<ProfessionalServiceOffering> findProfessionalServiceOfferingByName(String name){
         return professionalServiceOfferingRepository.findProfessionalServiceOfferingByName(name);
+    }
+
+    /**
+     * Busca o serviço pelo id.
+     * @param id
+     * @return
+     */
+    public Optional<ProfessionalServiceOffering> findProfessionalServiceOfferingByName(Long id){
+        return professionalServiceOfferingRepository.findProfessionalServiceOfferingById(id);
+    }
+
+    public List<ProfessionalServiceOffering> findAllByProfessionalServicePackageOfferingUser(User professionalServicePackageOffering){
+        return professionalServiceOfferingRepository.findProfessionalServiceOfferingAdItemsByUser(professionalServicePackageOffering);
+    }
+
+    public List<ProfessionalServiceOffering> findAll(){
+        return professionalServiceOfferingRepository.findDistinctProfessionalServiceOfferings();
     }
 }

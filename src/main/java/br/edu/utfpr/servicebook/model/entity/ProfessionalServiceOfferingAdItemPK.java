@@ -16,6 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Embeddable
 public class ProfessionalServiceOfferingAdItemPK implements Serializable {
+
     Long professionalServiceOfferingId;
 
     Long professionalServiceOfferingAdId;

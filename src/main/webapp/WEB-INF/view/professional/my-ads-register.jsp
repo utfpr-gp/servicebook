@@ -18,7 +18,7 @@
                         <t:message-box/>
 
                         <div class="col s12">
-                            <h3 class="secondary-color-text">Anúnciar Serviço</h3>
+                            <h3 class="secondary-color-text">Anunciar Serviços</h3>
                         </div>
                         <blockquote class="light-blue lighten-5 info-headers">
                             <p>
@@ -33,36 +33,33 @@
                             </p>
                         </blockquote>
                         <!-- Formulário de adição de especialidade -->
-                        <div class="col s12">
-                            <form action="minha-conta/profissional/meus-anuncios/novo"
+                        <div class="row">
+                            <div class="input-field col s6">
+                                <p for="service-type" class="label-ads">Qual o tipo do serviço?</p>
+                                <select id="service-type" name="type">
+                                    <option disabled selected>Qual o tipo do serviço?</option>
+                                    <option value="INDIVIDUAL">Serviço Individual</option>
+                                    <option value="COMBINED_PACKAGE">Combinação de Serviços</option>
+                                    <option value="SIMPLE_PACKAGE">Pacote de Serviços</option>
+                                </select>
+                            </div>
+
+                            <div class="col s12" id="type-package" style="display: none">
+                                <jsp:include page="my-ads-register-package.jsp"/>
+                            </div>
+                            <div class="col s12" id="type-combined" style="display: none">
+                                <jsp:include page="my-ads-register-combined.jsp"/>
+                            </div>
+                        </div>
+                        <div class="col s12" id="type-individual">
+                            <form action="minha-conta/profissional/meus-anuncios/novo/individual"
                                   method="post">
 
                                 <div class="row">
-                                    <div class="input-field col s6">
-                                        <p for="service-type" class="label-ads">Qual o tipo do serviço?</p>
-                                        <select id="service-type" name="id">
-                                            <option disabled selected>Qual o tipo do serviço?</option>
-                                            <option value="INDIVIDUAL">Serviço Individual</option>
-                                            <option value="COMBINED_PACKAGE">Combinação de Serviços</option>
-                                            <option value="SIMPLE_PACKAGE">Pacote de Serviços</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col s12"></div>
-
-<%--                                    <div class="input-field col s6">--%>
-<%--                                        <p for="ads-expertise" class="label-ads">Qual a especialidade? </p>--%>
-<%--                                        <select id="expertise-select" name="expertiseId" value="${expertise.id}">--%>
-<%--                                            <option disabled selected>Selecione uma especialidade</option>--%>
-<%--                                            <c:forEach var="e" items="${expertises}">--%>
-<%--                                                <option value="${e.id}" ${e.id eq expertise.id ? 'selected="selected"' : ''}>${e.name}</option>--%>
-<%--                                            </c:forEach>--%>
-<%--                                        </select>--%>
-<%--                                    </div> --%>
 
                                     <div class="input-field col s6">
                                         <p for="ads-service" class="label-ads">Qual o serviço? </p>
-                                        <select id="service-select" name="id">
+                                        <select id="service-select-individual" class="service-select" name="serviceId">
                                             <option disabled selected>Selecione um serviço</option>
                                             <c:forEach var="service" items="${services}">
                                                 <option value="${service.id}">${service.name}</option>
@@ -72,19 +69,19 @@
 
                                     <div class="input-field col s12">
                                         <p for="ads-name"  class="label-ads">Titulo </p>
-                                        <input id="ads-name" type="text" name="ads-name"/>
+                                        <input id="ads-name-individual" class="ads-name" type="text" name="" disabled onblur="nameService()"/>
+                                        <input id="name-service-individual" class="name-service" type="hidden" name="description"/>
                                         <p>
-                                        <label>
-                                            <input type="checkbox" />
-                                            <span>Sobrescrever</span>
-                                        </label>
+                                            <label>
+                                                <input type="checkbox" id="sobrescrever" class="sobrescrever"/>
+                                                <span>Sobrescrever</span>
+                                            </label>
                                         </p>
-
                                     </div>
 
                                     <div class="input-field col s6">
-                                        <p for="ads-uni" class="label-ads">Qual a unidade de preço do serviço/ </p>
-                                        <select id="ads-uni" name="ads-uni">
+                                        <p for="ads-uni" class="label-ads">Qual a unidade de preço do serviço? </p>
+                                        <select id="ads-uni" name="unit">
                                             <option disabled selected>Selecione</option>
                                             <option>Hora</option>
                                             <option>Metro Quadrado</option>
@@ -94,17 +91,13 @@
 
                                     <div class="input-field col s6">
                                         <p for="ads-price" class="label-ads">Quanto você cobra por este serviço? </p>
-                                        <input id="ads-price" type="text" name="ads-price"/>
-                                    </div>
-
-                                    <div class="input-field col s6" style="display: none" id="show-service-package">
-                                        <p for="ads-qtde" class="label-ads">Qual a quantidade para o pacote? </p>
-                                        <input id="ads-qtde" type="number" name="ads-qtde"/>
+                                        <input id="ads-price-individual" class="ads-price" type="text" name="" onblur="return RemoveMaskIndividual(event)"/>
+                                        <input id="price-service-individual" class="price-service" type="hidden" name="price"/>
                                     </div>
 
                                     <div class="input-field col s6">
                                         <p class="label-ads">Qual a Duração do serviço?</p>
-                                        <select id="ads-duracao" name="ads-uni">
+                                        <select id="ads-duracao" name="duration">
                                             <option disabled selected>Selecione</option>
                                             <option>Sem Agendamento</option>
                                             <option>1 Hora</option>
@@ -116,6 +109,12 @@
                                         </select>
                                     </div>
 
+                                </div>
+                                <div class="right">
+                                    <a href="minha-conta/profissional/meus-anuncios" class="btn-flat">Cancelar</a>
+                                    <button type="submit"
+                                            class="btn waves-effect waves-light">Salvar
+                                    </button>
                                 </div>
 
                             </form>
@@ -129,50 +128,8 @@
 </t:template-side-nav>
 
 <script>
-
-    $(function () {
-        $('#ads-price').mask('000.000.000.000.000,00', {reverse: true});
-
-        //inicializa os campos nome e descrição com os dados do serviço selecionado
-        $('#service-select').change(function () {
-            let serviceId = $(this).val();
-            let url = 'servicos/' + serviceId;
-
-            $.get(url, function (data) {
-                $('#name-input').val(data.name);
-                $('#description-textarea').val(data.description);
-                $('#description-blockquote').show();
-            });
-        });
-
-        //inicializa o select de serviços com os serviços da especialidade selecionada
-        $('#expertise-select').change(function () {
-            let expertiseId = $(this).val();
-            let url = 'minha-conta/profissional/especialidades/' + expertiseId + '/servicos';
-
-            $.get(url, function (data) {
-                let options = '<option disabled selected>Selecione um serviço</option>';
-                data.forEach(function (service) {
-                    options += '<option value="' + service.id + '">' + service.name + '</option>';
-                });
-                $('#service-select').html(options);
-                $('#service-select').formSelect();
-            });
-        });
-    });
-
-    $('#service-type').change(function () {
-        let type = $(this).val();
-        if(type == 'SIMPLE_PACKAGE'){
-            $('#show-service-package').show();
-        } else {
-            $('#show-service-package').hide();
-
-
-        }
-
-        console.log($(this).val())
-
-    //     show-service-package
-    });
+    function nameService() {
+        str = $("#ads-name-individual").val();
+        $("#name-service-individual").val(str);
+    }
 </script>

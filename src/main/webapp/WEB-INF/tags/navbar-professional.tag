@@ -63,6 +63,7 @@
                     <span class="center upper-case disabled">${userInfo.name}</span>
                 </li>
                 <li class="divider" tabindex="-1"></li>
+                <li><a href="/servicebook/minha-conta/profissional/meus-anuncios">Meus Anúncios</a></li>
                 <li><a href="/servicebook/minha-conta/profissional">Minha Conta</a></li>
                 <li><a href="/servicebook/minha-conta/perfil">Meu Perfil</a></li>
                 <li class="divider" tabindex="-1"></li>
