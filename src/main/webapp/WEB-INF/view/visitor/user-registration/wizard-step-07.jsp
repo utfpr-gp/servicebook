@@ -22,86 +22,149 @@
                 <div class="section">
                     <div class="row">
                         <h3 class="row center secondary-color-text">
-                            Qual o seu endereço?
+                            Escolha uma especialidade!
                         </h3>
                         <h5 class="row center secondary-color-text">
-                            Será útil para filtrar serviços por região e de acordo com a distância
-                            para o local de realização do serviço.
+                            Se você tem alguma habilidade e deseja receber solicitações para execução de serviços, então
+                            nos informe suas especialidades.
                         </h5>
 
-                        <form method="post" action="cadastrar-se/passo-7">
-                            <div class="row spacing-buttons">
-                                <div class="row">
-                                    <div class="center">
-                                        <a id="btn-search-cep" class="waves-effect waves-light btn">Buscar CEP</a>
+                        <div class="row">
+                            <c:choose>
+                                <c:when test="${empty professionalExpertises}">
+                                    <div class="row center spacing-buttons">
+                                        <div class="col s12 l4 offset-l4 spacing-buttons">
+                                            <div class="none-profission">
+                                                <h5 class="center">Nenhuma profissão foi selecionada!</h5>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="input-field col s8 offset-s2">
-                                        <input id="postalCode" name="postalCode" type="text" placeholder="CEP"
-                                               class="validate">
-                                        <label for="postalCode">CEP</label>
-                                        <span id="errorPostalCode" class="hide helper-text red-text darken-3"></span>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="col s12">
+                                        <div class="row center expertises">
+                                            <c:forEach var="professionalExpertise" items="${professionalExpertises}">
+                                                <div class="col s12 m5 offset-m1 card-expertise-list row">
+                                                    <div class="col s2 delete-exerpertise expertise-icon">
+                                                        <i class="material-icons">work</i>
+                                                    </div>
+                                                    <div class="col s8">
+                                                        <p class="center">
+                                                            <strong>
+                                                                    ${professionalExpertise.name}
+                                                            </strong>
+                                                        </p>
+                                                    </div>
+
+                                                    <div class="col s12 right">
+                                                        <p class="center">
+                                                            Descrição da especialidade
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </c:forEach>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="input-field col s8 offset-s2">
-                                        <input id="number" name="number" type="text" placeholder="Número"
-                                               class="validate">
-                                        <label for="number">Número</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="input-field col s8 offset-s2">
-                                        <input id="street" name="street" type="text" placeholder="Rua" class="validate">
-                                        <label for="street">Rua</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="input-field col s8 offset-s2">
-                                        <input id="neighborhood" name="neighborhood" type="text" placeholder="Bairro"
-                                               class="validate">
-                                        <label for="neighborhood">Bairro</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="input-field col s8 offset-s2">
-                                        <input id="city" name="city" type="text" placeholder="Cidade" class="validate">
-                                        <label for="city">Cidade</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="input-field col s8 offset-s2">
-                                        <input id="state" name="state" type="text" placeholder="Estado"
-                                               class="validate">
-                                        <label for="state">Estado</label>
-                                    </div>
-                                </div>
+                                </c:otherwise>
+                            </c:choose>
+
+                            <div class="center spacing-buttons">
+
+                                <button  class="waves-effect waves-light btn">
+                                    <a href="#modal-expertises" class="modal-trigger">
+                                        Adicionar especialidade
+                                    </a>
+                                </button>
                             </div>
+                        </div>
+
+                        <div class="row">
                             <div class="col s6 m3 offset-m3 spacing-buttons">
                                 <div class="center">
-                                    <a href="cadastrar-se?passo=6" class="waves-effect waves-light btn btn-gray">
+                                    <a href="cadastrar-se?passo=7" class="waves-effect waves-light btn btn-gray">
                                         Voltar
                                     </a>
                                 </div>
                             </div>
                             <div class="col s6 m3 spacing-buttons">
-                                <div class="center">
-                                    <button type="submit" class="waves-effect waves-light btn">Próximo</button>
+                                <form action="cadastrar-se/passo-8" method="post">
+                                    <div class="center">
+                                        <button type="submit" class="waves-effect waves-light btn">Fim</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="modal-expertises" class="modal">
+                <div class="modal-content ui-front">
+                    <div class="row">
+                        <div class="col s9">
+                            <h4>Escolha uma ou mais especialidades!</h4>
+                        </div>
+                        <div class="col s3">
+                            <button class="modal-close modal-expertise-close right">
+                                <i class="material-icons">close</i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <i class="material-icons prefix">work</i>
+                                    <input type="text" id="txtBusca" class="autocomplete">
+                                    <label for="txtBusca">Selecione sua especialidade</label>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <form class="s12" id="form-expertises" action="cadastrar-se/passo-7" method="post">
+                            <ul id="search-expertises">
+                                <c:forEach var="expertise" items="${expertises}">
+                                    <li>
+                                        <label class='card-expertise col s12 m10 offset-m1'>
+                                            <input id='ids' name='ids' type='checkbox' class='reset-checkbox' value="${expertise.id}">
+                                            <span class='center name-expertise'>
+                                                    <i class='material-icons'>work</i>
+                                                    ${expertise.name}
+                                                </span>
+                                        </label>
+                                    </li>
+                                </c:forEach>
+                            </ul>
+
+                            <div class="input-field col s8 offset-s1">
+                                <button id="submit-expertise" type="submit" class="btn waves-effect waves-light left">Salvar</button>
+                            </div>
+                            <div class="input-field col s3">
+                                <a class="btn waves-effect waves-light modal-close">Fechar</a>
                             </div>
                         </form>
                     </div>
+
                 </div>
             </div>
         </main>
 
     </jsp:body>
 </t:template>
-
-<script src="assets/resources/scripts/cep-user-registration.js"></script>
-<script src="assets/libraries/jquery.mask.js"></script>
-
 <script>
-    $('#postalCode').mask('00000-000');
+    $(function(){
+        $("#txtBusca").keyup(function(){
+            var texto = $(this).val();
+            $("#search-expertises li").css("display", "block");
+            $("#search-expertises li").each(function(){
+                if($(this).text().toUpperCase().indexOf(texto.toUpperCase()) < 0)
+                    $(this).css("display", "none");
+            });
+        });
+    });
+    $(".myclass").hover(function(e) {
+        $(this).css("color",e.type === "mouseenter"?"red":"grey")
+    })
 </script>
