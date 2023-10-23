@@ -32,7 +32,7 @@ public interface ProfessionalServiceOfferingAdItemRepository extends JpaReposito
     List<ProfessionalServiceOfferingAdItem> findProfessionalServiceOfferingAdItemsByUserJoin(User user);
 
     @Query("SELECT psa FROM ProfessionalServiceOfferingAdItem psa " +
-            "JOIN FETCH  psa.professionalServiceOffering pso")
-    List<ProfessionalServiceOfferingAdItem> findProfessionalServiceOfferingAdItemsWithRelatedEntities();
-
+            "JOIN FETCH  psa.professionalServiceOffering pso WHERE pso.user = :user")
+//    List<ProfessionalServiceOfferingAdItem> findDistinctByProfessionalServiceOfferingAdItemsByProfessionalServiceOfferingEndingWithAndProfessionalServicePackageOffering(User user);
+    List<ProfessionalServiceOfferingAdItem> findProfessionalServiceOfferingAdItemsWithRelatedEntities(User user);
 }

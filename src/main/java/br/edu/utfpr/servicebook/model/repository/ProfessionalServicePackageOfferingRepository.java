@@ -28,4 +28,6 @@ public interface ProfessionalServicePackageOfferingRepository extends JpaReposit
 
     public List<ProfessionalServicePackageOffering> findByUserAndType(User user, Enum type);
 
+    @Query("SELECT po FROM ProfessionalServiceOfferingAdItem poa INNER JOIN ProfessionalServiceOffering po ON  poa.professionalServiceOffering = po WHERE po.user = :userId")
+    public List<ProfessionalServiceOfferingAdItem> findAllByCombinedAndItems(User userId);
 }

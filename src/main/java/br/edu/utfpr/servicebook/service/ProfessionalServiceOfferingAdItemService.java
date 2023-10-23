@@ -27,7 +27,8 @@ public class ProfessionalServiceOfferingAdItemService {
         return this.professionalServiceOfferingAdItemRepository.save(professionalServiceOfferingAdItem);
     }
 
-    public List<ProfessionalServiceOfferingAdItem> findAllByProfessionalServicePackageOfferingUser(){
-        return professionalServiceOfferingAdItemRepository.findProfessionalServiceOfferingAdItemsWithRelatedEntities();
+    public List<ProfessionalServiceOfferingAdItem> findAllByProfessionalServicePackageOfferingUser(User user){
+        return professionalServiceOfferingAdItemRepository.findProfessionalServiceOfferingAdItemsWithRelatedEntities(user);
     }
+
 }

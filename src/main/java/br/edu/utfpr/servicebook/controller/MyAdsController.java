@@ -5,6 +5,7 @@ import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.ExpertiseMapper;
 import br.edu.utfpr.servicebook.model.mapper.ServiceMapper;
 import br.edu.utfpr.servicebook.security.IAuthentication;
+import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,12 +14,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,6 +64,13 @@ public class MyAdsController {
         //paginação de serviços
         PageRequest pageRequest = PageRequest.of(0, 5);
         Page<Service> servicePage = serviceService.findAll(pageRequest);
+
+        Page<Expertise> expertisePage = expertiseService.findAll(pageRequest);
+
+        List<ExpertiseDTO> expertiseDTOS = expertisePage.stream()
+                .map(s -> expertiseMapper.toDto(s))
+                .collect(Collectors.toList());
+
         List<ServiceDTO> serviceDTOS = servicePage.stream()
                 .map(s -> serviceMapper.toDto(s))
                 .collect(Collectors.toList());
@@ -72,12 +80,14 @@ public class MyAdsController {
 
         List<ProfessionalServicePackageOffering> servicesPackages = professionalServicePackageOfferingService.findAllByUserAndType(oUser.get(), ProfessionalServicePackageOffering.Type.SIMPLE_PACKAGE);
         List<ProfessionalServicePackageOffering> servicesCombined = professionalServicePackageOfferingService.findByTypeAndUser(oUser.get(), ProfessionalServicePackageOffering.Type.COMBINED_PACKAGE);
+        List<ProfessionalServiceOfferingAdItem> teste = professionalServiceOfferingAdItemService.findAllByProfessionalServicePackageOfferingUser(oUser.get());
 
-        mv.addObject("services", serviceDTOS);
+        mv.addObject("expertises", expertiseDTOS);
         mv.addObject("professionalServiceOfferings", professionalServiceOfferings);
         mv.addObject("servicesIndividuals", servicesIndividuals);
         mv.addObject("servicesPackages", servicesPackages);
         mv.addObject("servicesCombined", servicesCombined);
+        mv.addObject("teste", teste);
         return mv;
     }
 
@@ -99,9 +109,7 @@ public class MyAdsController {
         List<ServiceDTO> serviceDTOS = servicePage.stream()
                 .map(s -> serviceMapper.toDto(s))
                 .collect(Collectors.toList());
-        mv.addObject("services", serviceDTOS);
-
-
+//        mv.addObject("services", serviceDTOS);
         return mv;
     }
 
@@ -185,6 +193,7 @@ public class MyAdsController {
     public String saveAdsCombined(ProfessionalServiceOfferingDTO professionalServiceOfferingDTO, ProfessionalServicePackageOfferingDTO professionalServicePackageOfferingDTO, BindingResult errors, RedirectAttributes
             redirectAttributes) throws Exception {
         Optional<User> oUser = (userService.findByEmail(authentication.getEmail()));
+        Optional<Expertise> oExpertise = expertiseService.findById(professionalServicePackageOfferingDTO.getExpertiseId());
 
         ModelAndView mv = new ModelAndView("professional/my-ads-register");
         ProfessionalServicePackageOffering professionalServicePackageOffering = new ProfessionalServicePackageOffering();
@@ -193,6 +202,8 @@ public class MyAdsController {
         professionalServicePackageOffering.setUnit(professionalServicePackageOfferingDTO.getUnit());
         professionalServicePackageOffering.setDuration(professionalServicePackageOfferingDTO.getDuration());
         professionalServicePackageOffering.setDescription(professionalServicePackageOfferingDTO.getDescription());
+        professionalServicePackageOffering.setName(professionalServicePackageOfferingDTO.getDescription());
+        professionalServicePackageOffering.setExpertise(oExpertise.get());
         professionalServicePackageOffering.setName(professionalServicePackageOfferingDTO.getDescription());
 
         //grava o nome do serviço original
@@ -215,9 +226,9 @@ public class MyAdsController {
                 professionalServiceOffering.setService(oService.get());
                 professionalServiceOfferingService.save(professionalServiceOffering);
 //
-//                ProfessionalServiceOfferingAdItem professionalServiceOfferingAdItem = new ProfessionalServiceOfferingAdItem(professionalServiceOffering, professionalServicePackageOffering);
-//                professionalServiceOfferingAdItem.setAmount(professionalServicePackageOfferingDTO.getAmount());
-//                professionalServiceOfferingAdItemService.save(professionalServiceOfferingAdItem);
+                ProfessionalServiceOfferingAdItem professionalServiceOfferingAdItem = new ProfessionalServiceOfferingAdItem(professionalServiceOffering, professionalServicePackageOffering);
+                professionalServiceOfferingAdItemService.save(professionalServiceOfferingAdItem);
+
             }
 
         return("redirect:/minha-conta/profissional/meus-anuncios");
@@ -280,5 +291,34 @@ public class MyAdsController {
         mv.addObject("services", serviceDTOS);
         mv.addObject("servicesCombined", servicesCombined);
         return mv;
+    }
+    @GetMapping("/especialidade/{expertiseId}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    @ResponseBody
+    public List<ProfessionalServiceOffering> findAdsByExpertise(@PathVariable Long expertiseId)  throws Exception {
+
+        User professional = this.getAuthenticatedUser();
+
+        Expertise expertise = expertiseService.findById(expertiseId).orElseThrow(() -> new EntityNotFoundException("Especialidade não encontrada"));
+
+        //lista de serviços
+        List<Service> services = serviceService.findByExpertise(expertise);
+        List<ProfessionalServiceOffering> professionalServiceOfferings = professionalServiceOfferingService.findProfessionalServiceOfferingByUserAndExpertise(professional.getId(), expertiseId);
+
+        return professionalServiceOfferings;
+    }
+    /**
+     * Retorna o indivíduo logado.
+     * @return
+     * @throws Exception
+     */
+    private User getAuthenticatedUser() throws Exception {
+        Optional<User> oProfessional = (userService.findByEmail(authentication.getEmail()));
+
+        if (!oProfessional.isPresent()) {
+            throw new EntityNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        return oProfessional.get();
     }
 }

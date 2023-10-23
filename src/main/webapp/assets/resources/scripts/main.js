@@ -103,9 +103,9 @@ $(document).ready(function (){
             $('#type-combined').hide();
         }
         if(type == 'INDIVIDUAL'){
-            $('#type-individual').show();
+            $('.type-individual').show();
         }else {
-            $('#type-individual').hide();
+            $('.type-individual').hide();
         }
 
     });
@@ -152,11 +152,18 @@ $(document).ready(function (){
     $('.sobrescrever').change(function () {
         var elements = document.getElementsByClassName('ads-name-individual');
         var package = document.getElementById('ads-name-package');
+        var ads = document.getElementById('ads-name-individual');
 
         if (!package.disabled) {
             package.disabled = true;
         } else {
             package.disabled = false;
+        }
+
+        if (!ads.disabled) {
+            ads.disabled = true;
+        } else {
+            ads.disabled = false;
         }
 
         for (var i = 0; i < elements.length; i++) {
@@ -170,6 +177,35 @@ $(document).ready(function (){
 
     });
 
+});
+//inicializa o select de serviços com os serviços da especialidade selecionada
+$('#expertise-select-package').change(function () {
+    let expertiseId = $(this).val();
+    let url = 'minha-conta/profissional/especialidades/' + expertiseId + '/servicos';
+
+    $.get(url, function (data) {
+        let options = '<option disabled selected>Selecione um serviço</option>';
+        data.forEach(function (service) {
+            options += '<option value="' + service.id + '">' + service.name + '</option>';
+        });
+        $('#service-select-package').html(options);
+        $('#service-select-package').formSelect();
+    });
+});
+
+//inicializa o select de serviços com os serviços da especialidade selecionada
+$('#expertise-select-combined').change(function () {
+    let expertiseId = $(this).val();
+    let url = 'minha-conta/profissional/especialidades/' + expertiseId + '/servicos';
+
+    $.get(url, function (data) {
+        let options = '<option disabled selected>Selecione um serviço</option>';
+        data.forEach(function (service) {
+            options += '<option value="' + service.id + '">' + service.name + '</option>';
+        });
+        $('#mySelect').html(options);
+        $('#mySelect').formSelect();
+    });
 });
 
 // remove a mascara no campo de valor, para quando enviar pro controller não dar erro de conversão
@@ -197,7 +233,7 @@ function mostrarSelecionados() {
     var selecionadosIds = [];
 
     // Adiciona os valores selecionados como itens de lista
-    for (var i = 0; i < select.options.length; i++) {
+    for (var i = 1; i < select.options.length; i++) {
         if (select.options[i].selected && select.options[i].value !== "") {
             selecionados.push(select.options[i].text);
             selecionadosIds.push(select.options[i].value);

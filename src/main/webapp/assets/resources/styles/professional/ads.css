@@ -9,6 +9,44 @@
     font-size: .75rem !important;
 }
 
+/*MEUS ANUNCIOS*/
+.card .card-content{
+    padding: 13px !important;
+}
+.label_price{
+    /*background-color: #333333;*/
+    background-color: #81C5F3;
+    font-weight: bold;
+    font-size: 1rem;
+    text-align: center;
+    padding: 5px;
+}
+.label_duration{
+    /*background-color: #333333;*/
+    background-color: #81C5F3;
+    font-weight: bold;
+    font-size: 1rem;
+    text-align: center;
+    padding: 5px;
+}
+.label_especialidade{
+    background-color: #333333;
+    margin: 0;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+}
+
+.div_cards_services{
+    margin: 10px 0 30px;
+}
+
+.btn_view{
+    /*float: right;*/
+    float: right;
+    color: #1194e5 !important;
+    font-weight: bold;
+}
 /*.card{*/
 /*    height: 100%;*/
 /*}*/
@@ -34,3 +72,9 @@
     color: black !important;
 }
 
+
+/*CADASTRO*/
+.div_text_section{
+    margin: 5px 5px 0 !important;
+    font-weight: bold;
+}

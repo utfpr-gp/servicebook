@@ -52,8 +52,10 @@ public class ProfessionalServicePackageOfferingDTO {
      * do tipo de particularidade que o seu serviço tem.
      */
     private ServiceDTO service;
+    private ExpertiseDTO expertise;
 
     private Long serviceId;
+    private Long expertiseId;
     private Long price;
 
     /**

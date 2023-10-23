@@ -6,6 +6,19 @@
   <form action="minha-conta/profissional/meus-anuncios/novo/pacote" method="post">
 
     <div class="row">
+      <div class="col s12 card-panel grey darken-3">
+        <p class="white-text div_text_section">SERVIÇO</p>
+        <hr>
+      </div>
+      <div class="input-field col s6">
+        <p for="ads-service" class="label-ads">Qual a especialidade? </p>
+        <select id="expertise-select-package" class="service-select" name="expertiseId">
+          <option disabled selected>Selecione uma especialidade</option>
+          <c:forEach var="expertise" items="${expertises}">
+            <option value="${expertise.id}">${expertise.name}</option>
+          </c:forEach>
+        </select>
+      </div>
 
       <div class="input-field col s6">
         <p for="ads-service" class="label-ads">Qual o serviço? </p>
@@ -28,7 +41,10 @@
           </label>
         </p>
       </div>
-
+      <div class="col s12 card-panel grey darken-3">
+        <p class="white-text div_text_section">PREÇO E AGENDAMENTO</p>
+        <hr>
+      </div>
       <div class="input-field col s6">
         <p for="ads-uni" class="label-ads">Qual a unidade de preço do serviço? </p>
         <select id="ads-uni" name="unit">
@@ -41,7 +57,7 @@
 
       <div class="input-field col s6">
         <p for="ads-price-package" class="label-ads">Quanto você cobra por este serviço? </p>
-        <input id="ads-price-package" class="ads-price" type="text" name="" onblur="return RemoveMaskPackage(event)"/>
+        <input id="ads-price-package" class="ads-price" type="text" name="" onblur="return RemoveMaskPackage()"/>
         <input id="price-service-package" class="price-service" type="hidden" name="price"/>
 
       </div>

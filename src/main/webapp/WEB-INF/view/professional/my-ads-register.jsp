@@ -34,6 +34,10 @@
                         </blockquote>
                         <!-- Formulário de adição de especialidade -->
                         <div class="row">
+                            <div class="col s12 card-panel grey darken-3">
+                                <p class="white-text div_text_section">TIPO DE ANÚNCIO</p>
+                                <hr>
+                            </div>
                             <div class="input-field col s6">
                                 <p for="service-type" class="label-ads">Qual o tipo do serviço?</p>
                                 <select id="service-type" name="type">
@@ -51,11 +55,24 @@
                                 <jsp:include page="my-ads-register-combined.jsp"/>
                             </div>
                         </div>
-                        <div class="col s12" id="type-individual">
+                        <div class="col s12 card-panel grey darken-3 type-individual">
+                            <p class="white-text div_text_section">SERVIÇO</p>
+                            <hr>
+                        </div>
+                        <div class="col s12 type-individual" id="type-individual">
                             <form action="minha-conta/profissional/meus-anuncios/novo/individual"
                                   method="post">
 
                                 <div class="row">
+                                    <div class="input-field col s6">
+                                        <p for="ads-service" class="label-ads">Qual a especialidade? </p>
+                                        <select id="expertise-select" class="service-select" name="expertiseId">
+                                            <option disabled selected>Selecione uma especialidade</option>
+                                            <c:forEach var="expertise" items="${expertises}">
+                                                <option value="${expertise.id}">${expertise.name}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
 
                                     <div class="input-field col s6">
                                         <p for="ads-service" class="label-ads">Qual o serviço? </p>
@@ -78,7 +95,10 @@
                                             </label>
                                         </p>
                                     </div>
-
+                                    <div class="col s12 card-panel grey darken-3">
+                                        <p class="white-text div_text_section">PREÇO E AGENDAMENTO</p>
+                                        <hr>
+                                    </div>
                                     <div class="input-field col s6">
                                         <p for="ads-uni" class="label-ads">Qual a unidade de preço do serviço? </p>
                                         <select id="ads-uni" name="unit">
@@ -132,4 +152,19 @@
         str = $("#ads-name-individual").val();
         $("#name-service-individual").val(str);
     }
+
+    //inicializa o select de serviços com os serviços da especialidade selecionada
+    $('#expertise-select').change(function () {
+        let expertiseId = $(this).val();
+        let url = 'minha-conta/profissional/especialidades/' + expertiseId + '/servicos';
+
+        $.get(url, function (data) {
+            let options = '<option disabled selected>Selecione um serviço</option>';
+            data.forEach(function (service) {
+                options += '<option value="' + service.id + '">' + service.name + '</option>';
+            });
+            $('#service-select').html(options);
+            $('#service-select').formSelect();
+        });
+    });
 </script>

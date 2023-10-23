@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 
 <head>
   <!-- Funciona apenas com caminho absoluto porque é renderizado antes da tag base -->
@@ -41,28 +42,31 @@
             </div>
 
             <c:forEach var="service" items="${servicesPackages}">
-              <div class="col s4">
-                <div class="card">
+              <div class="col s4 div_cards_services">
+                <p class="label_especialidade"> ${service.service.expertise.name} </p>
+                <div class="card" style="margin: 0">
+                  <div class="label_duration">
+                    <span class="">${service.duration}</span>
+                  </div>
                   <div class="card-content">
-                    <span class="card-title activator grey-text text-darken-4">${service.name}<i class="material-icons right">more_vert</i></span>
-                    <p class="lead texto-com-elipse">Pacote com ${service.amount} ${service.name}</p>
-                  </div>
-                  <div class="card-reveal">
-                    <span class="card-title grey-text text-darken-4" style="font-size: 1rem">${service.name}<i class="material-icons right">close</i></span>
-                    <small>Pacote contendo ${service.amount} ${service.name}</small>
-                  </div>
-                  <div class="card-content grey lighten-4">
                     <div class="row">
-                      <div class="col" style="display: inline-flex">
-                        <span style="margin: 12px">R$</span> <input type="text" class="ads-price ads-price-label" value="${service.price}" disabled>
-                      </div>
-
-                      <div class="col">
-                        <span class="grey-text text-darken-4 left"><i class="material-icons left">access_time</i> ${service.duration} </span>
+                      <c:if test="${not empty service.service.pathIcon}">
+                        <div class="col s12 center">
+                          <img id="previewImage" src="${service.service.pathIcon}" width="60%">
+                        </div>
+                      </c:if>
+                      <div class="col s12">
+                        <p>${service.description}</p>
+                        <p>Pacote com ${service.amount}</p>
                       </div>
                     </div>
                   </div>
+                  <div class="label_price">
+                    <p style="margin: 0"><fmt:formatNumber value="${service.price/100}"   type = "currency"/> </p>
+                  </div>
                 </div>
+                <p class="label_especialidade">${service.service.name}</p>
+
               </div>
             </c:forEach>
 

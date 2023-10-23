@@ -51,4 +51,8 @@ public class ProfessionalServicePackageOfferingService {
     public List<ProfessionalServicePackageOffering> findByTypeAndUser(User user, Enum type) {
         return professionalServicePackageOfferingRepository.findByUserAndType(user,type);
     }
+
+    public List<ProfessionalServiceOfferingAdItem> findAllByCombinedAndItems(User user) {
+        return professionalServicePackageOfferingRepository.findAllByCombinedAndItems(user);
+    }
 }
