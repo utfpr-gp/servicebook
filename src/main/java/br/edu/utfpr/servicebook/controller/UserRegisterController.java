@@ -198,18 +198,20 @@ public class UserRegisterController {
     public String saveUserEmail(
             HttpSession httpSession,
             @Validated(UserDTO.RequestUserEmailInfoGroupValidation.class) IndividualDTO dto,
-            @Validated(UserDTO.RequestUserNameAndCPFInfoGroupValidation.class) IndividualDTO dtouser,
+            //@Validated(UserDTO.RequestUserNameAndCPFInfoGroupValidation.class) IndividualDTO dtouser,
             BindingResult errors,
             RedirectAttributes redirectAttributes,
             Model model
     ) throws MessagingException {
 
-        if (errors.hasErrors()) {
-            return this.userRegistrationErrorForwarding("1", dto, model, errors);
+        if (dto.getCpf().isEmpty()) {
+            errors.rejectValue("cpf", "error.dto", "Por favor, insira um CPF!");
         }
-        if (errors.hasErrors()) {
-            return this.userRegistrationErrorForwarding("1", dtouser, model, errors);
+
+        if (dto.getName().isEmpty()) {
+            errors.rejectValue("name", "error.dto", "Por favor, insira um Nome!");
         }
+
 
         String email = dto.getEmail().trim();
         httpSession.setAttribute(UserWizardUtil.KEY_IS_REGISTER_COMPANY, false);
@@ -221,10 +223,10 @@ public class UserRegisterController {
             errors.rejectValue("email", "error.dto", "Email já cadastrado! Por favor, insira um email não cadastrado.");
         }
 
+
         if (errors.hasErrors()) {
             return this.userRegistrationErrorForwarding("1", dto, model, errors);
         }
-
         //gera um código para validar o email no passo seguinte
         Optional<UserCode> oUserCode = userCodeService.findByEmail(email);
         String actualCode = "";
@@ -248,29 +250,26 @@ public class UserRegisterController {
         IndividualDTO userSessionDTO = null;
         userSessionDTO = (IndividualDTO) userWizardUtil.getWizardState(httpSession, IndividualDTO.class, UserWizardUtil.KEY_WIZARD_INDIVIDUAL);
 
-        if (!dtouser.getCpf().isEmpty()) {
+        if (!dto.getCpf().isEmpty()) {
             //verifica se o CPF já está cadastrado para algum outro usuário
-            Optional<Individual> oUserCpf = individualService.findByCpf(dtouser.getCpf());
+            Optional<Individual> oUserCpf = individualService.findByCpf(dto.getCpf());
 
             if (oUserCpf.isPresent()) {
                 errors.rejectValue("cpf", "error.dto", "CPF já cadastrado! Por favor, insira um CPF não cadastrado.");
             }
 
             if (errors.hasErrors()) {
-                return this.userRegistrationErrorForwarding("1", dtouser, model, errors);
+                return this.userRegistrationErrorForwarding("1", dto, model, errors);
             }
 
-            userSessionDTO.setCpf(dtouser.getCpf());
+            userSessionDTO.setCpf(dto.getCpf());
         }
-
-        System.out.println("userSessionDTO");
-        System.out.println(dtouser.getCpf());
 
         userSessionDTO.setProfile(ProfileEnum.ROLE_USER);
         userSessionDTO.setEmail(email);
         //salva na sessão
-        userSessionDTO.setName(dtouser.getName());
-        userSessionDTO.setCpf(dtouser.getCpf());
+        userSessionDTO.setName(dto.getName());
+        userSessionDTO.setCpf(dto.getCpf());
         userSessionDTO.setProfileVerified(true);
         return "redirect:/cadastrar-se?passo=2";
     }
@@ -294,17 +293,18 @@ public class UserRegisterController {
     public String saveUserEmail(
             HttpSession httpSession,
             @Validated(UserDTO.RequestUserEmailInfoGroupValidation.class) CompanyDTO dto,
-            @Validated(UserDTO.RequestUserNameAndCNPJInfoGroupValidation.class) CompanyDTO dtocompany,
             BindingResult errors,
             RedirectAttributes redirectAttributes,
             Model model
     ) throws MessagingException {
 
-        if (errors.hasErrors()) {
-            return this.userRegistrationErrorForwarding("1", dto, model, errors);
+
+        if (dto.getCnpj().isEmpty()) {
+            errors.rejectValue("cnpj", "error.dto", "Por favor, insira um CNPJ!");
         }
-        if (errors.hasErrors()) {
-            return this.userRegistrationErrorForwarding("1", dtocompany, model, errors);
+
+        if (dto.getName().isEmpty()) {
+            errors.rejectValue("name", "error.dto", "Por favor, insira um Nome!");
         }
         String email = dto.getEmail().trim();
         httpSession.setAttribute(UserWizardUtil.KEY_IS_REGISTER_COMPANY, true);
@@ -351,14 +351,14 @@ public class UserRegisterController {
         CompanyDTO companySessionDTO = (CompanyDTO) userWizardUtil.getWizardState(httpSession, CompanyDTO.class, UserWizardUtil.KEY_WIZARD_COMPANY);
 
         //verifica se o CPF já está cadastrado para algum outro usuário
-        Optional<Company> oUserCnpj = companyService.findByCnpj(dtocompany.getCnpj());
+        Optional<Company> oUserCnpj = companyService.findByCnpj(dto.getCnpj());
 
         if (oUserCnpj.isPresent()) {
             errors.rejectValue("cnpj", "error.dto", "CNPJ já cadastrado! Por favor, insira um CNPJ não cadastrado.");
         }
 
         if (errors.hasErrors()) {
-            return this.userRegistrationErrorForwarding("1", dtocompany, model, errors);
+            return this.userRegistrationErrorForwarding("1", dto, model, errors);
         }
 
         companySessionDTO.setName(dto.getName().trim());
