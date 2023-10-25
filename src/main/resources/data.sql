@@ -88,9 +88,19 @@ INSERT INTO services (name, description, allow_scheduling, path_icon, expertise_
 VALUES ('Balanceamento', 'Balanceamento das rodas', false, 'https://res.cloudinary.com/dgueb0wir/image/upload/v1689176876/servicebook/expertises/mecanico_quczum.svg', 4),
        ('Troca de óleo', 'Troca do óleo do motor', false, 'https://res.cloudinary.com/dgueb0wir/image/upload/v1689176876/servicebook/expertises/mecanico_quczum.svg', 4);
 
-INSERT INTO professional_service_offerings (name, description, service_id, user_id)
-VALUES ('Balanceamento com máquina importada', 'O balanceamento com 100% de garantia', 1, 2),
-       (null, null, 2, 2);
+-- INSERT INTO professional_service_offerings (name, description, price, unit, duration, service_id, user_id, type, id)
+-- VALUES ('Balanceamento com máquina importada', 'O balanceamento com 100% de garantia', 19000, 'Hora', '2 Horas', 1, 2, 'INDIVIDUAL', 1),
+--  ('Balanceamento com máquina importada1', 'O balanceamento com 100% de garantia', 219000, 'Hora', '2 Horas', 1, 2, 'COMBINED_PACKAGE', 2);
+--  ('Balanceamento com máquina importada2', 'O balanceamento com 100% de garantia', 19000, 'Hora', '2 Horas', 1, 2, 'INDIVIDUAL', 3),
+--  ('Balanceamento com máquina importada3', 'O balanceamento com 100% de garantia', 19000, 'Hora', '2 Horas', 1, 2, 'INDIVIDUAL', 4);
+--        (null, null, 2, 2);
+
+-- INSERT INTO professional_service_package_offering (name, description, price, unit, duration, service_id, user_id, type, amount,id)
+-- VALUES ('Balanceamento com máquina importada', 'O balanceamento com 100% de garantia', 19000, 'Hora', '2 Horas', 1, 2, 'SIMPLE_PACKAGE', 2, 1),
+--  ('Balanceamento com máquina importada', 'O balanceamento com 100% de garantia', 19000, 'Hora', '2 Horas', 1, 2, 'COMBINED_PACKAGE', 2, 2);
+--  ('Balanceamento com máquina importada', 'O balanceamento com 100% de garantia', 19000, 'Hora', '2 Horas', 1, 2, 'SIMPLE_PACKAGE', 2, 3),
+--  ('Balanceamento com máquina importada', 'O balanceamento com 100% de garantia', 19000, 'Hora', '2 Horas', 1, 2, 'SIMPLE_PACKAGE', 2, 4),
+--  ('Balanceamento com máquina importada', 'O balanceamento com 100% de garantia', 19000, 'Hora', '2 Horas', 1, 2, 'SIMPLE_PACKAGE', 2, 5);
 
 INSERT INTO companies (cnpj, id)
 VALUES ('98.988.640/0001-91', 7);
@@ -154,6 +164,21 @@ VALUES ('1', '2', 'false'),
 
 
 INSERT INTO follows (client_id, professional_id)
-VALUES (4, 2)
+VALUES (4, 2);
 
+-- DURAÇÃO DE SERVIÇOS
+INSERT INTO duration_services (name)
+VALUES ('Sem agendamento'),
+       ('30 minutos'),
+       ('1 hora'),
+       ('1 hora e meia'),
+       ('2 horas'),
+       ('3 horas'),
+       ('Um período do dia'),
+       ('O dia inteiro');
 
+-- UNIDADE DE PREÇO
+INSERT INTO price_units (name)
+VALUES ('Hora'),
+       ('Metro quadrado'),
+       ('Unidade');

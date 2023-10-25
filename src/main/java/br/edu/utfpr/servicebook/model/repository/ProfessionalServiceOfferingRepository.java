@@ -1,6 +1,8 @@
 package br.edu.utfpr.servicebook.model.repository;
 
 import br.edu.utfpr.servicebook.model.entity.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,6 +20,8 @@ public interface ProfessionalServiceOfferingRepository extends JpaRepository<Pro
      */
     public List<ProfessionalServiceOffering> findProfessionalServiceOfferingByUser(User user);
 
+    public List<ProfessionalServiceOffering> findFirst3ByUserAndType(User user, Enum type);
+    public List<ProfessionalServiceOffering> findByUserAndType(User user, Enum type);
 
     /**
      * Busca todas os serviços de um profissional
@@ -63,6 +67,22 @@ public interface ProfessionalServiceOfferingRepository extends JpaRepository<Pro
     @Query("SELECT e FROM ProfessionalServiceOffering e WHERE e.name = :name")
     public Optional<ProfessionalServiceOffering> findProfessionalServiceOfferingByName(String name);
 
+    @Query("SELECT e FROM ProfessionalServiceOffering e WHERE e.service = :id")
+    public Optional<ProfessionalServiceOffering> findProfessionalServiceOfferingById(Long id);
 
+
+    /**
+     * Retorna os serviços que o usuário possui.
+     * @param user
+     * @return
+     */
+    @Query("SELECT u FROM ProfessionalServiceOfferingAdItem u WHERE EXISTS (SELECT pe FROM ProfessionalServiceOffering pe WHERE pe.user = :user)")
+    List<ProfessionalServiceOffering> findProfessionalServiceOfferingAdItemsByUser(User user);
+
+    @Query("SELECT u FROM ProfessionalServiceOffering u JOIN ProfessionalServiceOfferingAdItem r WHERE r.professionalServiceOffering.id = u.id")
+    public List<ProfessionalServiceOffering> findProfessionalServiceOfferingAdItemsByUserJoin(User user);
+
+    @Query("SELECT u FROM ProfessionalServiceOfferingAdItem u JOIN FETCH u.professionalServicePackageOffering")
+    List<ProfessionalServiceOffering> findDistinctProfessionalServiceOfferings();
 
 }

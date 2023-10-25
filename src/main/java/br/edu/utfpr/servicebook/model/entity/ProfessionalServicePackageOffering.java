@@ -65,6 +65,21 @@ public class ProfessionalServicePackageOffering {
     private Long price;
 
     /**
+     * Unidade de preço do serviço.
+     */
+    private String unit;
+
+    /**
+     * Duração do serviço.
+     */
+    private String duration;
+
+    /**
+    * Quantidade, para o pacote de serviços.
+    * */
+    private Integer amount;
+
+    /**
      * Usuário que criou o anúncio.
      */
     @ManyToOne
@@ -75,4 +90,13 @@ public class ProfessionalServicePackageOffering {
      */
     @ManyToOne
     private Expertise expertise;
+
+    /**
+     * Serviço cadastrado pelo administrador.
+     * O profissional pode customizar a descrição do serviço cadastrado pelo administrador de várias maneiras, dependendo
+     * do tipo de particularidade que o seu serviço tem.
+     */
+    @ManyToOne
+    @JoinColumn(name = "service_id")
+    private Service service;
 }
