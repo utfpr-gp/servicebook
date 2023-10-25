@@ -34,15 +34,6 @@
                 permitindo que clientes adquiram seus serviços de forma rápida. </p>
             </blockquote>
 
-            <div class="input-field">
-              <select id="expertise-select-filter" name="id">
-                <option disabled selected>Buscar por especialidade</option>
-                <c:forEach var="expertise" items="${expertises}">
-                  <option value="${expertise.id}">${expertise.name}</option>
-                </c:forEach>
-              </select>
-            </div>
-
             <!-- Formulário de adição de especialidade -->
             <div class="col s12">
               <div class="center spacing-buttons">
