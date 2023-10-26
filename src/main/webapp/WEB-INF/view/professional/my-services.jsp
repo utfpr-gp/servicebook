@@ -12,6 +12,11 @@
 <t:template-side-nav title="ServiceBook - Minha conta">
     <jsp:body>
         <div class="row">
+            <div class="breadcrumbs" style="margin-top: 10px">
+                <a href="${pageContext.request.contextPath}/">Início</a> &gt;
+                <a href="${pageContext.request.contextPath}/minha-conta/profissional">Minha Conta</a> &gt;
+                Meus Serviços
+            </div>
             <t:message-box/>
             <div class="col s12">
                 <c:if test="${expertise != null}">
