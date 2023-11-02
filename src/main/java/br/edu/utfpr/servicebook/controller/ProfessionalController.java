@@ -115,6 +115,7 @@ public class ProfessionalController {
     @PermitAll
     protected ModelAndView showSearchResults(
             @RequestParam(value = "termo-da-busca") String searchTerm,
+         //   @RequestParam(value = "serviceId") String searchService,
             @RequestParam(value = "pag", defaultValue = "1") int page
     ) throws Exception {
         ModelAndView mv = new ModelAndView("visitor/search-results");
@@ -134,12 +135,20 @@ public class ProfessionalController {
         }
 
         Page<Individual> professionals = individualService.findDistinctByTermIgnoreCaseWithPagination(searchTerm, page, size);
+        Page<ProfessionalServiceOffering> serviceOfferings = professionalServiceOfferingService.findDistinctByTermIgnoreCaseWithPagination(searchTerm, page, size);
+
         List<ProfessionalSearchItemDTO> professionalSearchItemDTOS = professionals.stream()
                 .map(s -> individualMapper.toSearchItemDto(s, individualService.getExpertises(s)))
                 .collect(Collectors.toList());
 
+        List<ProfessionalServiceOfferingDTO> professionalServiceOfferingDTOS = serviceOfferings.stream()
+                .map(s -> professionalServiceOfferingMapper.toSearchItemDto(s))
+                .collect(Collectors.toList());
+
+
         PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(professionals, "/profissionais/busca?termo-da-busca="+ searchTerm);
         mv.addObject("professionals", professionalSearchItemDTOS);
+        mv.addObject("professionalServiceOfferingDTOS", professionalServiceOfferingDTOS);
         mv.addObject("pagination", paginationDTO);
         mv.addObject("isParam", true);
         mv.addObject("searchTerm", searchTerm);

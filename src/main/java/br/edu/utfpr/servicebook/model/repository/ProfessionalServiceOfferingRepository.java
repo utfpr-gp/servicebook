@@ -1,6 +1,8 @@
 package br.edu.utfpr.servicebook.model.repository;
 
 import br.edu.utfpr.servicebook.model.entity.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -63,6 +65,12 @@ public interface ProfessionalServiceOfferingRepository extends JpaRepository<Pro
     @Query("SELECT e FROM ProfessionalServiceOffering e WHERE e.name = :name")
     public Optional<ProfessionalServiceOffering> findProfessionalServiceOfferingByName(String name);
 
-
+    @Query("select distinct p from ProfessionalServiceOffering p left join Service pe on p.service = pe where " +
+            "lower(p.name) like lower(concat('%', :term, '%'))" +
+            "or lower(p.description) like lower(concat('%', :term, '%')) " +
+            "or lower(pe.expertise.name) like lower(concat('%', :term, '%'))")
+    Page<ProfessionalServiceOffering> findDistinctByTermIgnoreCaseWithPagination(
+            String term,
+            Pageable pageable);
 
 }

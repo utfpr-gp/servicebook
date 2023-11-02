@@ -1,12 +1,11 @@
 package br.edu.utfpr.servicebook.service;
 
-import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.ProfessionalServiceOffering;
-import br.edu.utfpr.servicebook.model.entity.Service;
-import br.edu.utfpr.servicebook.model.entity.User;
+import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.repository.CategoryRepository;
 import br.edu.utfpr.servicebook.model.repository.ProfessionalServiceOfferingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
@@ -66,6 +65,11 @@ public class ProfessionalServiceOfferingService {
      */
     public List<ProfessionalServiceOffering> findProfessionalServiceOfferingByService(Service service){
         return professionalServiceOfferingRepository.findProfessionalServiceOfferingByService(service);
+    }
+
+    public Page<ProfessionalServiceOffering> findDistinctByTermIgnoreCaseWithPagination(String searchTerm, Integer page, Integer size){
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
+        return this.professionalServiceOfferingRepository.findDistinctByTermIgnoreCaseWithPagination(searchTerm, pageRequest);
     }
 
     /**

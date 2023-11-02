@@ -17,6 +17,7 @@
             <div class="section">
                 <div class="row">
                     <div class="col s12">
+                        ${professionalServiceOfferingDTOS}
 
                         <div class="row">
                             <c:if test="${not empty professionals}">

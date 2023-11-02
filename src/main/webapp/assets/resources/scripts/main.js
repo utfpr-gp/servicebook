@@ -30,4 +30,4 @@ $(document).ready(function (){
             modal.find('#strong-name').text(name);
         }
     });
-});
+})
