@@ -1,0 +1,113 @@
+
+/*Login*/
+.login-form{
+    margin: 40px 0;
+}
+
+.login-token{
+    background-color: #53b1ed;
+    height: 330px !important;
+}
+
+.login-email{
+    background-color: #1c2231;
+    height: 350px !important;
+}
+.login-logo-text{
+    color: white;
+    margin: 30px 0 !important;
+}
+
+.label-login{
+    color: white !important;
+    font-size: 1.1rem !important;
+}
+
+.btn-login{
+    margin-left: 70px !important;
+}
+
+.input-login{
+    margin: 60px 0 0;
+}
+
+.hr-login{
+    padding: 5px;
+    background-color: #53b1ed;
+    border: none;
+    width: 35%;
+    border-radius: 5px;
+}
+
+.text-register{
+    font-size: 1.2rem !important;
+    text-transform: uppercase;
+
+}
+
+/*How Works*/
+.itens-list{
+    margin-top: 35px;
+    margin-bottom: 35px;
+}
+
+.itens-list p {
+    font-size: 1.4rem;
+    font-weight: 400;
+}
+
+/*cards da pesquisa*/
+.card .card-content{
+    padding: 13px !important;
+}
+.label_price{
+    /*background-color: #333333;*/
+    background-color: #53b1ed;
+    font-weight: bold;
+    font-size: 1rem;
+    text-align: center;
+    padding: 5px;
+}
+.label_duration{
+    /*background-color: #333333;*/
+    background-color: #53b1ed;
+    font-weight: bold;
+    font-size: 1rem;
+    text-align: center;
+    padding: 5px;
+}
+
+.div_cards_services{
+    margin: 10px 0 30px;
+}
+
+.btn_view{
+    /*float: right;*/
+    float: right;
+    color: #1194e5 !important;
+    font-weight: bold;
+}
+
+.button-profile{
+    font-size: .8rem !important;
+    margin-top: 30px;
+}
+
+.card-name-service{
+    padding: 0;
+    margin-top: 0 !important;
+    margin: 0 10px 20px;
+}
+
+.card-name-expertise{
+    background-color: #53b1ed;
+    margin: 0;
+}
+.avatar-expertise{
+    width: 60px;
+    margin: 0 10px;
+}
+.span-name{
+    position: absolute;
+    top: 10%;
+}

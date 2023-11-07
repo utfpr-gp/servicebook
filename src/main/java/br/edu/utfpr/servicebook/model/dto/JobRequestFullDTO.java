@@ -21,6 +21,7 @@ public class JobRequestFullDTO implements Serializable {
     private Long totalCandidates;
     private String textualDate;
     private Long amountOfCandidates;
+
     public String status;
 
 }

@@ -14,6 +14,16 @@
                         </c:forEach>
                     </div>
                 </c:if>
+                <c:if test="${not empty msg}">
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="card-panel red lighten-1 msg-view center-align">
+                                <span class="white-text">${msg}</span>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
+
                 <div class="section">
 
                     <!--   Icon Section   -->
@@ -51,6 +61,5 @@
                 </div>
             </div>
         </main>
-
     </jsp:body>
 </t:template>

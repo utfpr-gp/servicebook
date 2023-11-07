@@ -6,8 +6,8 @@ import br.edu.utfpr.servicebook.util.CPFUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Date;
 
 @Service
 public class IndexService {
@@ -30,8 +30,12 @@ public class IndexService {
     CompanyRepository companyRepository;
     @Autowired
     IndividualRepository clientRepository;
-
+    @Autowired
+    CategoryRepository categoryRepository;
     public void initialize(){
+        Category category = new Category("Reformas e Reparos");
+        categoryRepository.save(category);
+
         Expertise expertise1 = new Expertise("Encanador", "realiza serviço como encanador", "https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg");
         Expertise expertise2 = new Expertise("Eletricista", "realiza serviço como eletricista", "https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg");
         Expertise expertise3 = new Expertise("Pintor", "realiza serviço como pintor", "https://res.cloudinary.com/dgueb0wir/image/upload/v1656539373/images/f0ykcuhr8kbnjsjg6hrr.svg");
@@ -40,7 +44,7 @@ public class IndexService {
         expertiseRepository.saveAll(Arrays.asList(expertise1, expertise2, expertise3, expertise4, expertise5));
 
         Individual individual1 = new Individual("Darth Vader", "darth_vader@mail.com", "Senha123", "(42)9 9999-9999", CPFUtil.geraCPF());
-        individual1.setBirthDate(new Date());
+        individual1.setBirthDate(LocalDate.now());
         individual1.setProfilePicture("https://i.imgur.com/owhNAKK.png");
         individual1.setDescription("Sua falta de fé é perturbadora.");
         individual1.setRating(5);
@@ -48,7 +52,7 @@ public class IndexService {
         individualRepository.save(individual1);
 
         Individual individual2 = new Individual("Chewbacca", "chewbacca@mail.com", "Senha123", "(42)9 9999-9999", CPFUtil.geraCPF());
-        individual2.setBirthDate(new Date());
+        individual2.setBirthDate(LocalDate.now());
         individual2.setProfilePicture("https://i.imgur.com/owhNAKK.png");
         individual2.setDescription("Sua falta de fé é perturbadora.");
         individual2.setRating(5);
@@ -70,11 +74,11 @@ public class IndexService {
         company.setDenounceAmount(1);
         companyRepository.save(company);
 
-        JobRequest jb1 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, new Date());
+        JobRequest jb1 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, LocalDate.now());
         jb1.setExpertise(expertise1);
         jb1.setUser(client1);
 
-        JobRequest jb2 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, new Date());
+        JobRequest jb2 = new JobRequest(JobRequest.Status.AVAILABLE, "", 10, LocalDate.now());
         jb1.setExpertise(expertise1);
         jb1.setUser(client2);
 

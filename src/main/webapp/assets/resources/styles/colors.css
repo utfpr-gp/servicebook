@@ -1,0 +1,52 @@
+.primary-color-text{
+    color: #53b1ed !important
+}
+
+.secondary-color-text{
+    color: #1c2231 !important
+}
+
+.tertiary-color-text{
+    color: #3f51b5 !important
+}
+
+.facebook-color-text {
+    color: #3A69B1 !important;
+}
+
+.grey-text{
+    color: rgb(117, 117, 117) !important;
+}
+
+.dark-color-text{
+    color: rgb(51, 51, 51) !important;
+}
+
+.primary-background-color{
+    background-color: #81c5f3 !important;
+}
+
+.secondary-background-color{
+    background-color: rgb(51, 51, 51) !important;
+}
+
+.tertiary-background-color{
+    background-color: rgb(28, 34, 49);
+}
+
+/* icons colors */
+.primary-color-icon{
+    fill: #53b1ed;
+}
+
+.secondary-color-icon{
+    fill: #1c2231;
+}
+
+.tertiary-color-icon{
+    fill: #3f51b5;
+}
+
+.dark-color-icon{
+    fill: rgb(51, 51, 51);
+}

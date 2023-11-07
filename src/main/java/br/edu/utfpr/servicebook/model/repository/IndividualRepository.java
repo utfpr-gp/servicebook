@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook.model.repository;
 
 import br.edu.utfpr.servicebook.model.entity.Individual;
+import br.edu.utfpr.servicebook.model.entity.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -53,4 +54,11 @@ public interface IndividualRepository extends JpaRepository<Individual, Long> {
             "or lower(p.description) like lower(concat('%', :term, '%')) " +
             "or lower(pe.expertise.name) like lower(concat('%', :term, '%'))")
     List<Individual> findDistinctByTermIgnoreCase(String term);
+
+    @Query("select p from Individual p left join ProfessionalServiceOffering pe on p.id = pe.user.id where " +
+            "pe.service = :term")
+    Page<Individual> findAllIndividualsByService(
+            Service term,
+            Pageable pageable);
+
 }

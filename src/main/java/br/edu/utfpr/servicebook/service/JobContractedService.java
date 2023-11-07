@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,7 +87,7 @@ public class JobContractedService {
      * @return
      */
     public List<JobContracted> findAllJobRequestsToClose(int days) {
-        return this.jobContractedRepository.findAllJobContractedExpired(new Date(), days, JobRequest.Status.DOING);
+        return this.jobContractedRepository.findAllJobContractedExpired(LocalDate.now(), days, JobRequest.Status.DOING);
     }
 
     /**
@@ -95,7 +95,7 @@ public class JobContractedService {
      * @return
      */
     public List<JobContracted> findAllJobRequestsToDoing() {
-        return this.jobContractedRepository.findAllJobContractedToDoing(new Date(), JobRequest.Status.TO_DO);
+        return this.jobContractedRepository.findAllJobContractedToDoing(LocalDate.now(), JobRequest.Status.TO_DO);
     }
 
     /**
@@ -104,8 +104,12 @@ public class JobContractedService {
      * @return
      */
     public List<JobContracted> findAllJobRequestsToCancel(int days) {
-        return this.jobContractedRepository.findAllJobContractedExpired(new Date(), days, JobRequest.Status.TO_HIRED);
+        return this.jobContractedRepository.findAllJobContractedExpired(LocalDate.now(), days, JobRequest.Status.TO_HIRED);
     }
 
+    public Long countAll()
+    {
+        return this.jobContractedRepository.countAll();
+    }
 
 }

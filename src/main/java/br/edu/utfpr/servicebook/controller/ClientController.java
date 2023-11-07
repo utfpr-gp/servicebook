@@ -1,7 +1,7 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
-import br.edu.utfpr.servicebook.follower.FollowsService;
+import br.edu.utfpr.servicebook.service.FollowsService;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
@@ -14,8 +14,8 @@ import br.edu.utfpr.servicebook.sse.EventSseMapper;
 import br.edu.utfpr.servicebook.sse.SSEService;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
-import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
+import br.edu.utfpr.servicebook.util.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,7 +48,13 @@ public class ClientController {
     private IndividualService individualService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private IndividualMapper individualMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     private JobCandidateService jobCandidateService;
@@ -95,11 +101,20 @@ public class ClientController {
     @Autowired
     private PaginationUtil paginationUtil;
 
+    @Autowired
+    private ProfessionalMapper professionalMapper;
+
+
+    /**
+     * Método que apresenta a tela inicial do cliente
+     * @return
+     * @throws Exception
+     */
     @GetMapping
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView show() throws Exception {
 
-        Optional<Individual> oClient = individualService.findByEmail(authentication.getEmail());
+        Optional<User> oClient = userService.findByEmail(authentication.getEmail());
 
         if (!oClient.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -113,29 +128,20 @@ public class ClientController {
                 })
                 .collect(Collectors.toList());
 
-        //cria o dto do cliente
-        IndividualDTO clientDTO = individualMapper.toDto(oClient.get());
-        Optional<Long> oClientFollowingAmount = followsService.countByClient(oClient.get());
-        clientDTO.setFollowingAmount(oClientFollowingAmount.get());
-
-        //cria o dto para passar ao painel lateral
-        UserTemplateInfo userTemplateInfo = templateUtil.getUserInfo(clientDTO);
-
+        //lista os pedidos de serviço do cliente
         List<JobRequest> jobRequests = jobRequestService.findByClientOrderByDateCreatedDesc(oClient.get());
-
         List<JobRequestMinDTO> jobRequestDTOs = jobRequests.stream()
                 .map(job -> {
                     Optional<Long> amountOfCandidates = jobCandidateService.countByJobRequest(job);
 
                     if (amountOfCandidates.isPresent()) {
-                        return jobRequestMapper.toMinDto(job, amountOfCandidates);
+                        return jobRequestMapper.toMinDto(job, amountOfCandidates.get());
                     }
-                    return jobRequestMapper.toMinDto(job, Optional.ofNullable(0L));
+                    return jobRequestMapper.toMinDto(job, 0L);
                 })
                 .collect(Collectors.toList());
 
         ModelAndView mv = new ModelAndView("client/my-requests");
-        mv.addObject("user", userTemplateInfo);
         mv.addObject("jobRequests", jobRequestDTOs);
         mv.addObject("eventsse", eventSseDTOs);
 
@@ -150,12 +156,12 @@ public class ClientController {
      * @throws IOException
      */
     @DeleteMapping("/meus-pedidos/{id}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String delete (@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
-        Optional<Individual> individual = (individualService.findByEmail(authentication.getEmail()));
+        Optional<User> oUser = (userService.findByEmail(authentication.getEmail()));
 
-        if (!individual.isPresent()) {
+        if (!oUser.isPresent()) {
             throw new IOException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
@@ -166,7 +172,7 @@ public class ClientController {
         }
 
         Long jobRequestClientId = jobRequest.get().getUser().getId();
-        Long clientId = individual.get().getId();
+        Long clientId = oUser.get().getId();
 
         if (jobRequestClientId != clientId) {
             throw new EntityNotFoundException("Você não ter permissão para deletar essa solicitação.");
@@ -185,7 +191,7 @@ public class ClientController {
      * @throws Exception
      */
     @GetMapping("/meus-pedidos/{id}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showDetailsRequest(@PathVariable Optional<Long> id) throws Exception {
 
         ModelAndView mv = new ModelAndView("client/details-request");
@@ -212,14 +218,11 @@ public class ClientController {
 
         List<JobCandidateDTO> jobCandidatesDTOs = jobCandidates.stream()
                 .map(candidate -> {
-                    Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(candidate.getUser());
-                    candidate.getUser().setFollowsAmount(oProfessionalFollowingAmount.get());
                     return jobCandidateMapper.toDto(candidate);
                 })
                 .collect(Collectors.toList());
 
         mv.addObject("candidates", jobCandidatesDTOs);
-        mv.addObject("individualInfo", this.getSidePanelUser());
         mv.addObject("expertise", expertiseDTO);
         mv.addObject("jobRequest", jobDTO);
         return mv;
@@ -233,36 +236,40 @@ public class ClientController {
      * @throws Exception
      */
     @GetMapping("/meus-pedidos/{jobId}/detalhes/{candidateId}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showDetailsRequestCandidate(@PathVariable Optional<Long> jobId, @PathVariable Optional<Long> candidateId) throws Exception {
         ModelAndView mv = new ModelAndView("client/details-request-candidate");
 
-        Optional<Individual> oCandidate = individualService.findById(candidateId.get());
+        Optional<User> oCandidate = userService.findById(candidateId.get());
         if (!oCandidate.isPresent()) {
-            throw new EntityNotFoundException("O usuário não foi encontrado!");
+            throw new EntityNotFoundException("O candidato não foi encontrado!");
         }
 
         Optional<JobCandidate> jobCandidate = jobCandidateService.findById(jobId.get(), oCandidate.get().getId());
         if (!jobCandidate.isPresent()) {
-            throw new EntityNotFoundException("Candidato não encontrado");
+            throw new EntityNotFoundException("Candidato não encontrado. Por favor, tente novamente.");
         }
+
+        Optional<User> oClient = (userService.findByEmail(authentication.getEmail()));
+        if (!oClient.isPresent()) {
+            throw new EntityNotFoundException("Usuário não encontrado. Por favor, tente novamente.");
+        }
+
         JobCandidateDTO jobCandidateDTO = jobCandidateMapper.toDto(jobCandidate.get());
+        UserDTO clientDTO = userMapper.toDto(oClient.get());
 
-        Optional<Individual> client = (individualService.findByEmail(authentication.getEmail()));
-        IndividualDTO individualDTO = individualMapper.toDto(client.get());
-
-        List<Follows> follows = followsService.findFollowProfessionalClient(oCandidate.get(), client.get());
+        List<Follows> follows = followsService.findFollowProfessionalClient(oCandidate.get(), oClient.get());
         boolean isFollow = !follows.isEmpty();
-
+        System.out.println(jobCandidateDTO.getId());
         mv.addObject("jobCandidate", jobCandidateDTO);
         mv.addObject("isFollow", isFollow);
-        mv.addObject("jobClient", individualDTO);
+        mv.addObject("client", clientDTO);
 
         return mv;
     }
 
     @GetMapping("/meus-pedidos/disponiveis")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showAvailableJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -271,9 +278,9 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> individual = (individualService.findByEmail(authentication.getEmail()));
+        Optional<User> oUser = (userService.findByEmail(authentication.getEmail()));
 
-        if (!individual.isPresent()) {
+        if (!oUser.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
@@ -281,7 +288,7 @@ public class ClientController {
         Page<JobRequest> jobRequestPage = null;
         List<JobRequestFullDTO> jobRequestFullDTOs = null;
 
-        jobRequestPage = jobRequestService.findByStatusAndClient(JobRequest.Status.AVAILABLE, individual.get(), pageRequest);
+        jobRequestPage = jobRequestService.findByStatusAndClient(JobRequest.Status.AVAILABLE, oUser.get(), pageRequest);
 
         jobRequestFullDTOs = jobRequestPage.stream()
                 .map(jobRequest -> {
@@ -311,12 +318,12 @@ public class ClientController {
      * @return
      */
     @DeleteMapping("/desistir/{id}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String desist(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         String currentUserEmail = authentication.getEmail();
 
-        Optional<Individual> oindividual = individualService.findByEmail(currentUserEmail);
-        if(!oindividual.isPresent()){
+        Optional<User> oUser = userService.findByEmail(currentUserEmail);
+        if(!oUser.isPresent()){
             throw new EntityNotFoundException("O usuário não foi encontrado!");
         }
 
@@ -333,7 +340,7 @@ public class ClientController {
     }
 
     @GetMapping("/meus-pedidos/para-orcamento")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showDisputedJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -342,9 +349,9 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> individual = (individualService.findByEmail(authentication.getEmail()));
+        Optional<User> oUser = (userService.findByEmail(authentication.getEmail()));
 
-        if (!individual.isPresent()) {
+        if (!oUser.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
@@ -352,7 +359,7 @@ public class ClientController {
         Page<JobRequest> jobRequestPage = null;
         List<JobRequestFullDTO> jobRequestFullDTOs = null;
 
-        jobRequestPage = jobRequestService.findByStatusAndClient(JobRequest.Status.BUDGET, individual.get(), pageRequest);
+        jobRequestPage = jobRequestService.findByStatusAndClient(JobRequest.Status.BUDGET, oUser.get(), pageRequest);
 
         jobRequestFullDTOs = jobRequestPage.stream()
                 .map(jobRequest -> {
@@ -385,7 +392,7 @@ public class ClientController {
      * @throws Exception
      */
     @GetMapping("/meus-pedidos/para-fazer")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showTodoJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -394,9 +401,9 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> individual = (individualService.findByEmail(authentication.getEmail()));
+        Optional<User> oUser = (userService.findByEmail(authentication.getEmail()));
 
-        if (!individual.isPresent()) {
+        if (!oUser.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
@@ -404,7 +411,7 @@ public class ClientController {
         Page<JobRequest> jobRequestPage = null;
         List<JobRequestFullDTO> jobRequestFullDTOs = null;
 
-        jobRequestPage = jobRequestService.findByStatusAndClient(JobRequest.Status.TO_DO, individual.get(), pageRequest);
+        jobRequestPage = jobRequestService.findByStatusAndClient(JobRequest.Status.TO_DO, oUser.get(), pageRequest);
 
         jobRequestFullDTOs = jobRequestPage.stream()
                 .map(jobRequest -> {
@@ -437,7 +444,7 @@ public class ClientController {
      * @throws Exception
      */
     @GetMapping("/meus-pedidos/para-confirmar")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showForHiredJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -446,7 +453,7 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> client = (individualService.findByEmail(authentication.getEmail()));
+        Optional<User> client = (userService.findByEmail(authentication.getEmail()));
 
         if (!client.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -479,7 +486,7 @@ public class ClientController {
     }
 
     @GetMapping("/meus-pedidos/fazendo")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showDoingJobs(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -488,9 +495,9 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> individual = (individualService.findByEmail(authentication.getEmail()));
+        Optional<User> oUser = (userService.findByEmail(authentication.getEmail()));
 
-        if (!individual.isPresent()) {
+        if (!oUser.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
@@ -498,7 +505,7 @@ public class ClientController {
         Page<JobContracted> jobContractedPage = null;
         List<JobContractedFullDTO> jobContractedDTOs = null;
 
-        jobContractedPage = jobContractedService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.DOING, individual.get(), pageRequest);
+        jobContractedPage = jobContractedService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.DOING, oUser.get(), pageRequest);
 
         jobContractedDTOs = jobContractedPage.stream()
                 .map(jobContracted -> {
@@ -535,7 +542,7 @@ public class ClientController {
      * @throws Exception
      */
     @GetMapping("/meus-pedidos/executados")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showJobsPerformed(
             HttpServletRequest request,
             @RequestParam(value = "pag", defaultValue = "1") int page,
@@ -544,9 +551,9 @@ public class ClientController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
-        Optional<Individual> individual = (individualService.findByEmail(authentication.getEmail()));
+        Optional<User> oUser = (userService.findByEmail(authentication.getEmail()));
 
-        if (!individual.isPresent()) {
+        if (!oUser.isPresent()) {
             throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
@@ -554,7 +561,7 @@ public class ClientController {
         Page<JobContracted> jobContractedPage = null;
         List<JobContractedFullDTO> jobContractedDTOs = null;
 
-        jobContractedPage = jobContractedService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.CLOSED, individual.get(), pageRequest);
+        jobContractedPage = jobContractedService.findByJobRequest_StatusAndJobRequest_Client(JobRequest.Status.CLOSED, oUser.get(), pageRequest);
         System.out.println("Quantos: " + jobContractedPage.getTotalElements());
         jobContractedDTOs = jobContractedPage.stream()
                 .map(jobContracted -> {
@@ -590,10 +597,10 @@ public class ClientController {
      * @throws IOException
      */
     @PatchMapping("/encerra-pedido/{id}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String updateRequest(@PathVariable Long id, RedirectAttributes redirectAttributes) throws IOException {
 
-        Optional<Individual> oClient = (individualService.findByEmail(authentication.getEmail()));
+        Optional<User> oClient = (userService.findByEmail(authentication.getEmail()));
 
         if (!oClient.isPresent()) {
             throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -625,17 +632,6 @@ public class ClientController {
         return "redirect:/minha-conta/meus-pedidos?tab=paraOrcamento";
     }
 
-    private UserTemplateInfo getSidePanelUser() throws Exception {
-        Optional<Individual> client = (individualService.findByEmail(authentication.getEmail()));
-
-        if (!client.isPresent()) {
-            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
-        }
-        IndividualDTO individualDTO = individualMapper.toDto(client.get());
-
-        return templateUtil.getUserInfo(individualDTO);
-    }
-
     /**
      * O cliente escolhe um profissional para realizar o orçamento ou cancela a escolha do profissional para orçamento.
      * *
@@ -646,7 +642,7 @@ public class ClientController {
      * @throws IOException
      */
     @PatchMapping("/orcamento-ao/{candidateId}/para/{jobId}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String markAsBudget(@PathVariable Long jobId, @PathVariable Long candidateId, RedirectAttributes redirectAttributes) throws IOException {
 
         Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(jobId, candidateId);
@@ -662,7 +658,7 @@ public class ClientController {
         JobRequest jobRequest = oJobRequest.get();
 
         //verifica se o usuário logado é o dono do dado
-        User user = individualService.getAuthenticated();
+        User user = userService.getAuthenticated();
 
         if(jobRequest.getUser().getId() != user.getId()){
             throw new InvalidParamsException("O usuário não tem permissão de alterar este dado!");
@@ -700,7 +696,7 @@ public class ClientController {
      * @throws IOException
      */
     @PatchMapping("/informa-finalizado/{jobId}")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public String markAsClose(
             @PathVariable Long jobId,
             JobCandidateMinDTO dto,
@@ -717,7 +713,7 @@ public class ClientController {
         //verifica se o usuário é realmente o dono do anúncio
         User user = jobRequest.getUser();
 
-        Optional<Individual> oClient = individualService.findByEmail(authentication.getEmail());
+        Optional<User> oClient = userService.findByEmail(authentication.getEmail());
 
         if (!oClient.isPresent()) {
             throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
@@ -733,7 +729,7 @@ public class ClientController {
         }
 
         JobContracted jobContracted = oJobContracted.get();
-        jobContracted.setFinishDate(new Date());
+        jobContracted.setFinishDate(LocalDate.now());
         jobContractedService.save(jobContracted);
 
         return "redirect:/minha-conta/cliente#executados";
@@ -748,10 +744,10 @@ public class ClientController {
      * @return
      * @throws IOException
      */
-    @PatchMapping("/contrata/{individualId}/para/{jobId}")
-    @RolesAllowed({RoleType.USER})
-    public String markAsHided(@PathVariable Long jobId, @PathVariable Long individualId, RedirectAttributes redirectAttributes) throws IOException {
-        Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(jobId, individualId);
+    @PatchMapping("/contrata/{userId}/para/{jobId}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public String markAsHided(@PathVariable Long jobId, @PathVariable Long userId, RedirectAttributes redirectAttributes) throws IOException {
+        Optional<JobCandidate> oJobCandidate = jobCandidateService.findById(jobId, userId);
 
         if (!oJobCandidate.isPresent()) {
             throw new EntityNotFoundException("Candidato não encontrado");
@@ -775,7 +771,7 @@ public class ClientController {
         }
 
         JobContracted jobContracted = oJobContracted.get();
-        jobContracted.setHiredDate(new Date());
+        jobContracted.setHiredDate(LocalDate.now());
         jobContractedService.save(jobContracted);
 
         return "redirect:/minha-conta/cliente/meus-pedidos/"+jobId;

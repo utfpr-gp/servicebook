@@ -2,6 +2,10 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<head>
+    <!-- Funciona apenas com caminho absoluto porque é renderizado antes da tag base -->
+    <link href="${pageContext.request.contextPath}/assets/resources/styles/client/client.css" rel="stylesheet">
+</head>
 
 <t:template title="Status do pedido">
     <jsp:body>
@@ -30,13 +34,16 @@
                         </h4>
 
                         <h5 class="center">
-                            Acompanhe seu pedido para ter acesso aos dados dos profissionais que se candidataram ao seu pedido.
+                            Acompanhe seu pedido para ter acesso aos dados dos profissionais que se candidataram ao seu
+                            pedido.
                         </h5>
                         <h5 class="center">
-                            Selecione alguns profissionais para orçamento, converse com eles e escolha o melhor para o seu serviço!
+                            Selecione alguns profissionais para orçamento, converse com eles e escolha o melhor para o
+                            seu serviço!
                         </h5>
                         <h5 class="center">
-                            Não esqueça de informar pelo acompanhamento do pedido qual foi o profissional escolhido para que você possa avaliar depois!
+                            Não esqueça de informar pelo acompanhamento do pedido qual foi o profissional escolhido para
+                            que você possa avaliar depois!
                         </h5>
 
                         <div class="section center-align">

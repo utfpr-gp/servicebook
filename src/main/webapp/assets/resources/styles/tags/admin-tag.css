@@ -1,0 +1,19 @@
+.dropdown-content {
+    background-color: #fff;
+    margin-top: 43px !important;
+}
+
+.dropdown-content li span {
+    color: #1c2231;
+}
+
+.nav-main{
+    height: 80px;
+    background-color: #1c2231;
+    color: #53b1ed;
+}
+
+.menu-itens{
+    margin-top: 15px;
+    color: #53b1ed;
+}

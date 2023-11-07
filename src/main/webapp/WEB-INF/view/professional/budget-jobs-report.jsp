@@ -63,10 +63,14 @@
                     </blockquote>
                     <div>
                         <div class="center">
-                            <a href="minha-conta/profissional/detalhes-servico/${job.jobRequest.id}" class="waves-effect waves-light btn spacing-buttons">
+                            <a href="minha-conta/profissional/detalhes-servico/${job.jobRequest.id}"
+                               class="waves-effect waves-light btn spacing-buttons">
                                 Detalhes
                             </a>
-                            <a href="#modal-delete" data-url="${pageContext.request.contextPath}/candidaturas/${job.jobRequest.id}" data-name="${city.name}" class="waves-effect waves-light btn spacing-buttons red modal-trigger">Desistir</a>
+                            <a href="#modal-delete"
+                               data-url="${pageContext.request.contextPath}/candidaturas/${job.jobRequest.id}"
+                               data-name="${city.name}"
+                               class="waves-effect waves-light btn spacing-buttons red modal-trigger">Desistir</a>
                         </div>
                     </div>
                 </div>
@@ -83,7 +87,9 @@
                         <h4>Você tem certeza que deseja excluir <strong id="strong-name"></strong>?</h4>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
+                        <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">
+                            Cancelar
+                        </button>
                         <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
                     </div>
                 </form>
@@ -97,9 +103,9 @@
 </div>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('.modal').modal({
-            onOpenEnd: function (modal, trigger){
+            onOpenEnd: function (modal, trigger) {
                 var url = $(trigger).data('url');
                 var name = $(trigger).data('name');
 

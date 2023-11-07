@@ -12,8 +12,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -49,7 +48,7 @@ public class CloseJobsRequestPass30DaysFromHiredJob implements Job {
                 jobRequest.setStatus(JobRequest.Status.CLOSED);
                 jobRequestService.save(jobRequest);
 
-                jobContracted.setFinishDate(new Date());
+                jobContracted.setFinishDate(LocalDate.now());
                 jobContractedService.save(jobContracted);
             }
         } catch (Exception e) {

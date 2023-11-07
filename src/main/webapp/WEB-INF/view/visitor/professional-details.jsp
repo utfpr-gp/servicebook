@@ -2,10 +2,26 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<head>
+    <meta property="og:title" content="${professional.description}"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:description" content="SERVICEBOOK - O MELHOR PROFISSIONAL QUE VOCÊ PRECISA ESTÁ AQUI!"/>
+    <meta property="og:image" content="${professional.profilePicture}"/>
+    <meta property="og:site_name" content="Servicebook"/>
+
+    <meta name="twitter:card" content="photo">
+    <meta name="twitter:url" content="$(location).attr('href')">
+    <meta name="twitter:title" content="${professional.description}">
+    <meta name="twitter:description" content="SERVICEBOOK - O MELHOR PROFISSIONAL QUE VOCÊ PRECISA ESTÁ AQUI!">
+    <meta name="twitter:image "content="${professional.profilePicture}">
+    <!-- Funciona apenas com caminho absoluto porque é renderizado antes da tag base -->
+    <link href="${pageContext.request.contextPath}/assets/resources/styles/visitor/visitor.css" rel="stylesheet">
+</head>
 
 <t:template title="Servicebook - Início">
     <jsp:body>
-
         <div id="" class="blue lighten-1">
             <div class="section no-pad-bot">
                 <div class="container">
@@ -22,6 +38,27 @@
                 </div>
             </div>
         </div>
+
+        <sec:authorize access="isAuthenticated()">
+            <div class="col s12 center">
+                <c:if test="${!isFollow}">
+                    <form method="post" id="follow-form">
+                        <input type="hidden" name="professional" value="${professional.id}"/>
+                        <input type="hidden" name="client" value="${client.id}"/>
+                        <button alt="seguir" type="button"
+                                class="waves-effect waves-light btn" id="follow-button">Seguir
+                        </button>
+                    </form>
+                </c:if>
+                <c:if test="${isFollow}">
+                    <button type="button" data-professional="${professional.id}"
+                            class="waves-effect waves-light btn"
+                            id="unfollow-button">Deixar de Seguir
+                    </button>
+                </c:if>
+            </div>
+        </sec:authorize>
+
         <div class="tertiary-background-color white-text center-align">
             <h5 class="upper-case mb-1 mt-1">${professional.name}</h5>
         </div>
@@ -30,14 +67,35 @@
             <div class="section">
                 <div class="row">
                     <c:forEach var="expertise" items="${professionalExpertises}">
-                        <div class="col expertise-label">${expertise.name}</div>
+                        <div class="chip">
+                            <img src="${expertise.pathIcon}">
+                                ${expertise.name}
+                        </div>
                     </c:forEach>
                 </div>
 
-                <div class="row center-align">
-                    <h5>Descrição geral do profissional</h5>
-                    <p class="contact-item center dark-color-text">${professional.description}</p>
+                <div class="row">
+                    <h5><strong>Descrição geral</strong></h5>
+                    <div class="col s12">
+                        <p class="dark-color-text">${professional.description}</p>
+                    </div>
                 </div>
+
+                <c:forEach var="entry" items="${servicesByExpertise.entrySet()}">
+                    <div class="row">
+                        <h5><strong>${entry.key.expertise.name}</strong></h5>
+                        <div class="col s12">
+                                <p class="dark-color-text">${entry.key.description}</p>
+                        </div>
+                        <div class="col s12">
+                            <c:forEach var="service" items="${entry.value}">
+                                <div class="col s12 m6">
+                                    <t:service-card edit="false" serviceOffering="${service}"/>
+                                </div>
+                            </c:forEach>
+                        </div>
+                    </div>
+                </c:forEach>
 
                 <div class="row center-align">
                     <a href="https://web.whatsapp.com/send?phone=55${professional.getOnlyNumbersFromPhone()}" target="_blank">
@@ -50,7 +108,7 @@
                     </a>
                 </div>
 
-                <c:if test="${logged == false}">
+                <sec:authorize access="!isAuthenticated()">
                     <div class="divider"></div>
 
                     <div class="row center-align">
@@ -76,17 +134,18 @@
 
                         <a class="waves-effect waves-light btn" href="login">Entrar</a>
                     </div>
-                </c:if>
-                <c:if test="${logged == false}">
+
                     <div class="divider"></div>
 
                     <div class="row center-align">
                         <p>VOCÊ AINDA NÃO TEM UMA CONTA?</p>
                         <a class="waves-effect waves-light btn" href="cadastrar-se">Cadastrar-se</a>
                     </div>
-                </c:if>
+                </sec:authorize>
             </div>
         </div>
 
     </jsp:body>
 </t:template>
+<script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=64931a737674a9001261149d&product=sticky-share-buttons&source=platform" async="async"></script>
+<script src="assets/resources/scripts/follow-professional.js"></script>

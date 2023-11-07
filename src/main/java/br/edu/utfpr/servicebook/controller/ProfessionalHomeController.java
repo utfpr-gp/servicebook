@@ -1,7 +1,7 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.exception.InvalidParamsException;
-import br.edu.utfpr.servicebook.follower.FollowsService;
+import br.edu.utfpr.servicebook.service.FollowsService;
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
@@ -12,17 +12,19 @@ import br.edu.utfpr.servicebook.sse.EventSSE;
 import br.edu.utfpr.servicebook.sse.EventSSEDTO;
 import br.edu.utfpr.servicebook.sse.EventSseMapper;
 import br.edu.utfpr.servicebook.sse.SSEService;
+import br.edu.utfpr.servicebook.util.SessionNames;
 import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateStatisticDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
+import br.edu.utfpr.servicebook.util.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.UserTemplateStatisticInfo;
+import br.edu.utfpr.servicebook.util.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -30,7 +32,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
-import java.text.SimpleDateFormat;
+import javax.servlet.http.HttpSession;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,7 +44,7 @@ public class ProfessionalHomeController {
 
     public static final Logger log = LoggerFactory.getLogger(ProfessionalHomeController.class);
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Autowired
     private FollowsService followsService;
@@ -57,6 +60,9 @@ public class ProfessionalHomeController {
 
     @Autowired
     private CityMapper cityMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     private ProfessionalExpertiseService professionalExpertiseService;
@@ -105,6 +111,8 @@ public class ProfessionalHomeController {
 
     @Autowired
     private PaginationUtil paginationUtil;
+    @Autowired
+    private UserService userService;
 
     /**
      * Mostra a tela da minha conta no perfil do profissional, mostrando os anúncios disponíveis por default.
@@ -116,27 +124,22 @@ public class ProfessionalHomeController {
     @RolesAllowed({RoleType.USER})
     public ModelAndView showMyAccountProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> expertiseId) throws Exception {
         log.debug("ServiceBook: Minha conta.");
-   
-        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
-        if (!oProfessional.isPresent()) {
-            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+
+        Optional<User> oUser = (userService.findByEmail(authentication.getEmail()));
+
+        if (!oUser.isPresent()) {
+            throw new AuthenticationCredentialsNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
-        ModelAndView mv = new ModelAndView("professional/my-account");
-    
-        List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
-        List<ExpertiseDTO> expertiseDTOs = professionalExpertises.stream()
-                .map(professionalExpertise -> professionalExpertise.getExpertise())
-                .map(expertise -> expertiseMapper.toDto(expertise))
-                .collect(Collectors.toList());
+        User user = oUser.get();
+        UserDTO userDTO = userMapper.toDto(user);
 
-        IndividualDTO professionalDTO = individualMapper.toDto(oProfessional.get());
-
-        Optional<Long> oProfessionalFollowingAmount = followsService.countByProfessional(oProfessional.get());
-        professionalDTO.setFollowingAmount(oProfessionalFollowingAmount.get());
-
-        UserTemplateInfo individualInfo = templateUtil.getUserInfo(professionalDTO);
-        UserTemplateStatisticDTO statisticInfo = templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId.get());
+        //cidade do usuário
+        Optional<City> oCity = cityService.findById(user.getAddress().getCity().getId());
+        if (!oCity.isPresent()) {
+            throw new EntityNotFoundException("Cidade não foi encontrada pelo id informado.");
+        }
+        CityMinDTO cityMinDTO = cityMapper.toMinDto(oCity.get());
 
         //envia a notificação ao usuário
         List<EventSSE> eventSsesList = sseService.findPendingEventsByEmail(authentication.getEmail());
@@ -146,10 +149,42 @@ public class ProfessionalHomeController {
                 })
                 .collect(Collectors.toList());
 
+        ModelAndView mv = new ModelAndView("professional/my-account-menu");
         mv.addObject("eventsse", eventSSEDTOs);
-        mv.addObject("expertises", expertiseDTOs);
-        mv.addObject("individualInfo", individualInfo);
-        mv.addObject("statisticInfo", statisticInfo);
+        mv.addObject("professional", userDTO);
+        mv.addObject("city", cityMinDTO);
+
+        return mv;
+    }
+
+    @GetMapping("/meus-jobs")
+    @RolesAllowed({RoleType.USER})
+    public ModelAndView showMyJobsProfessional(@RequestParam(required = false, defaultValue = "0") Optional<Long> expertiseId) throws Exception {
+        log.debug("ServiceBook: Minha conta.");
+
+        Optional<User> oProfessional = (userService.findByEmail(authentication.getEmail()));
+
+        if (!oProfessional.isPresent()) {
+            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+        }
+
+        List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(oProfessional.get());
+        List<ExpertiseDTO> professionalExpertiseDTOs = professionalExpertises.stream()
+                .map(professionalExpertise -> professionalExpertise.getExpertise())
+                .map(expertise -> expertiseMapper.toDto(expertise))
+                .collect(Collectors.toList());
+
+        //envia a notificação ao usuário
+        List<EventSSE> eventSsesList = sseService.findPendingEventsByEmail(authentication.getEmail());
+        List<EventSSEDTO> eventSSEDTOs = eventSsesList.stream()
+                .map(eventSse -> {
+                    return eventSseMapper.toFullDto(eventSse);
+                })
+                .collect(Collectors.toList());
+
+        ModelAndView mv = new ModelAndView("professional/my-account");
+        mv.addObject("eventsse", eventSSEDTOs);
+        mv.addObject("professionalExpertises", professionalExpertiseDTOs);
 
         return mv;
     }
@@ -168,9 +203,10 @@ public class ProfessionalHomeController {
      * @throws Exception
      */
     @GetMapping("/disponiveis")
-    @RolesAllowed({RoleType.USER})
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
     public ModelAndView showAvailableJobs(
             HttpServletRequest request,
+            HttpSession httpSession,
             @RequestParam(required = false, defaultValue = "0") Long id,
             @RequestParam(value = "pag", defaultValue = "1") int page,
             @RequestParam(value = "siz", defaultValue = "5") int size,
@@ -178,13 +214,15 @@ public class ProfessionalHomeController {
             @RequestParam(value = "dir", defaultValue = "ASC") String direction
     ) throws Exception {
 
+        httpSession.setAttribute(SessionNames.ACCESS_USER_KEY, SessionNames.ACCESS_USER_PROFESSIONAL_VALUE);
+
         Page<JobRequest> jobRequestPage = findJobRequests(id, JobRequest.Status.AVAILABLE, page, size);
 
         List<JobRequestFullDTO> jobRequestFullDTOs = generateJobRequestDTOList(jobRequestPage);
 
         PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(jobRequestPage, "/minha-conta/profissional/disponiveis");
 
-        ModelAndView mv = new ModelAndView("professional/available-jobs-report");
+        ModelAndView mv = new ModelAndView("professional/professional-index");
         mv.addObject("pagination", paginationDTO);
         mv.addObject("jobs", jobRequestFullDTOs);
 
@@ -488,10 +526,10 @@ public class ProfessionalHomeController {
 
         Optional oClient, oCity, oState;
 
-        oClient = individualService.findById(jobFull.getIndividual().getId());
+        oClient = individualService.findById(jobFull.getUser().getId());
         Individual client = (Individual) oClient.get();
 
-        oCity = cityService.findById(jobFull.getIndividual().getAddress().getCity().getId());
+        oCity = cityService.findById(jobFull.getUser().getAddress().getCity().getId());
 
         City city = (City) oCity.get();
         oState = stateService.findById(city.getState().getId());
@@ -511,7 +549,7 @@ public class ProfessionalHomeController {
             JobContracted jobContracted = oJobContracted.get();
             boolean hasToDoDate = jobContracted.getTodoDate() != null;
 
-            String date = this.dateFormat.format(jobRequest.getDateTarget());
+            String date = this.dateTimeFormatter.format(jobRequest.getDateTarget());
 
             mv.addObject("todoDate",  date);
             mv.addObject("hasTodoDate",  hasToDoDate);
@@ -528,7 +566,7 @@ public class ProfessionalHomeController {
         mv.addObject("percentCandidatesApplied", percentCandidatesApplied);
         mv.addObject("isAvailableJobRequest", isAvailableJobRequest);
         mv.addObject("isJobToHired", isJobToHired);
-        mv.addObject("individualInfo", individualInfo);
+        mv.addObject("userInfo", individualInfo);
         return mv;
     }
 
@@ -556,13 +594,13 @@ public class ProfessionalHomeController {
                 return jobRequestPage = jobRequestService.findAvailableAllExpertises(JobRequest.Status.AVAILABLE, oProfessional.get().getId(), pageRequest);
             }
             else if(status == JobRequest.Status.TO_DO){
-                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_Professional(JobRequest.Status.TO_DO, oProfessional.get(), pageRequest);
+                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_User(JobRequest.Status.TO_DO, oProfessional.get(), pageRequest);
             }
             else if(status == JobRequest.Status.DOING){
-                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_Professional(JobRequest.Status.DOING, oProfessional.get(), pageRequest);
+                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_User(JobRequest.Status.DOING, oProfessional.get(), pageRequest);
             }
             else if(status == JobRequest.Status.CANCELED){
-                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_Professional(JobRequest.Status.CANCELED, oProfessional.get(), pageRequest);
+                return jobRequestPage = jobRequestService.findByStatusAndJobContracted_User(JobRequest.Status.CANCELED, oProfessional.get(), pageRequest);
             }
             return null;
         } else {

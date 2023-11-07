@@ -1,49 +1,69 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+
+<head>
+    <!-- Funciona apenas com caminho absoluto porque é renderizado antes da tag base -->
+    <link href="${pageContext.request.contextPath}/assets/resources/styles/visitor/visitor.css" rel="stylesheet">
+</head>
 
 <t:template title="Servicebook - Início">
     <jsp:body>
-
         <t:banner></t:banner>
-
-        <t:search-bar></t:search-bar>
-
+        <t:search-bar items="${categoryDTOs}"></t:search-bar>
         <div class="container">
             <div class="section">
                 <div class="row">
+                    <c:if test="${not empty dto_expertise}">
+
+                    <div class="col s12" style="position: relative;">
+                        <h4 class="white-text card-name-expertise"><img src="${dto_expertise.pathIcon}" class="avatar-expertise" alt="Foto de especialidade">
+                            <span class="span-name">${dto_expertise.name}</span>
+                        </h4>
+
+                        <h4 class="blue-text card-name-service">${service}</h4>
+                    </div>
+                    </c:if>
+                    <div class="col s12" style="margin-top: 30px">
+                        <span class="left-align" style="font-weight: bold; font-size: 1.5rem">PROFISSIONAIS</span>
+                        <hr>
+                    </div>
                     <div class="col s12">
 
                         <div class="row">
-                            <c:if test="${not empty professionals}">
-                                <c:forEach var="professional" items="${professionals}">
-                                    <div class="col s12 m6">
-                                        <div class="card-panel card-result blue lighten-1 white-text">
-                                            <div class="card-body">
+                            <c:if test="${not empty professionalServiceOfferingDTOS}">
+                                <c:forEach var="professional" items="${professionalServiceOfferingDTOS}">
+                                    <div class="col s4 div_cards_services">
+                                        <div class="card" style="margin: 0">
+                                            <div class="label_duration">
+                                                <span class=" white-text">${professional.service.expertise.name}</span>
+                                            </div>
+                                            <div class="card-content">
                                                 <div class="row center-align">
                                                     <c:choose>
-                                                        <c:when test="${professional.profilePicture != null}">
-                                                            <img src="${professional.profilePicture}" class="avatar" alt="Foto de perfil">
+                                                        <c:when test="${professional.user.profilePicture != null}">
+                                                            <img src="${professional.user.profilePicture}" class="avatar" alt="Foto de perfil">
                                                         </c:when>
                                                         <c:otherwise>
                                                             <img src="assets/resources/images/no-photo.png" class="avatar" alt="Sem foto de perfil">
                                                         </c:otherwise>
                                                     </c:choose>
-                                                </div>
-                                                <div class="row center-align">
-                                                    <h5 class="truncate tooltipped" data-position="bottom" data-tooltip="${professional.name}">${professional.name}</h5>
-                                                    <div class="divider"></div>
-                                                </div>
-                                                <div class="row center-align">
-                                                    <c:forEach var="expertise" items="${professional.expertises}">
-                                                        <div class="col expertise-label">${expertise.name}</div>
-                                                    </c:forEach>
+                                                    <div class="col s12">
+                                                        <h6 class="truncate">${professional.user.name}</h6>
+                                                        <small> ${professional.description} </small>
+                                                    </div>
+                                                    <div class="col s12 button-profile">
+                                                        <a href="profissionais/detalhes/${professional.user.id}" class="waves-effect waves-light btn-small white-text text-lighten-1"><strong>Ver perfil</strong></a>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="row center-align ">
-                                                <a href="profissionais/detalhes/${professional.id}" class="waves-effect waves-light btn-large white blue-text text-lighten-1"><strong>Ver perfil</strong></a>
+                                            <div class="label_price">
+                                                <p class=" white-text" style="margin: 0"> <fmt:formatNumber value="${professional.price/100}"   type = "currency"/> </p>
                                             </div>
                                         </div>
+                                    </div>
+
                                     </div>
                                 </c:forEach>
                             </c:if>

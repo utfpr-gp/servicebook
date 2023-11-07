@@ -1,30 +1,28 @@
 package br.edu.utfpr.servicebook.controller;
 
 import br.edu.utfpr.servicebook.model.dto.*;
-import br.edu.utfpr.servicebook.model.entity.Expertise;
-import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;
-import br.edu.utfpr.servicebook.model.entity.User;
+import br.edu.utfpr.servicebook.model.entity.*;
 import br.edu.utfpr.servicebook.model.mapper.*;
 import br.edu.utfpr.servicebook.security.IAuthentication;
 import br.edu.utfpr.servicebook.security.RoleType;
 import br.edu.utfpr.servicebook.service.*;
 
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateStatisticDTO;
-import br.edu.utfpr.servicebook.util.sidePanel.TemplateUtil;
+import br.edu.utfpr.servicebook.util.UserTemplateStatisticInfo;
+import br.edu.utfpr.servicebook.util.TemplateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,13 +34,10 @@ public class ProfessionalExpertiseController {
     public static final Logger log = LoggerFactory.getLogger(ProfessionalHomeController.class);
 
     @Autowired
-    private IndividualService individualService;
-
-    @Autowired
-    private IndividualMapper individualMapper;
-
-    @Autowired
     private UserService userService;
+
+    @Autowired
+    private ServiceService serviceService;
 
     @Autowired
     private UserMapper userMapper;
@@ -54,16 +49,19 @@ public class ProfessionalExpertiseController {
     private ProfessionalMapper professionalMapper;
 
     @Autowired
+    private ServiceMapper serviceMapper;
+
+    @Autowired
     private ExpertiseService expertiseService;
 
     @Autowired
     private ExpertiseMapper expertiseMapper;
 
     @Autowired
-    private JobContractedService jobContractedService;
+    private CategoryService categoryService;
 
     @Autowired
-    private ProfessionalExpertiseMapper professionalExpertiseMapper;
+    private CategoryMapper categoryMapper;
 
     @Autowired
     private TemplateUtil templateUtil;
@@ -73,65 +71,174 @@ public class ProfessionalExpertiseController {
 
     /**
      * Apresenta a tela para o profissional adicionar especialidades.
-     * @param id
      * @return
      * @throws Exception
      */
     @GetMapping()
-    @RolesAllowed({RoleType.USER})
-    public ModelAndView showExpertises(@RequestParam(required = false, defaultValue = "0") Optional<Long> id)  throws Exception {
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public ModelAndView showExpertises()  throws Exception {
 
-        User professional = this.getProfessional();
-        UserDTO professionalMinDTO = userMapper.toDto(professional);
+        User professional = this.getAuthenticatedUser();
 
-        ModelAndView mv = new ModelAndView("professional/my-expertises");
+        //lista de categorias
+        List<Category> categories = categoryService.findAll();
+        List<CategoryDTO> categoryDTOs = categories.stream()
+                .map(s -> categoryMapper.toDto(s))
+                .collect(Collectors.toList());
 
         List<ProfessionalExpertise> professionalExpertises = professionalExpertiseService.findByProfessional(professional);
 
-        UserTemplateInfo userTemplateInfo = templateUtil.getUserInfo(professionalMinDTO);
-        UserTemplateStatisticDTO sidePanelStatisticDTO = templateUtil.getProfessionalStatisticInfo(professional, id.get());
+        List<ExpertiseDTO> professionalExpertiseDTOs = professionalExpertises.stream()
+                .map(professionalExpertise -> professionalExpertise.getExpertise())
+                .map(expertise -> expertiseMapper.toDto(expertise))
+                .collect(Collectors.toList());
 
-        mv.addObject("statisticInfo", sidePanelStatisticDTO);
-        mv.addObject("individualInfo", userTemplateInfo);
+        List<Expertise> professionPage = expertiseService.findExpertiseNotExist(getAuthenticatedUser().getId());
 
-        mv.addObject("id", id.orElse(0L));
-
-        List<ProfessionalExpertiseDTO2> professionalExpertiseDTOs = professionalExpertises.stream()
-                                                                    .map(s -> professionalExpertiseMapper.toResponseDTO(s))
-                                                                    .collect(Collectors.toList());
-        List<Expertise> professionPage = expertiseService.findExpertiseNotExist(getProfessional().getId());
-
-        List<ExpertiseDTO> expertiseDTOs = professionPage.stream()
+        List<ExpertiseDTO> otherExpertisesDTOs = professionPage.stream()
                 .map(s -> expertiseMapper.toDto(s))
-                .collect(Collectors.toList());  
+                .collect(Collectors.toList());
 
-
-        mv.addObject("expertises", expertiseDTOs);
+        ModelAndView mv = new ModelAndView("professional/my-expertises");
+        mv.addObject("categories", categoryDTOs);
+        mv.addObject("otherExpertises", otherExpertisesDTOs);
         mv.addObject("professionalExpertises", professionalExpertiseDTOs);
         return mv;
     }
 
-    @PostMapping()
-    @RolesAllowed({RoleType.USER})
-    public ModelAndView saveExpertises(@Valid List<Integer> ids, BindingResult errors, RedirectAttributes redirectAttributes) throws Exception {
+    /**
+     * Apresenta a tela para o profissional adicionar especialidades.
+     * Envia apenas as categorias. Assim, as especialidades disponíveis são carregadas via ajax.
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/novo")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public ModelAndView showFormToRegister()  throws Exception {
 
-        ModelAndView mv = new ModelAndView("redirect:especialidades");
+        User professional = this.getAuthenticatedUser();
 
-        if (ids == null) {
-            return mv;
-        }
+        //lista de categorias
+        List<Category> categories = categoryService.findAll();
+        List<CategoryDTO> categoryDTOs = categories.stream()
+                .map(s -> categoryMapper.toDto(s))
+                .collect(Collectors.toList());
 
-        User professional = this.getProfessional();
+        ModelAndView mv = new ModelAndView("professional/my-expertises-register");
+        mv.addObject("categories", categoryDTOs);
 
-        for (int id : ids) {
-            Optional<Expertise> e = expertiseService.findById((Long.valueOf(id)));
-
-            if (!e.isPresent()) {
-                throw new Exception("Não existe essa especialidade!");
-            }
-            ProfessionalExpertise p = professionalExpertiseService.save(new ProfessionalExpertise(professional, e.get()));
-        }
         return mv;
+    }
+
+    /**
+     * Retorna as especialidades de uma categoria para uma requisição ajax.
+     * Porém, apenas as especialidades que o profissional não possui para a categoria.
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/categorias/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    @ResponseBody
+    public List<ExpertiseDTO> getExpertisesByCategory(@PathVariable Long id)  throws Exception {
+
+        User professional = this.getAuthenticatedUser();
+
+        //lista de categorias
+        List<Expertise> expertises = expertiseService.findExpertiseNotExistByUserAndCategory(professional.getId(), id);
+
+        List<ExpertiseDTO> expertisesDTO = expertises.stream()
+                .map(s -> expertiseMapper.toDto(s))
+                .collect(Collectors.toList());
+
+        return expertisesDTO;
+    }
+
+    @GetMapping("/{expertiseId}/servicos")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    @ResponseBody
+    public List<ServiceDTO> findServicesByExpertise(@PathVariable Long expertiseId)  throws Exception {
+
+        User professional = this.getAuthenticatedUser();
+
+        Expertise expertise = expertiseService.findById(expertiseId).orElseThrow(() -> new EntityNotFoundException("Especialidade não encontrada"));
+
+        //lista de serviços
+        List<Service> services = serviceService.findByExpertise(expertise);
+
+        List<ServiceDTO> servicesDTO = services.stream()
+                .map(s -> serviceMapper.toDto(s))
+                .collect(Collectors.toList());
+
+        return servicesDTO;
+    }
+
+    /**
+     * Retorna uma especialidade para uma requisição ajax.
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    @ResponseBody
+    public ExpertiseDTO getExpertiseById(@PathVariable Long id)  throws Exception {
+
+        User professional = this.getAuthenticatedUser();
+
+        //lista de categorias
+        Optional<Expertise> oExpertise = expertiseService.findById(id);
+
+        if (!oExpertise.isPresent()) {
+            return new ExpertiseDTO();
+        }
+
+        ExpertiseDTO expertiseDTO = expertiseMapper.toDto(oExpertise.get());
+        return expertiseDTO;
+    }
+
+    /**
+     * Adiciona uma especialidade para o profissional.
+     * @param expertiseDTO
+     * @param errors
+     * @param redirectAttributes
+     * @return
+     * @throws Exception
+     */
+    @PostMapping()
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public String saveExpertises(@Validated ChooseExpertiseDTO expertiseDTO, BindingResult errors, RedirectAttributes redirectAttributes) throws Exception {
+
+        if (errors.hasErrors()) {
+            log.error("Erro de validação de especialidade");
+            redirectAttributes.addFlashAttribute("errors", errors.getAllErrors());
+            return "redirect:/minha-conta/profissional/especialidades/novo";
+        }
+
+        //verifica se a especialidade existe
+        Long expertiseId = expertiseDTO.getId();
+        Optional<Expertise> oExpertise = expertiseService.findById(expertiseDTO.getId());
+
+        if(!oExpertise.isPresent()) {
+        	throw new Exception("Não existe essa especialidade!");
+        }
+
+        User professional = this.getAuthenticatedUser();
+
+        //verifica se o profissional já possui a especialidade
+        Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(professional, oExpertise.get());
+
+        if(oProfessionalExpertise.isPresent()) {
+        	throw new Exception("Você já possui essa especialidade!");
+        }
+
+        //cria e adiciona a descrição personalizada para o profissional sobre a especialidade
+        ProfessionalExpertise professionalExpertise = new ProfessionalExpertise(professional, oExpertise.get());
+        professionalExpertise.setDescription(expertiseDTO.getDescription());
+
+        professionalExpertiseService.save(professionalExpertise);
+
+        return("redirect:/minha-conta/profissional/especialidades");
     }
 
     /**
@@ -145,7 +252,7 @@ public class ProfessionalExpertiseController {
     @RolesAllowed({RoleType.USER})
     public String delete(@PathVariable Expertise id, RedirectAttributes redirectAttributes) throws Exception {
         log.debug("Removendo uma especialidade com id {}", id);
-        User professional = this.getProfessional();
+        User professional = this.getAuthenticatedUser();
 
         Optional <ProfessionalExpertise> optionalProfession = this.professionalExpertiseService.findByProfessionalAndExpertise(professional,id);
 
@@ -164,16 +271,39 @@ public class ProfessionalExpertiseController {
      * @throws Exception
      */
     @GetMapping("/estatistica/{id}")
+    @RolesAllowed({RoleType.USER, RoleType.ADMIN})
     @ResponseBody
-    @RolesAllowed({RoleType.USER})
-    public UserTemplateStatisticDTO getExpertiseData(@PathVariable("id") Long expertiseId) throws Exception {
-        Optional<Individual> oProfessional = (individualService.findByEmail(authentication.getEmail()));
+    public ResponseEntity<?> getExpertiseData(@PathVariable("id") Long expertiseId) {
+        ResponseDTO response = new ResponseDTO();
+        try {
+            //verifica se o usuário está autenticado
+            Optional<User> oProfessional = (userService.findByEmail(authentication.getEmail()));
 
-        if (!oProfessional.isPresent()) {
-            throw new Exception("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+            if (!oProfessional.isPresent()) {
+                response.setMessage("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
+                return ResponseEntity.status(401).body(response);
+            }
+
+            //se for 0, são todas as especialidades
+            if(expertiseId > 0){
+                //verifica se a especialidade pertence ao profissional
+                Optional<Expertise> oExpertise = expertiseService.findById(expertiseId);
+                Optional<ProfessionalExpertise> oProfessionalExpertise = professionalExpertiseService.findByProfessionalAndExpertise(oProfessional.get(), oExpertise.get());
+                if(!oProfessionalExpertise.isPresent()){
+                    response.setMessage("A especialidade não pertence ao profissional.");
+                    return ResponseEntity.status(400).body(response);
+                }
+                response.setData(templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId));
+            }
+            else{
+                response.setData(templateUtil.getProfessionalStatisticInfo(oProfessional.get(), 0L));
+            }
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e){
+            response.setMessage("Erro ao recuperar dados do profissional. Por favor, tente novamente.");
+            return ResponseEntity.status(400).body(response);
         }
-
-        return templateUtil.getProfessionalStatisticInfo(oProfessional.get(), expertiseId);
     }
 
     /**
@@ -181,11 +311,11 @@ public class ProfessionalExpertiseController {
      * @return
      * @throws Exception
      */
-    private User getProfessional() throws Exception {
+    private User getAuthenticatedUser() throws Exception {
         Optional<User> oProfessional = (userService.findByEmail(authentication.getEmail()));
 
         if (!oProfessional.isPresent()) {
-            throw new Exception("Opss! Não foi possivel encontrar seus dados, tente fazer login novamente");
+            throw new EntityNotFoundException("Usuário não autenticado! Por favor, realize sua autenticação no sistema.");
         }
 
         return oProfessional.get();

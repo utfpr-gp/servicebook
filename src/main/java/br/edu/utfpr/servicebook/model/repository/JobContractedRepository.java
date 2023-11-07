@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,7 +103,7 @@ public interface JobContractedRepository extends JpaRepository<JobContracted, Lo
      * @return
      */
     @Query("select j from JobContracted j where j.jobRequest.status = :status and (j.hiredDate + :days) <= :now")
-    List<JobContracted> findAllJobContractedExpired(Date now, int days, JobRequest.Status status);
+    List<JobContracted> findAllJobContractedExpired(LocalDate now, int days, JobRequest.Status status);
 
 
     /**
@@ -114,6 +114,8 @@ public interface JobContractedRepository extends JpaRepository<JobContracted, Lo
      * @return
      */
     @Query("select j from JobContracted j where j.jobRequest.status = :status and j.todoDate >= :now")
-    List<JobContracted> findAllJobContractedToDoing(Date now, JobRequest.Status status);
+    List<JobContracted> findAllJobContractedToDoing(LocalDate now, JobRequest.Status status);
 
+    @Query("SELECT COUNT(*) FROM JobContracted ")
+    Long countAll();
 }

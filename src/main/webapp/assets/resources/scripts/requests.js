@@ -46,8 +46,6 @@ $(document).ready(function() {
         });
     })
 
-
-
     //carrega o conteúdo inicial para a tab padrão #disponiveis antes de qualquer evento de clique em abas
     $(hashActive).load($(`a[href='${hashActive}']`).attr("data-url"), function (result) {
         window.location.hash = hashActive;
@@ -59,7 +57,6 @@ $(document).ready(function() {
 
     });
 
-
     $('.tab a').click(function (e) {
         e.preventDefault();
         console.log("clicou");
@@ -70,7 +67,6 @@ $(document).ready(function() {
         $(href).load(url, function (result) {
             //window.scrollTo(0, 0);
         });
-
     });
 
     $('.modal').modal({
@@ -83,7 +79,5 @@ $(document).ready(function() {
             form.attr('action', url);
             modal.find('#strong-name').text(name);
         }
-
     });
-
 });

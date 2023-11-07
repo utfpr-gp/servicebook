@@ -8,7 +8,6 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 /**
  * Classe para armazenar as informações necessárias para a classe auxiliar n x n
@@ -39,8 +38,7 @@ public class JobCandidate {
 	/**
 	 * Data de criação da entidade.
 	 */
-	@Temporal(TemporalType.DATE)
-	private Date dateCreated;
+	private LocalDate dateCreated;
 
 	@ManyToOne
 	@MapsId("jobRequestId")
@@ -64,6 +62,6 @@ public class JobCandidate {
 
 	@PrePersist
 	public void onPersist() {
-		this.dateCreated = new Date();
+		this.dateCreated = LocalDate.now();
 	}
 }

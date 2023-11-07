@@ -1,7 +1,7 @@
 package br.edu.utfpr.servicebook.model.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,6 +26,8 @@ public class User implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	protected Long id;
+
+	private LocalDate dateCreated;
 
 	@NonNull
 	protected String name;
@@ -56,7 +58,7 @@ public class User implements Serializable {
 	@OneToOne(mappedBy = "user")
 	protected UserToken userToken;
 
-	@OneToOne(cascade = CascadeType.PERSIST)
+	@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
 	protected Address address;
 
 	@OneToMany(mappedBy = "user")
@@ -66,20 +68,23 @@ public class User implements Serializable {
 	Set<JobCandidate> candidatures;
 
 	protected String description;
-
 	protected Integer denounceAmount;
 
-	protected Long followsAmount;
 
-	@PrePersist
-	@PreUpdate
-	public void onSave() {
-		if(this.password == null) {
-			return;
-		}
+//	@PrePersist
+//	@PreUpdate
+//	public void onSave() {
+//
+//		if(this.password == null || this.password.isEmpty()) {
+//			return;
+//		}
+//
+//		final String hashed = PasswordUtil.generateBCrypt(getPassword());
+//		setPassword(hashed);
+//	}
 
-		final String hashed = PasswordUtil.generateBCrypt(getPassword());
-		setPassword(hashed);
+	public void setPassword(String password) {
+		this.password = PasswordUtil.generateBCrypt(password);
 	}
 
 	public User(String name, String email, String password, String phoneNumber){

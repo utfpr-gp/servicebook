@@ -5,7 +5,7 @@ import javax.persistence.*;
 import br.edu.utfpr.servicebook.util.PasswordUtil;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @Table(name = "job_contracted")
@@ -33,17 +33,17 @@ public class JobContracted {
 	/**
 	 * Data em que o profissional foi contratado pelo cliente.
 	 */
-	private Date hiredDate;
+	private LocalDate hiredDate;
 
 	/**
 	 * Data que o profissional marcou para realizar o serviço.
 	 */
-	private Date todoDate;
+	private LocalDate todoDate;
 
 	/**
 	 * Data em que o profissional finalizou o serviço.
 	 */
-	private Date finishDate;
+	private LocalDate finishDate;
 
 	@NonNull
 	@OneToOne
@@ -60,7 +60,7 @@ public class JobContracted {
 
 	@PrePersist
 	public void onSave() {
-		this.hiredDate = new Date();
+		this.hiredDate = LocalDate.now();
 	}
 	@NonNull
 	@OneToOne

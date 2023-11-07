@@ -23,10 +23,23 @@ public class ExpertiseDTO implements Serializable {
     @NotBlank(message = "O nome da especialidade é obrigatório")
     private String name;
 
-    @NotBlank(message = "Descrição é obrigatório")
+    @NotBlank(message = "A descrição é obrigatória")
     private String description;
 
     private MultipartFile icon;
 
+    @NotNull(message = "O nome da categoria é obrigatório")
+    private Long categoryId;
+
+    /**
+     * Campo usado para exibir o nome da categoria na tela de cadastro de especialidade para listagem
+     */
+    private String categoryName;
+
+    /**
+     * Campo usado para exibir o nome da categoria na tela de cadastro de especialidade para edição
+     */
     private String pathIcon;
+
+
 }

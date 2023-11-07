@@ -33,7 +33,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Controller
@@ -90,6 +91,7 @@ public class JobContractedController {
         String currentUserEmail = authentication.getEmail();
 
         Optional<Individual> oindividual = individualService.findByEmail(currentUserEmail);
+
         if(!oindividual.isPresent()){
             throw new EntityNotFoundException("O usuário não foi encontrado!");
         }
@@ -102,19 +104,30 @@ public class JobContractedController {
         JobContracted jobContracted = oJobContracted.get();
 
         if (dto.isConfirm()) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
             JobRequest jobRequest = jobContracted.getJobRequest();
             jobRequest.setStatus(JobRequest.Status.TO_DO);
             jobRequestService.save(jobRequest);
 
-            jobContracted.setTodoDate(formatter.parse(dto.getTodoDate()));
+            jobContracted.setTodoDate(LocalDate.parse(dto.getTodoDate(), dateTimeFormatter));
             jobContractedService.save(jobContracted);
         } else {
             JobRequest jobRequest = jobContracted.getJobRequest();
             jobRequest.setStatus(JobRequest.Status.BUDGET);
             jobRequestService.save(jobRequest);
         }
+//                * @param message
+//                * @param serviceDescription descrição do serviço
+//                * @param fromEmail email do usuário que realizou o evento
+//                * @param fromName nome do usuário que realizou o evento
+//                * @param toEmail email do destinatário do evento
+        EventSSE eventSse = new EventSSE(EventSSE.Status.JOB_CONFIRMED,
+                jobContracted.getJobRequest().getDescription(),
+                currentUserEmail,
+                authentication.getAuthentication().getName(),
+                jobContracted.getJobRequest().getUser().getEmail());
+        sseService.send(eventSse);
 
         redirectAttributes.addFlashAttribute("msg", "A atualização foi salva com sucesso!");
 

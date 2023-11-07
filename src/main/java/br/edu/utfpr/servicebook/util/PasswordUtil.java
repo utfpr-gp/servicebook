@@ -20,13 +20,13 @@ public class PasswordUtil {
 
     /**
      *
-     * Verifica se a senha é válida.
+     * Verifica se a senha digitada é igual a senha em BCrypt.
      *
      * @param rawPassword
      * @param encodedPassword
      * @return
      */
-    public static boolean verify(String rawPassword, String encodedPassword) {
+    public static boolean isSamePassword(String rawPassword, String encodedPassword) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         return encoder.matches(rawPassword, encodedPassword);
     }

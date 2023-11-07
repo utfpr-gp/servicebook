@@ -31,9 +31,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Optional;
 
 @Controller
@@ -98,7 +95,7 @@ public class JobCandidateController {
         JobRequestDetailsDTO jobFull = jobRequestMapper.jobRequestDetailsDTO(oJobRequest.get());
 
         //envia a notificação SSE
-        EventSSE eventSse = new EventSSE(EventSSE.Status.NEW_CANDIDATURE, jobFull.getDescription().toString(), currentUserEmail, jobFull.getIndividual().getName(), jobFull.getIndividual().getEmail());
+        EventSSE eventSse = new EventSSE(EventSSE.Status.NEW_CANDIDATURE, jobFull.getDescription().toString(), currentUserEmail, jobFull.getUser().getName(), jobFull.getUser().getEmail());
         sseService.send(eventSse);
 
         redirectAttributes.addFlashAttribute("msg", "Candidatura realizada com sucesso!");

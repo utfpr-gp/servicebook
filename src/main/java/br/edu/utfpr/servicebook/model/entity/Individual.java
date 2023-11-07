@@ -4,7 +4,7 @@ import br.edu.utfpr.servicebook.security.ProfileEnum;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -28,7 +28,7 @@ public class Individual extends User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    private Date birthDate;
+    private LocalDate birthDate;
 
     public Individual(String name, String email, String password, String phoneNumber, String cpf){
         super(name, email, password, phoneNumber);

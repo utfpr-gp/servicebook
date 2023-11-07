@@ -1,6 +1,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<head>
+    <!-- Funciona apenas com caminho absoluto porque é renderizado antes da tag base -->
+    <link href="${pageContext.request.contextPath}/assets/resources/styles/professional/professional.css" rel="stylesheet">
+</head>
 
 <c:if test="${empty jobs}">
     <div class="container">
@@ -63,10 +67,13 @@
                     </blockquote>
                     <div>
                         <div class="center">
-                            <a href="minha-conta/profissional/detalhes-servico/${job.jobRequest.id}" class="waves-effect waves-light btn spacing-buttons">
+                            <a href="minha-conta/profissional/detalhes-servico/${job.jobRequest.id}"
+                               class="waves-effect waves-light btn spacing-buttons">
                                 Detalhes
                             </a>
-                            <a href="#modal-delete" data-url="${pageContext.request.contextPath}/candidaturas/${job.jobRequest.id}" class="waves-effect waves-light btn spacing-buttons red modal-trigger">Desistir</a>
+                            <a href="#modal-delete"
+                               data-url="${pageContext.request.contextPath}/candidaturas/${job.jobRequest.id}"
+                               class="waves-effect waves-light btn spacing-buttons red modal-trigger">Desistir</a>
                         </div>
                     </div>
                 </div>
@@ -83,7 +90,9 @@
                         <h4>Você tem certeza que deseja excluir <strong id="strong-name"></strong>?</h4>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">Cancelar</button>
+                        <button type="button" class="modal-close btn-flat waves-effect waves-light btn btn-gray">
+                            Cancelar
+                        </button>
                         <button type="submit" class="modal-close btn waves-effect waves-light gray">Sim</button>
                     </div>
                 </form>
@@ -97,9 +106,9 @@
 </div>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('.modal').modal({
-            onOpenEnd: function (modal, trigger){
+            onOpenEnd: function (modal, trigger) {
                 var url = $(trigger).data('url');
                 var name = $(trigger).data('name');
 

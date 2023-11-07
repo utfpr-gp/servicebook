@@ -1,8 +1,10 @@
 package br.edu.utfpr.servicebook;
 
-import br.edu.utfpr.servicebook.filter.JobRequestFilter;
+import br.edu.utfpr.servicebook.filter.TemplateStatisticInfoFilter;
+import br.edu.utfpr.servicebook.filter.TemplateUserInfoFilter;
 import br.edu.utfpr.servicebook.service.IndexService;
 import br.edu.utfpr.servicebook.service.QuartzService;
+import br.edu.utfpr.servicebook.util.SessionNames;
 import br.edu.utfpr.servicebook.util.quartz.AutoWiringSpringBeanJobFactory;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -10,16 +12,19 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 
 @SpringBootApplication()
 @ServletComponentScan
@@ -30,6 +35,12 @@ public class ServicebookApplication {
 
     @Autowired
     QuartzService quartzService;
+
+    @Autowired
+    private Environment env;
+
+    @Autowired
+    private ServletContext servletContext;
 
     public static void main(String[] args) {
         SpringApplication.run(ServicebookApplication.class, args);
@@ -49,12 +60,20 @@ public class ServicebookApplication {
         return new ModelMapper();
     }
 
+    /**
+     * Bean para injetar o Cloudinary em outras classes.
+     * @return
+     */
     @Bean
     public Cloudinary cloudinary(){
+        String cloudName = env.getProperty("CLOUDINARY_CLOUD_NAME");
+        String apiKey = env.getProperty("CLOUDINARY_API_KEY");
+        String apiSecret = env.getProperty("CLOUDINARY_API_SECRET");
+
         return new Cloudinary(ObjectUtils.asMap(
-                "cloud_name","dgueb0wir",
-                "api_key", "546318655587864",
-                "api_secret", "UPEpuVA_PWlah9B5BrkZMx7E5VE"
+                "cloud_name", cloudName,
+                "api_key", apiKey,
+                "api_secret", apiSecret
         ));
     }
 
@@ -76,13 +95,53 @@ public class ServicebookApplication {
         return quartzScheduler;
     }
 
+    /**
+     * Foi desabilitado para não permitir cadastro de jobs de forma anônima.
+     * Será substituído por busca ativa.
+     * Filter para verificar se o usuário tem um job request e então cadastrar quando logar.
+     * @return
+     */
+//    @Bean
+//    public FilterRegistrationBean<JobRequestFilter> jobRequestFilter(){
+//        FilterRegistrationBean<JobRequestFilter> registrationBean
+//                = new FilterRegistrationBean<>();
+//
+//        registrationBean.setFilter(new JobRequestFilter());
+//        registrationBean.addUrlPatterns("/minha-conta/cliente");
+//        registrationBean.setOrder(1);
+//
+//        return registrationBean;
+//    }
+
+    /**
+     * Filtro para enviar os dados para apresentação no template quando usuário está logado.
+     * @return
+     */
     @Bean
-    public FilterRegistrationBean<JobRequestFilter> jobRequestFilter(){
-        FilterRegistrationBean<JobRequestFilter> registrationBean
+    public FilterRegistrationBean<TemplateUserInfoFilter> templateUserInfoFilterRegistrationBean(){
+        FilterRegistrationBean<TemplateUserInfoFilter> registrationBean
                 = new FilterRegistrationBean<>();
 
-        registrationBean.setFilter(new JobRequestFilter());
-        registrationBean.addUrlPatterns("/minha-conta/cliente");
+        registrationBean.setFilter(new TemplateUserInfoFilter());
+        registrationBean.addUrlPatterns("/*");
+        registrationBean.setOrder(1);
+
+        return registrationBean;
+    }
+
+    /**
+     * Filtro para enviar os dados para apresentação no template quando usuário está logado.
+     * Filtra apenas as páginas do profissional, uma vez apenas nesta página que é mostrado o painel lateral com as estatísticas.
+     * @return
+     */
+    @Bean
+    public FilterRegistrationBean<TemplateStatisticInfoFilter> templateStatisticInfoFilterRegistrationBean(){
+        FilterRegistrationBean<TemplateStatisticInfoFilter> registrationBean
+                = new FilterRegistrationBean<>();
+
+        registrationBean.setFilter(new TemplateStatisticInfoFilter());
+        registrationBean.addUrlPatterns("/minha-conta/profissional/*");
+        registrationBean.addUrlPatterns("/minha-conta/empresa/*");
         registrationBean.setOrder(1);
 
         return registrationBean;
@@ -101,6 +160,8 @@ public class ServicebookApplication {
 
         BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
         System.out.println(bc.encode("qwerty123"));
+
+        servletContext.setAttribute(SessionNames.ACCESS_USER_KEY, SessionNames.ACCESS_USER_CLIENT_VALUE);
     }
 
     @EventListener(ApplicationStartedEvent.class)

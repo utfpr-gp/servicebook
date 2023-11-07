@@ -2,7 +2,6 @@ package br.edu.utfpr.servicebook.model.mapper;
 
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
 import br.edu.utfpr.servicebook.model.dto.ProfessionalDTO;
-import br.edu.utfpr.servicebook.model.dto.IndividualMinDTO;
 import br.edu.utfpr.servicebook.model.dto.ProfessionalSearchItemDTO;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.User;
@@ -19,11 +18,6 @@ public class ProfessionalMapper {
 
     public ProfessionalDTO toDto(Individual entity){
         ProfessionalDTO dto = mapper.map(entity, ProfessionalDTO.class);
-        return dto;
-    }
-
-    public IndividualMinDTO toMinDto(Individual entity){
-        IndividualMinDTO dto = mapper.map(entity, IndividualMinDTO.class);
         return dto;
     }
 

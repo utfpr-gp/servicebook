@@ -3,7 +3,7 @@ package br.edu.utfpr.servicebook.model.mapper;
 
 import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.Individual;
-import br.edu.utfpr.servicebook.util.sidePanel.UserTemplateInfo;
+import br.edu.utfpr.servicebook.util.UserTemplateInfo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,11 +30,6 @@ public class IndividualMapper {
     public UserTemplateInfo toDtoside(Individual entity) {
         UserTemplateInfo dto = mapper.map(entity, UserTemplateInfo.class);
 //        dto.setExpertise(mapper.map(entity1, ExpertiseDTO.class));
-        return dto;
-    }
-
-    public IndividualMinDTO toMinDto(Individual entity){
-        IndividualMinDTO dto = mapper.map(entity, IndividualMinDTO.class);
         return dto;
     }
 
