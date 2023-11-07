@@ -56,6 +56,58 @@
     font-weight: 400;
 }
 
+/*cards da pesquisa*/
+.card .card-content{
+    padding: 13px !important;
+}
+.label_price{
+    /*background-color: #333333;*/
+    background-color: #53b1ed;
+    font-weight: bold;
+    font-size: 1rem;
+    text-align: center;
+    padding: 5px;
+}
+.label_duration{
+    /*background-color: #333333;*/
+    background-color: #53b1ed;
+    font-weight: bold;
+    font-size: 1rem;
+    text-align: center;
+    padding: 5px;
+}
 
+.div_cards_services{
+    margin: 10px 0 30px;
+}
 
+.btn_view{
+    /*float: right;*/
+    float: right;
+    color: #1194e5 !important;
+    font-weight: bold;
+}
 
+.button-profile{
+    font-size: .8rem !important;
+    margin-top: 30px;
+}
+
+.card-name-service{
+    padding: 0;
+    margin-top: 0 !important;
+    margin: 0 10px 20px;
+}
+
+.card-name-expertise{
+    background-color: #53b1ed;
+    margin: 0;
+}
+.avatar-expertise{
+    width: 60px;
+    margin: 0 10px;
+}
+.span-name{
+    position: absolute;
+    top: 10%;
+}

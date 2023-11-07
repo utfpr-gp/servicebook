@@ -12,13 +12,28 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
+    <meta property=”og:title” content="${jobRequest.description}"/>
+    <meta property=”og:type” content=”website“/>
+    <meta property=”og:description” content=”SERVICEBOOK - O MELHOR PROFISSIONAL QUE VOCÊ PRECISA ESTÁ AQUI!“/>
+    <meta property=”og:image”content="${jobCandidate.individual.profilePicture}"/>
+    <meta property=”og:site_name” content=”Servicebook“/>
+
+    <meta name=”twitter:card” content=”photo“>
+    <meta name=”twitter:url” content="$(location).attr('href')">
+    <meta name=”twitter:title” content="${jobRequest.description}">
+    <meta name=”twitter:description” content=”SERVICEBOOK - O MELHOR PROFISSIONAL QUE VOCÊ PRECISA ESTÁ AQUI!“>
+    <meta name=”twitter:image”content="${jobCandidate.individual.profilePicture}">
+
     <title>${title}</title>
 
     <base href="${pageContext.request.contextPath}/">
     <link rel="shortcut icon" href="assets/resources/images/favicon.ico" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="assets/libraries/materialize/css/materialize.min.css" type="text/css" rel="stylesheet"
-          media="screen,projection"/>
+    <link href="assets/libraries/materialize/css/materialize.min.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <link href="assets/resources/styles/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
     <link href="assets/resources/styles/tags/template-tag.css" type="text/css" rel="stylesheet"
           media="screen,projection"/>
     <link href="assets/resources/styles/styles.css" type="text/css" rel="stylesheet" media="screen,projection"/>
@@ -131,12 +146,15 @@
         src="https://code.jquery.com/jquery-3.7.0.min.js"
         integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
         crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script src="assets/libraries/materialize/js/materialize.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="assets/resources/scripts/main.js"></script>
 <script src="assets/resources/scripts/init.js"></script>
 <script src="assets/resources/scripts/sse.js"></script>
 <script src="assets/libraries/jquery.mask.js"></script>
+
 <!--script src="assets/resources/scripts/expertise-sidepanel-ajax.js"></script!-->
 <script type="text/javascript">
     function rolar(objID) {
@@ -151,6 +169,5 @@
         });
     });
 </script>
-
 </body>
 </html>

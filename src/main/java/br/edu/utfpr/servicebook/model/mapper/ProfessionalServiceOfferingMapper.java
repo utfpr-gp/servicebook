@@ -1,9 +1,6 @@
 package br.edu.utfpr.servicebook.model.mapper;
 
-import br.edu.utfpr.servicebook.model.dto.AddressDTO;
-import br.edu.utfpr.servicebook.model.dto.ProfessionalServiceOfferingDTO;
-import br.edu.utfpr.servicebook.model.entity.Address;
-import br.edu.utfpr.servicebook.model.entity.City;
+import br.edu.utfpr.servicebook.model.dto.*;
 import br.edu.utfpr.servicebook.model.entity.ProfessionalServiceOffering;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,4 +22,8 @@ public class ProfessionalServiceOfferingMapper {
         return entity;
     }
 
+    public ProfessionalServiceOfferingDTO toSearchItemDto(ProfessionalServiceOffering entity){
+        ProfessionalServiceOfferingDTO dto = mapper.map(entity, ProfessionalServiceOfferingDTO.class);
+        return dto;
+    }
 }

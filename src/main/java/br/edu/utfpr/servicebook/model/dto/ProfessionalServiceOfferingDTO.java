@@ -43,7 +43,10 @@ public class ProfessionalServiceOfferingDTO {
     private ServiceDTO service;
 
     private Long serviceId;
-
+    /**
+     * Preço do serviço individual.
+     */
+    private Long price;
     /**
      * Profissional que oferece o serviço.
      */

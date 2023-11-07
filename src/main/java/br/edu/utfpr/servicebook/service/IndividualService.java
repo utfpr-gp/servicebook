@@ -129,7 +129,10 @@ public class IndividualService {
         return null;
     }
 
-
+    public Page<Individual> findAllIndividualsByService(br.edu.utfpr.servicebook.model.entity.Service searchTerm, Integer page, Integer size){
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
+        return this.individualRepository.findAllIndividualsByService(searchTerm, pageRequest);
+    }
 
     @Transactional
     public void saveExpertisesCompany(Company company, ProfessionalExpertise professionalExpertise) {
