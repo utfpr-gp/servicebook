@@ -90,8 +90,8 @@ VALUES ('Balanceamento', 'Balanceamento das rodas', false, 'https://res.cloudina
 
 INSERT INTO professional_service_offerings (name, description, price, service_id, user_id)
 VALUES ('Balanceamento com máquina importada', 'O balanceamento com 100% de garantia', 19000,  1, 2),
-       ('Troca de óleo', 'Troca de óleo', 25000,  2, 2);
-
+       ('Troca de óleo', 'Troca de óleo', 25000,  2, 2),
+       ('Balanceamento', 'Balanceamento', null,  1, 2);
 
 INSERT INTO companies (cnpj, id)
 VALUES ('98.988.640/0001-91', 7);

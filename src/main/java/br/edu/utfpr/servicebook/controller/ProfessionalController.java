@@ -84,6 +84,10 @@ public class ProfessionalController {
     @Autowired
     private CategoryMapper categoryMapper;
 
+
+    @Autowired
+    private ExpertiseMapper expertiseMapper;
+
     @GetMapping
     @PermitAll
     protected ModelAndView showAll() throws Exception {
@@ -171,8 +175,7 @@ public class ProfessionalController {
                     .map(s -> categoryMapper.toDto(s))
                     .collect(Collectors.toList());
 
-            PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(professionals, "/profissionais/busca?termo-da-busca="+ searchService);
-
+            PaginationDTO paginationDTO = paginationUtil.getPaginationDTO(professionals, "/profissionais/busca?categoryId=" + searchCategory + "&expertiseId=" + searchExpertise + "&serviceId=" + searchService);
 
             mv.addObject("professionals", professionalSearchItemDTOS);
             mv.addObject("categoryDTOs", categoryDTOs);
@@ -250,6 +253,51 @@ public class ProfessionalController {
             mv.addObject("isFollow", isFollow);
             mv.addObject("client", clientDTO);
         }
+        return mv;
+    }
+
+    @GetMapping("busca/todos")
+    @PermitAll
+    protected ModelAndView showProfessionalsServices(
+            @RequestParam(defaultValue = "0", value = "serviceId") Long searchService,
+            @RequestParam(defaultValue = "", value = "expertiseId") Long searchExpertise,
+            @RequestParam(defaultValue = "", value = "categoryId") Long searchCategory) throws Exception {
+
+        //cliente autenticado, caso esteja logado
+        Optional<User> oClientAuthenticated = (userService.findByEmail(authentication.getEmail()));
+
+        ModelAndView mv = new ModelAndView("visitor/professionals-services");
+        mv.addObject("logged", oClientAuthenticated.isPresent());
+        if(!oClientAuthenticated.isPresent()){
+            return new ModelAndView("visitor/login");
+        }
+
+        Optional<Expertise> expertise = expertiseService.findById(searchExpertise);
+
+        //se o cliente está logado, mostra se ele segue o profissional
+        if(oClientAuthenticated.isPresent()){
+            UserDTO clientDTO = userMapper.toDto(oClientAuthenticated.get());
+            mv.addObject("client", clientDTO);
+        }
+        Optional<Service> service = serviceService.findById(searchService);
+
+        List<Individual> professionals = individualService.findAllIndividualsByService(service.get());
+
+        List<ProfessionalServiceOffering> professionalServiceOfferings = professionalServiceOfferingService.findAllIndividualsByService(service.get());
+
+        List<ProfessionalSearchItemDTO> professionalSearchItemDTOS = professionals.stream()
+                .map(s -> individualMapper.toSearchItemDto(s, individualService.getExpertises(s)))
+                .collect(Collectors.toList());
+
+        List<ProfessionalServiceOfferingDTO> professionalServiceOfferingDTOS = professionalServiceOfferings.stream()
+                .map(s -> professionalServiceOfferingMapper.toDTO(s)).collect(Collectors.toList());
+
+        Optional<ProfessionalServiceOffering> countProfessionals = professionalServiceOfferingService.countAllByService(service.get());
+
+        mv.addObject("expertise", expertise.get());
+        mv.addObject("professionalServiceOfferingDTOS", professionalServiceOfferingDTOS);
+        mv.addObject("countProfessionals", countProfessionals.get());
+
         return mv;
     }
 }

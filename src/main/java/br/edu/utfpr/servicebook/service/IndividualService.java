@@ -134,6 +134,10 @@ public class IndividualService {
         return this.individualRepository.findAllIndividualsByService(searchTerm, pageRequest);
     }
 
+    public List<Individual> findAllIndividualsByService(br.edu.utfpr.servicebook.model.entity.Service service_id){
+        return this.individualRepository.findAllIndividualsByService(service_id);
+    }
+
     @Transactional
     public void saveExpertisesCompany(Company company, ProfessionalExpertise professionalExpertise) {
         professionalExpertiseRepository.save(professionalExpertise);

@@ -85,4 +85,15 @@ public interface ProfessionalServiceOfferingRepository extends JpaRepository<Pro
             Service term,
             Pageable pageable);
 
+    /**
+     * Busca o serviço atraves dos anuncios gravados.
+     * @param term
+     * @return
+     */
+    @Query("select pe from Individual p left join ProfessionalServiceOffering pe on p = pe.user where " +
+            "pe.service = :term")
+    List<ProfessionalServiceOffering> findAllIndividualsByService(
+            Service term);
+
+    Optional<ProfessionalServiceOffering> countAllByService(Service service);
 }

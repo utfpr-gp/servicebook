@@ -10,28 +10,55 @@
 
 <t:template title="Servicebook - Início">
     <jsp:body>
-        <t:banner></t:banner>
-        <t:search-bar items="${categoryDTOs}"></t:search-bar>
         <div class="container">
             <div class="section">
                 <div class="row">
-                    <c:if test="${not empty dto_expertise}">
+                    <div class="breadcrumbs">
+                        <a href="${pageContext.request.contextPath}/">Início</a> &gt;
+                        Serviços de ${expertise.name}
+                    </div>
+                    <c:if test="${not empty expertise}">
 
                         <div class="col s12" style="position: relative;">
-                            <h4 class="white-text card-name-expertise"><img src="${dto_expertise.pathIcon}"
+                            <h4 class="white-text card-name-expertise"><img src="${expertise.pathIcon}"
                                                                             class="avatar-expertise"
                                                                             alt="Foto de especialidade">
-                                <span class="span-name">${dto_expertise.name}</span>
+                                <span class="span-name">${expertise.name}</span>
                             </h4>
 
                             <h4 class="blue-text card-name-service">${service}</h4>
                         </div>
                     </c:if>
-                    <div class="col s12" style="margin-top: 30px">
 
-                        <span class="left-align" style="font-weight: bold; font-size: 1.5rem">PROFISSIONAIS</span>
-                        <a href="${pageContext.request.contextPath}/profissionais/busca/todos?categoryId=${dto.id}&expertiseId=${dto_expertise.id}&serviceId=${dto_service.id}" class="btn-flat btn_view">ver mais <i class="material-icons right">navigate_next</i></a>
+                    <div class="col s12" style="margin-top: 30px">
+                        <span class="left-align"
+                              style="font-weight: bold; font-size: 1.5rem">${countProfessionals} RESULTADOS ENCONTRADOS</span>
                         <hr>
+                    </div>
+
+                    <div class="col s12 div_filter">
+                        <span style="font-size: 1.2rem; margin: 0 50px 0 30px">Classificar por</span>
+
+                        <label class="labels_filter">
+                            <input name="group1" type="radio" />
+                            <span class="blue-text ">Mais Relevantes</span>
+                        </label>
+
+                        <label class="labels_filter">
+                            <input name="group1" type="radio" />
+                            <span class="blue-text">Últimos Avaliados</span>
+                        </label>
+
+                        <label class="labels_filter">
+                            <input name="group1" type="radio" />
+                            <span class="blue-text">Últimos Cadastrados</span>
+                        </label>
+
+                        <label class="labels_filter">
+                            <input name="group1" type="radio" checked />
+                            <span class="blue-text">Popular</span>
+                        </label>
+
                     </div>
                     <div class="col s12">
 
@@ -115,18 +142,6 @@
             </div>
         </div>
 
-        <script>
-            $(document).ready(function () {
-                $('.tooltipped').tooltip();
-
-                <%--$("#combine").click(function () {--%>
-                <%--    if (!${logged})--%>
-                <%--    {--%>
-                <%--        alert("Entre ou cadastre-se para solicitar um orçamento!")--%>
-                <%--    }--%>
-                <%--});--%>
-            });
-        </script>
     </jsp:body>
 </t:template>
 

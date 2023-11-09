@@ -107,4 +107,11 @@ public class ProfessionalServiceOfferingService {
         return this.professionalServiceOfferingRepository.findAllIndividualsByService(searchTerm, pageRequest);
     }
 
+    public List<ProfessionalServiceOffering> findAllIndividualsByService(Service service){
+        return this.professionalServiceOfferingRepository.findAllIndividualsByService(service);
+    }
+
+    public Optional<ProfessionalServiceOffering> countAllByService(Service service) {
+        return this.professionalServiceOfferingRepository.countAllByService(service);
+    }
 }
