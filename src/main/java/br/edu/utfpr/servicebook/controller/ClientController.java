@@ -36,7 +36,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import br.edu.utfpr.servicebook.util.DateUtil;
 @RequestMapping("/minha-conta/cliente")
 @Controller
 public class ClientController {
@@ -103,6 +103,9 @@ public class ClientController {
 
     @Autowired
     private ProfessionalMapper professionalMapper;
+
+    @Autowired
+    private ServiceService serviceService;
 
 
     /**
@@ -739,7 +742,7 @@ public class ClientController {
      * Altera o estado de um serviço para TO_HIRED, ou seja, o cliente contratou um serviço mas
      * fica no estado de espera da confirmação do profissional.
      * @param jobId
-     * @param individualId
+     * @param userId
      * @param redirectAttributes
      * @return
      * @throws IOException
@@ -775,5 +778,106 @@ public class ClientController {
         jobContractedService.save(jobContracted);
 
         return "redirect:/minha-conta/cliente/meus-pedidos/"+jobId;
+    }
+
+    /**
+     * O cliente escolhe um profissional para realizar o orçamento ou cancela a escolha do profissional para orçamento.
+     * *
+     * @param servicoId
+     * @param candidateId
+     * @param redirectAttributes
+     * @return
+     * @throws IOException
+     */
+    @PatchMapping("/orcamento-ao/{candidateId}/para/servico/{servicoId}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public String markAsBudgetAndCreateJobRequest(@PathVariable Long candidateId, @PathVariable Long servicoId, RedirectAttributes redirectAttributes) throws IOException {
+        Optional<User> oClientAuthenticated = (userService.findByEmail(authentication.getEmail()));
+
+        if(!oClientAuthenticated.isPresent()){
+            return "redirect:/login";
+        }
+        Optional<Service> oService = serviceService.findById(servicoId);
+
+        if (!oService.isPresent()) {
+            throw new EntityNotFoundException("Serviço não encontrado");
+        }
+
+        Optional<Individual> oIndividual = individualService.findById(candidateId);
+        if (!oIndividual.isPresent()) {
+            throw new EntityNotFoundException("Usuário não encontrado");
+        }
+
+        JobRequest jobRequest = new JobRequest();
+        jobRequest.setExpertise(oService.get().getExpertise());
+        jobRequest.setUser(oClientAuthenticated.get());
+        jobRequest.setStatus(JobRequest.Status.BUDGET);
+        jobRequest.setQuantityCandidatorsMax(1);
+        jobRequest.setDateCreated(DateUtil.getToday());
+        jobRequest.setDateTarget(DateUtil.getNextMonth());
+
+        jobRequest.setClientConfirmation(true);
+        jobRequest.setProfessionalConfirmation(true);
+        jobRequestService.save(jobRequest);
+
+        JobCandidate jobCandidate = new JobCandidate(jobRequest, oIndividual.get());
+        jobCandidate.setChosenByBudget(true);
+        jobCandidateService.save(jobCandidate);
+
+        return "redirect:/minha-conta/cliente#paraOrcamento";
+    }
+
+    /**
+     * Altera o estado de um serviço para TO_HIRED, ou seja, o cliente contratou um serviço mas
+     * fica no estado de espera da confirmação do profissional.
+     * @param jobId
+     * @param userId
+     * @param redirectAttributes
+     * @return
+     * @throws IOException
+     */
+    @PatchMapping("/contrata/{userId}/para/servico/{jobId}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public String markAsHideAndCreateJobRequest(@PathVariable Long jobId, @PathVariable Long userId, RedirectAttributes redirectAttributes) throws IOException {
+        Optional<User> oClientAuthenticated = (userService.findByEmail(authentication.getEmail()));
+
+        if(!oClientAuthenticated.isPresent()){
+            return "redirect:/login";
+        }
+        Optional<Service> oService = serviceService.findById(jobId);
+
+        if (!oService.isPresent()) {
+            throw new EntityNotFoundException("Serviço não encontrado");
+        }
+
+        Optional<Individual> oIndividual = individualService.findById(userId);
+        if (!oIndividual.isPresent()) {
+            throw new EntityNotFoundException("Usuário não encontrado");
+        }
+
+        JobRequest jobRequest = new JobRequest();
+        jobRequest.setExpertise(oService.get().getExpertise());
+        jobRequest.setUser(oClientAuthenticated.get());
+        jobRequest.setStatus(JobRequest.Status.TO_DO);
+        jobRequest.setQuantityCandidatorsMax(1);
+        jobRequest.setDateCreated(DateUtil.getToday());
+        jobRequest.setDateTarget(DateUtil.getNextMonth());
+
+        jobRequest.setClientConfirmation(true);
+        jobRequest.setProfessionalConfirmation(true);
+        jobRequestService.save(jobRequest);
+
+        JobCandidate jobCandidate = new JobCandidate(jobRequest, oIndividual.get());
+        jobCandidate.setChosenByBudget(true);
+        jobCandidateService.save(jobCandidate);
+
+        JobContracted jobContracted = new JobContracted();
+        jobContracted.setJobRequest(jobRequest);
+        jobContracted.setUser(oIndividual.get());
+        jobContracted.setHiredDate(DateUtil.getToday());
+        jobContracted.setTodoDate(DateUtil.getToday().plusDays(10));
+        jobContractedService.save(jobContracted);
+
+        return "redirect:/minha-conta/cliente#paraFazer";
     }
 }

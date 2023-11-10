@@ -69,15 +69,28 @@
                                             </div>
                                             <div class="label_price">
                                                 <c:if test="${empty professional.price}">
-                                                    <button id="combine" type="button"
-                                                            class="waves-effect waves-light btn btn_combined">
-                                                        À COMBINAR
-                                                    </button>
+                                                    <form action="minha-conta/cliente/orcamento-ao/${professional.user.id}/para/servico/${dto_service.id}"
+                                                          method="post">
+                                                        <input type="hidden" name="_method" value="PATCH"/>
+                                                        <button type="submit" class="waves-effect waves-light btn btn_combined">
+                                                                    À COMBINAR
+                                                        </button>
+                                                    </form>
                                                 </c:if>
 
                                                 <c:if test="${!empty professional.price}">
-                                                    <p class=" white-text" style="margin: 0"><fmt:formatNumber
-                                                            value="${professional.price/100}" type="currency"/></p>
+<%--                                                    <p class=" white-text" style="margin: 0"><fmt:formatNumber--%>
+<%--                                                            value="${professional.price/100}" type="currency"/></p>--%>
+
+                                                    <form action="minha-conta/cliente/contrata/${professional.user.id}/para/servico/${dto_service.id}"
+                                                          method="post">
+                                                        <input type="hidden" name="_method" value="PATCH"/>
+                                                        <button type="submit" class="waves-effect waves-light btn btn_combined">
+                                                            <fmt:formatNumber
+                                                                    value="${professional.price/100}" type="currency"/>
+                                                        </button>
+                                                    </form>
+
                                                 </c:if>
                                             </div>
                                         </div>
@@ -115,6 +128,7 @@
             </div>
         </div>
 
+        <script src="${pageContext.request.contextPath}/assets/resources/scripts/ads.js"></script>
         <script>
             $(document).ready(function () {
                 $('.tooltipped').tooltip();
