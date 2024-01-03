@@ -16,6 +16,7 @@ import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import br.edu.utfpr.servicebook.util.UserTemplateInfo;
 import br.edu.utfpr.servicebook.util.TemplateUtil;
+import com.cloudinary.utils.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,19 +25,30 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import br.edu.utfpr.servicebook.util.DateUtil;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+
 @RequestMapping("/minha-conta/cliente")
 @Controller
 public class ClientController {
@@ -107,7 +119,20 @@ public class ClientController {
     @Autowired
     private ServiceService serviceService;
 
+    @Autowired
+    private CategoryService categoryService;
 
+    @Autowired
+    private AssessmentProfessionalService assessmentProfessionalService;
+
+    @Autowired
+    private  AssessmentProfessionalFileService assessmentProfessionalFileService;
+
+    @Autowired
+    private Cloudinary cloudinary;
+
+    @Autowired
+    private AssessmentProfessionalFileMapper assessmentProfessionalFileMapper;
     /**
      * Método que apresenta a tela inicial do cliente
      * @return
@@ -879,5 +904,98 @@ public class ClientController {
         jobContractedService.save(jobContracted);
 
         return "redirect:/minha-conta/cliente#paraFazer";
+    }
+
+    /**
+     * Avalia o serviço depois de finalizado
+     * @param jobId
+     * @param redirectAttributes
+     * @return
+     * @throws IOException
+     */
+    @GetMapping("/avaliar/servico/{jobId}/profissional/{profissionalId}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public ModelAndView evaluateService(@PathVariable Long jobId, @PathVariable Long profissionalId, RedirectAttributes redirectAttributes) throws IOException {
+        Optional<User> oClientAuthenticated = (userService.findByEmail(authentication.getEmail()));
+        ModelAndView mv = new ModelAndView("client/evaluate-jobs");
+
+        if(!oClientAuthenticated.isPresent()){
+            return mv.addObject("visitor/login");
+        }
+
+        Optional<JobRequest> oJobRequest = jobRequestService.findById(jobId);
+
+        Optional<User> oIndividual = userService.findById(profissionalId);
+        Optional<JobContracted> oJobContracted = jobContractedService.findByJobRequest(oJobRequest.get());
+
+        if (!oJobRequest.isPresent()) {
+            throw new EntityNotFoundException("Job não encontrado");
+        }
+        mv.addObject("job", oJobRequest.get());
+        mv.addObject("professional", oIndividual.get());
+        mv.addObject("jobContracted", oJobContracted.get());
+
+        return mv;
+    }
+
+    /**
+     * @param jobId
+     * @param profissionalId
+     * @param dto
+     * @param redirectAttributes
+     * @return
+     * @throws IOException
+     * @throws ParseException
+     */
+    @PostMapping("/avaliar/servico/{jobId}/profissional/{profissionalId}")
+    @RolesAllowed({RoleType.USER})
+    public String saveAssessmentProfessional(
+            @PathVariable Long profissionalId,
+            @PathVariable Long jobId,
+            AssessmentProfessionalDTO dto,
+            AssessmentProfessionalFileDTO dtoFiles,
+            RedirectAttributes redirectAttributes,
+            BindingResult errors
+    ) throws IOException, ParseException {
+        String currentUserEmail = authentication.getEmail();
+
+        Optional<Individual> oindividual = individualService.findById(profissionalId);
+        Optional<Individual> oClliente = individualService.findByEmail(currentUserEmail);
+
+        if(!oindividual.isPresent()){
+            throw new EntityNotFoundException("O usuário não foi encontrado!");
+        }
+
+        Optional<JobRequest> oJobRequest = jobRequestService.findById(jobId);
+
+        AssessmentProfessional assessmentProfessional = new AssessmentProfessional();
+        assessmentProfessional.setComment(dto.getComment());
+        assessmentProfessional.setProfessional(oindividual.get());
+        assessmentProfessional.setQuality(dto.getQuality());
+        assessmentProfessional.setPunctuality(dto.getPunctuality());
+        assessmentProfessional.setDate(dto.getDate());
+        assessmentProfessional.setClient(oClliente.get());
+        assessmentProfessional.setJobRequest(oJobRequest.get());
+        assessmentProfessionalService.save(assessmentProfessional);
+
+        AssessmentProfessionalFiles assessmentProfessionalFiles = assessmentProfessionalFileMapper.toEntity(dtoFiles);
+        assessmentProfessionalFiles.setAssessmentProfessional(assessmentProfessional);
+        assessmentProfessionalFileService.save(assessmentProfessionalFiles);
+
+        redirectAttributes.addFlashAttribute("msg", "Avaliação realizada com sucesso!");
+
+        return "redirect:/minha-conta/cliente#executados";
+    }
+
+    public boolean isValidateImage(MultipartFile image){
+        List<String> contentTypes = Arrays.asList("image/png", "image/jpg", "image/jpeg");
+
+        for(int i = 0; i < contentTypes.size(); i++){
+            if(image.getContentType().toLowerCase().startsWith(contentTypes.get(i))){
+                return true;
+            }
+        }
+
+        return false;
     }
 }

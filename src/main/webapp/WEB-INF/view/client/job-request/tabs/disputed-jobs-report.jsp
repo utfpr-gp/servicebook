@@ -55,7 +55,7 @@ tagdir="/WEB-INF/tags" %>
                 href="#modal-delete"
                 data-url="${pageContext.request.contextPath}/minha-conta/cliente/meus-pedidos/${job.jobRequest.id}"
                 data-name="${job.jobRequest.description}"
-                class="waves-effect waves-light btn modal-trigger"
+                class="waves-effect waves-light btn modal-trigger red"
                 >Excluir</a
               >
             </div>
