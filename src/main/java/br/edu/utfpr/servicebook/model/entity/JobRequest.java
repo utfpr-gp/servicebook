@@ -79,7 +79,7 @@ public class JobRequest {
 	@PrePersist
 	public void onPersist(){
 		this.dateCreated = LocalDate.now();
-		this.status = Status.AVAILABLE;
+//		this.status = Status.AVAILABLE;
 	}
 
 	@PreUpdate

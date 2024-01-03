@@ -88,9 +88,10 @@ INSERT INTO services (name, description, allow_scheduling, path_icon, expertise_
 VALUES ('Balanceamento', 'Balanceamento das rodas', false, 'https://res.cloudinary.com/dgueb0wir/image/upload/v1689176876/servicebook/expertises/mecanico_quczum.svg', 4),
        ('Troca de óleo', 'Troca do óleo do motor', false, 'https://res.cloudinary.com/dgueb0wir/image/upload/v1689176876/servicebook/expertises/mecanico_quczum.svg', 4);
 
-INSERT INTO professional_service_offerings (name, description, service_id, user_id)
-VALUES ('Balanceamento com máquina importada', 'O balanceamento com 100% de garantia', 1, 2),
-       (null, null, 2, 2);
+INSERT INTO professional_service_offerings (name, description, price, service_id, user_id)
+VALUES ('Balanceamento com máquina importada', 'O balanceamento com 100% de garantia', 19000,  1, 2),
+       ('Troca de óleo', 'Troca de óleo', 25000,  2, 2),
+       ('Balanceamento', 'Balanceamento', null,  1, 2);
 
 INSERT INTO companies (cnpj, id)
 VALUES ('98.988.640/0001-91', 7);
@@ -150,10 +151,13 @@ VALUES ('1', '2', 'false'),
        ('1', '6', 'false'),
        ('2', '2', 'false'),
        ('3', '2', 'true'),
+       ('14', '2', 'true'),
        ('17', '2', 'false');
 
 
 INSERT INTO follows (client_id, professional_id)
-VALUES (4, 2)
+VALUES (4, 2);
 
-
+INSERT INTO assessment_professionals (comment, date, punctuality, quality, client_id, job_request_id, professional_id)
+VALUES ('òtimo profissional', '2024-01-02', 2.5, 2, 4, 17,2),
+       ('Profissional pontual', '2024-01-02', 5, 1.5, 4, 17,2);

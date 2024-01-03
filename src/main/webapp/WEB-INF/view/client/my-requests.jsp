@@ -13,6 +13,10 @@
 
 <t:template-side-nav title="Minhas Solicitações" userInfo="${userInfo}">
     <jsp:body>
+        <div class="breadcrumbs" style="margin-top: 20px">
+            <a href="${pageContext.request.contextPath}/">Início</a> &gt;
+            Minhas Solicitações
+        </div>
 
         <h2 class="secondary-color-text">Minhas Solicitações</h2>
         <ul class="tabs tabs-fixed-width center">
