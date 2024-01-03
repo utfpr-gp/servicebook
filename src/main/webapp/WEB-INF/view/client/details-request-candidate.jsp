@@ -96,7 +96,7 @@
                                 solicitar um orçamento.</p>
                         </div>
                     </c:if>
-                    
+
                     <c:if test="${not empty assessmentProfessional}">
 
                         <div class="row">
