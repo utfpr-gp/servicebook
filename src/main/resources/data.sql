@@ -156,6 +156,8 @@ VALUES ('1', '2', 'false'),
 
 
 INSERT INTO follows (client_id, professional_id)
-VALUES (4, 2)
+VALUES (4, 2);
 
-
+INSERT INTO assessment_professionals (comment, date, punctuality, quality, client_id, job_request_id, professional_id)
+VALUES ('òtimo profissional', '2024-01-02', 2.5, 2, 4, 17,2),
+       ('Profissional pontual', '2024-01-02', 5, 1.5, 4, 17,2);

@@ -286,12 +286,25 @@ public class ClientController {
         JobCandidateDTO jobCandidateDTO = jobCandidateMapper.toDto(jobCandidate.get());
         UserDTO clientDTO = userMapper.toDto(oClient.get());
 
+        List<AssessmentProfessional> assessmentProfessional = assessmentProfessionalService.findAllByProfessional(oCandidate.get());
+        Double starsQuality = assessmentProfessionalService.getFindByProfessional(oCandidate.get());
+        Double starsPunctuality = assessmentProfessionalService.getFindByProfessionalPunctuality(oCandidate.get());
+
+        Double starsProfessional = assessmentProfessionalService.calculateAveragePunctualityAndQualitySumByProfessional(oCandidate.get());
+
+        //        if (assessmentProfessional.isPresent()) {
+//            mv.addObject("assessmentProfessional", assessmentProfessional.get());
+//        }
         List<Follows> follows = followsService.findFollowProfessionalClient(oCandidate.get(), oClient.get());
         boolean isFollow = !follows.isEmpty();
         System.out.println(jobCandidateDTO.getId());
         mv.addObject("jobCandidate", jobCandidateDTO);
         mv.addObject("isFollow", isFollow);
         mv.addObject("client", clientDTO);
+        mv.addObject("assessmentProfessional", assessmentProfessional);
+        mv.addObject("starsQuality", starsQuality);
+        mv.addObject("starsPunctuality", starsPunctuality);
+        mv.addObject("starsProfessional", starsProfessional);
 
         return mv;
     }
