@@ -18,7 +18,6 @@
 
 <t:template-side-nav title="Avaliar Solicitação" userInfo="${userInfo}">
     <jsp:body>
-
         <div class="row">
             <t:message-box/>
             <div class="breadcrumbs">

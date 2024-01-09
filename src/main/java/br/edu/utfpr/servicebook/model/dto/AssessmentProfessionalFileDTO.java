@@ -23,6 +23,7 @@ public class AssessmentProfessionalFileDTO implements Serializable {
     private String pathVideos;
 
     private MultipartFile pathImage;
+    private String comment;
 
     private MultipartFile pathVideo;
 

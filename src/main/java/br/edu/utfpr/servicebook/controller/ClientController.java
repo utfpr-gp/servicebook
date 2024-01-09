@@ -34,16 +34,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import br.edu.utfpr.servicebook.util.DateUtil;
 import com.cloudinary.Cloudinary;
@@ -133,6 +131,10 @@ public class ClientController {
 
     @Autowired
     private AssessmentProfessionalFileMapper assessmentProfessionalFileMapper;
+
+    @Autowired
+    private PerspectiveAPIService perspectiveAPIService;
+
     /**
      * Método que apresenta a tela inicial do cliente
      * @return
@@ -947,7 +949,6 @@ public class ClientController {
         mv.addObject("job", oJobRequest.get());
         mv.addObject("professional", oIndividual.get());
         mv.addObject("jobContracted", oJobContracted.get());
-
         return mv;
     }
 
@@ -962,11 +963,11 @@ public class ClientController {
      */
     @PostMapping("/avaliar/servico/{jobId}/profissional/{profissionalId}")
     @RolesAllowed({RoleType.USER})
-    public String saveAssessmentProfessional(
+    public ModelAndView saveAssessmentProfessional(
             @PathVariable Long profissionalId,
             @PathVariable Long jobId,
             AssessmentProfessionalDTO dto,
-            AssessmentProfessionalFileDTO dtoFiles,
+            AssessmentProfessionalFileDTO assessmentProfessionalFileDTO,
             RedirectAttributes redirectAttributes,
             BindingResult errors
     ) throws IOException, ParseException {
@@ -982,6 +983,16 @@ public class ClientController {
         Optional<JobRequest> oJobRequest = jobRequestService.findById(jobId);
 
         AssessmentProfessional assessmentProfessional = new AssessmentProfessional();
+        String comment = dto.getComment();
+
+        if (!comment.isEmpty()){
+           String analyzedComment  = analyzeComment(comment);
+            if ("Comentário Ofensivo".equals(analyzedComment)) {
+                errors.rejectValue("comment", "error.dto", "Proibido comentários ofensivos!.");
+                return errorFowarding(dto, assessmentProfessionalFileDTO, errors);
+            }
+        }
+
         assessmentProfessional.setComment(dto.getComment());
         assessmentProfessional.setProfessional(oindividual.get());
         assessmentProfessional.setQuality(dto.getQuality());
@@ -990,14 +1001,15 @@ public class ClientController {
         assessmentProfessional.setClient(oClliente.get());
         assessmentProfessional.setJobRequest(oJobRequest.get());
         assessmentProfessionalService.save(assessmentProfessional);
-
-        AssessmentProfessionalFiles assessmentProfessionalFiles = assessmentProfessionalFileMapper.toEntity(dtoFiles);
-        assessmentProfessionalFiles.setAssessmentProfessional(assessmentProfessional);
-        assessmentProfessionalFileService.save(assessmentProfessionalFiles);
+        if (!assessmentProfessionalFileDTO.getPathImage().isEmpty() || !assessmentProfessionalFileDTO.getPathVideo().isEmpty()) {
+            AssessmentProfessionalFiles assessmentProfessionalFiles = assessmentProfessionalFileMapper.toEntity(assessmentProfessionalFileDTO);
+            assessmentProfessionalFiles.setAssessmentProfessional(assessmentProfessional);
+            assessmentProfessionalFileService.save(assessmentProfessionalFiles);
+        }
 
         redirectAttributes.addFlashAttribute("msg", "Avaliação realizada com sucesso!");
 
-        return "redirect:/minha-conta/cliente#executados";
+        return new ModelAndView("redirect:/minha-conta/cliente#executados");
     }
 
     public boolean isValidateImage(MultipartFile image){
@@ -1008,7 +1020,19 @@ public class ClientController {
                 return true;
             }
         }
-
         return false;
+    }
+
+    /*Método responsavel em chamar a api e então validar comentários*/
+    @GetMapping("/analyze-comment")
+    public String analyzeComment(String coment){
+        return perspectiveAPIService.analyzeComment(coment);
+    }
+
+    private ModelAndView errorFowarding(AssessmentProfessionalDTO dto, AssessmentProfessionalFileDTO dtoFiles,BindingResult errors) {
+        ModelAndView mv = new ModelAndView("client/evaluate-jobs");
+        mv.addObject("dto", dto);
+        mv.addObject("errors", errors.getAllErrors());
+        return mv;
     }
 }
