@@ -27,11 +27,12 @@
                         </div>
                         <div class="row center">
                             <div class="col s4">
+<%--                                ${jobCandidate.user}--%>
                                 <c:forEach var="star" begin="1" end="5">
-                                    <c:if test="${star <= jobCandidate.user.rating}">
+                                    <c:if test="${star <= starsProfessional}">
                                         <i class="material-icons yellow-text small">star</i>
                                     </c:if>
-                                    <c:if test="${star > jobCandidate.user.rating}">
+                                    <c:if test="${star > starsProfessional}">
                                         <i class="material-icons yellow-text small">star_border</i>
                                     </c:if>
                                 </c:forEach>
@@ -95,6 +96,52 @@
                                 solicitar um orçamento.</p>
                         </div>
                     </c:if>
+
+                    <c:if test="${not empty assessmentProfessional}">
+
+                        <div class="row">
+                            <div class="col s6 left-align" style="display: flex;justify-content: flex-start">
+                                <strong style="margin-top: 5px">Qualidade: </strong>
+                                <c:forEach var="star" begin="1" end="5">
+                                    <c:if test="${star <= starsQuality}">
+                                        <i class="material-icons yellow-text small">star</i>
+                                    </c:if>
+                                    <c:if test="${star > starsQuality}">
+                                        <i class="material-icons yellow-text small">star_border</i>
+                                    </c:if>
+                                </c:forEach>
+                            </div>
+
+                            <div class="col s6 right-align" style="display: flex;justify-content: flex-start">
+                                <strong style="margin-top: 5px">Pontualidade: </strong>
+                                <c:forEach var="star" begin="1" end="5">
+                                    <c:if test="${star <= starsPunctuality}">
+                                        <i class="material-icons yellow-text small">star</i>
+                                    </c:if>
+                                    <c:if test="${star > starsPunctuality}">
+                                        <i class="material-icons yellow-text small">star_border</i>
+                                    </c:if>
+                                </c:forEach>
+                            </div>
+                        </div>
+
+                        <div class="col s12">
+                            <ul class="collapsible">
+                                <li>
+                                    <div class="collapsible-header"><i class="material-icons">insert_comment</i>Comentários</div>
+                                        <c:forEach var="c" items="${assessmentProfessional}">
+
+                                            <div class="collapsible-body">
+                                                <span>
+                                                    ${c.comment}
+                                                </span>
+                                            </div>
+                                        </c:forEach>
+                                </li>
+                            </ul>
+                        </div>
+                    </c:if>
+
                     <c:if test="${jobCandidate.getJobRequest().status != 'AVAILABLE'}">
                         <div class="row center-align">
                             <p class="contact-item center dark-color-text">Entre em contato com o profissional.</p>
@@ -146,37 +193,37 @@
                         </div>
                     </c:if>
 
-                    <c:if test="${jobCandidate.getJobRequest().status == 'CLOSED'}">
-                        <div class="row center-align">
-                            <h5>Avaliação:</h5>
+<%--                    <c:if test="${jobCandidate.getJobRequest().status == 'CLOSED'}">--%>
+<%--                        <div class="row center-align">--%>
+<%--                            <h5>Avaliação:</h5>--%>
 
-                            <a href="javascript:void(0)" onclick="Avaliar(1)">
-                                <img width="50px" src="assets/resources/images/star0.png" id="s1"></a>
+<%--                            <a href="javascript:void(0)" onclick="Avaliar(1)">--%>
+<%--                                <img width="50px" src="assets/resources/images/star0.png" id="s1"></a>--%>
 
-                            <a href="javascript:void(0)" onclick="Avaliar(2)">
-                                <img width="50px" src="assets/resources/images/star0.png" id="s2"></a>
+<%--                            <a href="javascript:void(0)" onclick="Avaliar(2)">--%>
+<%--                                <img width="50px" src="assets/resources/images/star0.png" id="s2"></a>--%>
 
-                            <a href="javascript:void(0)" onclick="Avaliar(3)">
-                                <img width="50px" src="assets/resources/images/star0.png" id="s3"></a>
+<%--                            <a href="javascript:void(0)" onclick="Avaliar(3)">--%>
+<%--                                <img width="50px" src="assets/resources/images/star0.png" id="s3"></a>--%>
 
-                            <a href="javascript:void(0)" onclick="Avaliar(4)">
-                                <img width="50px" src="assets/resources/images/star0.png" id="s4"></a>
+<%--                            <a href="javascript:void(0)" onclick="Avaliar(4)">--%>
+<%--                                <img width="50px" src="assets/resources/images/star0.png" id="s4"></a>--%>
 
-                            <a href="javascript:void(0)" onclick="Avaliar(5)">
-                                <img width="50px" src="assets/resources/images/star0.png" id="s5"></a>
+<%--                            <a href="javascript:void(0)" onclick="Avaliar(5)">--%>
+<%--                                <img width="50px" src="assets/resources/images/star0.png" id="s5"></a>--%>
 
-                            <div class="row" style="margin-top: 15px">
-                                <div class="input-field col s12 offset-m2 m8">
-                                    <textarea id="textarea1" class="materialize-textarea"></textarea>
-                                    <label for="textarea1">Deixe um comentário</label>
-                                </div>
+<%--                            <div class="row" style="margin-top: 15px">--%>
+<%--                                <div class="input-field col s12 offset-m2 m8">--%>
+<%--                                    <textarea id="textarea1" class="materialize-textarea"></textarea>--%>
+<%--                                    <label for="textarea1">Deixe um comentário</label>--%>
+<%--                                </div>--%>
 
-                                <div class="col s12">
-                                    <button class="waves-effect waves-light btn spacing-buttons">Salvar</button>
-                                </div>
-                            </div>
-                        </div>
-                    </c:if>
+<%--                                <div class="col s12">--%>
+<%--                                    <button class="waves-effect waves-light btn spacing-buttons">Salvar</button>--%>
+<%--                                </div>--%>
+<%--                            </div>--%>
+<%--                        </div>--%>
+<%--                    </c:if>--%>
                 </div>
             </div>
         </main>

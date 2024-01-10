@@ -1,6 +1,7 @@
 package br.edu.utfpr.servicebook.service;
 
 import br.edu.utfpr.servicebook.model.dto.ExpertiseDTO;
+import br.edu.utfpr.servicebook.model.dto.UserDTO;
 import br.edu.utfpr.servicebook.model.entity.Expertise;
 import br.edu.utfpr.servicebook.model.entity.Individual;
 import br.edu.utfpr.servicebook.model.entity.ProfessionalExpertise;

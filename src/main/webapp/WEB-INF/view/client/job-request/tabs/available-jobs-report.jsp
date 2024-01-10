@@ -50,21 +50,11 @@ tagdir="/WEB-INF/tags" %>
       <div class="col s12">
         <div class="row no-margin">
           <div class="col s6 m6 l2 offset-l8 spacing-buttons center">
-            <!-- <div class="center">
-              <a
-                href="#modal-delete"
-                data-url="${pageContext.request.contextPath}/minha-conta/cliente/meus-pedidos/${jobRequest.id}"
-                data-name="${jobRequest.description}"
-                class="waves-effect waves-light btn modal-trigger"
-                >Excluir</a
-              >
-            </div> -->
-
             <div class="center">
               <a
                 href="#modal-delete"
                 data-url="${pageContext.request.contextPath}/minha-conta/cliente/desistir/${jobRequest.id}"
-                class="waves-effect waves-light btn spacing-buttons red modal-trigger"
+                class="waves-effect waves-light btn red modal-trigger"
                 >Excluir</a
               >
             </div>

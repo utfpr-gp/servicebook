@@ -18,6 +18,12 @@
 
         <div class="row">
             <div class="col s12">
+                <div class="breadcrumbs" style="margin-top: 20px">
+                    <a href="${pageContext.request.contextPath}/">Início</a> &gt;
+                    <a href="${pageContext.request.contextPath}/minha-conta/cliente#executados">Minhas Solicitações</a> &gt;
+                    Meu Pedido
+                </div>
+
                 <div class="section">
                     <div class="row">
                         <!-- Caso não haja nenhum candidato -->
@@ -147,11 +153,15 @@
                             </c:if>
                         </div>
                         <!-- Fim do subtítulo da listagem -->
-
                         <!-- Listagem de candidatos -->
                         <c:forEach var="c" items="${candidates}">
                             <div class="col s12 l6 xl4">
                                 <t:professional-order-card jobCandidate="${c}"/>
+                                <c:if test="${jobRequest.status == 'CLOSED'}">
+                                    <a href="${pageContext.request.contextPath}/minha-conta/cliente/avaliar/servico/${jobRequest.id}/profissional/${c.id}"
+                                            class="waves-effect waves-light btn spacing-buttons red modal-trigger"
+                                    style="width: 100%">Avaliar Serviço</a>
+                                </c:if>
                             </div>
                         </c:forEach>
                     </div>
@@ -235,4 +245,3 @@
         });
     });
 </script>
-

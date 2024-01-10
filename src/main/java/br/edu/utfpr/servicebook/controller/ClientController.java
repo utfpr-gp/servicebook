@@ -16,6 +16,7 @@ import br.edu.utfpr.servicebook.util.pagination.PaginationDTO;
 import br.edu.utfpr.servicebook.util.pagination.PaginationUtil;
 import br.edu.utfpr.servicebook.util.UserTemplateInfo;
 import br.edu.utfpr.servicebook.util.TemplateUtil;
+import com.cloudinary.utils.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,18 +25,27 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.text.ParseException;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
+import br.edu.utfpr.servicebook.util.DateUtil;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 
 @RequestMapping("/minha-conta/cliente")
 @Controller
@@ -104,6 +114,26 @@ public class ClientController {
     @Autowired
     private ProfessionalMapper professionalMapper;
 
+    @Autowired
+    private ServiceService serviceService;
+
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private AssessmentProfessionalService assessmentProfessionalService;
+
+    @Autowired
+    private  AssessmentProfessionalFileService assessmentProfessionalFileService;
+
+    @Autowired
+    private Cloudinary cloudinary;
+
+    @Autowired
+    private AssessmentProfessionalFileMapper assessmentProfessionalFileMapper;
+
+    @Autowired
+    private PerspectiveAPIService perspectiveAPIService;
 
     /**
      * Método que apresenta a tela inicial do cliente
@@ -258,12 +288,25 @@ public class ClientController {
         JobCandidateDTO jobCandidateDTO = jobCandidateMapper.toDto(jobCandidate.get());
         UserDTO clientDTO = userMapper.toDto(oClient.get());
 
+        List<AssessmentProfessional> assessmentProfessional = assessmentProfessionalService.findAllByProfessional(oCandidate.get());
+        Double starsQuality = assessmentProfessionalService.getFindByProfessional(oCandidate.get());
+        Double starsPunctuality = assessmentProfessionalService.getFindByProfessionalPunctuality(oCandidate.get());
+
+        Double starsProfessional = assessmentProfessionalService.calculateAveragePunctualityAndQualitySumByProfessional(oCandidate.get());
+
+        //        if (assessmentProfessional.isPresent()) {
+//            mv.addObject("assessmentProfessional", assessmentProfessional.get());
+//        }
         List<Follows> follows = followsService.findFollowProfessionalClient(oCandidate.get(), oClient.get());
         boolean isFollow = !follows.isEmpty();
         System.out.println(jobCandidateDTO.getId());
         mv.addObject("jobCandidate", jobCandidateDTO);
         mv.addObject("isFollow", isFollow);
         mv.addObject("client", clientDTO);
+        mv.addObject("assessmentProfessional", assessmentProfessional);
+        mv.addObject("starsQuality", starsQuality);
+        mv.addObject("starsPunctuality", starsPunctuality);
+        mv.addObject("starsProfessional", starsProfessional);
 
         return mv;
     }
@@ -739,7 +782,7 @@ public class ClientController {
      * Altera o estado de um serviço para TO_HIRED, ou seja, o cliente contratou um serviço mas
      * fica no estado de espera da confirmação do profissional.
      * @param jobId
-     * @param individualId
+     * @param userId
      * @param redirectAttributes
      * @return
      * @throws IOException
@@ -775,5 +818,221 @@ public class ClientController {
         jobContractedService.save(jobContracted);
 
         return "redirect:/minha-conta/cliente/meus-pedidos/"+jobId;
+    }
+
+    /**
+     * O cliente escolhe um profissional para realizar o orçamento ou cancela a escolha do profissional para orçamento.
+     * *
+     * @param servicoId
+     * @param candidateId
+     * @param redirectAttributes
+     * @return
+     * @throws IOException
+     */
+    @PatchMapping("/orcamento-ao/{candidateId}/para/servico/{servicoId}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public String markAsBudgetAndCreateJobRequest(@PathVariable Long candidateId, @PathVariable Long servicoId, RedirectAttributes redirectAttributes) throws IOException {
+        Optional<User> oClientAuthenticated = (userService.findByEmail(authentication.getEmail()));
+
+        if(!oClientAuthenticated.isPresent()){
+            return "redirect:/login";
+        }
+        Optional<Service> oService = serviceService.findById(servicoId);
+
+        if (!oService.isPresent()) {
+            throw new EntityNotFoundException("Serviço não encontrado");
+        }
+
+        Optional<Individual> oIndividual = individualService.findById(candidateId);
+        if (!oIndividual.isPresent()) {
+            throw new EntityNotFoundException("Usuário não encontrado");
+        }
+
+        JobRequest jobRequest = new JobRequest();
+        jobRequest.setExpertise(oService.get().getExpertise());
+        jobRequest.setUser(oClientAuthenticated.get());
+        jobRequest.setStatus(JobRequest.Status.BUDGET);
+        jobRequest.setQuantityCandidatorsMax(1);
+        jobRequest.setDateCreated(DateUtil.getToday());
+        jobRequest.setDateTarget(DateUtil.getNextMonth());
+
+        jobRequest.setClientConfirmation(true);
+        jobRequest.setProfessionalConfirmation(true);
+        jobRequestService.save(jobRequest);
+
+        JobCandidate jobCandidate = new JobCandidate(jobRequest, oIndividual.get());
+        jobCandidate.setChosenByBudget(true);
+        jobCandidateService.save(jobCandidate);
+
+        return "redirect:/minha-conta/cliente#paraOrcamento";
+    }
+
+    /**
+     * Altera o estado de um serviço para TO_HIRED, ou seja, o cliente contratou um serviço mas
+     * fica no estado de espera da confirmação do profissional.
+     * @param jobId
+     * @param userId
+     * @param redirectAttributes
+     * @return
+     * @throws IOException
+     */
+    @PatchMapping("/contrata/{userId}/para/servico/{jobId}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public String markAsHideAndCreateJobRequest(@PathVariable Long jobId, @PathVariable Long userId, RedirectAttributes redirectAttributes) throws IOException {
+        Optional<User> oClientAuthenticated = (userService.findByEmail(authentication.getEmail()));
+
+        if(!oClientAuthenticated.isPresent()){
+            return "redirect:/login";
+        }
+        Optional<Service> oService = serviceService.findById(jobId);
+
+        if (!oService.isPresent()) {
+            throw new EntityNotFoundException("Serviço não encontrado");
+        }
+
+        Optional<Individual> oIndividual = individualService.findById(userId);
+        if (!oIndividual.isPresent()) {
+            throw new EntityNotFoundException("Usuário não encontrado");
+        }
+
+        JobRequest jobRequest = new JobRequest();
+        jobRequest.setExpertise(oService.get().getExpertise());
+        jobRequest.setUser(oClientAuthenticated.get());
+        jobRequest.setStatus(JobRequest.Status.TO_DO);
+        jobRequest.setQuantityCandidatorsMax(1);
+        jobRequest.setDateCreated(DateUtil.getToday());
+        jobRequest.setDateTarget(DateUtil.getNextMonth());
+
+        jobRequest.setClientConfirmation(true);
+        jobRequest.setProfessionalConfirmation(true);
+        jobRequestService.save(jobRequest);
+
+        JobCandidate jobCandidate = new JobCandidate(jobRequest, oIndividual.get());
+        jobCandidate.setChosenByBudget(true);
+        jobCandidateService.save(jobCandidate);
+
+        JobContracted jobContracted = new JobContracted();
+        jobContracted.setJobRequest(jobRequest);
+        jobContracted.setUser(oIndividual.get());
+        jobContracted.setHiredDate(DateUtil.getToday());
+        jobContracted.setTodoDate(DateUtil.getToday().plusDays(10));
+        jobContractedService.save(jobContracted);
+
+        return "redirect:/minha-conta/cliente#paraFazer";
+    }
+
+    /**
+     * Avalia o serviço depois de finalizado
+     * @param jobId
+     * @param redirectAttributes
+     * @return
+     * @throws IOException
+     */
+    @GetMapping("/avaliar/servico/{jobId}/profissional/{profissionalId}")
+    @RolesAllowed({RoleType.USER, RoleType.COMPANY})
+    public ModelAndView evaluateService(@PathVariable Long jobId, @PathVariable Long profissionalId, RedirectAttributes redirectAttributes) throws IOException {
+        Optional<User> oClientAuthenticated = (userService.findByEmail(authentication.getEmail()));
+        ModelAndView mv = new ModelAndView("client/evaluate-jobs");
+
+        if(!oClientAuthenticated.isPresent()){
+            return mv.addObject("visitor/login");
+        }
+
+        Optional<JobRequest> oJobRequest = jobRequestService.findById(jobId);
+
+        Optional<User> oIndividual = userService.findById(profissionalId);
+        Optional<JobContracted> oJobContracted = jobContractedService.findByJobRequest(oJobRequest.get());
+
+        if (!oJobRequest.isPresent()) {
+            throw new EntityNotFoundException("Job não encontrado");
+        }
+        mv.addObject("job", oJobRequest.get());
+        mv.addObject("professional", oIndividual.get());
+        mv.addObject("jobContracted", oJobContracted.get());
+        return mv;
+    }
+
+    /**
+     * @param jobId
+     * @param profissionalId
+     * @param dto
+     * @param redirectAttributes
+     * @return
+     * @throws IOException
+     * @throws ParseException
+     */
+    @PostMapping("/avaliar/servico/{jobId}/profissional/{profissionalId}")
+    @RolesAllowed({RoleType.USER})
+    public ModelAndView saveAssessmentProfessional(
+            @PathVariable Long profissionalId,
+            @PathVariable Long jobId,
+            AssessmentProfessionalDTO dto,
+            AssessmentProfessionalFileDTO assessmentProfessionalFileDTO,
+            RedirectAttributes redirectAttributes,
+            BindingResult errors
+    ) throws IOException, ParseException {
+        String currentUserEmail = authentication.getEmail();
+
+        Optional<Individual> oindividual = individualService.findById(profissionalId);
+        Optional<Individual> oClliente = individualService.findByEmail(currentUserEmail);
+
+        if(!oindividual.isPresent()){
+            throw new EntityNotFoundException("O usuário não foi encontrado!");
+        }
+
+        Optional<JobRequest> oJobRequest = jobRequestService.findById(jobId);
+
+        AssessmentProfessional assessmentProfessional = new AssessmentProfessional();
+        String comment = dto.getComment();
+
+        if (!comment.isEmpty()){
+           String analyzedComment  = analyzeComment(comment);
+            if ("Comentário Ofensivo".equals(analyzedComment)) {
+                errors.rejectValue("comment", "error.dto", "Proibido comentários ofensivos!.");
+                return errorFowarding(dto, assessmentProfessionalFileDTO, errors);
+            }
+        }
+
+        assessmentProfessional.setComment(dto.getComment());
+        assessmentProfessional.setProfessional(oindividual.get());
+        assessmentProfessional.setQuality(dto.getQuality());
+        assessmentProfessional.setPunctuality(dto.getPunctuality());
+        assessmentProfessional.setDate(dto.getDate());
+        assessmentProfessional.setClient(oClliente.get());
+        assessmentProfessional.setJobRequest(oJobRequest.get());
+        assessmentProfessionalService.save(assessmentProfessional);
+        if (!assessmentProfessionalFileDTO.getPathImage().isEmpty() || !assessmentProfessionalFileDTO.getPathVideo().isEmpty()) {
+            AssessmentProfessionalFiles assessmentProfessionalFiles = assessmentProfessionalFileMapper.toEntity(assessmentProfessionalFileDTO);
+            assessmentProfessionalFiles.setAssessmentProfessional(assessmentProfessional);
+            assessmentProfessionalFileService.save(assessmentProfessionalFiles);
+        }
+
+        redirectAttributes.addFlashAttribute("msg", "Avaliação realizada com sucesso!");
+
+        return new ModelAndView("redirect:/minha-conta/cliente#executados");
+    }
+
+    public boolean isValidateImage(MultipartFile image){
+        List<String> contentTypes = Arrays.asList("image/png", "image/jpg", "image/jpeg");
+
+        for(int i = 0; i < contentTypes.size(); i++){
+            if(image.getContentType().toLowerCase().startsWith(contentTypes.get(i))){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /*Método responsavel em chamar a api e então validar comentários*/
+    @GetMapping("/analyze-comment")
+    public String analyzeComment(String coment){
+        return perspectiveAPIService.analyzeComment(coment);
+    }
+
+    private ModelAndView errorFowarding(AssessmentProfessionalDTO dto, AssessmentProfessionalFileDTO dtoFiles,BindingResult errors) {
+        ModelAndView mv = new ModelAndView("client/evaluate-jobs");
+        mv.addObject("dto", dto);
+        mv.addObject("errors", errors.getAllErrors());
+        return mv;
     }
 }
