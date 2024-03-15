@@ -100,8 +100,15 @@
         <script>
             $(document).ready(function(){
                 $('.tooltipped').tooltip();
+                // $('.hide_descriptive').hide();
+                //
+                // $("#hide_simple_button").click(function(){
+                //     $('.hide_descriptive').show();
+                //     $('.hide_simple').hide();
+                // });
             });
         </script>
+
     </jsp:body>
 </t:template>
 

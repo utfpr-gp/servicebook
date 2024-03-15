@@ -150,32 +150,49 @@ public class IndexController {
     @PermitAll
     @ResponseBody
     public List<ExpertiseDTO> showExpertisesByCategory(@PathVariable Long categoryId)  throws Exception {
-        Optional<Category> oCategory = categoryService.findById(categoryId);
+        if(categoryId != null){
+            List<Expertise> expertises = expertiseService.findByCategoryId(categoryId);
 
-        Category category = categoryService.findById(categoryId).orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
+            List<ExpertiseDTO> expertiseDTOS = expertises.stream()
+                    .map(s -> expertiseMapper.toDto(s))
+                    .collect(Collectors.toList());
 
-        List<Expertise> expertises = expertiseService.findByCategoryId(categoryId);
+            return expertiseDTOS;
+        } else {
+            List<Expertise> expertises = expertiseService.findAll();
 
-        List<ExpertiseDTO> expertiseDTOS = expertises.stream()
-                .map(s -> expertiseMapper.toDto(s))
-                .collect(Collectors.toList());
+            List<ExpertiseDTO> expertiseDTOS = expertises.stream()
+                    .map(s -> expertiseMapper.toDto(s))
+                    .collect(Collectors.toList());
 
-        return expertiseDTOS;
+            return expertiseDTOS;
+        }
+
     }
 
     @GetMapping("/servicos/especialidade/{expertiseId}")
     @PermitAll
     @ResponseBody
     public List<ServiceDTO> showServicesByExpertise(@PathVariable Long expertiseId)  throws Exception {
+        if(expertiseId != null){
+            Expertise expertise = expertiseService.findById(expertiseId).orElseThrow(() -> new EntityNotFoundException("Especialidade não encontrada"));
 
-        Expertise expertise = expertiseService.findById(expertiseId).orElseThrow(() -> new EntityNotFoundException("Especialidade não encontrada"));
+            List<Service> services = serviceService.findByExpertise(expertise);
 
-        List<Service> services = serviceService.findByExpertise(expertise);
+            List<ServiceDTO> servicesDTO = services.stream()
+                    .map(s -> serviceMapper.toDto(s))
+                    .collect(Collectors.toList());
+            return servicesDTO;
 
-        List<ServiceDTO> servicesDTO = services.stream()
-                .map(s -> serviceMapper.toDto(s))
-                .collect(Collectors.toList());
+        } else {
+            List<Service> services = serviceService.findAll();
 
-        return servicesDTO;
+            List<ServiceDTO> servicesDTO = services.stream()
+                    .map(s -> serviceMapper.toDto(s))
+                    .collect(Collectors.toList());
+
+            return servicesDTO;
+        }
+
     }
 }

@@ -22,6 +22,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -121,6 +122,14 @@ public class JobRequestController {
         if(step < 1 || step > 8){
             step = 1L;
         }
+
+        String currentUserEmail = authentication.getEmail();
+
+        Optional<User> oUser = userService.findByEmail(currentUserEmail);
+//        if (!oUser.isPresent()) {
+//            return "redirect:/login";
+//        }
+
         JobRequestDTO dto = wizardSessionUtil.getWizardState(httpSession, JobRequestDTO.class, WizardSessionUtil.KEY_WIZARD_JOB_REQUEST);
         model.addAttribute("dto", dto);
 
@@ -291,7 +300,7 @@ public class JobRequestController {
             sessionDTO.setImageSession((String)data.get("url"));
             log.debug("Passo 5 {}", sessionDTO);
 
-            return "redirect:/requisicoes/passo=5";
+            return "redirect:/requisicoes?passo=8";
         } else {
             return "redirect:/requisicoes/passo=5";
         }
@@ -336,7 +345,7 @@ public class JobRequestController {
         User user = null;
         Optional<User> oUser = userService.findByEmail(authentication.getEmail());
         if(oUser.isPresent()){
-           user = oUser.get();
+            user = oUser.get();
         }
 
         Expertise exp = oExpertise.get();

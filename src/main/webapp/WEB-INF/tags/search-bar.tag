@@ -9,7 +9,9 @@
         crossorigin="anonymous"></script>
 
 <div>
-  <div class="container center-align">
+<c:if test="${empty dto_expertise}">
+
+  <div class="container center-align hide_simple">
     <div class="row">
       <div class="col s12">
         <h4 style="font-weight: bold ">O QUE VOCÊ PRECISA?</h4>
@@ -61,7 +63,7 @@
 
         <div class="row">
           <div class="col s12">
-            <button type="submit" class="waves-effect waves-light btn-large right">
+            <button class="waves-effect waves-light btn-large right" id="hide_simple_button">
               <i class="material-icons left">search</i>Buscar
             </button>
           </div>
@@ -69,4 +71,21 @@
       </div>
     </form>
   </div>
+</c:if>
+
+<c:if test="${not empty dto_expertise}">
+  <div class="container center-align hide_descriptive">
+    <div class="row">
+      <div class="col s12">
+        <h4 style="font-weight: bold ">O QUE VOCÊ PRECISA?</h4>
+        <h6>Crie um anúncio da sua solicitação para facilitar a comunicação com os profissionais.</h6>
+        <h6>Você descreve apenas uma vez e compartilha com os profissionais.</h6>
+            <a href="/servicebook/requisicoes?passo=1" class="waves-effect waves-light btn-large right" > BUSCA DESCRITIVA</a>
+      </div>
+
+    </div>
+  </div>
+</c:if>
+
 </div>
+<script src="assets/resources/scripts/search.js"></script>
